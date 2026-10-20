@@ -9,31 +9,21 @@ versions be compared side by side.
 
 These outputs are AI-generated illustrations, not photographs or survey data.
 
-Cost: $0.134 per 1K output image at standard pricing (Gemini API pricing
-page, checked Oct. 20, 2026). --max-calls caps spending per run.
+Cost: see pixelphilly/gemini.py. --max-calls caps spending per run.
 
 Usage:
-  uv run python scripts/07_redraw.py --prompt redraw_v2 --frames frame_02_02 frame_03_02
-  uv run python scripts/07_redraw.py --prompt redraw_v2 --max-calls 30
+  uv run python scripts/07_redraw.py --prompt redraw_v3 --frames frame_02_02 frame_03_02
+  uv run python scripts/07_redraw.py --prompt redraw_v3 --max-calls 30
 """
 
 import argparse
-import io
 import json
-import os
-import sys
 import time
 from datetime import datetime, timezone
 
-from dotenv import load_dotenv
-from google import genai
-from google.genai import types
-from PIL import Image
-
+from pixelphilly import gemini
 from pixelphilly.projection import REPO_ROOT, area_setup, load_config
 from pixelphilly.water import water_screen_geometry, water_sentence, water_share
-
-MODEL = "gemini-3-pro-image"
 
 
 def main():
@@ -46,11 +36,7 @@ def main():
     ap.add_argument("--reason", default="", help="why --redo frames were rejected (logged)")
     args = ap.parse_args()
 
-    load_dotenv(REPO_ROOT / ".env")
-    key = os.environ.get("GEMINI_API_KEY")
-    if not key:
-        sys.exit("GEMINI_API_KEY is not set. Copy .env.example to .env and add your key.")
-    client = genai.Client(api_key=key)
+    client = gemini.make_client()
 
     cfg = load_config()
     frame, cam, frames = area_setup(cfg)
@@ -98,7 +84,7 @@ def main():
         src = render_dir / f"{f.name}.png"
         entry = {
             "frame": f.name,
-            "model": MODEL,
+            "model": gemini.MODEL,
             "prompt_version": args.prompt,
             "water_share": round(share, 3),
             "started_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
@@ -106,37 +92,17 @@ def main():
         t0 = time.time()
         calls += 1
         try:
-            resp = client.models.generate_content(
-                model=MODEL,
-                contents=[
-                    types.Part.from_bytes(data=src.read_bytes(), mime_type="image/png"),
-                    prompt,
-                ],
-                config=types.GenerateContentConfig(
-                    response_modalities=["IMAGE"],
-                    image_config=types.ImageConfig(aspect_ratio="1:1", image_size="1K"),
-                ),
-            )
-            parts = resp.candidates[0].content.parts if resp.candidates else []
-            img_part = next((p for p in parts if p.inline_data and p.inline_data.data), None)
-            if img_part is None:
-                raise RuntimeError(f"no image in response: {resp.text if hasattr(resp, 'text') else resp}")
-            img = Image.open(io.BytesIO(img_part.inline_data.data)).convert("RGB")
-            if img.size != (size, size):
-                # Gemini returns ~1K; resample onto the frame grid so the
-                # comparison and mosaic line up with the render.
-                entry["returned_size"] = list(img.size)
-                img = img.resize((size, size), Image.LANCZOS)
+            img, returned = gemini.redraw(client, src.read_bytes(), prompt, size)
+            if returned:
+                entry["returned_size"] = returned
             img.save(out)
             entry["status"] = "ok"
         except Exception as exc:
             entry["status"] = "error"
             entry["error"] = str(exc)[:500]
-            # A quota error will fail every remaining frame too; stop instead
-            # of burning through the list. (On a free-tier key this model's
-            # quota is 0: billing must be enabled on the key's project.)
-            if "RESOURCE_EXHAUSTED" in str(exc):
-                quota_hit = True
+            # (On a free-tier key this model's quota is 0: billing must be
+            # enabled on the key's project.)
+            quota_hit = gemini.is_quota_error(exc)
         entry["seconds"] = round(time.time() - t0, 1)
         with log_path.open("a") as fh:
             fh.write(json.dumps(entry) + "\n")
@@ -148,7 +114,7 @@ def main():
             break
 
     # Failed calls return no image and are not billed for output.
-    print(f"{calls} calls this run, {succeeded} images (~${succeeded * 0.134:.2f} at standard pricing)")
+    print(f"{calls} calls this run, {succeeded} images (~${succeeded * gemini.PRICE_PER_IMAGE:.2f} at standard pricing)")
 
 
 if __name__ == "__main__":

@@ -9,18 +9,21 @@ import numpy as np
 from PIL import Image, ImageFilter
 
 
-def seam_ratio(mosaic: np.ndarray, tile: int) -> float:
-    """Mean color jump across tile borders / mean jump everywhere else.
+def seam_ratio_lines(img: np.ndarray, cols, rows) -> float:
+    """Mean color jump across the given boundary lines / mean jump elsewhere.
 
-    About 1.0 means borders are invisible; well above 1 means seams. Jumps
-    are mean absolute RGB differences between horizontally and vertically
-    adjacent pixels.
+    `cols` are x positions b where a vertical boundary falls between pixel
+    columns b-1 and b; `rows` likewise for horizontal boundaries. About 1.0
+    means the lines are invisible; well above 1 means seams. Jumps are mean
+    absolute differences between adjacent pixels, averaged over channels.
     """
-    m = mosaic.astype(float)
+    m = img.astype(float)
+    if m.ndim == 2:
+        m = m[..., None]
     dx = np.abs(np.diff(m, axis=1)).mean(axis=2)
     dy = np.abs(np.diff(m, axis=0)).mean(axis=2)
-    bx = [tile * c - 1 for c in range(1, m.shape[1] // tile)]
-    by = [tile * r - 1 for r in range(1, m.shape[0] // tile)]
+    bx = [b - 1 for b in cols]
+    by = [b - 1 for b in rows]
     seam = np.concatenate([dx[:, bx].ravel(), dy[by, :].ravel()])
     keep_x = np.ones(dx.shape[1], bool)
     keep_x[bx] = False
@@ -28,6 +31,13 @@ def seam_ratio(mosaic: np.ndarray, tile: int) -> float:
     keep_y[by] = False
     other = np.concatenate([dx[:, keep_x].ravel(), dy[keep_y, :].ravel()])
     return float(seam.mean() / other.mean())
+
+
+def seam_ratio(mosaic: np.ndarray, tile: int) -> float:
+    """seam_ratio_lines with boundaries every `tile` pixels (frame borders)."""
+    cols = list(range(tile, mosaic.shape[1], tile))
+    rows = list(range(tile, mosaic.shape[0], tile))
+    return seam_ratio_lines(mosaic, cols, rows)
 
 
 def flat_share(img: np.ndarray, tol: int = 6) -> float:
@@ -61,3 +71,29 @@ def registration_shift(reference: Image.Image, other: Image.Image):
     y, x = np.unravel_index(r.argmax(), r.shape)
     h, w = a.shape
     return int((x + w // 2) % w - w // 2), int((y + h // 2) % h - h // 2)
+
+
+def seam_ratio_local(img: np.ndarray, cols, rows, band: int = 16) -> float:
+    """Like seam_ratio_lines, but each boundary line is compared with the
+    lines up to `band` px on either side of it instead of the whole image.
+
+    With few boundary lines, the global version is swayed by content that
+    happens to sit on a line (one building edge on a window border read as a
+    "seam" in the Phase D crop test). Comparing against immediate neighbors
+    cancels most of that. Returns the median per-line ratio; about 1.0 means
+    no seam.
+    """
+    m = img.astype(float)
+    if m.ndim == 2:
+        m = m[..., None]
+    px = np.abs(np.diff(m, axis=1)).mean(axis=(0, 2))  # jump between col b-1 and b at index b-1
+    py = np.abs(np.diff(m, axis=0)).mean(axis=(1, 2))
+    ratios = []
+    for prof, lines in ((px, cols), (py, rows)):
+        for b in lines:
+            i = b - 1
+            lo, hi = max(0, i - band), min(len(prof), i + band + 1)
+            nb = np.r_[prof[lo : max(lo, i - 1)], prof[min(hi, i + 2) : hi]]
+            if len(nb) and nb.mean() > 0:
+                ratios.append(prof[i] / nb.mean())
+    return float(np.median(ratios))

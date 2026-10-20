@@ -132,10 +132,55 @@ Every step can be rerun:
   - every frame containing buildings matched with zero pixel offset
   - intersection-over-union was at least 0.991
 
+## Phase 2: one seam-free image (Oct. 20)
+
+The per-frame Gemini map has visible seams: frame-border seam ratio 3.7 after the water repaint, where 1.0 is invisible. Phase 2 removes them the way tiny.london did. A fine-tuned open model draws the **whole canvas as one image**, with overlapping windows whose predictions are averaged at every denoising step. On Old City the frame-border seam ratio fell to **1.09**, the same as the plain render's 1.08.
+
+**Models:**
+- Qwen-Image-Edit-2511 and lightx2v's Lightning 8-step LoRA, both Apache 2.0, pinned to exact commits in `gpu/modal_app.py`.
+- tiny.london's Qwen-Image-2.1-Turbo was not used: its license is non-commercial.
+
+**Training data, internal use only.** The pixel-philly style LoRA was trained on 141 Gemini 3 Pro Image v3 redraws, with water repainted.
+- The Gemini API terms bar using the service "to develop models that compete with the Services". A Philadelphia-only style LoRA arguably doesn't compete, but the terms don't define the word.
+- **Legal review is required before anything made with this LoRA is published.**
+- Every target's source is in `output/trainset/manifest.jsonl`, so the LoRA can be retrained on artist-made or open-model targets without changing the rest of the pipeline.
+
+**GPU:** Modal, per-second billing. One-time setup: `uv run modal token new`.
+
+```bash
+uv sync --group dev --group gpu
+uv run modal deploy gpu/modal_app.py                   # inference image (Qwen + Lightning)
+uv run modal run gpu/modal_app.py::download_weights    # ~58 GB into the pp-weights Volume, once
+uv run modal deploy gpu/train_app.py                   # ai-toolkit training image
+
+uv run python scripts/12_qwen_baseline.py              # Phase A: prompt-only Qwen on 6 frames (~$1)
+uv run python scripts/13_build_trainset.py             # Phase B: 141 training pairs (~$16 of Gemini calls)
+uv run python scripts/14_train_lora.py prepare         # Phase C: upload dataset + config
+uv run python scripts/14_train_lora.py start           #          train on an H100 (~1.6 h, ~$6.50); detached
+uv run python scripts/14_train_lora.py status          #          progress; `fetch` downloads checkpoints and samples
+uv run python scripts/15_joint_sample.py --test-crop --name test --style /runs/lora/qe2511_oldcity_r16_v1/qe2511_oldcity_r16_v1.safetensors \
+    --prompt-text "Redraw this render as isometric pixel art in the pixel philly style."
+uv run python scripts/15_joint_sample.py --full --name qwen_joint_light8 --style /runs/lora/qe2511_oldcity_r16_v1/qe2511_oldcity_r16_v1.safetensors \
+    --prompt-text "Redraw this render as isometric pixel art in the pixel philly style."   # Phase D: ~5 min, ~$0.36
+uv run python scripts/10_repaint_water.py --prompt qwen_joint_light8
+uv run python scripts/08_compare_page.py --prompt qwen_joint_light8 --stage water
+```
+
+**Safety checks before spending GPU time:**
+- Every GPU script first runs a CPU smoke test: `check_env` for inference, `check_config` for training.
+- A broken environment then fails for a fraction of a cent instead of crash-looping an H100.
+- Spend estimates for each run are logged to `output/gpu_runs.jsonl`.
+
+**Known limits of the phase 2 output:**
+- The Ben Franklin Bridge is drawn from its photo shadow, because the city data has no bridge structure.
+- The LoRA still invents a landscaped lot on the riverfront pier.
+- Some edge ground still reads like the photo.
+- Overfitting to Old City is likely. Generalization to other neighborhoods is untested.
+
 ## Licensing and open questions (for legal / standards)
 
 - **City data.** OpenDataPhilly lists these layers under the "City of Philadelphia License". Its aerial imagery page says the city "retains all rights." Before publishing, confirm with maps@phila.gov that publication and AI-derived works are allowed.
-- **Gemini outputs.** Check the Gemini API terms for any limit on publishing outputs or using them as training data. Training data would matter only if this moves to a fine-tuned model.
+- **Gemini outputs as training data.** Phase 2's style LoRA was trained on Gemini outputs, for internal use (see Phase 2 above). Before publication, legal should decide whether that is consistent with the Gemini API terms, or the LoRA should be retrained on other targets.
 - **Labelling.** Treat the output as an AI-generated illustration and label it that way.
 - **Google 3D Tiles.** Deliberately not used; see the top of this file.
 

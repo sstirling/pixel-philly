@@ -184,8 +184,13 @@ function setMode(mode) {
   renderer.setClearColor(mask ? 0x000000 : background);
 }
 
-window.renderFrame = (index, mode = "color") => {
-  const f = sceneData.frames[index];
+window.renderFrame = (index, mode = "color") => window.renderView(sceneData.frames[index], mode);
+
+// Render any orthographic view of the same camera: {left, right, top,
+// bottom} in view-space meters (see projection.Frame.frustum). The canvas is
+// always frame_px square, so a narrower frustum is a zoomed-in view. Used by
+// 13_build_trainset.py for shifted crops and 2x zoomed quarters.
+window.renderView = (f, mode = "color") => {
   setMode(mode);
   // Antialiasing would blur the mask's edges into grey; the check thresholds
   // at 50%, which recovers the same boundary either way.

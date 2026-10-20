@@ -94,6 +94,82 @@ Total model spend for the pilot: 37 successful calls, about $4.96 at standard pr
 
 The land tone shifts are what tiny.london's joint denoising solves. A cheaper experiment would be to match each frame's color statistics to its neighbors where they overlap; that would need overlapping frames, which the current lattice doesn't have.
 
+## 2026-10-20 (afternoon): phase 2, seam-free Old City with a commercially usable model
+
+### Decisions
+- **Base model: Qwen-Image-Edit-2511** (Apache 2.0) with lightx2v's Lightning LoRAs (Apache 2.0), pinned to exact commits.
+  - tiny.london's base, Qwen-Image-2.1-Turbo, is under the Qwen Research License, "FOR NON-COMMERCIAL PURPOSES ONLY" (checked on Hugging Face).
+- **Training targets: Gemini 3 Pro Image v3 redraws, for internal use only** (Stephen, Oct. 20).
+  - The Gemini API terms bar using the service "to develop models that compete with the Services" and "replicat[ing] any component". A Philadelphia-only style LoRA arguably doesn't compete, but the terms don't define either word.
+  - Legal review is required before any publication. Every target's source is recorded in `output/trainset/manifest.jsonl`.
+- **GPU: Modal**, per-second billing.
+
+### Built
+- `src/pixelphilly/windows.py` and `joint_sampler.py`: MultiDiffusion-style joint denoising, tested on CPU with toy predictors.
+  - Independent tiles: seam ratio 7.4. Joint: 1.004, against 1.006 for the clean image.
+- `src/pixelphilly/waterpaint.py`: the water repaint, usable on any view and zoom. Moved out of `10_repaint_water.py`; the mosaic output is byte-identical to before.
+- `src/pixelphilly/gemini.py`, `browser_render.py`: shared Gemini call and renderer, so arbitrary views can be rendered. The re-rendered frame is identical to before.
+- `gpu/modal_app.py`:
+  - inference image
+  - `check_env` CPU smoke test
+  - `Editor.run` for per-image edits
+  - `Editor.joint` for whole-canvas joint denoising
+- `gpu/train_app.py`: ai-toolkit pinned to commit 04733873, with a `check_config` CPU smoke test.
+- Scripts:
+  - `12_qwen_baseline.py`: Phase A
+  - `13_build_trainset.py`: Phase B
+  - `14_train_lora.py`: Phase C
+  - `15_joint_sample.py`: Phase D
+- `qa.seam_ratio_lines` and `seam_ratio_local`: seam scores at arbitrary lines, the second against neighboring lines. 28 tests pass.
+
+### Results
+- **Phase A, prompt-only Qwen, 48 edits on 6 frames** (16 min, ~$1.06).
+  - Clean pixel art, mostly on-geometry.
+  - It invents things: a river on the Mint's roof when the prompt said "WATER IN THIS VIEW: none", lawns in place of pavement, and buildings on the river.
+  - Lightning 8-step with the short prompt was best: aligned on 6/6 frames, ~4.5 s per image.
+  - Lesson: never name water in a Qwen prompt. Training captions use one fixed sentence.
+- **Phase B, training set.** 141 pairs, all from lattice columns 0–3; columns 4–5 are held out.
+  - Pairs: 20 lattice frames, 47 shifted views, 74 zoomed quarters.
+  - Water repainted in every target; 0 QA rejections.
+  - 121 new Gemini images, ~$16.21. Google's spend-based rate limit for new accounts paused the run twice; it resumed with 1 worker.
+- **Phase C, LoRA.** Rank 16, 2,000 steps, bf16, H100. About 98 min, ~$6.45.
+  - Held-out samples improved steadily; step 2,000 was closest to the Gemini benchmark.
+  - Water in samples is a uniform dark blue (repainted afterward).
+  - It still invents a landscaped lot on the riverfront pier.
+- **Phase D, joint sampler.**
+  - Held-out 1,792 px crop, untrained model: Lightning-8 joint 1.22 vs independent tiles 1.61; base-40 joint 1.11 vs 1.29 (render 1.01).
+  - With the LoRA, independent tiles were already consistent (0.90–0.98). Joint's 1.16–1.18 came from a building edge on one window line: the neighbor-relative check shows that line is also high in the render and in the independent version.
+  - VAE tiled vs. untiled decode changed the seam score by only ~0.01.
+- **Full Old City, LoRA + Lightning 8-step, one joint pass.** 5.4 min, ~$0.36. 115 windows, 476 forward passes, 61 GB peak.
+
+| Mosaic (frame borders) | Seam ratio, global | Seam ratio, local |
+|---|---|---|
+| Render | 1.08 | 0.99 |
+| Gemini per-frame | 4.39 | 4.13 |
+| Gemini per-frame + water repaint | 3.69 | 3.73 |
+| **Qwen + LoRA, joint** | **1.08** | **1.10** |
+| **Qwen + LoRA, joint + water repaint** | **1.09** | **1.09** |
+
+### Problems hit and fixed
+- **Missing `torchvision` in the inference image.** Qwen2.5-VL's video processor needs it. The load step crash-looped on an H100 until stopped.
+  - Fix: `torchvision==0.29.1`, plus a CPU `check_env` smoke test that runs before every GPU job.
+- **ai-toolkit couldn't resolve "Qwen/Qwen-Image-Edit-2511" offline.** The pinned download stores only the commit snapshot, not the "main" ref.
+  - Fix: the config points at the snapshot folder. `check_config` verifies it on CPU first.
+- **Training-set resume treated errored views as done.** Fixed to skip only passing views or views rejected twice.
+- **The base-40 full-canvas run was cancelled after ~4 min (~$0.30).** The local background command that held the Modal call open was stopped by this environment's ~10 min limit.
+  - Long runs should be spawned and detached, as training is.
+
+### Phase 2 spend (estimates; the Modal dashboard is the authority)
+- Gemini: ~$16.21
+- Modal:
+  - Phase A: ~$1.06
+  - seam tests: ~$1.2
+  - training: ~$6.45
+  - full canvas: ~$0.36
+  - cancelled run: ~$0.30
+  - CPU and image builds: small
+  - the torchvision crash loop: unknown; see the dashboard
+
 ### Results so far
 - 8,380 buildings in the scene, none dropped.
   - Heights: 8,304 from `approx_hgt`, 29 from `max_hgt`, 47 from the default.

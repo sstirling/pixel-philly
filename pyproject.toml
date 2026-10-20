@@ -12,10 +12,13 @@ dependencies = [
     "playwright",
     "google-genai",
     "python-dotenv",
+    "pyyaml>=6.0.3",
 ]
 
 [dependency-groups]
 dev = ["pytest"]
+# Phase 2: Modal client (GPU jobs run remotely) and CPU torch for the sampler tests
+gpu = ["modal", "torch"]
 
 [build-system]
 requires = ["hatchling"]
