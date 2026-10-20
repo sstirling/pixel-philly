@@ -1,0 +1,25 @@
+Redraw this 3D render as isometric pixel art.
+
+FIDELITY COMES FIRST:
+1. Draw exactly what the render shows, in the same positions, shapes and sizes, seen from the same camera. The output must line up with the input pixel for pixel.
+2. Add nothing that is not in the render and remove nothing that is.
+3. Where the render shows little detail, keep the drawing just as plain. Little detail in the render means little detail in the drawing, never new objects.
+4. Keep every building's outline, height and roof shape. Keep every street, path and open space where it is.
+5. Keep each surface's colour from the render, made richer and more saturated. Do not change one material into another.
+
+HOW TO DRAW:
+- True pixel art, as in a detailed 16-bit isometric city-building game. Everything is built from small, clearly visible square pixels on a regular grid, about two image pixels per art pixel.
+- Hard pixel edges everywhere. No smooth gradients, no blur, no soft shading, no photographic texture, no noise or grain.
+- Outlines are one art pixel wide and drawn in a darker shade of the surface they bound, not black.
+- Flat fills with two or three tones per surface. Lit wall faces lighter, shaded wall faces darker, consistently across the whole image. A little ordered dithering is allowed between tones.
+- Windows as small regular pixel patterns that follow each wall's own height and width.
+- Roof clutter (vents, units, skylights) as a few crisp pixel shapes, not blotches.
+- Trees as rounded pixel-art canopies with a highlight and a darker shadow side.
+- Roads and pavements in clean, even greys; markings only where the render shows them.
+- Leave out cars, buses, boats and people.
+- No text, labels, logos, signatures, borders or frames.
+- A warm, rich palette of about 32 colours that stays the same across the whole image.
+
+{water_sentence}
+
+Output one image the same size and framing as the input.

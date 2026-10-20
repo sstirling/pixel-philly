@@ -1,0 +1,18 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Secrets: the Gemini API key lives here
+.env
+
+# Imagery tiles are large and reproducible with scripts/03; vector downloads are kept
+data/raw/imagery/
+data/processed/*.jpg
+data/processed/*.png
+
+# Generated images
+output/
+
+.DS_Store

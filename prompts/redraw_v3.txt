@@ -1,0 +1,25 @@
+Redraw this 3D render as isometric pixel art.
+
+FIDELITY COMES FIRST:
+1. Draw exactly what the render shows, in the same positions, shapes and sizes, seen from the same camera. The output must line up with the input pixel for pixel.
+2. Add nothing that is not in the render and remove nothing that is.
+3. Where the render shows little detail, keep the drawing just as plain. Little detail in the render means little detail in the drawing, never new objects.
+4. Keep every building's outline, height and roof shape. Keep every street, path and open space where it is.
+5. Keep the hue of each wall and roof from the render. Do not change one material into another.
+
+HOW TO DRAW:
+- Redraw every surface by hand; never trace or filter the render. Pixel art is mostly flat fills.
+- Hand-placed pixel art, like a detailed isometric city-builder game. Small square pixels with hard edges, no blur, no smooth gradients, no photographic texture, no noise or grain.
+- Flat fills with two or three tones per surface. Lit wall faces lighter, shaded wall faces darker, consistently across the whole image.
+- A thin outline where a building's edge meets the ground or sky, in a darker shade of that surface.
+- Window rows on walls drawn as simple, regular pixel patterns that follow each wall's own height and width.
+- Roof equipment as a few small, crisp pixel shapes.
+- Trees as rounded pixel-art canopies with a darker shadow side.
+- Roads and pavements in clean, even greys; markings only where the render shows them.
+- Leave out cars, buses, boats and people.
+- No text, labels, logos, signatures, borders or frames.
+- A soft, warm palette that stays the same across the whole image.
+
+{water_sentence}
+
+Output one image the same size and framing as the input.
