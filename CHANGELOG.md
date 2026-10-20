@@ -94,6 +94,45 @@ Total model spend for the pilot: 37 successful calls, about $4.96 at standard pr
 
 The land tone shifts are what tiny.london's joint denoising solves. A cheaper experiment would be to match each frame's color statistics to its neighbors where they overlap; that would need overlapping frames, which the current lattice doesn't have.
 
+## 2026-10-20 (evening): second neighborhood, Fishtown
+
+**Question:** does the style LoRA, trained only on Old City, carry over to a neighborhood it has never seen, with no new training?
+
+### Changes
+- `load_config()` reads `PP_AREA` (default `oldcity`).
+- `area_dir(cfg, ...)` puts each area's outputs under `output/<area>/`.
+- Old City outputs were moved to `output/oldcity/` (git-ignored, so nothing changes in git).
+- Scripts 12–14 are pinned to Old City.
+- The imagery manifest key is now per area: `imagery/<area>/<service>/<z>`.
+- `15_joint_sample.py --full --detach / --collect` runs long jobs detached on Modal.
+- `sources.fetch_features` retries ArcGIS "HTTP 200 with an error body" failures. Fishtown's first footprint query hit one.
+- New tests (`tests/test_area.py`): area selection, per-area paths, Fishtown lattice. 32 pass.
+
+### Regression check
+- Rebuilt Old City scene: no git diff.
+- Old City water-repaint mosaics (Gemini v3 and joint) and the render mosaic: byte-identical SHA-256 before and after the migration.
+
+### Fishtown
+- **Box:** same size as Old City, inside the FISHTOWN polygon: Frankford Ave to the Delaware, around Girard Ave, including Penn Treaty Park.
+- **Data:** 16,909 buildings (120 at the 10 m default height), 6,636 trees, tallest 102 m. Alignment check PASS (min IoU 0.981).
+- **Street grid:** dominant bearing ~55°, following the river, with a secondary grid at ~9°. At the 54° camera the river-aligned blocks face the camera head-on, so they read more top-down than Old City's diamond blocks. The camera was kept at the angle the LoRA learned.
+- **Joint generation:** Old City LoRA, Lightning 8-step, no new training. 5.0 min, ~$0.33. 28/30 frames within 2 px of the render; the other two are open-river frames where the alignment measure has nothing to lock onto.
+
+| Fishtown mosaic (frame borders) | Global | Local |
+|---|---|---|
+| Render | 1.04 | 0.99 |
+| Joint | 1.06 | 1.07 |
+| Joint + water repaint | 1.07 | 1.07 |
+
+- **Against Gemini v3 on 4 frames** (benchmark only, ~$0.54):
+  - The joint model is more faithful on rowhouses: it keeps the real roof colors, where Gemini made everything salmon-tan.
+  - It is cleaner on the Penn Treaty / power-station frame.
+  - It adds blue-gray puddles in the I-95 interchange infield.
+- **Invented water on land:**
+  - A blue pond on a vacant dirt lot in the southwest blocks.
+  - A check for blue, water-like pixels outside USGS water and outside buildings finds 5 blobs in Fishtown (largest 10,432 px, the pond) and 6 small ones in Old City. Each total is ~0.06% of the canvas. The Old City blobs have not been checked one by one.
+  - Next step: turn the check into a flag list, and repair flagged spots by locally re-denoising them (tiny.london's repair step).
+
 ## 2026-10-20 (afternoon): phase 2, seam-free Old City with a commercially usable model
 
 ### Decisions

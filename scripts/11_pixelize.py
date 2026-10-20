@@ -28,7 +28,7 @@ import argparse
 import numpy as np
 from PIL import Image
 
-from pixelphilly.projection import REPO_ROOT, area_setup, load_config
+from pixelphilly.projection import area_dir, area_setup, load_config
 from pixelphilly.qa import seam_ratio
 
 
@@ -41,11 +41,12 @@ def main():
     ap.add_argument("--colors", type=int, default=40, help="shared palette size")
     args = ap.parse_args()
 
+    cfg = load_config()
     if args.src == "water":
-        src_dir = REPO_ROOT / "output" / "postprocessed" / args.prompt / "water"
+        src_dir = area_dir(cfg, "postprocessed", args.prompt, "water")
     else:
-        src_dir = REPO_ROOT / "output" / "redraws" / args.prompt
-    out_dir = REPO_ROOT / "output" / "postprocessed" / args.prompt / "pixelized"
+        src_dir = area_dir(cfg, "redraws", args.prompt)
+    out_dir = area_dir(cfg, "postprocessed", args.prompt, "pixelized")
     out_dir.mkdir(parents=True, exist_ok=True)
     paths = sorted(src_dir.glob("frame_*.png"))
     if not paths:
@@ -75,7 +76,6 @@ def main():
     swatch.putdata([tuple(pal[i : i + 3]) for i in range(0, len(pal), 3)])
     swatch.resize((args.colors * 16, 16), Image.NEAREST).save(out_dir / "palette.png")
     # Reassemble the mosaic and measure seams
-    cfg = load_config()
     _, _, frames = area_setup(cfg)
     size = cfg["camera"]["frame_px"]
     cols = max(f.col for f in frames) + 1

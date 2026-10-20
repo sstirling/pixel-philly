@@ -30,7 +30,7 @@ from datetime import datetime, timezone
 import numpy as np
 from PIL import Image, ImageDraw
 
-from pixelphilly.projection import REPO_ROOT, area_setup, load_config
+from pixelphilly.projection import REPO_ROOT, area_dir, area_setup, load_config
 from pixelphilly.qa import flat_share, registration_shift
 from pixelphilly.water import water_screen_geometry, water_sentence, water_share
 
@@ -53,7 +53,9 @@ H100_PER_HOUR = 3.95
 # Planning estimate: ~1 s per transformer forward at 1,024 px; CFG doubles it
 EST_SECONDS_PER_FORWARD = 1.0
 
-OUT = REPO_ROOT / "output" / "baseline_qwen"
+# Phase A was run on Old City frames (FRAMES below); pinned to that area
+AREA = "oldcity"
+OUT = area_dir(load_config(AREA), "baseline_qwen")
 
 
 def estimate_seconds():
@@ -83,13 +85,13 @@ def main():
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
 
-    cfg = load_config()
+    cfg = load_config(AREA)
     frame, cam, frames = area_setup(cfg)
     size = cfg["camera"]["frame_px"]
     by_name = {f.name: f for f in frames}
     water = water_screen_geometry(cfg, frame, cam)
     prompts = {p: (REPO_ROOT / "prompts" / f"{p}.txt").read_text().strip() for p in {s[1] for s in SETTINGS}}
-    render_dir = REPO_ROOT / "output" / "renders"
+    render_dir = area_dir(cfg, "renders")
 
     jobs = []
     for name in FRAMES:
@@ -144,7 +146,7 @@ def main():
         qa_rows.append(r)
     (OUT / "qa.json").write_text(json.dumps(qa_rows, indent=2) + "\n")
 
-    gemini_dir = REPO_ROOT / "output" / "redraws" / "redraw_v3"
+    gemini_dir = area_dir(cfg, "redraws", "redraw_v3")
     for name in FRAMES:
         render = Image.open(render_dir / f"{name}.png").convert("RGB")
         gem = gemini_dir / f"{name}.png"

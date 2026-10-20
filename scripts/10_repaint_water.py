@@ -21,7 +21,7 @@ import numpy as np
 from PIL import Image
 
 from pixelphilly import waterpaint
-from pixelphilly.projection import REPO_ROOT, area_setup, load_config
+from pixelphilly.projection import REPO_ROOT, area_dir, area_setup, load_config
 from pixelphilly.qa import seam_ratio
 
 
@@ -46,13 +46,13 @@ def main():
     y_origin = min(f.y0 for f in frames)
     W, H = cols * size, rows * size
 
-    redraw_dir = REPO_ROOT / "output" / "redraws" / args.prompt
-    out_dir = REPO_ROOT / "output" / "postprocessed" / args.prompt / "water"
+    redraw_dir = area_dir(cfg, "redraws", args.prompt)
+    out_dir = area_dir(cfg, "postprocessed", args.prompt, "water")
     out_dir.mkdir(parents=True, exist_ok=True)
 
     redraw = np.asarray(load_mosaic(frames, size, redraw_dir, cols, rows)).copy()
-    render = np.asarray(Image.open(REPO_ROOT / "output" / "renders" / "mosaic.png").convert("RGB"))
-    buildings = waterpaint.grow(np.asarray(load_mosaic(frames, size, REPO_ROOT / "output" / "masks", cols, rows, "L")) > 127)
+    render = np.asarray(Image.open(area_dir(cfg, "renders", "mosaic.png")).convert("RGB"))
+    buildings = waterpaint.grow(np.asarray(load_mosaic(frames, size, area_dir(cfg, "masks"), cols, rows, "L")) > 127)
 
     nhd_geom = waterpaint.nhd_geometry(cfg, frame, cam, x_origin, y_origin)
     nhd = waterpaint.rasterize_view(nhd_geom, 0, 0, 1.0, W, H)

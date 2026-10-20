@@ -98,7 +98,13 @@ def fetch_features(
         base["orderByFields"] = order_by
     features, offset = [], 0
     while True:
-        page = get_with_retry(url, {**base, "resultOffset": offset}).json()
+        # ArcGIS sometimes reports a transient failure as HTTP 200 with an
+        # "error" body ("Unable to perform query"); retry those too
+        for attempt in range(4):
+            page = get_with_retry(url, {**base, "resultOffset": offset}).json()
+            if "error" not in page:
+                break
+            time.sleep(2**attempt)
         if "error" in page:
             raise RuntimeError(f"{service}: {page['error']}")
         batch = page.get("features", [])

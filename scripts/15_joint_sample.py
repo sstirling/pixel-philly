@@ -16,8 +16,9 @@ none; --style points at a trained LoRA in the pp-runs Volume.
 
 Usage:
   uv run python scripts/15_joint_sample.py --test-crop --name test_light8
-  uv run python scripts/15_joint_sample.py --full --name qwen_joint_v1 \\
-      --style /runs/lora/qe2511_oldcity_r16_v1/qe2511_oldcity_r16_v1.safetensors
+  PP_AREA=fishtown uv run python scripts/15_joint_sample.py --full --detach --name qwen_joint_light8 \\
+      --style /runs/lora/qe2511_oldcity_r16_v1/qe2511_oldcity_r16_v1.safetensors --prompt-text "..."
+  PP_AREA=fishtown uv run python scripts/15_joint_sample.py --collect --name qwen_joint_light8
 """
 
 import argparse
@@ -29,7 +30,7 @@ from datetime import datetime, timezone
 import numpy as np
 from PIL import Image
 
-from pixelphilly.projection import REPO_ROOT, area_setup, load_config
+from pixelphilly.projection import REPO_ROOT, area_dir, area_setup, load_config
 from pixelphilly.qa import seam_ratio_lines
 from pixelphilly.windows import WIN, two_grids
 
@@ -55,9 +56,12 @@ def main():
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--style", help="LoRA path inside the pp-runs Volume (/runs/...)")
     ap.add_argument("--style-scale", type=float, default=1.0)
+    ap.add_argument("--detach", action="store_true",
+                    help="--full only: start the run on Modal and return; fetch it later with --collect")
+    ap.add_argument("--collect", action="store_true", help="fetch a run started with --detach")
     args = ap.parse_args()
-    if args.test_crop == args.full:
-        ap.error("choose exactly one of --test-crop / --full")
+    if not args.collect and args.test_crop == args.full:
+        ap.error("choose exactly one of --test-crop / --full (or --collect)")
 
     light = None if args.lightning == "none" else args.lightning
     steps = args.steps or (int(light) if light else 40)
@@ -67,10 +71,14 @@ def main():
 
     import modal
 
+    cfg = load_config()
+    if args.collect:
+        collect(cfg, args.name)
+        return
     print("environment:", modal.Function.from_name("pixel-philly", "check_env").remote())
     editor = modal.Cls.from_name("pixel-philly", "Editor")()
-    mosaic = Image.open(REPO_ROOT / "output" / "renders" / "mosaic.png").convert("RGB")
-    out_dir = REPO_ROOT / "output" / "joint" / args.name
+    mosaic = Image.open(area_dir(cfg, "renders", "mosaic.png")).convert("RGB")
+    out_dir = area_dir(cfg, "joint", args.name)
     out_dir.mkdir(parents=True, exist_ok=True)
 
     if args.test_crop:
@@ -121,23 +129,51 @@ def main():
         return
 
     # --full
-    cfg = load_config()
-    _, _, frames = area_setup(cfg)
-    size = cfg["camera"]["frame_px"]
     buf = io.BytesIO()
     mosaic.save(buf, "PNG")
+    if args.detach:
+        # The run continues on Modal even if this process stops (a local
+        # command held open past ~10 min was cancelled once, killing a run)
+        call = editor.joint.spawn(buf.getvalue(), mode="joint", **common)
+        (out_dir / "call.json").write_text(json.dumps({
+            "call_id": call.object_id, "prompt": prompt,
+            "settings": {k: v for k, v in common.items() if k != "prompt"},
+            "started_at": datetime.now(timezone.utc).isoformat(timespec="seconds")}, indent=2) + "\n")
+        print(f"started {args.name} on Modal: call {call.object_id}; collect with --collect --name {args.name}")
+        return
     t0 = time.time()
     res = editor.joint.remote(buf.getvalue(), mode="joint", **common)
-    wall = time.time() - t0
+    finish_full(cfg, args.name, res, time.time() - t0, prompt, {k: v for k, v in common.items() if k != "prompt"})
+
+
+def collect(cfg, name):
+    import modal
+
+    info = json.loads((area_dir(cfg, "joint", name) / "call.json").read_text())
+    try:
+        res = modal.FunctionCall.from_id(info["call_id"]).get(timeout=0)
+    except TimeoutError:
+        print(f"{name} still running (started {info['started_at']})")
+        return
+    # Server-side time; container start and weight loading add ~1-2 min
+    finish_full(cfg, name, res, res["total_seconds"], info["prompt"], info["settings"])
+
+
+def finish_full(cfg, name, res, wall, prompt, settings):
+    """Save the canvas and slice it into lattice frames for 10_repaint_water.py."""
+    _, _, frames = area_setup(cfg)
+    size = cfg["camera"]["frame_px"]
+    out_dir = area_dir(cfg, "joint", name)
     img = Image.open(io.BytesIO(res.pop("png"))).convert("RGB")
+    res.pop("png_untiled", None)
     img.save(out_dir / "mosaic.png")
-    frame_dir = REPO_ROOT / "output" / "redraws" / args.name
+    frame_dir = area_dir(cfg, "redraws", name)
     frame_dir.mkdir(parents=True, exist_ok=True)
     for f in frames:
         img.crop((f.col * size, f.row * size, (f.col + 1) * size, (f.row + 1) * size)).save(frame_dir / f"{f.name}.png")
-    (out_dir / "result.json").write_text(json.dumps({"settings": {k: v for k, v in common.items() if k != "prompt"},
+    (out_dir / "result.json").write_text(json.dumps({"area": cfg["name"], "settings": settings,
                                                      "prompt": prompt, **res, "wall_seconds": round(wall, 1)}, indent=2) + "\n")
-    log_run({"run": f"15_joint_sample full {args.name}", "gpu": "H100", "wall_seconds": round(wall, 1),
+    log_run({"run": f"15_joint_sample full {cfg['name']}/{name}", "gpu": "H100", "wall_seconds": round(wall, 1),
              "estimated_cost_usd": round(wall / 3600 * H100_PER_HOUR, 2)})
     print(f"done in {wall / 60:.1f} min (~${wall / 3600 * H100_PER_HOUR:.2f}); "
           f"{res['windows']} windows, {res['forwards']} forwards, peak {res['peak_gb']} GB; frames in {frame_dir}")

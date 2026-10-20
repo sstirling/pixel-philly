@@ -44,7 +44,7 @@ from PIL import Image, ImageDraw
 
 from pixelphilly import gemini, waterpaint
 from pixelphilly.browser_render import Renderer
-from pixelphilly.projection import REPO_ROOT, area_setup, load_config
+from pixelphilly.projection import REPO_ROOT, area_dir, area_setup, load_config
 from pixelphilly.qa import flat_share, registration_shift
 from pixelphilly.water import water_screen_geometry, water_sentence, water_share
 
@@ -54,7 +54,9 @@ HELDOUT_X = 4096  # mosaic px; nothing in the training set may reach past this
 MAX_WATER = 0.85
 MIN_FLAT = 0.30
 MAX_SHIFT = 2
-OUT = REPO_ROOT / "output" / "trainset"
+# The training set and its held-out columns are defined on Old City's lattice
+AREA = "oldcity"
+OUT = area_dir(load_config(AREA), "trainset")
 
 
 def plan_views(cfg, frames):
@@ -113,7 +115,7 @@ def main():
     ap.add_argument("--max-calls", type=int, default=160)
     args = ap.parse_args()
 
-    cfg = load_config()
+    cfg = load_config(AREA)
     frame, cam, frames = area_setup(cfg)
     size = cfg["camera"]["frame_px"]
     mpp = cfg["camera"]["meters_per_pixel"]
@@ -152,7 +154,7 @@ def main():
     todo = [v for v in keep if v[0] not in done]
 
     # Water repaint inputs shared by every view
-    report = json.loads((REPO_ROOT / "output" / "postprocessed" / PROMPT / "water" / "report.json").read_text())
+    report = json.loads((area_dir(cfg, "postprocessed", PROMPT, "water", "report.json")).read_text())
     median, threshold = report["render_water_median_rgb"], report["color_threshold"]
     nhd_geom = waterpaint.nhd_geometry(cfg, frame, cam, x_origin, y_origin)
     template = (REPO_ROOT / "prompts" / f"{PROMPT}.txt").read_text()
@@ -164,8 +166,8 @@ def main():
         for vid, kind, gx, gy, span, _ in todo:
             if kind == "lattice":
                 name = vid.removeprefix("lattice_")
-                renders[vid] = Image.open(REPO_ROOT / "output" / "renders" / f"{name}.png").convert("RGB")
-                masks[vid] = np.asarray(Image.open(REPO_ROOT / "output" / "masks" / f"{name}.png").convert("L")) > 127
+                renders[vid] = Image.open(area_dir(cfg, "renders", f"{name}.png")).convert("RGB")
+                masks[vid] = np.asarray(Image.open(area_dir(cfg, "masks", f"{name}.png")).convert("L")) > 127
             else:
                 fr = frustum(gx, gy, span, x_origin, y_origin, mpp)
                 renders[vid] = r.view(fr, "color")
@@ -200,9 +202,9 @@ def main():
         if kind == "lattice":
             # Existing v3 frame: target is the mosaic-level water repaint
             name = vid.removeprefix("lattice_")
-            tgt = Image.open(REPO_ROOT / "output" / "postprocessed" / PROMPT / "water" / f"{name}.png").convert("RGB")
+            tgt = Image.open(area_dir(cfg, "postprocessed", PROMPT, "water", f"{name}.png")).convert("RGB")
             tgt.save(OUT / "target" / f"{vid}.png")
-            log({**base, "status": "ok", "origin": f"output/redraws/{PROMPT}/{name}.png",
+            log({**base, "status": "ok", "origin": f"output/{cfg['name']}/redraws/{PROMPT}/{name}.png",
                  "registration_shift": registration_shift(render, tgt), "flat_share": round(flat_share(np.asarray(tgt)), 3)})
             return
         prompt = template.replace("{water_sentence}", water_sentence(share))
@@ -232,7 +234,7 @@ def main():
                    "returned_size": returned}
             if max(abs(s) for s in shift) <= MAX_SHIFT and flat >= MIN_FLAT:
                 Image.fromarray(tgt).save(OUT / "target" / f"{vid}.png")
-                log({**row, "status": "ok", "origin": f"output/trainset/raw/{vid}_try{attempt}.png"})
+                log({**row, "status": "ok", "origin": f"output/{cfg['name']}/trainset/raw/{vid}_try{attempt}.png"})
                 print(f"{vid}: ok (try {attempt}, shift {shift}, flat {flat})")
                 return
             reason = f"shift {shift}" if max(abs(s) for s in shift) > MAX_SHIFT else f"flat {flat} < {MIN_FLAT}"

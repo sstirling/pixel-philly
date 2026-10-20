@@ -22,7 +22,7 @@ import time
 from datetime import datetime, timezone
 
 from pixelphilly import gemini
-from pixelphilly.projection import REPO_ROOT, area_setup, load_config
+from pixelphilly.projection import REPO_ROOT, area_dir, area_setup, load_config
 from pixelphilly.water import water_screen_geometry, water_sentence, water_share
 
 
@@ -44,8 +44,8 @@ def main():
     water = water_screen_geometry(cfg, frame, cam)
     template = (REPO_ROOT / "prompts" / f"{args.prompt}.txt").read_text()
 
-    render_dir = REPO_ROOT / "output" / "renders"
-    out_dir = REPO_ROOT / "output" / "redraws" / args.prompt
+    render_dir = area_dir(cfg, "renders")
+    out_dir = area_dir(cfg, "redraws", args.prompt)
     out_dir.mkdir(parents=True, exist_ok=True)
     log_path = out_dir / "log.jsonl"
 

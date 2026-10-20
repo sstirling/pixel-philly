@@ -23,21 +23,6 @@
     "feature_count": 7047,
     "fetched_at": "2026-10-20T10:55:41+00:00"
   },
-  "imagery/CityImagery_2024_3in/19": {
-    "description": "City of Philadelphia 2024 3-inch aerial imagery, Web Mercator tiles",
-    "tile_url_template": "https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2024_3in/MapServer/tile/{z}/{y}/{x}",
-    "zoom": 19,
-    "tile_x_range": [
-      152683,
-      152732
-    ],
-    "tile_y_range": [
-      198551,
-      198599
-    ],
-    "tile_count": 2450,
-    "fetched_at": "2026-10-20T10:55:56+00:00"
-  },
   "oldcity_water.geojson": {
     "description": "Philadelphia Water Department hydrographic features (polygons)",
     "query_url": "https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Hydrographic_Features_Poly/FeatureServer/1/query?where=1%3D1&geometry=-75.16056067762581%2C39.93974896359101%2C-75.12692246863121%2C39.96499699386964&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=%2A&outSR=4326&orderByFields=objectid&f=geojson",
@@ -61,5 +46,83 @@
     ],
     "feature_count": 1,
     "fetched_at": "2026-10-20T11:34:37+00:00"
+  },
+  "imagery/oldcity/CityImagery_2024_3in/19": {
+    "description": "City of Philadelphia 2024 3-inch aerial imagery, Web Mercator tiles",
+    "tile_url_template": "https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2024_3in/MapServer/tile/{z}/{y}/{x}",
+    "zoom": 19,
+    "tile_x_range": [
+      152683,
+      152732
+    ],
+    "tile_y_range": [
+      198551,
+      198599
+    ],
+    "tile_count": 2450,
+    "fetched_at": "2026-10-20T16:01:26+00:00"
+  },
+  "fishtown_trees.geojson": {
+    "description": "Philadelphia Parks & Recreation tree inventory, 2025 (street and park trees)",
+    "query_url": "https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/ppr_tree_inventory_2025/FeatureServer/0/query?where=1%3D1&geometry=-75.14236505829548%2C39.96004900396933%2C-75.10871690005969%2C39.98529694545172&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=%2A&outSR=4326&f=geojson&orderByFields=objectid",
+    "bbox_wgs84": [
+      -75.14236505829548,
+      39.96004900396933,
+      -75.10871690005969,
+      39.98529694545172
+    ],
+    "feature_count": 6636,
+    "fetched_at": "2026-10-20T16:04:20+00:00"
+  },
+  "imagery/fishtown/CityImagery_2024_3in/19": {
+    "description": "City of Philadelphia 2024 3-inch aerial imagery, Web Mercator tiles",
+    "tile_url_template": "https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2024_3in/MapServer/tile/{z}/{y}/{x}",
+    "zoom": 19,
+    "tile_x_range": [
+      152709,
+      152759
+    ],
+    "tile_y_range": [
+      198512,
+      198560
+    ],
+    "tile_count": 2499,
+    "fetched_at": "2026-10-20T16:05:06+00:00"
+  },
+  "fishtown_water.geojson": {
+    "description": "Philadelphia Water Department hydrographic features (polygons)",
+    "query_url": "https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Hydrographic_Features_Poly/FeatureServer/1/query?where=1%3D1&geometry=-75.14236505829548%2C39.96004900396933%2C-75.10871690005969%2C39.98529694545172&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=%2A&outSR=4326&f=geojson&orderByFields=objectid",
+    "bbox_wgs84": [
+      -75.14236505829548,
+      39.96004900396933,
+      -75.10871690005969,
+      39.98529694545172
+    ],
+    "feature_count": 2,
+    "fetched_at": "2026-10-20T16:05:07+00:00"
+  },
+  "fishtown_water_nhd.geojson": {
+    "description": "USGS National Hydrography Dataset, Area - Large Scale (both banks of the Delaware)",
+    "query_url": "https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/9/query?where=1%3D1&geometry=-75.14236505829548%2C39.96004900396933%2C-75.10871690005969%2C39.98529694545172&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=%2A&outSR=4326&f=geojson",
+    "bbox_wgs84": [
+      -75.14236505829548,
+      39.96004900396933,
+      -75.10871690005969,
+      39.98529694545172
+    ],
+    "feature_count": 1,
+    "fetched_at": "2026-10-20T16:05:30+00:00"
+  },
+  "fishtown_buildings.geojson": {
+    "description": "City of Philadelphia L&I building footprints with LiDAR-derived heights (feet)",
+    "query_url": "https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/LI_BUILDING_FOOTPRINTS/FeatureServer/0/query?where=1%3D1&geometry=-75.14236505829548%2C39.96004900396933%2C-75.10871690005969%2C39.98529694545172&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=%2A&outSR=4326&f=geojson&orderByFields=objectid",
+    "bbox_wgs84": [
+      -75.14236505829548,
+      39.96004900396933,
+      -75.10871690005969,
+      39.98529694545172
+    ],
+    "feature_count": 16909,
+    "fetched_at": "2026-10-20T16:05:50+00:00"
   }
 }

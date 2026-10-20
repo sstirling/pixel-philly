@@ -62,7 +62,9 @@ def main():
                 print(f"  {done}/{len(todo)}", file=sys.stderr)
 
     record(
-        f"imagery/{SERVICE}/{z}",
+        # One manifest entry per area (tiles are cached in one shared folder,
+        # but each area's scene needs its own tile range)
+        f"imagery/{cfg['name']}/{SERVICE}/{z}",
         {
             "description": "City of Philadelphia 2024 3-inch aerial imagery, Web Mercator tiles",
             "tile_url_template": f"{CITY_TILES}/{SERVICE}/MapServer/tile/{{z}}/{{y}}/{{x}}",

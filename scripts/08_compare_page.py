@@ -21,11 +21,10 @@ from datetime import date
 import numpy as np
 from PIL import Image
 
-from pixelphilly.projection import REPO_ROOT, area_setup, load_config
+from pixelphilly.projection import REPO_ROOT, area_dir, area_setup, load_config
 from pixelphilly.qa import seam_ratio
 from pixelphilly.water import water_screen_geometry
 
-OUT = REPO_ROOT / "output" / "compare"
 FRAME_DISPLAY_PX = 768  # embedded frame size; 1024 originals stay in output/
 MOSAIC_DISPLAY_W = 2048
 
@@ -62,12 +61,13 @@ def main():
     cfg = load_config()
     frame, cam, frames = area_setup(cfg)
     size = cfg["camera"]["frame_px"]
-    render_dir = REPO_ROOT / "output" / "renders"
+    OUT = area_dir(cfg, "compare")
+    render_dir = area_dir(cfg, "renders")
     if args.stage == "raw":
-        redraw_dir = REPO_ROOT / "output" / "redraws" / args.prompt
+        redraw_dir = area_dir(cfg, "redraws", args.prompt)
     else:
-        redraw_dir = REPO_ROOT / "output" / "postprocessed" / args.prompt / args.stage
-    log_dir = REPO_ROOT / "output" / "redraws" / args.prompt
+        redraw_dir = area_dir(cfg, "postprocessed", args.prompt, args.stage)
+    log_dir = area_dir(cfg, "redraws", args.prompt)
     OUT.mkdir(parents=True, exist_ok=True)
 
     cols = max(f.col for f in frames) + 1

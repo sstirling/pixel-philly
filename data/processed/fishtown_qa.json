@@ -1,0 +1,126 @@
+{
+  "buildings_downloaded": 16909,
+  "buildings_in_scene": 16909,
+  "buildings_dropped": [],
+  "height_source_counts": {
+    "approx_hgt": 16747,
+    "max_hgt": 42,
+    "default": 120
+  },
+  "height_outliers_max_gt_ratio_x_approx": [
+    {
+      "objectid": 227307,
+      "address": "265-99 W BERKS ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 5.25004433
+    },
+    {
+      "objectid": 234563,
+      "address": "2816 SALMON ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 34.660060079999994
+    },
+    {
+      "objectid": 242738,
+      "address": "272 W NORRIS ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 3.40995275
+    },
+    {
+      "objectid": 275604,
+      "address": "222-32 E WILDEY ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 42.35991125
+    },
+    {
+      "objectid": 281699,
+      "address": "611-19 N 2ND ST",
+      "approx_hgt_ft": 16,
+      "max_hgt_ft": 62.27002383000001
+    },
+    {
+      "objectid": 293072,
+      "address": "115 BROWN ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 3.91996108
+    },
+    {
+      "objectid": 326487,
+      "address": "1939-47 N FRONT ST",
+      "approx_hgt_ft": 23,
+      "max_hgt_ft": 74.05006417
+    },
+    {
+      "objectid": 482350,
+      "address": "2520 E SOMERSET ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 48.10006725
+    },
+    {
+      "objectid": 485106,
+      "address": "423 MILLER ST",
+      "approx_hgt_ft": 20,
+      "max_hgt_ft": 74.5600265
+    },
+    {
+      "objectid": 497745,
+      "address": "2033 N AMERICAN ST",
+      "approx_hgt_ft": 8,
+      "max_hgt_ft": 26.00000383
+    }
+  ],
+  "tallest_buildings_m": [
+    {
+      "id": 391042,
+      "h": 102.11
+    },
+    {
+      "id": 391043,
+      "h": 89.61
+    },
+    {
+      "id": 545922,
+      "h": 77.72
+    },
+    {
+      "id": 545923,
+      "h": 77.72
+    },
+    {
+      "id": 29578,
+      "h": 77.42
+    },
+    {
+      "id": 545480,
+      "h": 50.29
+    },
+    {
+      "id": 19180,
+      "h": 46.33
+    },
+    {
+      "id": 71859,
+      "h": 42.67
+    },
+    {
+      "id": 282637,
+      "h": 39.01
+    },
+    {
+      "id": 392660,
+      "h": 36.58
+    }
+  ],
+  "trees_in_scene": 6636,
+  "ground_texture_px": [
+    13056,
+    12544
+  ],
+  "ground_texture_source_px": [
+    13056,
+    12544
+  ],
+  "uv_fit_max_residual_m": 5.496793552748258e-05,
+  "ground_median_filter_px": 5,
+  "frames": 30
+}

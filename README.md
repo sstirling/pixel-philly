@@ -56,7 +56,7 @@ uv run python scripts/04b_fetch_water_nhd.py   # USGS NHD water (both banks): us
 # 3. Scene. Writes data/processed/oldcity_scene.json, the ground texture and a QA report
 uv run python scripts/05_build_scene.py
 
-# 4. Render the 30 frames and the mosaic into output/renders/
+# 4. Render the 30 frames and the mosaic into output/<area>/renders/
 uv run python scripts/06_render.py
 
 # 5. Check the render against the Python projection (should print PASS)
@@ -73,34 +73,54 @@ uv run python scripts/07_redraw.py --prompt redraw_v3 --max-calls 30            
 # Redo a bad frame; the old image is kept in rejected/ and the reason logged
 uv run python scripts/07_redraw.py --prompt redraw_v3 --redo frame_05_01 --reason "invented buildings on water"
 
-# 8. Repaint open water in one style (output/postprocessed/redraw_v3/water/)
+# 8. Repaint open water in one style (output/<area>/postprocessed/redraw_v3/water/)
 uv run python scripts/10_repaint_water.py --prompt redraw_v3
 
 # 9. Optional, not recommended at present: one shared 40-color palette on a 2x pixel grid
 uv run python scripts/11_pixelize.py --prompt redraw_v3
 
-# 10. Comparison page: open output/compare/index.html in a browser
+# 10. Comparison page: open output/<area>/compare/index.html in a browser
 uv run python scripts/08_compare_page.py --prompt redraw_v3 --stage water
 ```
 
-Redraws are stored per prompt version in `output/redraws/<version>/`, each with its own `log.jsonl`, so versions can be compared. Snapshots of the renders that fed v1 and v2 are in `output/renders_v1/` and `output/renders_v2/`.
+Redraws are stored per prompt version in `output/<area>/redraws/<version>/`, each with its own `log.jsonl`, so versions can be compared. Snapshots of the renders that fed v1 and v2 are in `output/renders_v1/` and `output/renders_v2/`.
 
 Every step can be rerun:
 - Raw downloads are never overwritten. A download made for a different extent is refused rather than reused.
-- The redraw step skips frames that already have output and logs every call to `output/redraws/<version>/log.jsonl`. Rejected images are kept, not deleted.
+- The redraw step skips frames that already have output and logs every call to `output/<area>/redraws/<version>/log.jsonl`. Rejected images are kept, not deleted.
 
 ### Another neighborhood
 
-1. Copy `config/oldcity.json`.
-2. Change `name`, `label` and `bbox_wgs84`.
-3. Set `max_height_m` above the tallest building in the area.
-4. Point the scripts at the new config. Right now they load `oldcity` by default via `load_config()`.
+Every script works on any area, picked with the `PP_AREA` environment variable (default `oldcity`):
+
+1. Copy `config/oldcity.json` to `config/<area>.json`.
+2. Change `name`, `label` and `bbox_wgs84`. Keep the box at about 1.1 × 1.2 km: much larger and the aerial mosaic exceeds the GPU's 16,384 px texture limit. Keep the camera settings; the style LoRA learned at bearing 54°.
+3. Run the data, scene and render steps with the area set:
+   ```bash
+   export PP_AREA=fishtown
+   for s in 01_fetch_buildings 02_fetch_trees 03_fetch_imagery 04_fetch_water 04b_fetch_water_nhd 05_build_scene; do uv run python scripts/$s.py; done
+   uv run python scripts/06_render.py && uv run python scripts/06_render.py --mode mask && uv run python scripts/09_check_alignment.py
+   ```
+4. Draw it with the trained LoRA, which needs no new training. Detach so a dropped connection can't cancel the run:
+   ```bash
+   uv run python scripts/15_joint_sample.py --full --detach --name qwen_joint_light8 --lightning 8 \
+       --style /runs/lora/qe2511_oldcity_r16_v1/qe2511_oldcity_r16_v1.safetensors \
+       --prompt-text "Redraw this render as isometric pixel art in the pixel philly style."
+   uv run python scripts/15_joint_sample.py --collect --name qwen_joint_light8    # repeat until done (~5 min)
+   uv run python scripts/10_repaint_water.py --prompt qwen_joint_light8
+   uv run python scripts/08_compare_page.py --prompt qwen_joint_light8 --stage water
+   ```
+
+**Where things go:**
+- Everything generated for an area goes in `output/<area>/`. Raw and processed data files are prefixed with the area name.
+- Each area has its own imagery entry in `data/raw/MANIFEST.json`. The tiles are cached in one shared folder.
+- Scripts 12–14 (the Phase A baseline, the training set and the LoRA training) are pinned to Old City, where the training data lives.
 
 ## Layout
 
 | Path | What it is |
 |---|---|
-| `config/oldcity.json` | Area bbox, camera, imagery zoom, height defaults |
+| `config/<area>.json` | Area bbox, camera, imagery zoom, height defaults (`oldcity`, `fishtown`) |
 | `src/pixelphilly/projection.py` | WGS84 → local meters → isometric pixels. The single source of truth for the camera; the renderer receives its numbers. |
 | `src/pixelphilly/heights.py` | Building height rule (see below) |
 | `src/pixelphilly/sources.py` | ArcGIS download helpers and the provenance manifest |
@@ -143,7 +163,7 @@ The per-frame Gemini map has visible seams: frame-border seam ratio 3.7 after th
 **Training data, internal use only.** The pixel-philly style LoRA was trained on 141 Gemini 3 Pro Image v3 redraws, with water repainted.
 - The Gemini API terms bar using the service "to develop models that compete with the Services". A Philadelphia-only style LoRA arguably doesn't compete, but the terms don't define the word.
 - **Legal review is required before anything made with this LoRA is published.**
-- Every target's source is in `output/trainset/manifest.jsonl`, so the LoRA can be retrained on artist-made or open-model targets without changing the rest of the pipeline.
+- Every target's source is in `output/oldcity/trainset/manifest.jsonl`, so the LoRA can be retrained on artist-made or open-model targets without changing the rest of the pipeline.
 
 **GPU:** Modal, per-second billing. One-time setup: `uv run modal token new`.
 

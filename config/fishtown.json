@@ -1,0 +1,32 @@
+{
+  "name": "fishtown",
+  "label": "Fishtown, Philadelphia (core)",
+  "bbox_wgs84": [
+    -75.1338,
+    39.9663,
+    -75.1213,
+    39.9768
+  ],
+  "camera": {
+    "view_bearing_deg": 54,
+    "elevation_deg": 45,
+    "meters_per_pixel": 0.293,
+    "frame_px": 1024
+  },
+  "max_height_m": 120,
+  "imagery_zoom": 19,
+  "default_building_height_m": 10.0,
+  "ground_filter": {
+    "median_px": 5
+  },
+  "wall_tint": {
+    "max_height_m": 20,
+    "color": [
+      150,
+      82,
+      62
+    ],
+    "mix": 0.55
+  },
+  "height_outlier_ratio": 3.0
+}

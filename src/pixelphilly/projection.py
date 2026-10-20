@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import json
 import math
+import os
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -31,8 +32,20 @@ from pyproj import Transformer
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
-def load_config(name: str = "oldcity") -> dict:
+def load_config(name: str | None = None) -> dict:
+    """Load config/<name>.json. Without a name, the PP_AREA environment
+    variable picks the area (default "oldcity"), so every script can run on
+    any area unchanged:  PP_AREA=fishtown uv run python scripts/06_render.py
+    """
+    name = name or os.environ.get("PP_AREA", "oldcity")
     return json.loads((REPO_ROOT / "config" / f"{name}.json").read_text())
+
+
+def area_dir(cfg: dict, *parts: str) -> Path:
+    """output/<area>/<parts...>: everything generated for one area lives
+    under its own folder so areas never overwrite each other. (Cross-area
+    things, the GPU spend log and trained LoRAs, stay directly in output/.)"""
+    return REPO_ROOT.joinpath("output", cfg["name"], *parts)
 
 
 class LocalFrame:

@@ -25,7 +25,7 @@ from PIL import Image, ImageDraw
 from shapely.geometry import Polygon
 from shapely.ops import unary_union
 
-from pixelphilly.projection import REPO_ROOT, IsoCamera, load_config
+from pixelphilly.projection import IsoCamera, REPO_ROOT, area_dir, load_config
 
 MAX_SHIFT = 4
 
@@ -84,7 +84,7 @@ def main():
     scene = json.loads((REPO_ROOT / "data" / "processed" / f"{cfg['name']}_scene.json").read_text())
     size = scene["frame_px"]
     mpp = scene["meters_per_pixel"]
-    mask_dir = REPO_ROOT / "output" / "masks"
+    mask_dir = area_dir(cfg, "masks")
 
     polys = silhouettes(scene["buildings"], cam)
     report, failures = [], []

@@ -33,7 +33,7 @@ from datetime import datetime, timezone
 
 import yaml
 
-from pixelphilly.projection import REPO_ROOT
+from pixelphilly.projection import REPO_ROOT, area_dir
 
 RUN = "qe2511_oldcity_r16_v1"
 # The pinned Qwen-Image-Edit-2511 commit (BASE_REV in gpu/modal_app.py) as a
@@ -45,7 +45,9 @@ DATASET = "oldcity_v1"
 CAPTION = "Redraw this render as isometric pixel art in the pixel philly style."
 HELDOUT_SAMPLES = ["frame_04_03", "frame_05_02", "frame_04_02"]
 
-TRAINSET = REPO_ROOT / "output" / "trainset"
+# The training set is Old City's (13_build_trainset.py); the LoRA itself is
+# cross-area, so its local folder stays directly under output/lora/
+TRAINSET = REPO_ROOT / "output" / "oldcity" / "trainset"
 LOCAL_DS = TRAINSET / "aitk"
 LOCAL_RUN = REPO_ROOT / "output" / "lora" / RUN
 
@@ -137,13 +139,13 @@ def prepare():
     # Held-out sample inputs: renders from columns 4-5, same fixed caption
     from pixelphilly.projection import area_setup, load_config
 
-    cfg = load_config()
+    cfg = load_config("oldcity")
     _, _, frames = area_setup(cfg)
     by_name = {f.name: f for f in frames}
     for name in HELDOUT_SAMPLES:
         f = by_name[name]
         assert f.col >= 4, f"{name} is not in the held-out columns"
-        shutil.copy(REPO_ROOT / "output" / "renders" / f"{name}.png", LOCAL_DS / "heldout" / f"{name}.png")
+        shutil.copy(area_dir(cfg, "renders", f"{name}.png"), LOCAL_DS / "heldout" / f"{name}.png")
         (LOCAL_DS / "heldout" / f"{name}.txt").write_text(f"{CAPTION}\n")
 
     cfg_yaml = LOCAL_DS / f"{RUN}.yaml"

@@ -11,7 +11,7 @@ spec.loader.exec_module(trainset)
 
 
 def test_planned_views_stay_out_of_heldout_columns():
-    cfg = load_config()
+    cfg = load_config("oldcity")
     _, _, frames = area_setup(cfg)
     views = trainset.plan_views(cfg, frames)
     ids = [v[0] for v in views]
@@ -22,7 +22,7 @@ def test_planned_views_stay_out_of_heldout_columns():
 
 
 def test_manifest_targets_record_source_and_stay_out_of_heldout():
-    path = REPO_ROOT / "output" / "trainset" / "manifest.jsonl"
+    path = REPO_ROOT / "output" / "oldcity" / "trainset" / "manifest.jsonl"
     if not path.exists():
         return  # nothing generated yet
     for line in path.read_text().splitlines():

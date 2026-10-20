@@ -17,7 +17,7 @@ import json
 from PIL import Image
 
 from pixelphilly.browser_render import Renderer
-from pixelphilly.projection import REPO_ROOT, load_config
+from pixelphilly.projection import REPO_ROOT, area_dir, load_config
 
 
 def main():
@@ -30,7 +30,7 @@ def main():
     scene_rel = f"data/processed/{cfg['name']}_scene.json"
     scene = json.loads((REPO_ROOT / scene_rel).read_text())
     size = scene["frame_px"]
-    out_dir = REPO_ROOT / "output" / ("renders" if args.mode == "color" else "masks")
+    out_dir = area_dir(cfg, "renders" if args.mode == "color" else "masks")
     out_dir.mkdir(parents=True, exist_ok=True)
 
     images = {}

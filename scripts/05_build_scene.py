@@ -49,7 +49,7 @@ def merc_px(lon, lat, z):
 def build_mosaic(cfg):
     manifest = json.loads((RAW / "MANIFEST.json").read_text())
     z = cfg["imagery_zoom"]
-    info = manifest[f"imagery/CityImagery_2024_3in/{z}"]
+    info = manifest[f"imagery/{cfg['name']}/CityImagery_2024_3in/{z}"]
     (x0, x1), (y0, y1) = info["tile_x_range"], info["tile_y_range"]
     tile_dir = RAW / "imagery" / "CityImagery_2024_3in" / str(z)
     w, h = (x1 - x0 + 1) * TILE, (y1 - y0 + 1) * TILE
