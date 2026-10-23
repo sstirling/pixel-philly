@@ -13,6 +13,10 @@ dependencies = [
     "google-genai",
     "python-dotenv",
     "pyyaml>=6.0.3",
+    "pyvips[binary]>=3.2.0",
+    "laspy>=2.7.0",
+    "rasterio>=1.5.2",
+    "pyshp>=3.1.6",
 ]
 
 [dependency-groups]

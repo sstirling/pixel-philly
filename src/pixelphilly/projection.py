@@ -150,26 +150,45 @@ class Frame:
         }
 
 
-def frame_lattice(cam: IsoCamera, frame: LocalFrame, bbox_wgs84, size: int, max_height_m: float):
-    """Frames of `size` px that cover the bbox on the ground plus anything up
-    to `max_height_m` tall standing on it. Frames sit on a lattice of whole
-    multiples of `size` so neighboring frames share edges exactly."""
+def area_screen_polygon(cam: IsoCamera, frame: LocalFrame, bbox_wgs84, max_height_m: float):
+    """The bbox as seen on screen: its ground outline and the same outline
+    lifted to `max_height_m`, joined (convex hull), so anything up to that
+    height standing in the area falls inside."""
+    from shapely.geometry import MultiPoint
+
     west, south, east, north = bbox_wgs84
-    lons = [west, east, east, west]
-    lats = [south, south, north, north]
-    e, n = frame.to_local(lons, lats)
-    xs, ys = [], []
+    e, n = frame.to_local([west, east, east, west], [south, south, north, north])
+    pts = []
     for h in (0.0, max_height_m):
         sx, sy = cam.world_to_screen(e, n, h)
-        xs.extend(sx)
-        ys.extend(sy)
-    c0, c1 = math.floor(min(xs) / size), math.ceil(max(xs) / size)
-    r0, r1 = math.floor(min(ys) / size), math.ceil(max(ys) / size)
-    return [
+        pts.extend(zip(sx, sy))
+    return MultiPoint(pts).convex_hull
+
+
+def frame_lattice(cam: IsoCamera, frame: LocalFrame, bbox_wgs84, size: int, max_height_m: float,
+                  clip: bool = False):
+    """Frames of `size` px that cover the bbox on the ground plus anything up
+    to `max_height_m` tall standing on it. Frames sit on a lattice of whole
+    multiples of `size` so neighboring frames share edges exactly.
+
+    The lattice is the screen-aligned rectangle around the area. With
+    clip=True only frames that actually intersect the area are kept: for a
+    large area seen at ~45 degrees, about half the rectangle is empty corner.
+    Kept frames keep their rectangle (col, row) so mosaics still line up."""
+    from shapely.geometry import box
+
+    area = area_screen_polygon(cam, frame, bbox_wgs84, max_height_m)
+    xmin, ymin, xmax, ymax = area.bounds
+    c0, c1 = math.floor(xmin / size), math.ceil(xmax / size)
+    r0, r1 = math.floor(ymin / size), math.ceil(ymax / size)
+    frames = [
         Frame(col=c - c0, row=r - r0, x0=c * size, y0=r * size, size=size)
         for r in range(r0, r1)
         for c in range(c0, c1)
     ]
+    if clip:
+        frames = [f for f in frames if box(f.x0, f.y0, f.x0 + size, f.y0 + size).intersects(area)]
+    return frames
 
 
 def area_setup(cfg: dict):
@@ -177,9 +196,29 @@ def area_setup(cfg: dict):
     frame = LocalFrame(cfg["bbox_wgs84"])
     cam = IsoCamera.from_config(cfg)
     frames = frame_lattice(
-        cam, frame, cfg["bbox_wgs84"], cfg["camera"]["frame_px"], cfg["max_height_m"]
+        cam, frame, cfg["bbox_wgs84"], cfg["camera"]["frame_px"], cfg["max_height_m"],
+        clip=cfg.get("clip_frames_to_area", False),
     )
     return frame, cam, frames
+
+
+def render_ground_polygon(cfg: dict, margin_m: float = 50.0):
+    """Ground seen by the kept frames, as a WGS84 shapely polygon: the union
+    of each frame's footprint on the ground, grown by `margin_m`. For clipped
+    areas this is what gets downloaded, instead of the whole bounding box."""
+    import shapely
+    from shapely.geometry import Polygon
+    from shapely.ops import unary_union
+
+    frame, cam, frames = area_setup(cfg)
+    quads = []
+    for f in frames:
+        x = [f.x0, f.x0 + f.size, f.x0 + f.size, f.x0]
+        y = [f.y0, f.y0, f.y0 + f.size, f.y0 + f.size]
+        e, n = cam.screen_to_ground(x, y, 0.0)
+        quads.append(Polygon(zip(e, n)))
+    local = unary_union(quads).buffer(margin_m)
+    return shapely.transform(local, lambda c: np.column_stack(frame.to_wgs84(c[:, 0], c[:, 1])))
 
 
 def render_extent_wgs84(cfg: dict, margin_m: float = 50.0):
@@ -189,6 +228,8 @@ def render_extent_wgs84(cfg: dict, margin_m: float = 50.0):
     the area, so their corners see ground well outside the area's bbox. Data
     is fetched for this larger extent so no frame has empty ground in it.
     """
+    if cfg.get("clip_frames_to_area"):
+        return list(render_ground_polygon(cfg, margin_m).bounds)
     frame, cam, frames = area_setup(cfg)
     size = cfg["camera"]["frame_px"]
     x0 = min(f.x0 for f in frames)

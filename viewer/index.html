@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pixel Philly</title>
+<meta name="description" content="Prototype: downtown Philadelphia as one isometric pixel-art map, drawn by AI from city open data.">
+<link rel="stylesheet" href="viewer.css">
+</head>
+<body>
+<header class="bar">
+  <div class="title">
+    <h1>Pixel Philly</h1>
+    <span class="badge" title="Drawn by an AI image model from city open data; not a photograph or survey">AI-generated illustration</span>
+  </div>
+  <form class="search" role="search" id="search">
+    <label class="visually-hidden" for="q">Search an address</label>
+    <input id="q" type="search" placeholder="Search an address, e.g. 1400 JFK Blvd" autocomplete="off" spellcheck="false">
+    <button type="submit">Go</button>
+  </form>
+  <button type="button" class="layer-toggle" id="layer-toggle" aria-pressed="false" hidden>Show photo</button>
+  <p class="status" id="status" role="status" aria-live="polite"></p>
+</header>
+
+<main id="map" role="img" aria-label="Isometric pixel-art map of downtown Philadelphia. Use the arrow keys or drag to pan, plus and minus or the buttons to zoom."></main>
+
+<nav class="controls" aria-label="Map controls">
+  <button type="button" id="zoom-in" aria-label="Zoom in">+</button>
+  <button type="button" id="zoom-out" aria-label="Zoom out">&minus;</button>
+  <button type="button" id="home" aria-label="Show the whole map">&#8962;</button>
+</nav>
+
+<footer class="credits">
+  <details>
+    <summary id="credits-summary">AI-generated prototype · credits</summary>
+    <p id="credits"></p>
+  </details>
+</footer>
+
+<script src="vendor/openseadragon.min.js"></script>
+<script type="module" src="viewer.js"></script>
+</body>
+</html>

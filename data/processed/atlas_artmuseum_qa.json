@@ -1,0 +1,64 @@
+{
+  "buildings_downloaded": 2781,
+  "buildings_in_scene": 2781,
+  "buildings_dropped": [],
+  "height_source_counts": {
+    "approx_hgt": 2775,
+    "max_hgt": 6
+  },
+  "height_outliers_max_gt_ratio_x_approx": [],
+  "tallest_buildings_m": [
+    {
+      "id": 489991,
+      "h": 80.77
+    },
+    {
+      "id": 487015,
+      "h": 67.06
+    },
+    {
+      "id": 99128,
+      "h": 59.44
+    },
+    {
+      "id": 99030,
+      "h": 54.86
+    },
+    {
+      "id": 413508,
+      "h": 54.86
+    },
+    {
+      "id": 490008,
+      "h": 48.16
+    },
+    {
+      "id": 21238,
+      "h": 47.85
+    },
+    {
+      "id": 486538,
+      "h": 45.72
+    },
+    {
+      "id": 110856,
+      "h": 38.71
+    },
+    {
+      "id": 278788,
+      "h": 38.71
+    }
+  ],
+  "trees_in_scene": 2850,
+  "ground_texture_px": [
+    7424,
+    7168
+  ],
+  "ground_texture_source_px": [
+    7424,
+    7168
+  ],
+  "uv_fit_max_residual_m": 1.0132021746680952e-05,
+  "ground_median_filter_px": 5,
+  "frames": 10
+}

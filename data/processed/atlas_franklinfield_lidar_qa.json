@@ -1,0 +1,81 @@
+{
+  "buildings_downloaded": 345,
+  "buildings_in_scene": 1384,
+  "buildings_dropped": [],
+  "height_source_counts": {
+    "approx_hgt": 334,
+    "max_hgt": 11
+  },
+  "height_outliers_max_gt_ratio_x_approx": [
+    {
+      "objectid": 413908,
+      "address": "129 S 30TH ST",
+      "approx_hgt_ft": 136,
+      "max_hgt_ft": 470.11990549999996
+    },
+    {
+      "objectid": 499517,
+      "address": null,
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 3.50994275
+    }
+  ],
+  "tallest_buildings_m": [
+    {
+      "id": 413738,
+      "h": 218.24
+    },
+    {
+      "id": 418160,
+      "h": 127.41
+    },
+    {
+      "id": 13357,
+      "h": 124.66
+    },
+    {
+      "id": 417528,
+      "h": 118.26
+    },
+    {
+      "id": 499669,
+      "h": 114.0
+    },
+    {
+      "id": "413753-33",
+      "h": 105.39
+    },
+    {
+      "id": "413753-31",
+      "h": 101.84
+    },
+    {
+      "id": "413753-32",
+      "h": 101.84
+    },
+    {
+      "id": "413753-29",
+      "h": 98.9
+    },
+    {
+      "id": 111186,
+      "h": 95.71
+    }
+  ],
+  "trees_in_scene": 859,
+  "ground_texture_px": [
+    7680,
+    7168
+  ],
+  "ground_texture_source_px": [
+    7680,
+    7168
+  ],
+  "uv_fit_max_residual_m": 1.0648305587589212e-05,
+  "ground_median_filter_px": 5,
+  "frames": 10,
+  "lidar_buildings_shaped": 57,
+  "lidar_fallback_single_height": 5,
+  "lidar_parts": 1096,
+  "lidar_margin_m": 100.0
+}

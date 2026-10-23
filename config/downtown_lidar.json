@@ -1,0 +1,36 @@
+{
+  "name": "downtown_lidar",
+  "label": "Downtown Philadelphia (40th St to the Delaware, Washington Ave to Girard Ave), LiDAR building shapes",
+  "bbox_wgs84": [
+    -75.205,
+    39.935,
+    -75.125,
+    39.975
+  ],
+  "camera": {
+    "view_bearing_deg": 54,
+    "elevation_deg": 45,
+    "meters_per_pixel": 0.293,
+    "frame_px": 1024
+  },
+  "max_height_m": 360,
+  "imagery_zoom": 19,
+  "default_building_height_m": 10.0,
+  "ground_filter": {
+    "median_px": 5
+  },
+  "wall_tint": {
+    "max_height_m": 20,
+    "color": [
+      150,
+      82,
+      62
+    ],
+    "mix": 0.55
+  },
+  "height_outlier_ratio": 3.0,
+  "clip_frames_to_area": true,
+  "render_tile_frames": 4,
+  "camera_distance_m": 20000.0,
+  "building_shapes": "lidar"
+}

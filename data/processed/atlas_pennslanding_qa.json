@@ -1,0 +1,132 @@
+{
+  "buildings_downloaded": 896,
+  "buildings_in_scene": 896,
+  "buildings_dropped": [],
+  "height_source_counts": {
+    "approx_hgt": 882,
+    "max_hgt": 10,
+    "default": 4
+  },
+  "height_outliers_max_gt_ratio_x_approx": [
+    {
+      "objectid": 15153,
+      "address": "35 S 4TH ST",
+      "approx_hgt_ft": 53,
+      "max_hgt_ft": 164.03998625
+    },
+    {
+      "objectid": 306017,
+      "address": "104-06 ARCH ST",
+      "approx_hgt_ft": 41,
+      "max_hgt_ft": 150.76985483
+    },
+    {
+      "objectid": 308192,
+      "address": "1 S CHRISTOPHER COLUMBUS BLVD",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 11.26997158
+    },
+    {
+      "objectid": 315134,
+      "address": "226 MARKET ST",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 49.08008858
+    },
+    {
+      "objectid": 326643,
+      "address": "1 S CHRISTOPHER COLUMBUS BLVD",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 59.48010792
+    },
+    {
+      "objectid": 326644,
+      "address": "211 S CHRISTOPHER COLUMBUS BLVD",
+      "approx_hgt_ft": 73,
+      "max_hgt_ft": 271.89995867
+    },
+    {
+      "objectid": 413545,
+      "address": "22-34 N 2ND ST",
+      "approx_hgt_ft": 55,
+      "max_hgt_ft": 182.5700355
+    },
+    {
+      "objectid": 489335,
+      "address": "1 S CHRISTOPHER COLUMBUS BLVD",
+      "approx_hgt_ft": 8,
+      "max_hgt_ft": 27.18012417
+    },
+    {
+      "objectid": 491008,
+      "address": "1 DOCK ST",
+      "approx_hgt_ft": 50,
+      "max_hgt_ft": 368.63014825000005
+    },
+    {
+      "objectid": 544977,
+      "address": "14 S FRONT ST",
+      "approx_hgt_ft": 27,
+      "max_hgt_ft": 85.41996725
+    },
+    {
+      "objectid": 546041,
+      "address": "211 S CHRISTOPHER COLUMBUS BLVD",
+      "approx_hgt_ft": 73,
+      "max_hgt_ft": 271.89995867
+    }
+  ],
+  "tallest_buildings_m": [
+    {
+      "id": 413496,
+      "h": 94.79
+    },
+    {
+      "id": 413489,
+      "h": 94.49
+    },
+    {
+      "id": 413555,
+      "h": 94.18
+    },
+    {
+      "id": 490837,
+      "h": 72.85
+    },
+    {
+      "id": 326193,
+      "h": 60.96
+    },
+    {
+      "id": 315119,
+      "h": 58.22
+    },
+    {
+      "id": 131741,
+      "h": 56.69
+    },
+    {
+      "id": 22468,
+      "h": 53.34
+    },
+    {
+      "id": 298175,
+      "h": 52.43
+    },
+    {
+      "id": 101312,
+      "h": 51.82
+    }
+  ],
+  "trees_in_scene": 1185,
+  "ground_texture_px": [
+    7424,
+    7168
+  ],
+  "ground_texture_source_px": [
+    7424,
+    7168
+  ],
+  "uv_fit_max_residual_m": 1.0118785360922066e-05,
+  "ground_median_filter_px": 5,
+  "frames": 10
+}

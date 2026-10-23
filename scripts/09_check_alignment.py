@@ -26,42 +26,65 @@ from shapely.geometry import Polygon
 from shapely.ops import unary_union
 
 from pixelphilly.projection import IsoCamera, REPO_ROOT, area_dir, load_config
+from pixelphilly.scenes import scene_paths
 
 MAX_SHIFT = 4
 
 
 def silhouettes(buildings, cam):
-    """Screen-space polygons (global pixels) for every building prism."""
+    """Screen-space polygons (global pixels) for every building prism.
+
+    A prism's outline is its footprint at ground level, its roof at full
+    height, and every wall quad between them, including walls around
+    courtyards: footprint and roof keep their holes, so an open courtyard is
+    not filled in (except where its own inner walls hide it)."""
     out = []
     for b in buildings:
         for rings in b["polys"]:
-            ext = np.asarray(rings[0])
-            gx, gy = cam.world_to_screen(ext[:, 0], ext[:, 1], 0.0)
-            rx, ry = cam.world_to_screen(ext[:, 0], ext[:, 1], b["h"])
-            parts = [Polygon(zip(gx, gy)).buffer(0), Polygon(zip(rx, ry)).buffer(0)]
-            k = len(ext)
-            for i in range(k):
-                j = (i + 1) % k
-                quad = Polygon([(gx[i], gy[i]), (gx[j], gy[j]), (rx[j], ry[j]), (rx[i], ry[i])])
-                if quad.area > 0:
-                    parts.append(quad.buffer(0))
+            screen = []
+            for ring in rings:
+                r = np.asarray(ring)
+                gx, gy = cam.world_to_screen(r[:, 0], r[:, 1], 0.0)
+                rx, ry = cam.world_to_screen(r[:, 0], r[:, 1], b["h"])
+                screen.append((gx, gy, rx, ry))
+            ground = Polygon(list(zip(*screen[0][:2])), [list(zip(*s_[:2])) for s_ in screen[1:]]).buffer(0)
+            roof = Polygon(list(zip(*screen[0][2:])), [list(zip(*s_[2:])) for s_ in screen[1:]]).buffer(0)
+            parts = [ground, roof]
+            for gx, gy, rx, ry in screen:
+                k = len(gx)
+                for i in range(k):
+                    j = (i + 1) % k
+                    quad = Polygon([(gx[i], gy[i]), (gx[j], gy[j]), (rx[j], ry[j]), (rx[i], ry[i])])
+                    if quad.area > 0:
+                        parts.append(quad.buffer(0))
             out.append(unary_union(parts))
     return out
 
 
 def rasterize(polys, frame, size):
+    """Union of all silhouettes as a boolean mask. Polygons with holes are
+    drawn on their own layer and OR-ed in, so a courtyard can only clear its
+    own building, never one drawn earlier that overlaps it."""
     img = Image.new("L", (size, size))
     d = ImageDraw.Draw(img)
     x0, y0 = frame["x0"], frame["y0"]
+    holed = np.zeros((size, size), bool)
     for g in polys:
         geoms = [g] if g.geom_type == "Polygon" else getattr(g, "geoms", [])
         for p in geoms:
             if p.geom_type != "Polygon" or p.is_empty:
                 continue
-            d.polygon([(x - x0, y - y0) for x, y in p.exterior.coords], fill=255)
+            ext = [(x - x0, y - y0) for x, y in p.exterior.coords]
+            if not p.interiors:
+                d.polygon(ext, fill=255)
+                continue
+            layer = Image.new("L", (size, size))
+            ld = ImageDraw.Draw(layer)
+            ld.polygon(ext, fill=255)
             for hole in p.interiors:
-                d.polygon([(x - x0, y - y0) for x, y in hole.coords], fill=0)
-    return np.asarray(img) > 127
+                ld.polygon([(x - x0, y - y0) for x, y in hole.coords], fill=0)
+            holed |= np.asarray(layer) > 127
+    return (np.asarray(img) > 127) | holed
 
 
 def best_shift(a, b):
@@ -81,14 +104,18 @@ def best_shift(a, b):
 def main():
     cfg = load_config()
     cam = IsoCamera.from_config(cfg)
-    scene = json.loads((REPO_ROOT / "data" / "processed" / f"{cfg['name']}_scene.json").read_text())
-    size = scene["frame_px"]
-    mpp = scene["meters_per_pixel"]
     mask_dir = area_dir(cfg, "masks")
-
-    polys = silhouettes(scene["buildings"], cam)
     report, failures = [], []
-    for f in scene["frames"]:
+    # Each scene (one, or one per render tile) checks its own frames against
+    # its own buildings
+    pairs = []
+    for scene_rel in scene_paths(cfg):
+        scene = json.loads((REPO_ROOT / scene_rel).read_text())
+        polys = silhouettes(scene["buildings"], cam)
+        pairs += [(scene, polys, f) for f in scene["frames"]]
+    for scene, polys, f in pairs:
+        size = scene["frame_px"]
+        mpp = scene["meters_per_pixel"]
         # Recover the frame's screen-pixel origin from its frustum
         frame = {"x0": round(f["left"] / mpp), "y0": round(-f["top"] / mpp)}
         rendered = np.asarray(Image.open(mask_dir / f"{f['name']}.png").convert("L")) > 127
@@ -101,7 +128,12 @@ def main():
         report.append(row)
         # Frames that are mostly river carry too few building pixels for the
         # shift search to mean anything; only judge frames with real content.
-        if row["building_px"] > 5000 and (iou < 0.97 or max(abs(dx), abs(dy)) > 2):
+        # On sparse frames the search can also tie between offsets while the
+        # overlap is near perfect (downtown frame_23_09: IoU 0.995, "shift"
+        # -4,-2); a real 4 px offset would pull IoU well below 0.99, so a
+        # shift only fails a frame whose IoU is also under 0.99.
+        shifted = max(abs(dx), abs(dy)) > 2 and iou < 0.99
+        if row["building_px"] > 5000 and (iou < 0.97 or shifted):
             failures.append(row)
         if f["name"] == "frame_02_02":
             overlay = np.zeros((size, size, 3), np.uint8)

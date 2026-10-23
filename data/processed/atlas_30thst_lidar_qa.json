@@ -1,0 +1,106 @@
+{
+  "buildings_downloaded": 782,
+  "buildings_in_scene": 1141,
+  "buildings_dropped": [],
+  "height_source_counts": {
+    "approx_hgt": 771,
+    "max_hgt": 10,
+    "default": 1
+  },
+  "height_outliers_max_gt_ratio_x_approx": [
+    {
+      "objectid": 307286,
+      "address": "2510-16 LOCUST ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 228.7999125
+    },
+    {
+      "objectid": 317580,
+      "address": "137 S 24TH ST",
+      "approx_hgt_ft": 2,
+      "max_hgt_ft": 36.65993425
+    },
+    {
+      "objectid": 413908,
+      "address": "129 S 30TH ST",
+      "approx_hgt_ft": 136,
+      "max_hgt_ft": 470.11990549999996
+    },
+    {
+      "objectid": 422258,
+      "address": "2121 SANSOM ST",
+      "approx_hgt_ft": 58,
+      "max_hgt_ft": 231.7900215
+    },
+    {
+      "objectid": 491290,
+      "address": "2100-06 CHESTNUT ST",
+      "approx_hgt_ft": 58,
+      "max_hgt_ft": 176.41007767
+    },
+    {
+      "objectid": 491676,
+      "address": "210 S 23RD ST",
+      "approx_hgt_ft": 32,
+      "max_hgt_ft": 123.23998983
+    }
+  ],
+  "tallest_buildings_m": [
+    {
+      "id": 413738,
+      "h": 218.24
+    },
+    {
+      "id": 418121,
+      "h": 169.16
+    },
+    {
+      "id": 489996,
+      "h": 169.16
+    },
+    {
+      "id": "389540-25",
+      "h": 133.01
+    },
+    {
+      "id": "488969-10",
+      "h": 130.68
+    },
+    {
+      "id": "418160-12",
+      "h": 130.11
+    },
+    {
+      "id": "418160-13",
+      "h": 128.88
+    },
+    {
+      "id": "389540-24",
+      "h": 126.93
+    },
+    {
+      "id": "418160-11",
+      "h": 125.37
+    },
+    {
+      "id": 303944,
+      "h": 125.27
+    }
+  ],
+  "trees_in_scene": 1570,
+  "ground_texture_px": [
+    7424,
+    7168
+  ],
+  "ground_texture_source_px": [
+    7424,
+    7168
+  ],
+  "uv_fit_max_residual_m": 1.0261552160070791e-05,
+  "ground_median_filter_px": 5,
+  "frames": 10,
+  "lidar_buildings_shaped": 36,
+  "lidar_fallback_single_height": 2,
+  "lidar_parts": 395,
+  "lidar_margin_m": 100.0
+}

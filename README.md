@@ -126,6 +126,9 @@ Every script works on any area, picked with the `PP_AREA` environment variable (
 | `src/pixelphilly/sources.py` | ArcGIS download helpers and the provenance manifest |
 | `src/pixelphilly/water.py` | River polygons in screen space; the per-frame water sentence |
 | `src/pixelphilly/qa.py` | Seam ratio, flat share (photo-copy test) and registration shift |
+| `src/pixelphilly/lidar.py` | LAS → 0.5 m height grid, footprint base, stepped building parts, noise ceiling |
+| `scripts/04c_fetch_lidar.py` | Downloads the City LiDAR tiles an area needs |
+| `scripts/17_atlas_sheet.py` | Problem-atlas before/after sheet (`output/atlas/compare.html`) |
 | `render/` | three.js page that draws the scene (three.js r169 vendored, MIT) |
 | `prompts/redraw_v*.txt` | Redraw prompts, versioned; v3 is current. Each change gets a new file name. |
 | `scripts/01–11` | The pipeline. Run order is in "Reproduce it"; 08 builds the page, 09 checks alignment. |
@@ -197,6 +200,101 @@ uv run python scripts/08_compare_page.py --prompt qwen_joint_light8 --stage wate
 - Some edge ground still reads like the photo.
 - Overfitting to Old City is likely. Generalization to other neighborhoods is untested.
 
+## Downtown prototype and the zoomable viewer
+
+A pannable, zoomable map of downtown Philadelphia, roughly 40th St to the Delaware and Washington Ave to Girard Ave, built with the same pipeline as the neighborhood tests. It is a local prototype, not published.
+
+**What changes for an area this size** (`config/downtown.json`):
+
+- **`clip_frames_to_area`.** The box sits about 45° to the screen, so only the 304 lattice frames that touch it are kept, out of 546. Downloads use the ground those frames see, sent to ArcGIS as a polygon.
+- **`render_tile_frames: 4`.** The aerial for the whole area would be about 35,000 px, over the GPU's 16,384 px texture limit (now a hard error). Each 4 × 4-frame render tile gets its own scene, ground mosaic (≤ 12,544 px) and UV fit in `data/processed/downtown/tiles/`. Buildings and trees within 360 m of a tile's ground are included, so tall buildings leaning in from outside still render.
+- **`camera_distance_m: 20000`.** With the default 3 km camera, the far edge of a 7 km area fell past the far plane and was cut off. Found by the alignment check.
+- **Generation runs through the `pp-runs` Volume** (`AreaSampler.joint_volume`):
+  - render frames are uploaded
+  - only windows touching kept frames run
+  - the latent is saved before decoding
+  - each frame is decoded with a 128 px halo
+- **Water repaint works frame by frame** with a 32 px halo, instead of on the whole ~570 MP mosaic in RAM.
+
+```bash
+export PP_AREA=downtown
+for s in 01_fetch_buildings 02_fetch_trees 03_fetch_imagery 04_fetch_water 04b_fetch_water_nhd 05_build_scene; do uv run python scripts/$s.py; done   # ~25 min
+uv run python scripts/06_render.py && uv run python scripts/06_render.py --mode mask && uv run python scripts/09_check_alignment.py      # ~3 min
+uv run python scripts/15_joint_sample.py --full --volume --name qwen_joint_light8 --lightning 8 \
+    --style /runs/lora/qe2511_oldcity_r16_v1/qe2511_oldcity_r16_v1.safetensors \
+    --prompt-text "Redraw this render as isometric pixel art in the pixel philly style."      # detached, ~45 min on one H100
+uv run python scripts/15_joint_sample.py --collect --name qwen_joint_light8                     # repeat until done
+uv run python scripts/10_repaint_water.py --prompt qwen_joint_light8
+uv run python scripts/16_build_tiles.py --prompt qwen_joint_light8 --version v3 --with-photo    # DZI pyramids: illustration (lossless WebP) + photo layer (WebP Q82)
+uv run python -m http.server 8000      # from the repo root, then open:
+# http://localhost:8000/viewer/?area=downtown&v=v3
+```
+
+**The viewer** (`viewer/`, vanilla JS):
+- OpenSeadragon 6.1.1, vendored. Pixels are crisp at 1:1 and closer, smooth when zoomed out.
+- Address search through the City's AIS API (no key needed). Pins mark street level.
+- Shareable links: the view is kept in the URL hash.
+- A persistent "AI-generated illustration" label.
+- **Photo toggle** (tiles built with `--with-photo`): switches between the illustration and the render it was drawn from. That's the City's 2024 aerial photos on extruded footprints, from the same camera, so the layers line up pixel for pixel.
+  - The label and credits switch with the layer, so neither is mistaken for the other.
+  - The chosen layer is kept in shareable links (`&layer=photo`).
+  - The photo layer is not a true orthophoto: walls are plain, trees are stylized, and places without city imagery show the background.
+- Keyboard pan and zoom; honors reduced motion; works at 320 px.
+
+**The address-search projection:**
+- Lon/lat are converted to map pixels by a cubic fitted in `src/pixelphilly/viewer_geo.py` (error about 2 × 10⁻⁷ px), evaluated in `viewer/projection.js`.
+- `tests/test_viewer.py` checks the JavaScript against the Python projection in headless Chromium.
+
+**Tile versions are immutable:** `16_build_tiles.py` refuses to overwrite an existing version.
+
+## Problem atlas and LiDAR building shapes (Oct. 22)
+
+The footprint layer gives each building one outline and one height, so City Hall's tower, domes and stadium bowls all render as flat-topped boxes. The atlas is nine small test areas (`config/atlas_<spot>.json`, about 500 m across), one per problem: City Hall, the Art Museum, 30th Street, the Cathedral Basilica, Independence Hall, Franklin Field, Lincoln Financial Field, Citizens Bank Park and a Penn's Landing construction site. Each spot has a baseline config and a `_lidar` twin that differs only in `"building_shapes": "lidar"`.
+
+**How LiDAR shapes work** (`src/pixelphilly/lidar.py`):
+1. `scripts/04c_fetch_lidar.py` downloads the City's 2022 classified LAS tiles (PASDA dataset 7154, ~1 GB each) that fall within 100 m of the area box.
+2. Points are gridded at 0.5 m: the highest return per cell (the surface) and the lowest ground return (class 2). The files have no CRS record; they are EPSG:6565 (PA South, US survey feet), assigned in code.
+3. For each footprint: base = 10th percentile of ground in a 3–10 m ring outside it. Heights inside the footprint (shrunk 0.5 m) are split into tiers of `max(2 m, 6% of height)`, regions under 6 m² merge into their neighbors, and each tier becomes its own extruded part at the median measured height of its cells. Parts under 1 m become open ground, which opens stadium fields and courtyards.
+4. **Noise ceiling.** The LAS files contain clusters of returns floating far above roofs that the vendor didn't classify as noise (about 1,200 points 80–110 m above the Ritz-Carlton residences, all from one flight line). Cells more than 3 m above the footprint's highest City height (`max(approx_hgt, max_hgt)`) are dropped and refilled from the surrounding roof. A building taller than its City record (a new tower, for instance) would be clipped at that record.
+5. **Stray spires.** Some clusters of stray returns sit under the ceiling (City Hall's ceiling is 170 m because of its tower, so 145 m clusters on its 45 m wings passed). A region under 40 m² that rises more than max(20 m, its surroundings) above the tallest neighboring region is flattened into the roof. The check runs at every tier step, because a cluster split across tiers at one step can re-form at a coarser one. The only exception is a region within 5 m of the building's City **typical** height (`approx_hgt`), such as the Linc's roof canopy or a mid-rise wing on a low footprint. The City's `max_hgt` plays no part: it is the highest LiDAR return, so the same stray points often set it. Real steeples taper (Independence Hall rises in small steps from its tower body), and William Penn is only 17 m above the tower top, so neither trips the rule. `PP_LIDAR_LOG=1` prints every flattened and kept region.
+6. **Confirmed tall elements.** Cells within 5 m of the City record (`max(approx_hgt, max_hgt)`) are "confirmed", unless they were flattened as spikes. The tallest confirmed element standing on a tall part is kept down to 2 m², so William Penn (166.8 m vs. 167 m published) survives the speck filter. Without a City record nothing is confirmed.
+7. Each part's height is the median of its own cells, not of every cell in its tier.
+8. Parts use the same scene format as whole buildings, so the renderer and alignment check are unchanged. Areas without the setting are byte-identical to before.
+
+```bash
+for spot in cityhall artmuseum 30thst cathedral indhall franklinfield linc cbp pennslanding; do
+  for v in "" _lidar; do
+    export PP_AREA=atlas_${spot}${v}
+    for s in 01_fetch_buildings 02_fetch_trees 03_fetch_imagery 04_fetch_water 04b_fetch_water_nhd; do uv run python scripts/$s.py; done
+    [ -n "$v" ] && uv run python scripts/04c_fetch_lidar.py     # ~24 GB for all nine spots
+    uv run python scripts/05_build_scene.py && uv run python scripts/06_render.py && uv run python scripts/06_render.py --mode mask && uv run python scripts/09_check_alignment.py
+    uv run python scripts/15_joint_sample.py --full --volume --detach --name qwen_joint_light8 --lightning 8 \
+        --style /runs/lora/qe2511_oldcity_r16_v1/qe2511_oldcity_r16_v1.safetensors \
+        --prompt-text "Redraw this render as isometric pixel art in the pixel philly style."
+  done
+done
+# then --collect each area until done, and:
+uv run python scripts/17_atlas_sheet.py     # output/atlas/compare.html and contact.jpg
+```
+
+**Results** (details in `output/atlas/compare.html`): clear gains for City Hall's tower, the Cathedral dome and the Art Museum's roofs. The biggest change is in stadiums: the baseline drew the inside of the Linc and Citizens Bank Park as apartment-style window walls, and LiDAR gives open bowls with tiered seating. All three stadiums already have L&I footprints, so no OSM outlines were needed. City Hall's tallest part is William Penn at 166.8 m (167 m published). Construction sites are not addressed: the baseline Penn's Landing drawing invented a swimming pool on one.
+
+**Tiled areas** (downtown): `05_build_scene.py` shapes every footprint once, before splitting the area into render tiles, so overlapping tiles always agree. On City Hall, a tiled build and a single-scene build give identical parts. Downtown runs as its own area, `config/downtown_lidar.json`, so v3 stays reproducible:
+
+```bash
+export PP_AREA=downtown_lidar
+for s in 01_fetch_buildings 02_fetch_trees 03_fetch_imagery 04_fetch_water 04b_fetch_water_nhd 04c_fetch_lidar; do uv run python scripts/$s.py; done  # 54 LAS tiles
+uv run python scripts/05_build_scene.py      # ~35 min the first time (LAS gridding, 4.6 GB peak RAM); the grid is cached
+uv run python scripts/06_render.py && uv run python scripts/06_render.py --mode mask && uv run python scripts/09_check_alignment.py
+uv run python scripts/15_joint_sample.py --full --volume --detach --name qwen_joint_light8 --lightning 8 \
+    --style /runs/lora/qe2511_oldcity_r16_v1/qe2511_oldcity_r16_v1.safetensors \
+    --prompt-text "Redraw this render as isometric pixel art in the pixel philly style."
+uv run python scripts/15_joint_sample.py --collect --name qwen_joint_light8       # repeat until done (~52 min)
+uv run python scripts/10_repaint_water.py --prompt qwen_joint_light8
+uv run python scripts/16_build_tiles.py --prompt qwen_joint_light8 --version v2 --with-photo
+# http://127.0.0.1:8137/viewer/?area=downtown_lidar&v=v2
+```
+
 ## Licensing and open questions (for legal / standards)
 
 - **City data.** OpenDataPhilly lists these layers under the "City of Philadelphia License". Its aerial imagery page says the city "retains all rights." Before publishing, confirm with maps@phila.gov that publication and AI-derived works are allowed.
@@ -208,4 +306,4 @@ uv run python scripts/08_compare_page.py --prompt qwen_joint_light8 --stage wate
 
 Method after [isometric-nyc](https://github.com/cannoneyed/isometric-nyc) by Andy Coenen (MIT) and the [tiny.london write-up](https://tiny.london/how/) by Boris Starkov.
 
-Data: City of Philadelphia; Philadelphia Parks & Recreation; Philadelphia Water Department. See `data/README.md`.
+Data: City of Philadelphia; Philadelphia Parks & Recreation; Philadelphia Water Department; 2022 LiDAR from the City of Philadelphia via PASDA. See `data/README.md`.

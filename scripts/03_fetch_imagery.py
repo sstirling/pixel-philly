@@ -13,7 +13,9 @@ import math
 import sys
 from concurrent.futures import ThreadPoolExecutor
 
-from pixelphilly.projection import load_config, render_extent_wgs84
+import requests
+
+from pixelphilly.projection import load_config, render_extent_wgs84, render_ground_polygon
 from pixelphilly.sources import CITY_TILES, RAW, get_with_retry, record
 
 SERVICE = "CityImagery_2024_3in"
@@ -38,12 +40,36 @@ def main():
     out_dir.mkdir(parents=True, exist_ok=True)
 
     jobs = [(x, y) for y in range(y0, y1 + 1) for x in range(x0, x1 + 1)]
-    todo = [(x, y) for x, y in jobs if not (out_dir / f"{y}_{x}.jpg").exists()]
+    if cfg.get("clip_frames_to_area"):
+        # Large clipped areas: only tiles the kept frames actually see
+        from shapely.geometry import box
+        from shapely.prepared import prep
+
+        poly = prep(render_ground_polygon(cfg))
+
+        def tile_box(x, y):
+            n = 2**z
+            lon0, lon1 = x / n * 360 - 180, (x + 1) / n * 360 - 180
+            lat0 = math.degrees(math.atan(math.sinh(math.pi * (1 - 2 * (y + 1) / n))))
+            lat1 = math.degrees(math.atan(math.sinh(math.pi * (1 - 2 * y / n))))
+            return box(lon0, lat0, lon1, lat1)
+
+        jobs = [(x, y) for x, y in jobs if poly.intersects(tile_box(x, y))]
+    # A ".none" marker means the server has no imagery there (HTTP 404, e.g.
+    # across the river outside the city's coverage); don't ask again
+    todo = [(x, y) for x, y in jobs
+            if not (out_dir / f"{y}_{x}.jpg").exists() and not (out_dir / f"{y}_{x}.none").exists()]
     print(f"{len(jobs)} tiles at z{z}; {len(todo)} to download")
 
     def get(xy):
         x, y = xy
-        r = get_with_retry(f"{CITY_TILES}/{SERVICE}/MapServer/tile/{z}/{y}/{x}")
+        try:
+            r = get_with_retry(f"{CITY_TILES}/{SERVICE}/MapServer/tile/{z}/{y}/{x}")
+        except requests.HTTPError as exc:
+            if exc.response is not None and exc.response.status_code == 404:
+                (out_dir / f"{y}_{x}.none").touch()
+                return
+            raise
         if not r.headers.get("Content-Type", "").startswith("image/"):
             raise RuntimeError(f"tile {z}/{y}/{x}: not an image ({r.headers.get('Content-Type')})")
         # Write to a temp name and rename, so an interrupted run never leaves
@@ -72,6 +98,7 @@ def main():
             "tile_x_range": [x0, x1],
             "tile_y_range": [y0, y1],
             "tile_count": len(jobs),
+            "tiles_without_coverage": sum(1 for x, y in jobs if (out_dir / f"{y}_{x}.none").exists()),
         },
     )
 

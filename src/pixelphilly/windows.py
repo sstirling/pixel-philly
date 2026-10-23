@@ -77,3 +77,12 @@ def weight_sum(height: int, width: int, windows, win: int = WIN) -> np.ndarray:
     for y, x in windows:
         total[y : y + win, x : x + win] += window_weight(y, x, height, width, win)
     return total
+
+
+def active_grids(grids, active: np.ndarray, win: int = WIN):
+    """Keep only windows that touch an active latent cell.
+
+    For a large area seen at ~45 degrees about half the rectangular canvas is
+    empty corner; running windows there would cost GPU time for nothing. Each
+    full grid covers every cell, so every active cell stays covered."""
+    return [[(y, x) for y, x in g if active[y : y + win, x : x + win].any()] for g in grids]

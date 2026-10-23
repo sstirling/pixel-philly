@@ -1,0 +1,32 @@
+{
+  "name": "centercity",
+  "label": "Center City, Philadelphia (City Hall to Rittenhouse)",
+  "bbox_wgs84": [
+    -75.1743,
+    39.9478,
+    -75.1618,
+    39.9583
+  ],
+  "camera": {
+    "view_bearing_deg": 54,
+    "elevation_deg": 45,
+    "meters_per_pixel": 0.293,
+    "frame_px": 1024
+  },
+  "max_height_m": 360,
+  "imagery_zoom": 19,
+  "default_building_height_m": 10.0,
+  "ground_filter": {
+    "median_px": 5
+  },
+  "wall_tint": {
+    "max_height_m": 20,
+    "color": [
+      150,
+      82,
+      62
+    ],
+    "mix": 0.55
+  },
+  "height_outlier_ratio": 3.0
+}

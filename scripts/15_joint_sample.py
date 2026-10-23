@@ -59,6 +59,8 @@ def main():
     ap.add_argument("--detach", action="store_true",
                     help="--full only: start the run on Modal and return; fetch it later with --collect")
     ap.add_argument("--collect", action="store_true", help="fetch a run started with --detach")
+    ap.add_argument("--volume", action="store_true",
+                    help="--full only: large areas; frames go through the pp-runs Volume (implies --detach)")
     args = ap.parse_args()
     if not args.collect and args.test_crop == args.full:
         ap.error("choose exactly one of --test-crop / --full (or --collect)")
@@ -76,6 +78,9 @@ def main():
         collect(cfg, args.name)
         return
     print("environment:", modal.Function.from_name("pixel-philly", "check_env").remote())
+    if args.full and args.volume:
+        start_volume_run(cfg, args.name, prompt, {k: v for k, v in common.items() if k != "prompt"})
+        return
     editor = modal.Cls.from_name("pixel-philly", "Editor")()
     mosaic = Image.open(area_dir(cfg, "renders", "mosaic.png")).convert("RGB")
     out_dir = area_dir(cfg, "joint", args.name)
@@ -146,6 +151,27 @@ def main():
     finish_full(cfg, args.name, res, time.time() - t0, prompt, {k: v for k, v in common.items() if k != "prompt"})
 
 
+def start_volume_run(cfg, name, prompt, settings):
+    """Upload the area's render frames to the pp-runs Volume and start
+    AreaSampler.joint_volume detached (large areas: ~45 min)."""
+    import modal
+
+    _, _, frames = area_setup(cfg)
+    vol = modal.Volume.from_name("pp-runs", create_if_missing=True)
+    with vol.batch_upload(force=True) as batch:
+        for f in frames:
+            batch.put_file(str(area_dir(cfg, "renders", f"{f.name}.png")), f"/areas/{cfg['name']}/renders/{f.name}.png")
+    sampler = modal.Cls.from_name("pixel-philly", "AreaSampler")()
+    call = sampler.joint_volume.spawn(cfg["name"], name, [{"name": f.name, "col": f.col, "row": f.row} for f in frames],
+                                      cfg["camera"]["frame_px"], prompt, **settings)
+    out_dir = area_dir(cfg, "joint", name)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / "call.json").write_text(json.dumps({
+        "call_id": call.object_id, "volume": True, "prompt": prompt, "settings": settings,
+        "started_at": datetime.now(timezone.utc).isoformat(timespec="seconds")}, indent=2) + "\n")
+    print(f"uploaded {len(frames)} frames; started {name} on Modal: call {call.object_id}")
+
+
 def collect(cfg, name):
     import modal
 
@@ -154,6 +180,24 @@ def collect(cfg, name):
         res = modal.FunctionCall.from_id(info["call_id"]).get(timeout=0)
     except TimeoutError:
         print(f"{name} still running (started {info['started_at']})")
+        return
+    if info.get("volume"):
+        # Frames were written to the Volume; download them into the redraws folder
+        vol = modal.Volume.from_name("pp-runs")
+        frame_dir = area_dir(cfg, "redraws", name)
+        frame_dir.mkdir(parents=True, exist_ok=True)
+        _, _, frames = area_setup(cfg)
+        for f in frames:
+            with (frame_dir / f"{f.name}.png").open("wb") as fh:
+                for chunk in vol.read_file(f"/areas/{cfg['name']}/joint/{name}/frames/{f.name}.png"):
+                    fh.write(chunk)
+        (area_dir(cfg, "joint", name) / "result.json").write_text(json.dumps(
+            {"area": cfg["name"], "settings": info["settings"], "prompt": info["prompt"], **res}, indent=2) + "\n")
+        wall = res["total_seconds"]
+        log_run({"run": f"15_joint_sample volume {cfg['name']}/{name}", "gpu": "H100", "wall_seconds": wall,
+                 "estimated_cost_usd": round(wall / 3600 * H100_PER_HOUR, 2)})
+        print(f"done in {wall / 60:.1f} min (~${wall / 3600 * H100_PER_HOUR:.2f}); {res['windows']} windows, "
+              f"{res['forwards']} forwards, peak {res['peak_gb']} GB; {len(frames)} frames in {frame_dir}")
         return
     # Server-side time; container start and weight loading add ~1-2 min
     finish_full(cfg, name, res, res["total_seconds"], info["prompt"], info["settings"])

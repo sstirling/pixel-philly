@@ -1,0 +1,67 @@
+{
+  "buildings_downloaded": 38,
+  "buildings_in_scene": 247,
+  "buildings_dropped": [],
+  "height_source_counts": {
+    "approx_hgt": 38
+  },
+  "height_outliers_max_gt_ratio_x_approx": [],
+  "tallest_buildings_m": [
+    {
+      "id": "13514-188",
+      "h": 54.77
+    },
+    {
+      "id": "13514-189",
+      "h": 54.77
+    },
+    {
+      "id": "13514-175",
+      "h": 52.98
+    },
+    {
+      "id": "13514-176",
+      "h": 52.98
+    },
+    {
+      "id": "13514-177",
+      "h": 52.98
+    },
+    {
+      "id": "13514-179",
+      "h": 52.98
+    },
+    {
+      "id": "13514-180",
+      "h": 52.98
+    },
+    {
+      "id": "13514-183",
+      "h": 52.98
+    },
+    {
+      "id": "13514-185",
+      "h": 52.98
+    },
+    {
+      "id": "13514-186",
+      "h": 52.98
+    }
+  ],
+  "trees_in_scene": 352,
+  "ground_texture_px": [
+    7424,
+    7168
+  ],
+  "ground_texture_source_px": [
+    7424,
+    7168
+  ],
+  "uv_fit_max_residual_m": 1.0178838291179043e-05,
+  "ground_median_filter_px": 5,
+  "frames": 10,
+  "lidar_buildings_shaped": 18,
+  "lidar_fallback_single_height": 0,
+  "lidar_parts": 227,
+  "lidar_margin_m": 100.0
+}

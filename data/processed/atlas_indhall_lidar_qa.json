@@ -1,0 +1,226 @@
+{
+  "buildings_downloaded": 1888,
+  "buildings_in_scene": 3408,
+  "buildings_dropped": [],
+  "height_source_counts": {
+    "approx_hgt": 1860,
+    "max_hgt": 15,
+    "default": 13
+  },
+  "height_outliers_max_gt_ratio_x_approx": [
+    {
+      "objectid": 15153,
+      "address": "35 S 4TH ST",
+      "approx_hgt_ft": 53,
+      "max_hgt_ft": 164.03998625
+    },
+    {
+      "objectid": 289806,
+      "address": "226-30 N 2ND ST",
+      "approx_hgt_ft": 59,
+      "max_hgt_ft": 203.44991700000003
+    },
+    {
+      "objectid": 289881,
+      "address": "241 RACE ST",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 59.419951919999995
+    },
+    {
+      "objectid": 290393,
+      "address": "205 N 3RD ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 43.3199165
+    },
+    {
+      "objectid": 298616,
+      "address": "730 MARKET ST",
+      "approx_hgt_ft": 37,
+      "max_hgt_ft": 151.18007783000002
+    },
+    {
+      "objectid": 300257,
+      "address": "722-24 MARKET ST",
+      "approx_hgt_ft": 42,
+      "max_hgt_ft": 158.48012925
+    },
+    {
+      "objectid": 306017,
+      "address": "104-06 ARCH ST",
+      "approx_hgt_ft": 41,
+      "max_hgt_ft": 150.76985483
+    },
+    {
+      "objectid": 309724,
+      "address": "256-66 S 6TH ST",
+      "approx_hgt_ft": 21,
+      "max_hgt_ft": 90.15993008
+    },
+    {
+      "objectid": 309764,
+      "address": "419 PINE ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 31.569953
+    },
+    {
+      "objectid": 310029,
+      "address": "512 SPRUCE ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 32.09016233
+    },
+    {
+      "objectid": 310097,
+      "address": "514 SPRUCE ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 46.45988425
+    },
+    {
+      "objectid": 310571,
+      "address": "320-28 S 4TH ST",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 60.43006808
+    },
+    {
+      "objectid": 311539,
+      "address": "818-20 CHESTNUT ST",
+      "approx_hgt_ft": 68,
+      "max_hgt_ft": 232.35984033
+    },
+    {
+      "objectid": 313702,
+      "address": "1 LOXLEY CT",
+      "approx_hgt_ft": 23,
+      "max_hgt_ft": 100.73005450000001
+    },
+    {
+      "objectid": 315134,
+      "address": "226 MARKET ST",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 49.08008858
+    },
+    {
+      "objectid": 315910,
+      "address": "425 SPRUCE ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 31.85014217
+    },
+    {
+      "objectid": 324924,
+      "address": "400-36 S 3RD ST",
+      "approx_hgt_ft": 51,
+      "max_hgt_ft": 201.40006933
+    },
+    {
+      "objectid": 326643,
+      "address": "1 S CHRISTOPHER COLUMBUS BLVD",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 59.48010792
+    },
+    {
+      "objectid": 413545,
+      "address": "22-34 N 2ND ST",
+      "approx_hgt_ft": 55,
+      "max_hgt_ft": 182.5700355
+    },
+    {
+      "objectid": 413578,
+      "address": "255 PINE ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 39.2199515
+    },
+    {
+      "objectid": 418167,
+      "address": "200 W WASHINGTON SQ",
+      "approx_hgt_ft": 53,
+      "max_hgt_ft": 399.93005683
+    },
+    {
+      "objectid": 419687,
+      "address": "915-17 WALNUT ST",
+      "approx_hgt_ft": 96,
+      "max_hgt_ft": 373.170051
+    },
+    {
+      "objectid": 421271,
+      "address": "517 DELANCEY ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 40.740012
+    },
+    {
+      "objectid": 491008,
+      "address": "1 DOCK ST",
+      "approx_hgt_ft": 50,
+      "max_hgt_ft": 368.63014825000005
+    },
+    {
+      "objectid": 498578,
+      "address": "338 SPRUCE ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 48.05004375
+    },
+    {
+      "objectid": 544977,
+      "address": "14 S FRONT ST",
+      "approx_hgt_ft": 27,
+      "max_hgt_ft": 85.41996725
+    }
+  ],
+  "tallest_buildings_m": [
+    {
+      "id": "306907-15",
+      "h": 152.3
+    },
+    {
+      "id": "306907-16",
+      "h": 148.0
+    },
+    {
+      "id": "306907-10",
+      "h": 147.51
+    },
+    {
+      "id": "306907-6",
+      "h": 146.97
+    },
+    {
+      "id": "306907-7",
+      "h": 143.6
+    },
+    {
+      "id": "306907-9",
+      "h": 143.21
+    },
+    {
+      "id": "306907-13",
+      "h": 142.59
+    },
+    {
+      "id": "306907-8",
+      "h": 142.36
+    },
+    {
+      "id": "306907-14",
+      "h": 142.14
+    },
+    {
+      "id": "306907-11",
+      "h": 142.1
+    }
+  ],
+  "trees_in_scene": 2210,
+  "ground_texture_px": [
+    7424,
+    7168
+  ],
+  "ground_texture_source_px": [
+    7424,
+    7168
+  ],
+  "uv_fit_max_residual_m": 1.0151824473139049e-05,
+  "ground_median_filter_px": 5,
+  "frames": 10,
+  "lidar_buildings_shaped": 318,
+  "lidar_fallback_single_height": 5,
+  "lidar_parts": 1838,
+  "lidar_margin_m": 100.0
+}

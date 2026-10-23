@@ -37,10 +37,14 @@ def record(key: str, entry: dict) -> None:
     MANIFEST.write_text(json.dumps(manifest, indent=2) + "\n")
 
 
-def get_with_retry(url: str, params=None, tries: int = 4, timeout: int = 60):
+def get_with_retry(url: str, params=None, tries: int = 6, timeout: int = 60, post: bool = False):
+    """GET (or POST, for long polygon queries that would overflow a URL)
+    with exponential backoff on network errors, 5xx and 429. Six tries wait
+    ~30 s in all: the USGS NHD server answers 504 for minutes at a time when
+    busy (Oct. 22), which four tries (~7 s) didn't ride out."""
     for attempt in range(tries):
         try:
-            r = session.get(url, params=params, timeout=timeout)
+            r = session.post(url, data=params, timeout=timeout) if post else session.get(url, params=params, timeout=timeout)
             if r.status_code == 200:
                 return r
             if r.status_code < 500 and r.status_code != 429:
@@ -62,8 +66,14 @@ def fetch_features(
     base_url: str = CITY_FEATURES,
     server_type: str = "FeatureServer",
     order_by: str | None = "objectid",
+    polygon=None,
 ) -> Path:
     """Download every feature intersecting the bbox as GeoJSON (EPSG:4326).
+
+    With `polygon` (a shapely WGS84 polygon), only features intersecting it
+    are fetched, which for a large area seen at ~45 degrees halves the
+    download. The query is then sent by POST, since the polygon would
+    overflow a URL; bbox_wgs84 should be the polygon's bounds.
 
     ArcGIS caps each response (2,000 records for these layers), so pages are
     requested with resultOffset until the server stops flagging
@@ -94,14 +104,22 @@ def fetch_features(
         "outSR": 4326,
         "f": "geojson",
     }
+    if polygon is not None:
+        # ~10 m tolerance keeps the query small without losing coverage (the
+        # polygon already has a 50 m margin)
+        simple = polygon.simplify(0.0001)
+        rings = [list(map(list, simple.exterior.coords))] + [list(map(list, r.coords)) for r in simple.interiors]
+        base["geometry"] = json.dumps({"rings": rings, "spatialReference": {"wkid": 4326}})
+        base["geometryType"] = "esriGeometryPolygon"
     if order_by:
         base["orderByFields"] = order_by
+    post = polygon is not None
     features, offset = [], 0
     while True:
         # ArcGIS sometimes reports a transient failure as HTTP 200 with an
         # "error" body ("Unable to perform query"); retry those too
         for attempt in range(4):
-            page = get_with_retry(url, {**base, "resultOffset": offset}).json()
+            page = get_with_retry(url, {**base, "resultOffset": offset}, post=post).json()
             if "error" not in page:
                 break
             time.sleep(2**attempt)
@@ -116,7 +134,7 @@ def fetch_features(
         if not batch or not more:
             break
 
-    count = get_with_retry(url, {**base, "returnCountOnly": "true", "f": "json"}).json()["count"]
+    count = get_with_retry(url, {**base, "returnCountOnly": "true", "f": "json"}, post=post).json()["count"]
     if count != len(features):
         raise RuntimeError(f"{service}: server reports {count} features, downloaded {len(features)}")
 
@@ -126,10 +144,24 @@ def fetch_features(
         out_name,
         {
             "description": description,
-            "query_url": f"{url}?{urlencode(base)}",
+            "query_url": f"{url}?{urlencode({k: v for k, v in base.items() if k != 'geometry'})}",
+            "query_geometry": base["geometry"] if polygon is not None else None,
             "bbox_wgs84": list(bbox_wgs84),
             "feature_count": len(features),
         },
     )
     print(f"{out_name}: {len(features)} features")
     return out
+
+
+def fetch_area_features(cfg: dict, service: str, layer: int, suffix: str, description: str, **kwargs) -> Path:
+    """fetch_features for an area config: by polygon for clipped areas
+    (only the ground the kept frames see), by bounding box otherwise (the
+    original behavior, so existing areas' queries are unchanged)."""
+    from .projection import render_extent_wgs84, render_ground_polygon
+
+    out_name = f"{cfg['name']}_{suffix}.geojson"
+    if cfg.get("clip_frames_to_area"):
+        poly = render_ground_polygon(cfg)
+        return fetch_features(service, layer, list(poly.bounds), out_name, description, polygon=poly, **kwargs)
+    return fetch_features(service, layer, render_extent_wgs84(cfg), out_name, description, **kwargs)

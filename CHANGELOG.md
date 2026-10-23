@@ -94,6 +94,252 @@ Total model spend for the pilot: 37 successful calls, about $4.96 at standard pr
 
 The land tone shifts are what tiny.london's joint denoising solves. A cheaper experiment would be to match each frame's color statistics to its neighbors where they overlap; that would need overlapping frames, which the current lattice doesn't have.
 
+## 2026-10-23: downtown redrawn with LiDAR building shapes (downtown_lidar v2)
+
+Stephen approved redrawing downtown with LiDAR shapes after the atlas fixes. It runs as a new area, `config/downtown_lidar.json` (downtown plus `"building_shapes": "lidar"`), so v3 is untouched.
+
+### Tiled scenes support LiDAR
+- `main_tiled` in `05_build_scene.py` shapes every footprint once, before tiling, so overlapping render tiles always agree. The `NotImplementedError` guard is gone, and the LiDAR QA keys are written for tiled areas too.
+- **Check:** a tiled build of City Hall (2 × 2-frame tiles) and the single-scene build gave identical part ids, heights and outlines (2,849 of 2,849).
+- A progress line every 5,000 footprints.
+
+### Data and build
+- **Data:** 71,517 footprints (fetched Oct. 22), 41,906 trees, 43 PWD and 23 NHD water polygons. The USGS NHD service returned a 504 once; the retry loop was fixed to check the right exit code.
+- **LiDAR:** 54 LAS tiles, 18 already on disk from the atlas. 55 GB of LiDAR now on disk.
+- **First build:** 34 min, 4.6 GB peak RAM. Gridding is most of that; shaping took 2.5–3 min, so it stays single-process.
+- **Shaping:** 56,285 footprints shaped into 145,592 parts. 463 fell back to a single height (no usable returns). Footprints more than 100 m outside the box keep single heights (`LIDAR_MARGIN_M`).
+- **Grid cache:** `data/processed/downtown_lidar_lidar_grid.npz`, 661 MB.
+- **Rendering:** 304 frames in 2 min.
+- **Alignment:** 260 of 261 checked frames pass.
+  - `frame_09_18` (a mostly-river frame, 9,035 building px) scores IoU 0.9685 with zero shift.
+  - Its 285 mismatched pixels are all 1 px edge rounding on stair-stepped outlines.
+  - Reviewed and accepted; the threshold was not changed.
+
+### Spike-rule fixes found by the first downtown run
+The first drawing (kept as `redraws/qwen_joint_light8_pre_spikefix/`, tiles v1, not used) still had needles. A scan for parts under 40 m² taller than twice everything within 3 m found four.
+
+- **City Hall's west-wing cluster (145.7 m).**
+  - **Cause:** on the downtown grid's cell alignment the cluster straddled tier boundaries, and the sieve folded the pieces into the roof label while their heights stayed. It then re-formed when the tier step coarsened.
+  - **Fix:** the spike check now also runs at every tier step.
+  - **Test:** a real-data fixture, `tests/fixtures/cityhall_downtown_grid.npz`.
+- **Three clusters at 226-30 N 2nd, 905-11 Walnut and 3900-06 Chestnut.**
+  - **Cause:** their City `max_hgt` matched them. `max_hgt` is the highest LiDAR return, so the same noise set it (203 ft max vs. 59 ft typical on N. 2nd).
+  - The 2024 aerials show no tower and no shadow at any of them.
+  - Real steeples taper (Independence Hall rises from 20 m to 42 m in small steps), so they never needed the exemption.
+  - **Fix:** the `max_hgt` exemption was removed.
+- **Over-correction, caught by an aerial check.**
+  - Removing all exemptions also flattened the Linc's roof canopy pieces and wings of 1514 and 1224 Chestnut, all at the City's *typical* height (`approx_hgt`).
+  - Noise never matched the typical height in any confirmed case.
+  - **Fix:** a region within 5 m of `approx_hgt` is exempt.
+- **Tests:**
+  - `test_spike_matching_an_inflated_city_record_is_still_dropped`
+  - `test_cityhall_downtown_grid_has_no_stray_spire`
+  - `test_tapered_steeple_is_kept` (replaces the untapered steeple test)
+  - `test_region_matching_the_typical_city_height_is_kept`
+  - 61 pass. Old City byte-identical.
+- **Atlas:** all nine scenes rebuilt. Only City Hall and the Linc changed, and both were redrawn (~$0.30). Sheet rebuilt.
+- **Downtown after the fixes:** the needle scan finds one part, a 6.5 m², 51 m piece on 905-11 Walnut. It is kept because it matches that footprint's 49 m typical height, while most of the footprint measures 13 m. The aerial is inconclusive, so it was left.
+
+### Result: `output/downtown_lidar/tiles/v2`
+- **Drawing:** 53.0 min on one H100, ~$3.49. 1,215 windows.
+- **Tiles:** 2,941 tiles, 451 MB, plus the 74 MB photo layer. Viewer: `?area=downtown_lidar&v=v2`.
+- **Seams** (neighbor-relative ratio, 525 frame-border segments, same method for both):
+  - v3: median 1.016, 95th pct 1.45
+  - LiDAR v2: median 1.013, 95th pct 1.38
+- **Spot checks:**
+  - City Hall's tower and William Penn are drawn, with no stray needles on the wings.
+  - The Cathedral dome is drawn, with no spires next door.
+  - Franklin Field's stands step down to the track.
+- **Spend:** downtown_lidar ~$6.93 (two full drawings; the first was invalidated by the spike bugs). Atlas total ~$4.63.
+
+## 2026-10-22 (night): LiDAR shape fixes after the atlas review
+
+Stephen flagged an unrealistic spire at City Hall and asked for the errors found in the LiDAR drawings to be fixed before downtown. Tests first for each, then the fix (subagent), then verification.
+
+### Fixes (`src/pixelphilly/lidar.py`)
+- **Stray spires.**
+  - **Cause:** two clusters of stray returns at 144–147 m on City Hall's 45 m wings (9.5 and 11.2 m² in the grid) rendered as needles. City Hall's 170 m height record (its tower) let them pass the noise ceiling.
+  - **Rule:** a region under 40 m² that rises more than max(20 m, its surroundings) above the tallest neighboring region is flattened into the roof. It applies only when the building has a City height record and the region's top is more than 5 m below it.
+  - **Tests:** `test_small_spike_far_above_its_roof_is_dropped_even_under_the_ceiling`, plus `test_steeple_that_sets_the_city_height_is_kept` to protect real steeples.
+- **Shared tier heights.**
+  - **Cause:** every region in a height tier got the tier-wide median, which is why both spikes read exactly 150.35 m.
+  - **Fix:** each region now gets the median of its own cells.
+  - **Test:** `test_separate_regions_in_one_tier_keep_their_own_heights`.
+- **William Penn.**
+  - **Cause:** the LiDAR has him (36 cells over 158 m, top 167.8 m), but the median filter and 6 m² speck merge erased him.
+  - **Rule:** cells within 5 m of the City record are "confirmed". The tallest confirmed element on a tall part is kept down to 2 m².
+  - **Result:** City Hall's tallest part is now 166.8 m (167 m published).
+  - **Tests:** `test_statue_confirmed_by_city_record_is_kept`, plus `test_small_tall_region_without_a_record_still_merges`.
+  - **Why only one element per building:** rescuing every confirmed cluster brought back rooftop clutter, since on ordinary buildings the record is the rooftop equipment.
+- **Debugging:** `PP_LIDAR_LOG=1` prints every flattened and kept region.
+- **The subagent changed three rules from the approved plan**, each needed to get the City Hall result:
+  - Surroundings are measured as the tallest neighboring region, not the tallest ring cell. The speck merge folds the stray cloud's outliers into the wing roof, so the ring maximum read ~150 m.
+  - The confirmation band is 5 m, not 3 m.
+  - Only one confirmed element is rescued per building.
+
+### Verification
+- **Tests:** 57 pass.
+- **Old City:** scene byte-identical (SHA-256).
+- **Rebuilt all nine LiDAR atlas scenes.** Alignment PASS on all.
+- **Flattened regions:**
+  - City Hall: 2, both stray clusters.
+  - Cathedral: 6, all 143–161 m clusters on 1–22 m roofs south of the cathedral, noise. (8 after the follow-up below.)
+  - Citizens Bank Park: 1, a 16 m² region at 38 m on the stands. **It may be real** (a light tower or sign) and is now lost.
+- **Part counts rose slightly.** For example, City Hall went from 1,663 to 1,751 parts, mostly one small rooftop element per building near its recorded height.
+- **Redrawn:** all nine on the GPU. The previous drawings are kept as `redraws/qwen_joint_light8_v1shapes/`. 9 runs, ~$1.28. Atlas total so far: 30 runs, ~$4.20.
+- **Sheet:** rebuilt with updated notes.
+
+### Follow-up: spires on a building with no City height (reported by Stephen)
+- **Symptom:** in the Cathedral Basilica row, the building next door (footprint 545892, "1701L Race St") drew two large spires that aren't real.
+- **Cause:** its main body measures 73.7 m, but two ~7 m² clusters of stray returns sat at 159.6 and 179.6 m. The footprint has no City height record, and the spike rule only ran when there was one.
+- **Fix:** the spike rule now runs for every building. The "matches the City record" exemption only applies when a record exists, since with no record nothing confirms a spire. Test first: `test_spike_is_dropped_when_the_building_has_no_city_record`.
+- **Verification:**
+  - 58 tests pass; Old City is byte-identical.
+  - Rebuilding all nine spots changed only this building: the cathedral now has 8 flattened regions (was 6), and the other eight spots are identical.
+  - The cathedral was redrawn (~$0.13). The previous drawing is kept as `qwen_joint_light8_v2shapes/`.
+
+### Corrections
+- **30th Street crop.** The atlas sheet's 30th Street crop was right after all: its center is the AIS geocode for 2955 Market St, and the station is the flat-roofed building in the lower middle. The earlier note ("the crop sits north of the station") was wrong, and so was the plan's "barrel roof".
+
+### Known issues, not geometry (left for a training and QA round)
+- Stadium outer walls are drawn with windows.
+- The Independence Hall drawing turns a shaded tree area into dirt.
+- Construction sites are still not addressed (the baseline Penn's Landing drawing invented a pool).
+
+## 2026-10-22: problem atlas and LiDAR building shapes
+
+**Question:** can the City's 2022 LiDAR give landmarks and stadiums their real shapes before we expand past downtown? (Stephen flagged landmark shapes, stadiums drawn as buildings and invented water or lawn on construction sites.)
+
+### Built
+- **Nine atlas areas** (`config/atlas_<spot>.json`, ~500 m boxes, clipped lattice, 10 frames each), each with a `_lidar` twin that adds `"building_shapes": "lidar"`.
+- **`scripts/04c_fetch_lidar.py`.** Reads the PASDA tile index and downloads only the LAS tiles within 100 m of the area box: 24 tiles, ~24 GB, for all nine spots. Downloads go to `.part` files and are renamed when complete, so a stopped download restarts cleanly. Each one is recorded in `MANIFEST.json`.
+- **`src/pixelphilly/lidar.py`:**
+  - chunked LAS gridding to a 0.5 m surface and ground grid in the local frame, with EPSG:6565 assigned because the files carry none
+  - footprint base from ground returns in a 3–10 m ring
+  - stepped parts: tiers of `max(2 m, 6%)`, 6 m² speck merge, part height = median measured height, parts under 1 m left as open ground, at most 60 parts per building
+- **`05_build_scene.py`:** `building_shapes: "lidar"` replaces each footprint inside the LiDAR region with its parts. Grids are cached as `data/processed/<area>_lidar_grid.npz`. Tiled areas stop with an error (not yet supported).
+- **`scripts/17_atlas_sheet.py`:** before/after sheet, `output/atlas/compare.html` plus `contact.jpg`, with notes written after reviewing the crops.
+
+### Bugs found and fixed
+- **Empty LAS chunks crashed gridding** (`reduceat` on an empty array) when a tile's chunk had no points inside the area. Test first (`test_dsm_from_las_...`), then a guard.
+- **LiDAR noise made needle towers.** The first City Hall render had thin spikes up to 272 m on roofs that top out at 60–160 m. The cause: clusters of class-1 returns floating far above roofs that the vendor's noise classes missed, such as ~1,200 points 80–110 m above the Ritz-Carlton residences, all from one flight line (source 18), none flagged withheld or overlap.
+  - Tests first: `test_noise_above_the_city_ceiling_is_dropped_and_filled` and `test_ceiling_keeps_real_shapes_below_it`.
+  - Fix: cells more than 3 m above the footprint's highest City height (`max(approx_hgt, max_hgt)`) are dropped and refilled from the surrounding roof.
+  - Limitation: a building taller than its City record would be clipped.
+  - The three spots drawn before the fix were redrawn. Their old drawings are kept in `redraws/qwen_joint_light8_noisy/`.
+- **Rebuilt after the fix:** all nine LiDAR scenes. Alignment PASS on all 18 atlas areas. The Old City scene is byte-identical (SHA-256 checked). 52 tests pass.
+
+### Results
+- **Biggest gains: stadiums.**
+  - The baseline drew the inside of the Linc and Citizens Bank Park as apartment-style window walls. With LiDAR, both are open bowls with tiered seating.
+  - Franklin Field's stands now slope in tiers.
+  - All three stadiums have L&I footprints (Linc 13514, CBP 17579, Franklin Field 106422), so the planned OSM outline fallback wasn't needed.
+- **Landmarks:**
+  - City Hall's clock tower rises in steps.
+  - The Cathedral dome is a stepped dome.
+  - The Art Museum's wings get roof forms.
+  - Independence Hall's steeple appears but is thin.
+  - 30th Street changed little.
+- **City Hall height:** tallest part 150.4 m, against 167 m to the top of William Penn and a 170.1 m City `max_hgt`. The statue is under 6 m² in plan, so the speck filter merges it into the tower. (Fixed in the next entry.)
+- **Construction sites: not addressed.** The baseline Penn's Landing drawing invented a swimming pool on the site. The LiDAR drawing shows dirt, but that's sampling luck.
+- **Spend:** 21 Modal runs, ~$2.92 (9 baseline, 9 LiDAR, 3 redrawn after the noise fix), about 45 GPU minutes. No Gemini calls.
+
+### Decision for Stephen
+Whether to redraw downtown with LiDAR shapes before expanding. That needs LiDAR support in tiled scenes. Downtown needs 54 LAS tiles: 18 are already downloaded, and the other 36 are about 39 GB (estimated from the 1.08 GB average tile so far).
+
+## 2026-10-21: photo toggle in the viewer (downtown v3)
+
+- **The toggle.** Stephen asked for a toggle between the "true" photo map and the illustration.
+  - The photo layer is the render the AI drew from: the 2024 aerials draped on 3D footprints, from the same camera. It lines up with the illustration pixel for pixel.
+  - A plain top-down satellite map would not line up with the tilted isometric view.
+- **`16_build_tiles.py --with-photo`** cuts a second pyramid from `renders/mosaic.png`.
+  - Lossy WebP Q82: 67 MB vs. 446 MB for the lossless illustration.
+  - Places without city imagery, and clipped lattice corners, show the background.
+  - `map.json` lists both layers.
+- **Built as v3.** Its illustration tiles are byte-identical to v2's (sampled SHA-256). v1 and v2 are kept.
+- **Viewer:**
+  - a toggle button with `aria-pressed`
+  - the label, credits and credits summary switch with the layer
+  - `&layer=photo` in shareable links
+  - toggle contrast checked in light and dark themes
+  - coordinate conversions now go through the illustration layer, since OpenSeadragon's viewport-wide conversions are ambiguous (and log warnings) with two images loaded
+- **Tested in headless Chromium:**
+  - toggle on and off
+  - link and reload restore the photo layer
+  - search still lands on the same pixel at City Hall
+  - no viewer warnings
+
+## 2026-10-21: fix for invented content where imagery is missing (downtown v2)
+
+- **Bug** (reported by Stephen): a large cartoon person, a seaplane, a bridge and buildings appeared on the New Jersey side of the river.
+- **Cause:** the city's 2024 aerial imagery ends a block or two inland in Camden. Those 350 z19 tiles return HTTP 404 and were filled with flat grey in the ground mosaic. Given a featureless input, the model invented a scene, the same failure as invented water on land.
+- **Test first:** `tests/test_nodata.py` failed on the v1 output.
+- **Fix** (`src/pixelphilly/nodata.py`, applied in `10_repaint_water.py` after the water repaint):
+  - Pixels where the source imagery is missing, plus a 16 px margin, are set to the map background (204, 214, 227).
+  - The missing area is computed from the no-coverage tile list (exact), not from grey pixels, which real roofs can also be.
+  - 7,962,484 px cleared downtown.
+  - Old City, Fishtown and Center City have no missing tiles, and their outputs are byte-identical (SHA-256 checked).
+- **Tiles:** rebuilt as **v2** (2,941 tiles, 446 MB). v1 is kept unchanged (versions are immutable). The viewer now defaults to v2.
+- **Visible side effect:** the Camden waterfront stops along a straight diagonal where the city's imagery coverage ends.
+- 43 tests pass.
+
+## 2026-10-20 (night): downtown prototype, pannable and zoomable
+
+**Scope:** Stephen chose a downtown prototype over the full-city plan: no outside permission needed, about 30 km². Box [-75.2050, 39.9350, -75.1250, 39.9750], roughly 40th St to the Delaware and Washington Ave to Girard Ave.
+
+### Built
+- **Frame clipping** (`clip_frames_to_area`): 304 of 546 lattice frames kept. `render_ground_polygon` gives the ground they see.
+- **Polygon downloads.** `fetch_area_features` sends the polygon to ArcGIS by POST, and imagery is fetched only for tiles intersecting it.
+  - Data: 71,500 buildings, 41,906 trees, 43 PWD and 23 NHD water polygons, 12,151 imagery tiles.
+  - 350 tiles have no coverage (HTTP 404, outside the city's imagery). They're now recorded as `.none` markers instead of crashing the download.
+- **Per-tile scenes** (`render_tile_frames: 4`): 30 render tiles, each with its own ground mosaic (max 12,544 px) and UV fit, plus buildings and trees within 360 m.
+  - Build time 19 min.
+  - Small-area scenes are byte-identical to before (SHA-256 checked).
+- **`scenes.scene_paths`.** Rendering and the alignment check loop over tile scenes. The 304 frames render in 1 min 42 s.
+- **Sampler active-region mode** (`windows.active_grids`, `joint_denoise(active=...)`): only windows touching kept frames run. 2 new CPU tests.
+- **`AreaSampler.joint_volume` on Modal.** Frames go through the `pp-runs` Volume, the latent is saved before decoding, and each frame is decoded with a 128 px halo.
+  - Tested on Old City first, same seed as the earlier run: mean difference 3 levels (decode path plus GPU nondeterminism), seam ratio 1.08, same as before. ~$0.34.
+- **Per-frame water repaint with a 32 px halo** for tiled areas. 3 min. The Old City whole-mosaic path is unchanged (byte-identical).
+- **`16_build_tiles.py`:** pyvips `dzsave`, 512 px lossless WebP, versioned and immutable folders, `map.json` with the lon/lat fit.
+- **Viewer** (`viewer/`): OpenSeadragon 6.1.1 (vendored), crisp pixels at ≥1:1, hash deep links, AIS address search, a persistent AI label, collapsible credits, keyboard and reduced-motion support.
+- **`viewer_geo.fit_lonlat_to_px`:** a cubic lon/lat→px fit, max error 2e-7 px. `tests/test_viewer.py` checks the JS port in headless Chromium.
+
+### Bugs found and fixed along the way
+- **`05_build_scene.py` silently downsampled oversize ground textures.** It now raises. Tests first: `tests/test_scene.py`.
+- **Camera far plane.** The 3 km default camera cut off downtown's far edge (frames 13_00 and 14_00, IoU 0.07 and 0.03). `camera_distance_m` (20 km for downtown) plus `05_build_scene.py --camera-only` to refresh scenes without rebuilding.
+- **The alignment check filled in courtyards** (holes) and could erase overlapping buildings when drawing holes. It now uses real outlines with holes and inner walls, and draws holed polygons on separate layers.
+  - Downtown min IoU 0.9755, mean 0.9918.
+  - Shifts on sparse frames only fail when IoU < 0.99 too (frame_23_09: IoU 0.995 with a tied shift search).
+- **Modal can't subclass a decorated class.** `AreaSampler` and `Editor` now share a plain `_QwenBase`.
+- **Deprecated `shapely.ops.transform`** replaced.
+
+### Results
+- **Generation:** 54.3 min on one H100, ~$3.58. 1,215 windows, 4,860 forwards, peak 67.9 GB.
+- **Seams** (neighbor-relative ratio per 1,024 px border segment, flat segments skipped):
+
+| Borders | Render (median / 95th pct) | Joint + water (median / 95th pct) |
+|---|---|---|
+| Frame borders (412) | 1.00 / 1.20 | 1.015 / 1.49 |
+| Render-tile borders (139) | 1.01 / 1.20 | 1.04 / 1.56 |
+
+  The highest-scoring segments, inspected visually, are repainted open water (a near-zero denominator) or building edges on the line, with no visible joins.
+- **Tiles:** 2,941 tiles, 439 MB, 16 levels, built in 1 min.
+- **Viewer smoke test:** no errors. "1400 John F Kennedy Blvd" lands at City Hall; "3451 Walnut St" at Penn. Works at 320 px.
+
+### Known limits
+- City Hall's tower and other spires are stubs: one height per footprint (`approx_hgt`).
+- The map edge is stair-stepped at frame granularity (no cloud band yet).
+- No Gemini benchmark for downtown.
+- Invented-water check not yet run on downtown.
+
+## 2026-10-20 (evening): third neighborhood, Center City
+
+- **Config:** `config/centercity.json`, a same-size box from City Hall to Rittenhouse Square, with Logan Circle, the Convention Center and both Comcast towers. `max_height_m` was raised to 360 for the 342 m Comcast Technology Center.
+- **Data:** 14,377 buildings (17 at the default height), 13,533 trees, tallest 297 m on `approx_hgt` (roof, not spire), 118 height outliers (spires and setbacks). The lattice view reaches the Schuylkill. Alignment PASS: min IoU 0.993, every frame at (0, 0).
+- **Joint generation:** Old City LoRA, Lightning 8-step, no new training. 5.1 min, ~$0.34. 30/30 frames within 2 px.
+  - Seam ratio, joint + water: global 0.997 and local 0.988, against the render's 0.942 and 0.966.
+- **Visual check:** the towers, untextured gray boxes in the render, came out with regular window grids, setbacks and the aerial's roof detail, including Liberty Place's crown. The LoRA had seen almost no towers in training.
+
 ## 2026-10-20 (evening): second neighborhood, Fishtown
 
 **Question:** does the style LoRA, trained only on Old City, carry over to a neighborhood it has never seen, with no new training?

@@ -1,0 +1,144 @@
+{
+  "buildings_downloaded": 858,
+  "buildings_in_scene": 858,
+  "buildings_dropped": [],
+  "height_source_counts": {
+    "approx_hgt": 846,
+    "max_hgt": 11,
+    "default": 1
+  },
+  "height_outliers_max_gt_ratio_x_approx": [
+    {
+      "objectid": 33901,
+      "address": "1800 BENJAMIN FRANKLIN PKWY",
+      "approx_hgt_ft": 104,
+      "max_hgt_ft": 380.1101385
+    },
+    {
+      "objectid": 268271,
+      "address": "1625 CHESTNUT ST",
+      "approx_hgt_ft": 56,
+      "max_hgt_ft": 699.959931
+    },
+    {
+      "objectid": 283938,
+      "address": "1815-25 ARCH ST",
+      "approx_hgt_ft": 59,
+      "max_hgt_ft": 434.02001592
+    },
+    {
+      "objectid": 284596,
+      "address": "214 N 13TH ST",
+      "approx_hgt_ft": 36,
+      "max_hgt_ft": 118.44002925
+    },
+    {
+      "objectid": 286270,
+      "address": "1419A-27 ARCH ST",
+      "approx_hgt_ft": 31,
+      "max_hgt_ft": 128.58005442
+    },
+    {
+      "objectid": 294306,
+      "address": "1221-23 RACE ST",
+      "approx_hgt_ft": 16,
+      "max_hgt_ft": 49.339969
+    },
+    {
+      "objectid": 299163,
+      "address": "1800 MARKET ST",
+      "approx_hgt_ft": 92,
+      "max_hgt_ft": 504.68992192
+    },
+    {
+      "objectid": 302364,
+      "address": "123-29 S 17TH ST",
+      "approx_hgt_ft": 79,
+      "max_hgt_ft": 308.200081
+    },
+    {
+      "objectid": 391035,
+      "address": "1435 VINE ST",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 106.79991883
+    },
+    {
+      "objectid": 405041,
+      "address": "1601 VINE ST",
+      "approx_hgt_ft": 33,
+      "max_hgt_ft": 118.70628054
+    },
+    {
+      "objectid": 422144,
+      "address": "400 N BROAD ST",
+      "approx_hgt_ft": 103,
+      "max_hgt_ft": 336.10015408
+    },
+    {
+      "objectid": 482721,
+      "address": "1605-27 SANSOM ST",
+      "approx_hgt_ft": 89,
+      "max_hgt_ft": 310.959915
+    },
+    {
+      "objectid": 489522,
+      "address": "1400 JOHN F KENNEDY BLVD",
+      "approx_hgt_ft": 170,
+      "max_hgt_ft": 558.2099034199999
+    }
+  ],
+  "tallest_buildings_m": [
+    {
+      "id": 115025,
+      "h": 297.48
+    },
+    {
+      "id": 418347,
+      "h": 278.59
+    },
+    {
+      "id": 268206,
+      "h": 229.82
+    },
+    {
+      "id": 490346,
+      "h": 226.77
+    },
+    {
+      "id": 301875,
+      "h": 221.59
+    },
+    {
+      "id": 302944,
+      "h": 206.35
+    },
+    {
+      "id": 388832,
+      "h": 188.06
+    },
+    {
+      "id": 292977,
+      "h": 154.23
+    },
+    {
+      "id": 490831,
+      "h": 151.18
+    },
+    {
+      "id": 489328,
+      "h": 149.66
+    }
+  ],
+  "trees_in_scene": 2245,
+  "ground_texture_px": [
+    7424,
+    7168
+  ],
+  "ground_texture_source_px": [
+    7424,
+    7168
+  ],
+  "uv_fit_max_residual_m": 1.0139618163162182e-05,
+  "ground_median_filter_px": 5,
+  "frames": 10
+}

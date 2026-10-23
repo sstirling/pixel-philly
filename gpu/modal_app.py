@@ -113,10 +113,9 @@ def check_env() -> dict:
     return {p: md.version(p) for p in ("torch", "torchvision", "diffusers", "transformers", "peft")}
 
 
-@app.cls(image=image, gpu=GPU, volumes={WEIGHTS_DIR: weights, "/runs": runs}, timeout=2 * 3600, scaledown_window=120)
-class Editor:
-    """Qwen-Image-Edit-2511 on one H100: plain per-image edits (Phase A) and
-    joint whole-canvas denoising (Phase D)."""
+class _QwenBase:
+    """Model loading and adapter switching shared by the GPU classes. A plain
+    base class: Modal can't subclass a class it has already decorated."""
 
     @modal.enter()
     def load(self):
@@ -157,6 +156,13 @@ class Editor:
         else:
             self.pipe.disable_lora()
         self.pipe.scheduler = self.light_scheduler if lightning else self.base_scheduler
+
+
+
+@app.cls(image=image, gpu=GPU, volumes={WEIGHTS_DIR: weights, "/runs": runs}, timeout=2 * 3600, scaledown_window=120)
+class Editor(_QwenBase):
+    """Qwen-Image-Edit-2511 on one H100: plain per-image edits (Phase A) and
+    joint whole-canvas denoising (Phase D)."""
 
     @modal.method()
     def run(self, jobs: list[dict]) -> list[dict]:
@@ -363,4 +369,142 @@ class Editor:
             "total_seconds": round(time.time() - t_start, 1),
             "peak_gb": round(torch.cuda.max_memory_allocated() / 1e9, 2),
             "tiling_max_diff_levels": tiling_diff,
+        }
+
+
+@app.cls(image=image, gpu=GPU, volumes={WEIGHTS_DIR: weights, "/runs": runs}, timeout=4 * 3600,
+         memory=65536, scaledown_window=60)
+class AreaSampler(_QwenBase):
+    """Joint denoising for areas too big to pass around as one PNG.
+
+    Inputs and outputs live in the pp-runs Volume:
+      /runs/areas/<area>/renders/<frame>.png            (uploaded by 15_joint_sample.py)
+      /runs/areas/<area>/joint/<name>/latent.pt         (saved BEFORE decoding)
+      /runs/areas/<area>/joint/<name>/frames/<frame>.png
+    Only windows touching kept frames run (clipped areas leave about half the
+    rectangular canvas empty). Each frame is decoded on its own with a
+    128 px halo, so decode memory doesn't grow with the area.
+    """
+
+    @modal.method()
+    def joint_volume(self, area: str, name: str, frames: list[dict], frame_px: int, prompt: str,
+                     steps: int, cfg: float, seed: int, lightning: str | None = None,
+                     style: dict | None = None) -> dict:
+        import os
+
+        import numpy as np
+        from diffusers.pipelines.qwenimage.pipeline_qwenimage_edit_plus import (
+            CONDITION_IMAGE_SIZE,
+            calculate_dimensions,
+            calculate_shift,
+        )
+        from PIL import Image
+
+        from pixelphilly.joint_sampler import joint_denoise
+        from pixelphilly.windows import WIN, active_grids, two_grids
+
+        Image.MAX_IMAGE_PIXELS = None
+        torch = self.torch
+        pipe = self.pipe
+        self._configure(lightning, style)
+        runs.reload()
+        dev, dtype = "cuda", torch.bfloat16
+        t_start = time.time()
+        torch.cuda.reset_peak_memory_stats()
+
+        src = f"/runs/areas/{area}/renders"
+        out = f"/runs/areas/{area}/joint/{name}"
+        os.makedirs(f"{out}/frames", exist_ok=True)
+        cols = max(f["col"] for f in frames) + 1
+        rows = max(f["row"] for f in frames) + 1
+        W, H = cols * frame_px, rows * frame_px
+        lw, lh = W // 8, H // 8
+        cell = frame_px // 8
+        canvas = np.zeros((H, W, 3), np.uint8)
+        active = np.zeros((lh, lw), bool)
+        for f in frames:
+            canvas[f["row"] * frame_px:(f["row"] + 1) * frame_px, f["col"] * frame_px:(f["col"] + 1) * frame_px] = \
+                np.asarray(Image.open(f"{src}/{f['name']}.png").convert("RGB"))
+            active[f["row"] * cell:(f["row"] + 1) * cell, f["col"] * cell:(f["col"] + 1) * cell] = True
+        grids = active_grids(two_grids(lh, lw), active)
+        keys = sorted({k for g in grids for k in g})
+        C = pipe.transformer.config.in_channels // 4
+
+        # Per-window conditioning, exactly as in Editor.joint, kept on the CPU
+        cache = {}
+        with torch.no_grad():
+            for y, x in keys:
+                crop = Image.fromarray(canvas[y * 8:(y + WIN) * 8, x * 8:(x + WIN) * 8])
+                cw, ch = calculate_dimensions(CONDITION_IMAGE_SIZE, crop.width / crop.height)
+                cond_img = pipe.image_processor.resize(crop, ch, cw)
+                emb, mask = pipe.encode_prompt(prompt=prompt, image=[cond_img], device=dev)
+                neg = pipe.encode_prompt(prompt=" ", image=[cond_img], device=dev) if cfg > 1 else None
+                vae_in = pipe.image_processor.preprocess(crop, crop.height, crop.width).unsqueeze(2)
+                lat = pipe._encode_vae_image(vae_in.to(dev, pipe.vae.dtype), generator=None)
+                cond = pipe._pack_latents(lat, 1, C, WIN, WIN).to(dtype)
+                to_cpu = lambda t: None if t is None else t.to("cpu")  # noqa: E731
+                cache[(y, x)] = (to_cpu(emb), to_cpu(mask), None if neg is None else (to_cpu(neg[0]), to_cpu(neg[1])),
+                                 to_cpu(cond))
+        t_encode = time.time() - t_start
+
+        sched = pipe.scheduler
+        mu = calculate_shift((WIN // 2) ** 2, sched.config.get("base_image_seq_len", 256),
+                             sched.config.get("max_image_seq_len", 4096), sched.config.get("base_shift", 0.5),
+                             sched.config.get("max_shift", 1.15))
+        sched.set_timesteps(sigmas=np.linspace(1.0, 1 / steps, steps), mu=mu, device=dev)
+        sigmas = [float(s) for s in sched.sigmas]
+        shapes = [[(1, WIN // 2, WIN // 2), (1, WIN // 2, WIN // 2)]]
+        forwards = {"n": 0}
+
+        def g(t):
+            return None if t is None else t.to(dev, non_blocking=True)
+
+        def predict(x_win, y, x, sigma):
+            emb, mask, neg, cond = cache[(y, x)]
+            xin = pipe._pack_latents(x_win.unsqueeze(0).to(dtype), 1, C, WIN, WIN)
+            hidden = torch.cat([xin, g(cond)], dim=1)
+            t = torch.full((1,), sigma, device=dev, dtype=dtype)
+            with torch.no_grad():
+                v = pipe.transformer(hidden_states=hidden, timestep=t, guidance=None, encoder_hidden_states_mask=g(mask),
+                                     encoder_hidden_states=g(emb), img_shapes=shapes, return_dict=False)[0][:, : xin.shape[1]]
+                forwards["n"] += 1
+                if neg is not None:
+                    nv = pipe.transformer(hidden_states=hidden, timestep=t, guidance=None,
+                                          encoder_hidden_states_mask=g(neg[1]), encoder_hidden_states=g(neg[0]),
+                                          img_shapes=shapes, return_dict=False)[0][:, : xin.shape[1]]
+                    forwards["n"] += 1
+                    comb = nv + cfg * (v - nv)
+                    v = comb * (torch.norm(v, dim=-1, keepdim=True) / torch.norm(comb, dim=-1, keepdim=True))
+            return pipe._unpack_latents(v, WIN * 8, WIN * 8, 8)[0, :, 0].float()
+
+        noise = torch.randn((C, lh, lw), generator=torch.Generator(dev).manual_seed(seed), device=dev,
+                            dtype=torch.float32)
+        latents = joint_denoise(noise, sigmas, grids, predict, WIN, active=torch.from_numpy(active).to(dev))
+        t_denoise = time.time() - t_start - t_encode
+        # Save before decoding: a decode failure must not lose the run
+        torch.save(latents.cpu(), f"{out}/latent.pt")
+        runs.commit()
+
+        mean = torch.tensor(pipe.vae.config.latents_mean).view(1, C, 1, 1, 1)
+        std = 1.0 / torch.tensor(pipe.vae.config.latents_std).view(1, C, 1, 1, 1)
+        halo = 16  # latent cells = 128 px of overlap so frame edges decode with context
+        pipe.vae.disable_tiling()
+        with torch.no_grad():
+            for f in frames:
+                y0, x0 = f["row"] * cell, f["col"] * cell
+                ya, xa = max(0, y0 - halo), max(0, x0 - halo)
+                yb, xb = min(lh, y0 + cell + halo), min(lw, x0 + cell + halo)
+                lat = latents[:, ya:yb, xa:xb].unsqueeze(0).unsqueeze(2).to(pipe.vae.dtype)
+                lat = lat / std.to(lat) + mean.to(lat)
+                img = pipe.vae.decode(lat, return_dict=False)[0][:, :, 0]
+                pil = pipe.image_processor.postprocess(img, output_type="pil")[0]
+                oy, ox = (y0 - ya) * 8, (x0 - xa) * 8
+                pil.crop((ox, oy, ox + frame_px, oy + frame_px)).save(f"{out}/frames/{f['name']}.png")
+        runs.commit()
+        return {
+            "area": area, "name": name, "frames": len(frames), "canvas_px": [W, H],
+            "windows": len(keys), "windows_per_grid": [len(g_) for g_ in grids], "forwards": forwards["n"],
+            "sigmas": [round(s, 4) for s in sigmas], "encode_seconds": round(t_encode, 1),
+            "denoise_seconds": round(t_denoise, 1), "total_seconds": round(time.time() - t_start, 1),
+            "peak_gb": round(torch.cuda.max_memory_allocated() / 1e9, 2),
         }

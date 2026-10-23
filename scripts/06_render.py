@@ -18,6 +18,7 @@ from PIL import Image
 
 from pixelphilly.browser_render import Renderer
 from pixelphilly.projection import REPO_ROOT, area_dir, load_config
+from pixelphilly.scenes import scene_paths
 
 
 def main():
@@ -27,27 +28,32 @@ def main():
     args = ap.parse_args()
 
     cfg = load_config()
-    scene_rel = f"data/processed/{cfg['name']}_scene.json"
-    scene = json.loads((REPO_ROOT / scene_rel).read_text())
-    size = scene["frame_px"]
     out_dir = area_dir(cfg, "renders" if args.mode == "color" else "masks")
     out_dir.mkdir(parents=True, exist_ok=True)
 
     images = {}
-    with Renderer(scene_rel, size) as r:
-        print("renderer:", r.info)
-        for i, f in enumerate(scene["frames"]):
-            if args.only and f["name"] != args.only:
-                continue
-            img = r.frame(i, args.mode)
-            img.save(out_dir / f"{f['name']}.png")
-            images[(f["col"], f["row"])] = img
-            print(f"  {f['name']}")
+    # One scene for small areas; one per render tile for large ones. Each
+    # scene's frames are rendered from that scene only.
+    for scene_rel in scene_paths(cfg):
+        scene = json.loads((REPO_ROOT / scene_rel).read_text())
+        size = scene["frame_px"]
+        todo = [(i, f) for i, f in enumerate(scene["frames"]) if not args.only or f["name"] == args.only]
+        if not todo:
+            continue
+        with Renderer(scene_rel, size) as r:
+            print("renderer:", scene_rel, r.info)
+            for i, f in todo:
+                img = r.frame(i, args.mode)
+                img.save(out_dir / f"{f['name']}.png")
+                if args.mode == "color" and not args.only:
+                    images[(f["col"], f["row"])] = img
+                print(f"  {f['name']}")
 
     if args.only or args.mode != "color":
         return
     cols = max(c for c, _ in images) + 1
     rows = max(r for _, r in images) + 1
+    # Clipped areas leave empty lattice cells; they stay black
     mosaic = Image.new("RGB", (cols * size, rows * size))
     for (c, r), img in images.items():
         mosaic.paste(img, (c * size, r * size))

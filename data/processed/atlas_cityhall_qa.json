@@ -1,0 +1,306 @@
+{
+  "buildings_downloaded": 1323,
+  "buildings_in_scene": 1323,
+  "buildings_dropped": [],
+  "height_source_counts": {
+    "approx_hgt": 1310,
+    "max_hgt": 5,
+    "default": 8
+  },
+  "height_outliers_max_gt_ratio_x_approx": [
+    {
+      "objectid": 14798,
+      "address": "212-18 N 11TH ST",
+      "approx_hgt_ft": 26,
+      "max_hgt_ft": 79.750156
+    },
+    {
+      "objectid": 186800,
+      "address": "1216-32 WOOD ST",
+      "approx_hgt_ft": 29,
+      "max_hgt_ft": 146.86015132999998
+    },
+    {
+      "objectid": 268271,
+      "address": "1625 CHESTNUT ST",
+      "approx_hgt_ft": 56,
+      "max_hgt_ft": 699.959931
+    },
+    {
+      "objectid": 283500,
+      "address": "1004-06 WOOD ST",
+      "approx_hgt_ft": 16,
+      "max_hgt_ft": 250.55015107999998
+    },
+    {
+      "objectid": 283938,
+      "address": "1815-25 ARCH ST",
+      "approx_hgt_ft": 59,
+      "max_hgt_ft": 434.02001592
+    },
+    {
+      "objectid": 284596,
+      "address": "214 N 13TH ST",
+      "approx_hgt_ft": 36,
+      "max_hgt_ft": 118.44002925
+    },
+    {
+      "objectid": 286270,
+      "address": "1419A-27 ARCH ST",
+      "approx_hgt_ft": 31,
+      "max_hgt_ft": 128.58005442
+    },
+    {
+      "objectid": 292910,
+      "address": "930 ARCH ST",
+      "approx_hgt_ft": 36,
+      "max_hgt_ft": 116.51011425
+    },
+    {
+      "objectid": 294306,
+      "address": "1221-23 RACE ST",
+      "approx_hgt_ft": 16,
+      "max_hgt_ft": 49.339969
+    },
+    {
+      "objectid": 298252,
+      "address": "1312 CHESTNUT ST",
+      "approx_hgt_ft": 21,
+      "max_hgt_ft": 210.4699585
+    },
+    {
+      "objectid": 299163,
+      "address": "1800 MARKET ST",
+      "approx_hgt_ft": 92,
+      "max_hgt_ft": 504.68992192
+    },
+    {
+      "objectid": 299842,
+      "address": "1016-18 RACE ST",
+      "approx_hgt_ft": 21,
+      "max_hgt_ft": 114.880006
+    },
+    {
+      "objectid": 300049,
+      "address": "1008 RACE ST",
+      "approx_hgt_ft": 28,
+      "max_hgt_ft": 107.48015382999999
+    },
+    {
+      "objectid": 300371,
+      "address": "1607-09 WALNUT ST",
+      "approx_hgt_ft": 38,
+      "max_hgt_ft": 183.61010607999998
+    },
+    {
+      "objectid": 300591,
+      "address": "1606 WALNUT ST",
+      "approx_hgt_ft": 68,
+      "max_hgt_ft": 243.27993825
+    },
+    {
+      "objectid": 300809,
+      "address": "122-24 S 13TH ST",
+      "approx_hgt_ft": 16,
+      "max_hgt_ft": 62.26993342
+    },
+    {
+      "objectid": 302364,
+      "address": "123-29 S 17TH ST",
+      "approx_hgt_ft": 79,
+      "max_hgt_ft": 308.200081
+    },
+    {
+      "objectid": 302412,
+      "address": "1217-19 CHESTNUT ST",
+      "approx_hgt_ft": 45,
+      "max_hgt_ft": 186.52014183
+    },
+    {
+      "objectid": 304404,
+      "address": "1520 WALNUT ST",
+      "approx_hgt_ft": 41,
+      "max_hgt_ft": 282.10000117000004
+    },
+    {
+      "objectid": 305403,
+      "address": "1424-26 CHESTNUT ST",
+      "approx_hgt_ft": 85,
+      "max_hgt_ft": 333.31997467
+    },
+    {
+      "objectid": 305480,
+      "address": "1221 WALNUT ST",
+      "approx_hgt_ft": 51,
+      "max_hgt_ft": 256.16994292
+    },
+    {
+      "objectid": 305666,
+      "address": "1412-14 CHESTNUT ST",
+      "approx_hgt_ft": 81,
+      "max_hgt_ft": 323.33016325
+    },
+    {
+      "objectid": 306540,
+      "address": "240 S BROAD ST",
+      "approx_hgt_ft": 88,
+      "max_hgt_ft": 350.28012575
+    },
+    {
+      "objectid": 307045,
+      "address": "1508-10 WALNUT ST",
+      "approx_hgt_ft": 36,
+      "max_hgt_ft": 294.17996508
+    },
+    {
+      "objectid": 312881,
+      "address": "113-15 S 16TH ST",
+      "approx_hgt_ft": 39,
+      "max_hgt_ft": 131.9000375
+    },
+    {
+      "objectid": 313461,
+      "address": "1425 LOCUST ST",
+      "approx_hgt_ft": 55,
+      "max_hgt_ft": 367.95987541999995
+    },
+    {
+      "objectid": 315016,
+      "address": "1421 WALNUT ST",
+      "approx_hgt_ft": 50,
+      "max_hgt_ft": 166.96985024999998
+    },
+    {
+      "objectid": 316701,
+      "address": "1507 LOCUST ST",
+      "approx_hgt_ft": 24,
+      "max_hgt_ft": 120.32985967
+    },
+    {
+      "objectid": 317338,
+      "address": "227-29 S BROAD ST",
+      "approx_hgt_ft": 37,
+      "max_hgt_ft": 189.14014992
+    },
+    {
+      "objectid": 318676,
+      "address": "1214 SANSOM ST",
+      "approx_hgt_ft": 33,
+      "max_hgt_ft": 284.089898
+    },
+    {
+      "objectid": 318771,
+      "address": "1231 SPRUCE ST",
+      "approx_hgt_ft": 44,
+      "max_hgt_ft": 141.63999625000002
+    },
+    {
+      "objectid": 319134,
+      "address": "315 S 13TH ST",
+      "approx_hgt_ft": 26,
+      "max_hgt_ft": 81.01990892
+    },
+    {
+      "objectid": 319563,
+      "address": "126 S 16TH ST",
+      "approx_hgt_ft": 55,
+      "max_hgt_ft": 292.58016333
+    },
+    {
+      "objectid": 327649,
+      "address": "259-61 S 15TH ST",
+      "approx_hgt_ft": 49,
+      "max_hgt_ft": 346.38991083
+    },
+    {
+      "objectid": 391035,
+      "address": "1435 VINE ST",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 106.79991883
+    },
+    {
+      "objectid": 419687,
+      "address": "915-17 WALNUT ST",
+      "approx_hgt_ft": 96,
+      "max_hgt_ft": 373.170051
+    },
+    {
+      "objectid": 482721,
+      "address": "1605-27 SANSOM ST",
+      "approx_hgt_ft": 89,
+      "max_hgt_ft": 310.959915
+    },
+    {
+      "objectid": 489522,
+      "address": "1400 JOHN F KENNEDY BLVD",
+      "approx_hgt_ft": 170,
+      "max_hgt_ft": 558.2099034199999
+    },
+    {
+      "objectid": 490821,
+      "address": "1300-02 WALNUT ST",
+      "approx_hgt_ft": 28,
+      "max_hgt_ft": 258.69014625
+    },
+    {
+      "objectid": 496932,
+      "address": "124 S 16TH ST",
+      "approx_hgt_ft": 55,
+      "max_hgt_ft": 318.34984917
+    }
+  ],
+  "tallest_buildings_m": [
+    {
+      "id": 115025,
+      "h": 297.48
+    },
+    {
+      "id": 418347,
+      "h": 278.59
+    },
+    {
+      "id": 268206,
+      "h": 229.82
+    },
+    {
+      "id": 490346,
+      "h": 226.77
+    },
+    {
+      "id": 301875,
+      "h": 221.59
+    },
+    {
+      "id": 302944,
+      "h": 206.35
+    },
+    {
+      "id": 388832,
+      "h": 188.06
+    },
+    {
+      "id": 392181,
+      "h": 176.17
+    },
+    {
+      "id": 545775,
+      "h": 162.46
+    },
+    {
+      "id": 305658,
+      "h": 158.19
+    }
+  ],
+  "trees_in_scene": 1572,
+  "ground_texture_px": [
+    7424,
+    7168
+  ],
+  "ground_texture_source_px": [
+    7424,
+    7168
+  ],
+  "uv_fit_max_residual_m": 1.02118114401231e-05,
+  "ground_median_filter_px": 5,
+  "frames": 10
+}

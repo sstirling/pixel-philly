@@ -37,8 +37,13 @@ def joint_denoise(
     predict: Predict,
     win: int = WIN,
     on_step: Callable[[int, torch.Tensor], None] | None = None,
+    active: torch.Tensor | None = None,
 ) -> torch.Tensor:
     """Denoise a [C, H, W] latent canvas.
+
+    active: optional [H, W] bool mask. Grids should then contain only
+    windows touching it (windows.active_grids); coverage is required only on
+    active cells, and cells no window covers are left as they are.
 
     sigmas runs from ~1 down to 0 (len = steps + 1). grids[i % len(grids)]
     gives the window positions used at step i. on_step(i, latents) is called
@@ -62,9 +67,11 @@ def joint_denoise(
             v = predict(latents[:, y : y + win, x : x + win], y, x, sigma)
             vel[:, y : y + win, x : x + win] += v * w
             wsum[y : y + win, x : x + win] += w
-        if not torch.all(wsum > 0):
+        covered = wsum > 0
+        if not torch.all(covered if active is None else covered[active]):
             raise RuntimeError("a canvas cell is not covered by any window in this grid")
-        latents = latents + (sigma_next - sigma) * vel / wsum
+        step = torch.where(covered, vel / torch.where(covered, wsum, torch.ones_like(wsum)), torch.zeros_like(vel))
+        latents = latents + (sigma_next - sigma) * step
         if on_step is not None:
             on_step(i, latents)
     return latents

@@ -1,8 +1,13 @@
-"""Turn the raw downloads into one scene file the three.js renderer can load.
+"""Turn the raw downloads into scene files the three.js renderer can load.
 
-Writes:
+Small areas get one scene:
   data/processed/<name>_ground.jpg   aerial mosaic used as the ground texture
   data/processed/<name>_scene.json   buildings, trees, camera and frame lattice
+Areas whose aerial would exceed the GPU texture limit set "render_tile_frames"
+and get one scene per N x N-frame render tile (see main_tiled):
+  data/processed/<name>/tiles/t_CC_RR.json, t_CC_RR_ground.jpg
+  data/processed/<name>_tiles.json   index of tiles and the frames in each
+Either way:
   data/processed/<name>_qa.json      height fallbacks, outliers, dropped records
 
 All geometry is converted to local east/north meters (see projection.py).
@@ -24,7 +29,7 @@ Image.MAX_IMAGE_PIXELS = None
 from shapely.geometry import shape
 from shapely.validation import make_valid
 
-from pixelphilly.heights import building_height
+from pixelphilly.heights import FT_TO_M, building_height
 from pixelphilly.projection import REPO_ROOT, area_setup, load_config
 from pixelphilly.sources import RAW
 
@@ -34,6 +39,19 @@ TILE = 256
 # desktop GPUs (render.js refuses to run if the texture is over the limit).
 # At z19 the Old City mosaic is ~12,800 px, so it loads at full resolution.
 MAX_TEXTURE_PX = 16384
+
+
+def ground_texture(mosaic: Image.Image) -> Image.Image:
+    """The mosaic is used at full resolution or not at all. A texture over the
+    GPU limit used to be quietly downsampled here, which lowered ground detail
+    without any warning; areas larger than the limit must be split into
+    smaller render tiles instead (see the city-scale plan)."""
+    if max(mosaic.size) > MAX_TEXTURE_PX:
+        raise ValueError(
+            f"ground texture {mosaic.size} exceeds the {MAX_TEXTURE_PX} px GPU limit; "
+            "use a smaller area or per-tile scenes"
+        )
+    return mosaic
 
 
 def merc_px(lon, lat, z):
@@ -46,17 +64,30 @@ def merc_px(lon, lat, z):
     return x, y
 
 
-def build_mosaic(cfg):
-    manifest = json.loads((RAW / "MANIFEST.json").read_text())
+def build_mosaic(cfg, tile_range=None):
+    """Paste cached z19 tiles into one image. tile_range = (x0, x1, y0, y1);
+    by default the area's whole range from the manifest. For clipped areas,
+    tiles outside the downloaded polygon don't exist and are filled with
+    neutral grey (they lie outside every kept frame's view). Tiles the server
+    has no imagery for (".none" markers) are grey too; the model invents
+    content on that featureless grey, so 10_repaint_water.py clears those
+    areas to the background color (src/pixelphilly/nodata.py)."""
     z = cfg["imagery_zoom"]
-    info = manifest[f"imagery/{cfg['name']}/CityImagery_2024_3in/{z}"]
-    (x0, x1), (y0, y1) = info["tile_x_range"], info["tile_y_range"]
+    if tile_range is None:
+        manifest = json.loads((RAW / "MANIFEST.json").read_text())
+        info = manifest[f"imagery/{cfg['name']}/CityImagery_2024_3in/{z}"]
+        (x0, x1), (y0, y1) = info["tile_x_range"], info["tile_y_range"]
+    else:
+        x0, x1, y0, y1 = tile_range
     tile_dir = RAW / "imagery" / "CityImagery_2024_3in" / str(z)
     w, h = (x1 - x0 + 1) * TILE, (y1 - y0 + 1) * TILE
-    mosaic = Image.new("RGB", (w, h))
+    mosaic = Image.new("RGB", (w, h), (128, 128, 128) if cfg.get("clip_frames_to_area") else (0, 0, 0))
     for ty in range(y0, y1 + 1):
         for tx in range(x0, x1 + 1):
-            with Image.open(tile_dir / f"{ty}_{tx}.jpg") as t:
+            path = tile_dir / f"{ty}_{tx}.jpg"
+            if not path.exists() and cfg.get("clip_frames_to_area"):
+                continue
+            with Image.open(path) as t:
                 mosaic.paste(t.convert("RGB"), ((tx - x0) * TILE, (ty - y0) * TILE))
     return mosaic, (x0 * TILE, y0 * TILE), z
 
@@ -157,20 +188,14 @@ def tree_radius_m(dbh_in):
     return float(min(max(1.0 + 0.15 * dbh_in, 1.5), 7.0))
 
 
-def main():
-    cfg = load_config()
-    name = cfg["name"]
-    frame, cam, frames = area_setup(cfg)
-    PROCESSED.mkdir(parents=True, exist_ok=True)
-
-    # --- ground texture ---------------------------------------------------
-    mosaic, origin_px, z = build_mosaic(cfg)
+def prepare_ground(cfg, frame, tile_range=None):
+    """Mosaic, its extent in local meters, the quadratic UV fit, and the
+    (optionally median-filtered) texture that goes on the ground and roofs."""
+    mosaic, origin_px, z = build_mosaic(cfg, tile_range)
     full_size = mosaic.size
-    mosaic_arr = np.asarray(mosaic)
-    to_px_full = lambda e, n: merc_px(*frame.to_wgs84(e, n), z)  # noqa: E731
 
     def to_mosaic_px(e, n):
-        x, y = to_px_full(e, n)
+        x, y = merc_px(*frame.to_wgs84(e, n), z)
         return float(x - origin_px[0]), float(y - origin_px[1])
 
     # Extent of the mosaic in local meters (its corners)
@@ -186,10 +211,7 @@ def main():
     if residual_m > 0.05:
         raise RuntimeError(f"ground texture UV fit is off by {residual_m:.3f} m (limit 0.05 m)")
 
-    ground = mosaic
-    if max(full_size) > MAX_TEXTURE_PX:
-        f = MAX_TEXTURE_PX / max(full_size)
-        ground = mosaic.resize((round(full_size[0] * f), round(full_size[1] * f)), Image.LANCZOS)
+    ground = ground_texture(mosaic)
     # Optional simplification of the aerial before it goes on the ground and
     # roofs. Gemini copies photo clutter (cars, rooftop units, gravel) instead
     # of redrawing it; a small median filter removes that clutter while
@@ -197,11 +219,15 @@ def main():
     median_px = (cfg.get("ground_filter") or {}).get("median_px")
     if median_px:
         ground = ground.filter(ImageFilter.MedianFilter(median_px))
-    ground_path = PROCESSED / f"{name}_ground.jpg"
-    ground.save(ground_path, quality=92)
+    return {"mosaic_arr": np.asarray(mosaic), "to_px": to_mosaic_px, "extent_m": extent_m,
+            "uv": (cu, cv), "residual_m": residual_m, "ground": ground, "source_px": full_size,
+            "median_px": median_px}
 
-    # --- buildings --------------------------------------------------------
-    raw = json.loads((RAW / f"{name}_buildings.geojson").read_text())
+
+def load_buildings(cfg, frame):
+    """Footprints in local meters with heights, plus QA bookkeeping. Roof
+    colors are added later, from whichever ground mosaic covers them."""
+    raw = json.loads((RAW / f"{cfg['name']}_buildings.geojson").read_text())
     sources, outliers, dropped, buildings = Counter(), [], [], []
     for feat in raw["features"]:
         p = feat["properties"]
@@ -232,18 +258,88 @@ def main():
                     "max_hgt_ft": p.get("max_hgt"),
                 }
             )
-        roof = mean_color(mosaic_arr, polys, to_mosaic_px) or [150, 140, 130]
-        buildings.append(
-            {
-                "id": p.get("objectid"),
-                "h": round(h, 2),
-                "color": wall_color(roof, h, cfg.get("wall_tint")),
-                "polys": polys,
-            }
-        )
+        # The highest City height on record caps LiDAR shapes (noise filter);
+        # not written to the scene, which keeps only id/h/color/polys
+        city = [v for v in (p.get("approx_hgt"), p.get("max_hgt")) if v and v > 0]
+        ceiling = max(city) * FT_TO_M if city else None
+        # approx_hgt alone is the typical height: stray returns don't move it
+        # (max_hgt is the highest return), so it can vouch for a small LiDAR
+        # region at that height; also not written to the scene
+        approx = p.get("approx_hgt")
+        typical = approx * FT_TO_M if approx and approx > 0 else None
+        buildings.append({"id": p.get("objectid"), "h": round(h, 2), "polys": polys, "ceiling_m": ceiling,
+                          "typical_m": typical})
+    return buildings, {"downloaded": len(raw["features"]), "sources": sources,
+                       "outliers": outliers, "dropped": dropped}
 
-    # --- trees ------------------------------------------------------------
-    raw_trees = json.loads((RAW / f"{name}_trees.geojson").read_text())
+
+def lidar_shaped(cfg, frame, buildings):
+    """Replace buildings inside the LiDAR region with stepped parts
+    (pixelphilly.lidar). Each part keeps the building id with a suffix and is
+    colored from the aerial under it, so a dark tower top and a light base
+    stay distinct. Buildings outside the region, or without LiDAR coverage,
+    keep their single height. The height grid is cached per area."""
+    from shapely.geometry import Polygon
+    from shapely.ops import unary_union
+
+    from pixelphilly import lidar
+
+    name = cfg["name"]
+    _, region = lidar.lidar_region_local(cfg)
+    cache = PROCESSED / f"{name}_lidar_grid.npz"
+    if cache.exists():
+        z = np.load(cache)
+        dsm, ground, origin = z["dsm"], z["ground"], tuple(z["origin"])
+    else:
+        tiles = (RAW / "lidar" / f"{name}_tiles.txt").read_text().split()
+        dsm, ground, origin = lidar.dsm_from_las([RAW / "lidar" / t for t in tiles], frame, region.bounds, lidar.RES_M)
+        np.savez_compressed(cache, dsm=dsm, ground=ground, origin=np.array(origin))
+    import time
+
+    out, shaped, fallback, n_parts = [], 0, 0, 0
+    t0 = time.monotonic()
+    for i, b in enumerate(buildings):
+        if i and i % 5000 == 0:  # downtown has ~70,000 footprints
+            print(f"  lidar shapes: {i:,}/{len(buildings):,} footprints, {time.monotonic() - t0:.0f} s", flush=True)
+        fp = unary_union([Polygon(p[0], p[1:]) for p in b["polys"]]).buffer(0)
+        if fp.is_empty or not region.contains(fp.centroid):
+            out.append(b)
+            continue
+        base = lidar.footprint_base(fp, ground, origin, lidar.RES_M)
+        parts = None if base is None else lidar.building_parts(fp, dsm, origin, lidar.RES_M, base=base,
+                                                                ceiling=b.get("ceiling_m"),
+                                                                typical=b.get("typical_m"))
+        if not parts:
+            out.append(b)
+            fallback += 1
+            continue
+        shaped += 1
+        for k, part in enumerate(parts):
+            out.append({"id": f"{b['id']}-{k}", "h": part["h"], "polys": part["polys"]})
+            n_parts += 1
+    print(f"  lidar shapes: {shaped:,} shaped into {n_parts:,} parts in {time.monotonic() - t0:.0f} s", flush=True)
+    return out, {"lidar_buildings_shaped": shaped, "lidar_fallback_single_height": fallback,
+                 "lidar_parts": n_parts, "lidar_margin_m": lidar.LIDAR_MARGIN_M}
+
+
+def colored(buildings, ground, cfg, cache=None):
+    """Attach wall colors from the ground mosaic. With a cache (tiled areas),
+    each building is colored once, so it looks the same in every tile."""
+    out = []
+    for b in buildings:
+        if cache is not None and b["id"] in cache:
+            color = cache[b["id"]]
+        else:
+            roof = mean_color(ground["mosaic_arr"], b["polys"], ground["to_px"]) or [150, 140, 130]
+            color = wall_color(roof, b["h"], cfg.get("wall_tint"))
+            if cache is not None:
+                cache[b["id"]] = color
+        out.append({"id": b["id"], "h": b["h"], "color": color, "polys": b["polys"]})
+    return out
+
+
+def load_trees(cfg, frame):
+    raw_trees = json.loads((RAW / f"{cfg['name']}_trees.geojson").read_text())
     tlon, tlat, tr = [], [], []
     for feat in raw_trees["features"]:
         if not feat.get("geometry"):
@@ -253,46 +349,188 @@ def main():
         tlat.append(lat)
         tr.append(tree_radius_m(feat["properties"].get("tree_dbh")))
     te, tn = frame.to_local(tlon, tlat)
-    trees = [[round(e, 2), round(n, 2), round(r, 2)] for e, n, r in zip(te, tn, tr)]
+    return [[round(e, 2), round(n, 2), round(r, 2)] for e, n, r in zip(te, tn, tr)]
 
-    # --- scene ------------------------------------------------------------
+
+def camera_params(cfg, cam):
+    """Camera placement for three.js. The camera sits `camera_distance_m`
+    back along the view direction with a far plane at twice that. 3 km is
+    plenty for a 1 km neighborhood, but a 7 km area needs more: at 3 km the
+    far edge of downtown fell past the far plane and was cut off."""
+    return cam.three_js_params(cfg.get("camera_distance_m", 3000.0))
+
+
+def scene_dict(cfg, frame, cam, frames, ground, ground_rel, buildings, trees):
     mpp = cam.meters_per_pixel
-    scene = {
-        "name": name,
+    cu, cv = ground["uv"]
+    return {
+        "name": cfg["name"],
         "origin_wgs84": [frame.lon0, frame.lat0],
-        "camera": cam.three_js_params(),
+        "camera": camera_params(cfg, cam),
         "meters_per_pixel": mpp,
         "frame_px": cfg["camera"]["frame_px"],
         "frames": [{"name": f.name, "col": f.col, "row": f.row, **f.frustum(mpp)} for f in frames],
         "ground": {
-            "image": f"data/processed/{ground_path.name}",
-            "extent_m": extent_m,
+            "image": ground_rel,
+            "extent_m": ground["extent_m"],
             "uv_poly": {"u": cu, "v": cv},
         },
         "buildings": buildings,
         "trees": trees,
     }
-    (PROCESSED / f"{name}_scene.json").write_text(json.dumps(scene, separators=(",", ":")))
 
+
+def write_qa(cfg, info, buildings_count, tallest, trees_count, extra):
     qa = {
-        "buildings_downloaded": len(raw["features"]),
-        "buildings_in_scene": len(buildings),
-        "buildings_dropped": dropped,
-        "height_source_counts": dict(sources),
-        "height_outliers_max_gt_ratio_x_approx": outliers,
-        "tallest_buildings_m": sorted(
-            ({"id": b["id"], "h": b["h"]} for b in buildings), key=lambda b: -b["h"]
-        )[:10],
-        "trees_in_scene": len(trees),
-        "ground_texture_px": list(ground.size),
-        "ground_texture_source_px": list(full_size),
-        "uv_fit_max_residual_m": residual_m,
-        "ground_median_filter_px": median_px,
-        "frames": len(frames),
+        "buildings_downloaded": info["downloaded"],
+        "buildings_in_scene": buildings_count,
+        "buildings_dropped": info["dropped"],
+        "height_source_counts": dict(info["sources"]),
+        "height_outliers_max_gt_ratio_x_approx": info["outliers"],
+        "tallest_buildings_m": tallest,
+        "trees_in_scene": trees_count,
+        **extra,
     }
-    (PROCESSED / f"{name}_qa.json").write_text(json.dumps(qa, indent=2) + "\n")
+    (PROCESSED / f"{cfg['name']}_qa.json").write_text(json.dumps(qa, indent=2) + "\n")
     print(json.dumps({k: v for k, v in qa.items() if not isinstance(v, list) or len(v) < 6}, indent=2))
-    print(f"height outliers: {len(outliers)}; dropped: {len(dropped)}")
+    print(f"height outliers: {len(info['outliers'])}; dropped: {len(info['dropped'])}")
+
+
+def main_single(cfg, frame, cam, frames):
+    """One scene for the whole area (areas whose mosaic fits the GPU)."""
+    name = cfg["name"]
+    ground = prepare_ground(cfg, frame)
+    ground_path = PROCESSED / f"{name}_ground.jpg"
+    ground["ground"].save(ground_path, quality=92)
+    buildings, info = load_buildings(cfg, frame)
+    lidar_qa = {}
+    if cfg.get("building_shapes") == "lidar":
+        buildings, lidar_qa = lidar_shaped(cfg, frame, buildings)
+    buildings = colored(buildings, ground, cfg)
+    trees = load_trees(cfg, frame)
+    scene = scene_dict(cfg, frame, cam, frames, ground, f"data/processed/{ground_path.name}", buildings, trees)
+    (PROCESSED / f"{name}_scene.json").write_text(json.dumps(scene, separators=(",", ":")))
+    tallest = sorted(({"id": b["id"], "h": b["h"]} for b in buildings), key=lambda b: -b["h"])[:10]
+    write_qa(cfg, info, len(buildings), tallest, len(trees), {
+        "ground_texture_px": list(ground["ground"].size),
+        "ground_texture_source_px": list(ground["source_px"]),
+        "uv_fit_max_residual_m": ground["residual_m"],
+        "ground_median_filter_px": ground["median_px"],
+        "frames": len(frames),
+        **lidar_qa,
+    })
+
+
+# Buildings up to this far outside a render tile's ground can still appear
+# in its frames (a 360 m tower leans ~360 m up-screen at 45 degrees), so each
+# tile's scene and ground mosaic include them.
+TILE_REACH_M = 360.0
+
+
+def main_tiled(cfg, frame, cam, frames):
+    """One scene per render tile of N x N frames, each with its own ground
+    mosaic small enough for the GPU and its own UV fit. Writes
+    data/processed/<area>/tiles/t_CC_RR.json + _ground.jpg and an index at
+    data/processed/<area>_tiles.json."""
+    from shapely.geometry import Polygon, box
+    from shapely.ops import unary_union
+    from shapely.strtree import STRtree
+
+    name = cfg["name"]
+    n_tile = cfg["render_tile_frames"]
+    z = cfg["imagery_zoom"]
+    out_dir = PROCESSED / name / "tiles"
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    buildings, info = load_buildings(cfg, frame)
+    # Shape every footprint once, before tiling: render tiles overlap (each
+    # reaches 360 m past its frames), so per-tile shaping would repeat work
+    # and could split one building differently in two tiles
+    lidar_qa = {}
+    if cfg.get("building_shapes") == "lidar":
+        buildings, lidar_qa = lidar_shaped(cfg, frame, buildings)
+    trees = load_trees(cfg, frame)
+    # Spatial indexes over footprints (by exterior bbox) and trees
+    b_boxes = [box(*Polygon(b["polys"][0][0]).bounds) for b in buildings]
+    b_tree = STRtree(b_boxes)
+    t_pts = np.array([[t[0], t[1]] for t in trees]) if trees else np.zeros((0, 2))
+
+    groups = {}
+    for f in frames:
+        groups.setdefault((f.col // n_tile, f.row // n_tile), []).append(f)
+
+    color_cache, index, residuals, tex_sizes, in_scene = {}, [], [], [], set()
+    for (tc, tr), tile_frames in sorted(groups.items()):
+        quads = []
+        for f in tile_frames:
+            e, n = cam.screen_to_ground([f.x0, f.x0 + f.size, f.x0 + f.size, f.x0],
+                                        [f.y0, f.y0, f.y0 + f.size, f.y0 + f.size], 0.0)
+            quads.append(Polygon(zip(e, n)))
+        reach = unary_union(quads).buffer(TILE_REACH_M)
+        # z19 tile range covering the reach region
+        lon, lat = frame.to_wgs84(*np.asarray(reach.exterior.coords).T)
+        px, py = merc_px(lon, lat, z)
+        tile_range = (int(px.min() // TILE), int(px.max() // TILE), int(py.min() // TILE), int(py.max() // TILE))
+        ground = prepare_ground(cfg, frame, tile_range)
+        tex_sizes.append(max(ground["ground"].size))
+        residuals.append(ground["residual_m"])
+        stem = f"t_{tc:02d}_{tr:02d}"
+        ground["ground"].save(out_dir / f"{stem}_ground.jpg", quality=92)
+
+        idx = b_tree.query(reach)
+        tile_b = colored([buildings[i] for i in sorted(idx)], ground, cfg, color_cache)
+        in_scene.update(b["id"] for b in tile_b)
+        xmin, ymin, xmax, ymax = reach.bounds
+        sel = (t_pts[:, 0] >= xmin) & (t_pts[:, 0] <= xmax) & (t_pts[:, 1] >= ymin) & (t_pts[:, 1] <= ymax)
+        tile_t = [trees[i] for i in np.nonzero(sel)[0]]
+
+        scene = scene_dict(cfg, frame, cam, tile_frames, ground,
+                           f"data/processed/{name}/tiles/{stem}_ground.jpg", tile_b, tile_t)
+        (out_dir / f"{stem}.json").write_text(json.dumps(scene, separators=(",", ":")))
+        index.append({"tile": stem, "scene": f"data/processed/{name}/tiles/{stem}.json",
+                      "frames": [f.name for f in tile_frames], "buildings": len(tile_b), "trees": len(tile_t),
+                      "texture_px": list(ground["ground"].size)})
+        print(f"{stem}: {len(tile_frames)} frames, {len(tile_b)} buildings, {len(tile_t)} trees, "
+              f"texture {ground['ground'].size}")
+
+    (PROCESSED / f"{name}_tiles.json").write_text(json.dumps(index, indent=2) + "\n")
+    tallest = sorted(({"id": b["id"], "h": b["h"]} for b in buildings), key=lambda b: -b["h"])[:10]
+    write_qa(cfg, info, len(in_scene), tallest, len(trees), {
+        "render_tiles": len(index),
+        "max_ground_texture_px": max(tex_sizes),
+        "uv_fit_max_residual_m": max(residuals),
+        "ground_median_filter_px": (cfg.get("ground_filter") or {}).get("median_px"),
+        "frames": len(frames),
+        **lidar_qa,
+    })
+
+
+def refresh_camera(cfg, cam):
+    """Rewrite only the camera block of existing scene files (after a camera
+    setting change), instead of rebuilding mosaics and buildings."""
+    from pixelphilly.scenes import scene_paths
+
+    for rel in scene_paths(cfg):
+        path = REPO_ROOT / rel
+        scene = json.loads(path.read_text())
+        scene["camera"] = camera_params(cfg, cam)
+        path.write_text(json.dumps(scene, separators=(",", ":")))
+        print(f"camera updated: {rel}")
+
+
+def main():
+    import sys
+
+    cfg = load_config()
+    frame, cam, frames = area_setup(cfg)
+    PROCESSED.mkdir(parents=True, exist_ok=True)
+    if "--camera-only" in sys.argv:
+        refresh_camera(cfg, cam)
+        return
+    if cfg.get("render_tile_frames"):
+        main_tiled(cfg, frame, cam, frames)
+    else:
+        main_single(cfg, frame, cam, frames)
 
 
 if __name__ == "__main__":

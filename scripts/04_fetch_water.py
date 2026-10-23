@@ -5,14 +5,14 @@ that invent objects on open water can be spotted (the failure tiny.london hit
 most often).
 """
 
-from pixelphilly.projection import load_config, render_extent_wgs84
-from pixelphilly.sources import fetch_features
+from pixelphilly.projection import load_config
+from pixelphilly.sources import fetch_area_features
 
 cfg = load_config()
-fetch_features(
+fetch_area_features(
+    cfg,
     "Hydrographic_Features_Poly",
     1,
-    render_extent_wgs84(cfg),
-    f"{cfg['name']}_water.geojson",
+    "water",
     "Philadelphia Water Department hydrographic features (polygons)",
 )

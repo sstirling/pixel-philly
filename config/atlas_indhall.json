@@ -1,0 +1,33 @@
+{
+  "name": "atlas_indhall",
+  "label": "Problem atlas: Independence Hall (steeple)",
+  "bbox_wgs84": [
+    -75.15293,
+    39.94665,
+    -75.14707,
+    39.95115
+  ],
+  "camera": {
+    "view_bearing_deg": 54,
+    "elevation_deg": 45,
+    "meters_per_pixel": 0.293,
+    "frame_px": 1024
+  },
+  "max_height_m": 120,
+  "imagery_zoom": 19,
+  "default_building_height_m": 10.0,
+  "ground_filter": {
+    "median_px": 5
+  },
+  "wall_tint": {
+    "max_height_m": 20,
+    "color": [
+      150,
+      82,
+      62
+    ],
+    "mix": 0.55
+  },
+  "height_outlier_ratio": 3.0,
+  "clip_frames_to_area": true
+}

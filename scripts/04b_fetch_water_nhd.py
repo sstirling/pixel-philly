@@ -9,15 +9,15 @@ remain identical to the ones already sent.
 NHD is a U.S. federal dataset (public domain).
 """
 
-from pixelphilly.projection import load_config, render_extent_wgs84
-from pixelphilly.sources import fetch_features
+from pixelphilly.projection import load_config
+from pixelphilly.sources import fetch_area_features
 
 cfg = load_config()
-fetch_features(
+fetch_area_features(
+    cfg,
     "nhd",
     9,
-    render_extent_wgs84(cfg),
-    f"{cfg['name']}_water_nhd.geojson",
+    "water_nhd",
     "USGS National Hydrography Dataset, Area - Large Scale (both banks of the Delaware)",
     base_url="https://hydro.nationalmap.gov/arcgis/rest/services",
     server_type="MapServer",

@@ -1,0 +1,1638 @@
+{
+  "buildings_downloaded": 71500,
+  "buildings_in_scene": 71500,
+  "buildings_dropped": [],
+  "height_source_counts": {
+    "approx_hgt": 71210,
+    "max_hgt": 197,
+    "default": 93
+  },
+  "height_outliers_max_gt_ratio_x_approx": [
+    {
+      "objectid": 11050,
+      "address": "3515 MOORE ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 3.9901025
+    },
+    {
+      "objectid": 11159,
+      "address": "3515 MOORE ST",
+      "approx_hgt_ft": 2,
+      "max_hgt_ft": 6.4901015
+    },
+    {
+      "objectid": 14798,
+      "address": "212-18 N 11TH ST",
+      "approx_hgt_ft": 26,
+      "max_hgt_ft": 79.750156
+    },
+    {
+      "objectid": 15153,
+      "address": "35 S 4TH ST",
+      "approx_hgt_ft": 53,
+      "max_hgt_ft": 164.03998625
+    },
+    {
+      "objectid": 16791,
+      "address": "503 S BROAD ST",
+      "approx_hgt_ft": 16,
+      "max_hgt_ft": 60.65002033
+    },
+    {
+      "objectid": 21184,
+      "address": "722 S 17TH ST",
+      "approx_hgt_ft": 5,
+      "max_hgt_ft": 62.939872
+    },
+    {
+      "objectid": 33901,
+      "address": "1800 BENJAMIN FRANKLIN PKWY",
+      "approx_hgt_ft": 104,
+      "max_hgt_ft": 380.1101385
+    },
+    {
+      "objectid": 131088,
+      "address": "2600 CHRISTIAN ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 41.239855750000004
+    },
+    {
+      "objectid": 186800,
+      "address": "1216-32 WOOD ST",
+      "approx_hgt_ft": 29,
+      "max_hgt_ft": 146.86015132999998
+    },
+    {
+      "objectid": 245640,
+      "address": "2601-11 W GIRARD AVE",
+      "approx_hgt_ft": 16,
+      "max_hgt_ft": 52.469972250000005
+    },
+    {
+      "objectid": 246742,
+      "address": "3968 MOUNT VERNON ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 5.74007583
+    },
+    {
+      "objectid": 247384,
+      "address": "1300-08 N BROAD ST",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 62.44991775
+    },
+    {
+      "objectid": 248178,
+      "address": "1451-57 N BROAD ST",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 52.009968
+    },
+    {
+      "objectid": 250444,
+      "address": "3400 W GIRARD AVE",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 55.25996408
+    },
+    {
+      "objectid": 253940,
+      "address": "3807 CAMBRIDGE ST",
+      "approx_hgt_ft": 2,
+      "max_hgt_ft": 35.06014633
+    },
+    {
+      "objectid": 254485,
+      "address": "3809 CAMBRIDGE ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 25.10983675
+    },
+    {
+      "objectid": 257838,
+      "address": "3400 W GIRARD AVE",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 44.920004330000005
+    },
+    {
+      "objectid": 258022,
+      "address": "3952 WYALUSING AVE",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 25.35984367
+    },
+    {
+      "objectid": 260493,
+      "address": "3400 W GIRARD AVE",
+      "approx_hgt_ft": 4,
+      "max_hgt_ft": 23.31999192
+    },
+    {
+      "objectid": 260969,
+      "address": "3954 WYALUSING AVE",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 26.37998558
+    },
+    {
+      "objectid": 262385,
+      "address": "3400 W GIRARD AVE",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 33.86003108
+    },
+    {
+      "objectid": 262598,
+      "address": "1525 W GIRARD AVE",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 60.32009958
+    },
+    {
+      "objectid": 263000,
+      "address": "4136 MANTUA AVE",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 35.03007692
+    },
+    {
+      "objectid": 263099,
+      "address": "878-80 N 42ND ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 41.48991192
+    },
+    {
+      "objectid": 263129,
+      "address": "3909 PENNSGROVE ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 28.88995692
+    },
+    {
+      "objectid": 264705,
+      "address": "3841 CAMBRIDGE ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 36.08998492
+    },
+    {
+      "objectid": 265743,
+      "address": "3400 W GIRARD AVE",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 59.450131999999996
+    },
+    {
+      "objectid": 265793,
+      "address": "3400 W GIRARD AVE",
+      "approx_hgt_ft": 17,
+      "max_hgt_ft": 63.14001942
+    },
+    {
+      "objectid": 265852,
+      "address": "3400 W GIRARD AVE",
+      "approx_hgt_ft": 2,
+      "max_hgt_ft": 28.10991417
+    },
+    {
+      "objectid": 266318,
+      "address": "827 BROOKLYN ST",
+      "approx_hgt_ft": 22,
+      "max_hgt_ft": 70.43998925
+    },
+    {
+      "objectid": 266575,
+      "address": "3861 FOLSOM ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 25.98001558
+    },
+    {
+      "objectid": 268271,
+      "address": "1625 CHESTNUT ST",
+      "approx_hgt_ft": 56,
+      "max_hgt_ft": 699.959931
+    },
+    {
+      "objectid": 270977,
+      "address": "3850 BROWN ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 37.31005142
+    },
+    {
+      "objectid": 271061,
+      "address": "817 N 41ST ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 40.97009708
+    },
+    {
+      "objectid": 272425,
+      "address": "3400 W GIRARD AVE",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 3.4499174999999997
+    },
+    {
+      "objectid": 272592,
+      "address": "631 N SHEDWICK ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 22.37994617
+    },
+    {
+      "objectid": 272668,
+      "address": "829 N HOLLY ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 25.65989108
+    },
+    {
+      "objectid": 273366,
+      "address": "4045 OGDEN ST",
+      "approx_hgt_ft": 8,
+      "max_hgt_ft": 37.55015642
+    },
+    {
+      "objectid": 274401,
+      "address": "4130-32 LANCASTER AVE",
+      "approx_hgt_ft": 17,
+      "max_hgt_ft": 55.48005242
+    },
+    {
+      "objectid": 275604,
+      "address": "222-32 E WILDEY ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 42.35991125
+    },
+    {
+      "objectid": 275655,
+      "address": "4209 PARRISH ST",
+      "approx_hgt_ft": 3,
+      "max_hgt_ft": 25.46987142
+    },
+    {
+      "objectid": 276697,
+      "address": "3400 W GIRARD AVE",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 55.52991325
+    },
+    {
+      "objectid": 276997,
+      "address": "3907 BROWN ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 36.269878420000005
+    },
+    {
+      "objectid": 277086,
+      "address": "840-42 N HOLLY ST",
+      "approx_hgt_ft": 16,
+      "max_hgt_ft": 51.98996233
+    },
+    {
+      "objectid": 278823,
+      "address": "3209 BARING ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 62.120157
+    },
+    {
+      "objectid": 279045,
+      "address": "3909 BROWN ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 35.359972500000005
+    },
+    {
+      "objectid": 280752,
+      "address": "3400 W GIRARD AVE",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 57.43006408
+    },
+    {
+      "objectid": 281233,
+      "address": "3830 MOUNT VERNON ST",
+      "approx_hgt_ft": 2,
+      "max_hgt_ft": 21.37006225
+    },
+    {
+      "objectid": 281323,
+      "address": "309 N 37TH ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 33.74993575
+    },
+    {
+      "objectid": 281699,
+      "address": "611-19 N 2ND ST",
+      "approx_hgt_ft": 16,
+      "max_hgt_ft": 62.27002383000001
+    },
+    {
+      "objectid": 282675,
+      "address": "700 N 40TH ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 50.97009508
+    },
+    {
+      "objectid": 283500,
+      "address": "1004-06 WOOD ST",
+      "approx_hgt_ft": 16,
+      "max_hgt_ft": 250.55015107999998
+    },
+    {
+      "objectid": 283938,
+      "address": "1815-25 ARCH ST",
+      "approx_hgt_ft": 59,
+      "max_hgt_ft": 434.02001592
+    },
+    {
+      "objectid": 284596,
+      "address": "214 N 13TH ST",
+      "approx_hgt_ft": 36,
+      "max_hgt_ft": 118.44002925
+    },
+    {
+      "objectid": 285266,
+      "address": "433 WIOTA ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 37.46014675
+    },
+    {
+      "objectid": 286270,
+      "address": "1419A-27 ARCH ST",
+      "approx_hgt_ft": 31,
+      "max_hgt_ft": 128.58005442
+    },
+    {
+      "objectid": 286558,
+      "address": "34 S 40TH ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 37.159837669999995
+    },
+    {
+      "objectid": 286576,
+      "address": "3704 BRANDYWINE ST",
+      "approx_hgt_ft": 23,
+      "max_hgt_ft": 70.40988300000001
+    },
+    {
+      "objectid": 287352,
+      "address": "517 N HOLLY ST",
+      "approx_hgt_ft": 25,
+      "max_hgt_ft": 82.46991924999999
+    },
+    {
+      "objectid": 289395,
+      "address": "3900-06 CHESTNUT ST",
+      "approx_hgt_ft": 36,
+      "max_hgt_ft": 152.43985125
+    },
+    {
+      "objectid": 289709,
+      "address": "4015 CHESTNUT ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 3.87998317
+    },
+    {
+      "objectid": 289806,
+      "address": "226-30 N 2ND ST",
+      "approx_hgt_ft": 59,
+      "max_hgt_ft": 203.44991700000003
+    },
+    {
+      "objectid": 289881,
+      "address": "241 RACE ST",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 59.419951919999995
+    },
+    {
+      "objectid": 290002,
+      "address": "515 N HOLLY ST",
+      "approx_hgt_ft": 25,
+      "max_hgt_ft": 77.86015117000001
+    },
+    {
+      "objectid": 290393,
+      "address": "205 N 3RD ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 43.3199165
+    },
+    {
+      "objectid": 290904,
+      "address": "3940-42 CHESTNUT ST",
+      "approx_hgt_ft": 25,
+      "max_hgt_ft": 99.49994108
+    },
+    {
+      "objectid": 291304,
+      "address": "513 N HOLLY ST",
+      "approx_hgt_ft": 25,
+      "max_hgt_ft": 77.47990258
+    },
+    {
+      "objectid": 292103,
+      "address": "3948-50 WALNUT ST",
+      "approx_hgt_ft": 44,
+      "max_hgt_ft": 161.01984717
+    },
+    {
+      "objectid": 292306,
+      "address": "3932 ASPEN ST",
+      "approx_hgt_ft": 3,
+      "max_hgt_ft": 34.729840249999995
+    },
+    {
+      "objectid": 292910,
+      "address": "930 ARCH ST",
+      "approx_hgt_ft": 36,
+      "max_hgt_ft": 116.51011425
+    },
+    {
+      "objectid": 293072,
+      "address": "115 BROWN ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 3.91996108
+    },
+    {
+      "objectid": 293968,
+      "address": "4236 CHESTNUT ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 41.86991442
+    },
+    {
+      "objectid": 294306,
+      "address": "1221-23 RACE ST",
+      "approx_hgt_ft": 16,
+      "max_hgt_ft": 49.339969
+    },
+    {
+      "objectid": 297846,
+      "address": "3944-48 CHESTNUT ST",
+      "approx_hgt_ft": 26,
+      "max_hgt_ft": 101.36995467
+    },
+    {
+      "objectid": 298252,
+      "address": "1312 CHESTNUT ST",
+      "approx_hgt_ft": 21,
+      "max_hgt_ft": 210.4699585
+    },
+    {
+      "objectid": 298492,
+      "address": "2015 CHESTNUT ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 38.390134329999995
+    },
+    {
+      "objectid": 298542,
+      "address": "27 S 19TH ST",
+      "approx_hgt_ft": 34,
+      "max_hgt_ft": 130.520128
+    },
+    {
+      "objectid": 298616,
+      "address": "730 MARKET ST",
+      "approx_hgt_ft": 37,
+      "max_hgt_ft": 151.18007783000002
+    },
+    {
+      "objectid": 299074,
+      "address": "1821-27 RANSTEAD ST",
+      "approx_hgt_ft": 39,
+      "max_hgt_ft": 128.34991917
+    },
+    {
+      "objectid": 299163,
+      "address": "1800 MARKET ST",
+      "approx_hgt_ft": 92,
+      "max_hgt_ft": 504.68992192
+    },
+    {
+      "objectid": 299348,
+      "address": "4010 MARKET ST",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 49.49990425
+    },
+    {
+      "objectid": 299842,
+      "address": "1016-18 RACE ST",
+      "approx_hgt_ft": 21,
+      "max_hgt_ft": 114.880006
+    },
+    {
+      "objectid": 299946,
+      "address": "2112 CHANCELLOR ST",
+      "approx_hgt_ft": 33,
+      "max_hgt_ft": 115.080012
+    },
+    {
+      "objectid": 300014,
+      "address": "440 N PRESTON ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 33.690009329999995
+    },
+    {
+      "objectid": 300049,
+      "address": "1008 RACE ST",
+      "approx_hgt_ft": 28,
+      "max_hgt_ft": 107.48015382999999
+    },
+    {
+      "objectid": 300257,
+      "address": "722-24 MARKET ST",
+      "approx_hgt_ft": 42,
+      "max_hgt_ft": 158.48012925
+    },
+    {
+      "objectid": 300371,
+      "address": "1607-09 WALNUT ST",
+      "approx_hgt_ft": 38,
+      "max_hgt_ft": 183.61010607999998
+    },
+    {
+      "objectid": 300591,
+      "address": "1606 WALNUT ST",
+      "approx_hgt_ft": 68,
+      "max_hgt_ft": 243.27993825
+    },
+    {
+      "objectid": 300809,
+      "address": "122-24 S 13TH ST",
+      "approx_hgt_ft": 16,
+      "max_hgt_ft": 62.26993342
+    },
+    {
+      "objectid": 302364,
+      "address": "123-29 S 17TH ST",
+      "approx_hgt_ft": 79,
+      "max_hgt_ft": 308.200081
+    },
+    {
+      "objectid": 302375,
+      "address": "8-12 S 40TH ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 46.76985442
+    },
+    {
+      "objectid": 302412,
+      "address": "1217-19 CHESTNUT ST",
+      "approx_hgt_ft": 45,
+      "max_hgt_ft": 186.52014183
+    },
+    {
+      "objectid": 303749,
+      "address": "2037 LOCUST ST",
+      "approx_hgt_ft": 43,
+      "max_hgt_ft": 174.26006617
+    },
+    {
+      "objectid": 304404,
+      "address": "1520 WALNUT ST",
+      "approx_hgt_ft": 41,
+      "max_hgt_ft": 282.10000117000004
+    },
+    {
+      "objectid": 304894,
+      "address": "3900 WOODLAND AVE",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 44.050099579999994
+    },
+    {
+      "objectid": 305403,
+      "address": "1424-26 CHESTNUT ST",
+      "approx_hgt_ft": 85,
+      "max_hgt_ft": 333.31997467
+    },
+    {
+      "objectid": 305480,
+      "address": "1221 WALNUT ST",
+      "approx_hgt_ft": 51,
+      "max_hgt_ft": 256.16994292
+    },
+    {
+      "objectid": 305644,
+      "address": "121 S 18TH ST",
+      "approx_hgt_ft": 42,
+      "max_hgt_ft": 183.679856
+    },
+    {
+      "objectid": 305666,
+      "address": "1412-14 CHESTNUT ST",
+      "approx_hgt_ft": 81,
+      "max_hgt_ft": 323.33016325
+    },
+    {
+      "objectid": 306017,
+      "address": "104-06 ARCH ST",
+      "approx_hgt_ft": 41,
+      "max_hgt_ft": 150.76985483
+    },
+    {
+      "objectid": 306540,
+      "address": "240 S BROAD ST",
+      "approx_hgt_ft": 88,
+      "max_hgt_ft": 350.28012575
+    },
+    {
+      "objectid": 307045,
+      "address": "1508-10 WALNUT ST",
+      "approx_hgt_ft": 36,
+      "max_hgt_ft": 294.17996508
+    },
+    {
+      "objectid": 307286,
+      "address": "2510-16 LOCUST ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 228.7999125
+    },
+    {
+      "objectid": 307897,
+      "address": "1400 S 32ND ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 54.910059
+    },
+    {
+      "objectid": 308192,
+      "address": "1 S CHRISTOPHER COLUMBUS BLVD",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 11.26997158
+    },
+    {
+      "objectid": 308195,
+      "address": "1809 CHESTNUT ST",
+      "approx_hgt_ft": 18,
+      "max_hgt_ft": 54.00006867
+    },
+    {
+      "objectid": 309087,
+      "address": "123 S 18TH ST",
+      "approx_hgt_ft": 41,
+      "max_hgt_ft": 184.02014483000002
+    },
+    {
+      "objectid": 309724,
+      "address": "256-66 S 6TH ST",
+      "approx_hgt_ft": 21,
+      "max_hgt_ft": 90.15993008
+    },
+    {
+      "objectid": 309764,
+      "address": "419 PINE ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 31.569953
+    },
+    {
+      "objectid": 310029,
+      "address": "512 SPRUCE ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 32.09016233
+    },
+    {
+      "objectid": 310097,
+      "address": "514 SPRUCE ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 46.45988425
+    },
+    {
+      "objectid": 310431,
+      "address": "600-44 LOMBARD ST",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 66.72013817
+    },
+    {
+      "objectid": 310571,
+      "address": "320-28 S 4TH ST",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 60.43006808
+    },
+    {
+      "objectid": 311125,
+      "address": "2108 SPRUCE ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 55.59009433000001
+    },
+    {
+      "objectid": 311427,
+      "address": "631-33 PINE ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 40.08994508
+    },
+    {
+      "objectid": 311539,
+      "address": "818-20 CHESTNUT ST",
+      "approx_hgt_ft": 68,
+      "max_hgt_ft": 232.35984033
+    },
+    {
+      "objectid": 311569,
+      "address": "1716 WALNUT ST",
+      "approx_hgt_ft": 64,
+      "max_hgt_ft": 257.17998566999995
+    },
+    {
+      "objectid": 311653,
+      "address": "229 S VAN PELT ST",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 50.370094249999994
+    },
+    {
+      "objectid": 312752,
+      "address": "1200 S 20TH ST",
+      "approx_hgt_ft": 18,
+      "max_hgt_ft": 61.72001833
+    },
+    {
+      "objectid": 312881,
+      "address": "113-15 S 16TH ST",
+      "approx_hgt_ft": 39,
+      "max_hgt_ft": 131.9000375
+    },
+    {
+      "objectid": 312946,
+      "address": "2102 SPRUCE ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 39.080153
+    },
+    {
+      "objectid": 313461,
+      "address": "1425 LOCUST ST",
+      "approx_hgt_ft": 55,
+      "max_hgt_ft": 367.95987541999995
+    },
+    {
+      "objectid": 313599,
+      "address": "1811-19 CHESTNUT ST",
+      "approx_hgt_ft": 22,
+      "max_hgt_ft": 108.59005675
+    },
+    {
+      "objectid": 313702,
+      "address": "1 LOXLEY CT",
+      "approx_hgt_ft": 23,
+      "max_hgt_ft": 100.73005450000001
+    },
+    {
+      "objectid": 314548,
+      "address": "1906-08 RITTENHOUSE SQ",
+      "approx_hgt_ft": 51,
+      "max_hgt_ft": 208.83000175
+    },
+    {
+      "objectid": 314999,
+      "address": "501 S 23RD ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 31.63988317
+    },
+    {
+      "objectid": 315016,
+      "address": "1421 WALNUT ST",
+      "approx_hgt_ft": 50,
+      "max_hgt_ft": 166.96985024999998
+    },
+    {
+      "objectid": 315134,
+      "address": "226 MARKET ST",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 49.08008858
+    },
+    {
+      "objectid": 315577,
+      "address": "3922 SPRUCE ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 41.790085749999996
+    },
+    {
+      "objectid": 315910,
+      "address": "425 SPRUCE ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 31.85014217
+    },
+    {
+      "objectid": 315963,
+      "address": "719 PINE ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 65.22014317
+    },
+    {
+      "objectid": 316320,
+      "address": "1008 PINE ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 27.32008633
+    },
+    {
+      "objectid": 316449,
+      "address": "1830 SPRUCE ST",
+      "approx_hgt_ft": 57,
+      "max_hgt_ft": 174.74005108
+    },
+    {
+      "objectid": 316701,
+      "address": "1507 LOCUST ST",
+      "approx_hgt_ft": 24,
+      "max_hgt_ft": 120.32985967
+    },
+    {
+      "objectid": 317141,
+      "address": "1420-34 PINE ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 32.09993042
+    },
+    {
+      "objectid": 317338,
+      "address": "227-29 S BROAD ST",
+      "approx_hgt_ft": 37,
+      "max_hgt_ft": 189.14014992
+    },
+    {
+      "objectid": 317580,
+      "address": "137 S 24TH ST",
+      "approx_hgt_ft": 2,
+      "max_hgt_ft": 36.65993425
+    },
+    {
+      "objectid": 317669,
+      "address": "1634 PINE ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 42.779954749999995
+    },
+    {
+      "objectid": 318638,
+      "address": "2108 SANSOM ST",
+      "approx_hgt_ft": 30,
+      "max_hgt_ft": 134.8599045
+    },
+    {
+      "objectid": 318676,
+      "address": "1214 SANSOM ST",
+      "approx_hgt_ft": 33,
+      "max_hgt_ft": 284.089898
+    },
+    {
+      "objectid": 318694,
+      "address": "1924 PINE ST",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 59.10012108
+    },
+    {
+      "objectid": 318771,
+      "address": "1231 SPRUCE ST",
+      "approx_hgt_ft": 44,
+      "max_hgt_ft": 141.63999625000002
+    },
+    {
+      "objectid": 318862,
+      "address": "1616-26 WALNUT ST",
+      "approx_hgt_ft": 77,
+      "max_hgt_ft": 278.81989242
+    },
+    {
+      "objectid": 319134,
+      "address": "315 S 13TH ST",
+      "approx_hgt_ft": 26,
+      "max_hgt_ft": 81.01990892
+    },
+    {
+      "objectid": 319563,
+      "address": "126 S 16TH ST",
+      "approx_hgt_ft": 55,
+      "max_hgt_ft": 292.58016333
+    },
+    {
+      "objectid": 319818,
+      "address": "1627-29 WALNUT ST",
+      "approx_hgt_ft": 50,
+      "max_hgt_ft": 151.25013283
+    },
+    {
+      "objectid": 320588,
+      "address": "736 S 10TH ST",
+      "approx_hgt_ft": 16,
+      "max_hgt_ft": 52.679944750000004
+    },
+    {
+      "objectid": 320925,
+      "address": "257 S 18TH ST",
+      "approx_hgt_ft": 18,
+      "max_hgt_ft": 56.859910670000005
+    },
+    {
+      "objectid": 322019,
+      "address": "1433 SPRUCE ST",
+      "approx_hgt_ft": 52,
+      "max_hgt_ft": 234.690004
+    },
+    {
+      "objectid": 322082,
+      "address": "400-26 S BROAD ST",
+      "approx_hgt_ft": 69,
+      "max_hgt_ft": 295.430048
+    },
+    {
+      "objectid": 322935,
+      "address": "101-31 CARPENTER ST",
+      "approx_hgt_ft": 25,
+      "max_hgt_ft": 147.08988492
+    },
+    {
+      "objectid": 322941,
+      "address": "108 BAINBRIDGE ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 39.4498545
+    },
+    {
+      "objectid": 324924,
+      "address": "400-36 S 3RD ST",
+      "approx_hgt_ft": 51,
+      "max_hgt_ft": 201.40006933
+    },
+    {
+      "objectid": 325460,
+      "address": "600 S BROAD ST",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 51.45987025
+    },
+    {
+      "objectid": 325544,
+      "address": "1801 SPRUCE ST",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 54.4600445
+    },
+    {
+      "objectid": 325569,
+      "address": "1711 SPRUCE ST",
+      "approx_hgt_ft": 49,
+      "max_hgt_ft": 227.47000492
+    },
+    {
+      "objectid": 326487,
+      "address": "1939-47 N FRONT ST",
+      "approx_hgt_ft": 23,
+      "max_hgt_ft": 74.05006417
+    },
+    {
+      "objectid": 326643,
+      "address": "1 S CHRISTOPHER COLUMBUS BLVD",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 59.48010792
+    },
+    {
+      "objectid": 326644,
+      "address": "211 S CHRISTOPHER COLUMBUS BLVD",
+      "approx_hgt_ft": 73,
+      "max_hgt_ft": 271.89995867
+    },
+    {
+      "objectid": 327571,
+      "address": "1704 MANNING ST",
+      "approx_hgt_ft": 34,
+      "max_hgt_ft": 115.66989982999999
+    },
+    {
+      "objectid": 327649,
+      "address": "259-61 S 15TH ST",
+      "approx_hgt_ft": 49,
+      "max_hgt_ft": 346.38991083
+    },
+    {
+      "objectid": 327989,
+      "address": "311 GASKILL ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 36.3900175
+    },
+    {
+      "objectid": 328327,
+      "address": "634 KATER ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 38.570128249999996
+    },
+    {
+      "objectid": 328476,
+      "address": "916 S 10TH ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 37.56003108
+    },
+    {
+      "objectid": 329959,
+      "address": "790-94 S 6TH ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 36.52014275
+    },
+    {
+      "objectid": 331171,
+      "address": "615-29 S BROAD ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 53.56012592
+    },
+    {
+      "objectid": 331839,
+      "address": "922 S 11TH ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 31.81989108
+    },
+    {
+      "objectid": 332472,
+      "address": "745 S 16TH ST",
+      "approx_hgt_ft": 33,
+      "max_hgt_ft": 134.96986083
+    },
+    {
+      "objectid": 332514,
+      "address": "3401 GRAYS FERRY AVE",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 56.460103499999995
+    },
+    {
+      "objectid": 332582,
+      "address": "914-26 CHRISTIAN ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 35.02007433
+    },
+    {
+      "objectid": 335030,
+      "address": "534-36 SOUTH ST",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 57.63991258
+    },
+    {
+      "objectid": 336433,
+      "address": "1230R-32 POINT BREEZE AVE",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 37.02012575
+    },
+    {
+      "objectid": 336501,
+      "address": "801 SCHUYLKILL AVE",
+      "approx_hgt_ft": 3,
+      "max_hgt_ft": 11.58005975
+    },
+    {
+      "objectid": 336909,
+      "address": "1641 FITZWATER ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 41.67995375
+    },
+    {
+      "objectid": 337080,
+      "address": "709-11 ALTER ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 34.269956
+    },
+    {
+      "objectid": 338003,
+      "address": "1212 S 10TH ST",
+      "approx_hgt_ft": 8,
+      "max_hgt_ft": 33.20000883
+    },
+    {
+      "objectid": 338025,
+      "address": "909 FEDERAL ST",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 41.889894670000004
+    },
+    {
+      "objectid": 338196,
+      "address": "1409-13 FITZWATER ST",
+      "approx_hgt_ft": 16,
+      "max_hgt_ft": 56.19010333
+    },
+    {
+      "objectid": 339900,
+      "address": "1331 S 36TH ST",
+      "approx_hgt_ft": 24,
+      "max_hgt_ft": 73.19009633
+    },
+    {
+      "objectid": 340175,
+      "address": "1142 S 15TH ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 42.37005883
+    },
+    {
+      "objectid": 340599,
+      "address": "1238 CHRISTIAN ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 41.09008492
+    },
+    {
+      "objectid": 341399,
+      "address": "1333 S 36TH ST",
+      "approx_hgt_ft": 23,
+      "max_hgt_ft": 77.18995749999999
+    },
+    {
+      "objectid": 341833,
+      "address": "928 S 11TH ST",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 48.509882749999996
+    },
+    {
+      "objectid": 343396,
+      "address": "1335-39 S 36TH ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 62.59989542
+    },
+    {
+      "objectid": 343544,
+      "address": "1407 S BROAD ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 48.21999292
+    },
+    {
+      "objectid": 343984,
+      "address": "805 CARPENTER ST",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 43.2900145
+    },
+    {
+      "objectid": 345497,
+      "address": "515 MANTON ST",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 44.040015
+    },
+    {
+      "objectid": 346171,
+      "address": "1225 FITZWATER ST",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 50.23993558
+    },
+    {
+      "objectid": 348329,
+      "address": "782-84 S 3RD ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 37.78005117
+    },
+    {
+      "objectid": 348548,
+      "address": "928 S 5TH ST",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 48.48002217
+    },
+    {
+      "objectid": 349120,
+      "address": "958-60 S FRONT ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 33.390114919999995
+    },
+    {
+      "objectid": 351397,
+      "address": "908-18 WASHINGTON AVE",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 42.41015742
+    },
+    {
+      "objectid": 357107,
+      "address": "1213 ANNIN ST",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 43.20983633
+    },
+    {
+      "objectid": 357262,
+      "address": "1339 S CLEVELAND ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 44.720054329999996
+    },
+    {
+      "objectid": 359668,
+      "address": "1309 S PHILIP ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 36.91983667
+    },
+    {
+      "objectid": 366806,
+      "address": "3515 MOORE ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 10.280120170000002
+    },
+    {
+      "objectid": 370588,
+      "address": "3515 MOORE ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 10.54987008
+    },
+    {
+      "objectid": 391035,
+      "address": "1435 VINE ST",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 106.79991883
+    },
+    {
+      "objectid": 403401,
+      "address": "115 S 19TH ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 27.06002358
+    },
+    {
+      "objectid": 403640,
+      "address": "263 S 17TH ST",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 41.929969330000006
+    },
+    {
+      "objectid": 404463,
+      "address": "1710-12 SANSOM ST",
+      "approx_hgt_ft": 33,
+      "max_hgt_ft": 167.339889
+    },
+    {
+      "objectid": 404959,
+      "address": "115 S 19TH ST",
+      "approx_hgt_ft": 2,
+      "max_hgt_ft": 31.040001999999998
+    },
+    {
+      "objectid": 405041,
+      "address": "1601 VINE ST",
+      "approx_hgt_ft": 33,
+      "max_hgt_ft": 118.70628054
+    },
+    {
+      "objectid": 409041,
+      "address": "1248 N BROAD ST",
+      "approx_hgt_ft": 41,
+      "max_hgt_ft": 136.6901265
+    },
+    {
+      "objectid": 410441,
+      "address": "233-35 S 18TH ST",
+      "approx_hgt_ft": 57,
+      "max_hgt_ft": 270.23001958000003
+    },
+    {
+      "objectid": 413545,
+      "address": "22-34 N 2ND ST",
+      "approx_hgt_ft": 55,
+      "max_hgt_ft": 182.5700355
+    },
+    {
+      "objectid": 413578,
+      "address": "255 PINE ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 39.2199515
+    },
+    {
+      "objectid": 413908,
+      "address": "129 S 30TH ST",
+      "approx_hgt_ft": 136,
+      "max_hgt_ft": 470.11990549999996
+    },
+    {
+      "objectid": 414227,
+      "address": "3700 CURIE BLVD",
+      "approx_hgt_ft": 76,
+      "max_hgt_ft": 232.96303282
+    },
+    {
+      "objectid": 416205,
+      "address": "235-39 QUEEN ST",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 55.13485031
+    },
+    {
+      "objectid": 417149,
+      "address": "1919-43 MARKET ST",
+      "approx_hgt_ft": 69,
+      "max_hgt_ft": 317.959929
+    },
+    {
+      "objectid": 418152,
+      "address": "3905-07 WALNUT ST",
+      "approx_hgt_ft": 17,
+      "max_hgt_ft": 85.02992633
+    },
+    {
+      "objectid": 418167,
+      "address": "200 W WASHINGTON SQ",
+      "approx_hgt_ft": 53,
+      "max_hgt_ft": 399.93005683
+    },
+    {
+      "objectid": 419687,
+      "address": "915-17 WALNUT ST",
+      "approx_hgt_ft": 96,
+      "max_hgt_ft": 373.170051
+    },
+    {
+      "objectid": 421224,
+      "address": "636 N 37TH ST",
+      "approx_hgt_ft": 2,
+      "max_hgt_ft": 35.329983080000005
+    },
+    {
+      "objectid": 421257,
+      "address": "1910 CHESTNUT ST",
+      "approx_hgt_ft": 50,
+      "max_hgt_ft": 308.23006942
+    },
+    {
+      "objectid": 421271,
+      "address": "517 DELANCEY ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 40.740012
+    },
+    {
+      "objectid": 422144,
+      "address": "400 N BROAD ST",
+      "approx_hgt_ft": 103,
+      "max_hgt_ft": 336.10015408
+    },
+    {
+      "objectid": 422258,
+      "address": "2121 SANSOM ST",
+      "approx_hgt_ft": 58,
+      "max_hgt_ft": 231.7900215
+    },
+    {
+      "objectid": 428251,
+      "address": "1109 S BROAD ST",
+      "approx_hgt_ft": 24,
+      "max_hgt_ft": 84.27991992
+    },
+    {
+      "objectid": 482721,
+      "address": "1605-27 SANSOM ST",
+      "approx_hgt_ft": 89,
+      "max_hgt_ft": 310.959915
+    },
+    {
+      "objectid": 485106,
+      "address": "423 MILLER ST",
+      "approx_hgt_ft": 20,
+      "max_hgt_ft": 74.5600265
+    },
+    {
+      "objectid": 485712,
+      "address": "2533 W GIRARD AVE",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 43.679964580000004
+    },
+    {
+      "objectid": 487025,
+      "address": "806 N PRESTON ST",
+      "approx_hgt_ft": 3,
+      "max_hgt_ft": 36.77011008
+    },
+    {
+      "objectid": 487619,
+      "address": "819-41 N 8TH ST",
+      "approx_hgt_ft": 39,
+      "max_hgt_ft": 129.26010275
+    },
+    {
+      "objectid": 487622,
+      "address": "3400 W GIRARD AVE",
+      "approx_hgt_ft": 16,
+      "max_hgt_ft": 64.29005233000001
+    },
+    {
+      "objectid": 488810,
+      "address": "1139 SPRING GARDEN ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 42.110063
+    },
+    {
+      "objectid": 488818,
+      "address": "27-29 S 40TH ST",
+      "approx_hgt_ft": 35,
+      "max_hgt_ft": 107.26987025
+    },
+    {
+      "objectid": 489335,
+      "address": "1 S CHRISTOPHER COLUMBUS BLVD",
+      "approx_hgt_ft": 8,
+      "max_hgt_ft": 27.18012417
+    },
+    {
+      "objectid": 489522,
+      "address": "1400 JOHN F KENNEDY BLVD",
+      "approx_hgt_ft": 170,
+      "max_hgt_ft": 558.2099034199999
+    },
+    {
+      "objectid": 489559,
+      "address": "3820-24 BARING ST",
+      "approx_hgt_ft": 2,
+      "max_hgt_ft": 40.07989817
+    },
+    {
+      "objectid": 489858,
+      "address": "4115 SPRING GARDEN ST",
+      "approx_hgt_ft": 27,
+      "max_hgt_ft": 81.91001283
+    },
+    {
+      "objectid": 490056,
+      "address": "1919 WALNUT ST",
+      "approx_hgt_ft": 57,
+      "max_hgt_ft": 606.20014217
+    },
+    {
+      "objectid": 490572,
+      "address": "2106 SPRUCE ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 50.67015667
+    },
+    {
+      "objectid": 490821,
+      "address": "1300-02 WALNUT ST",
+      "approx_hgt_ft": 28,
+      "max_hgt_ft": 258.69014625
+    },
+    {
+      "objectid": 491008,
+      "address": "1 DOCK ST",
+      "approx_hgt_ft": 50,
+      "max_hgt_ft": 368.63014825000005
+    },
+    {
+      "objectid": 491058,
+      "address": "1607-27 LOCUST ST",
+      "approx_hgt_ft": 50,
+      "max_hgt_ft": 160.41009467
+    },
+    {
+      "objectid": 491290,
+      "address": "2100-06 CHESTNUT ST",
+      "approx_hgt_ft": 58,
+      "max_hgt_ft": 176.41007767
+    },
+    {
+      "objectid": 491676,
+      "address": "210 S 23RD ST",
+      "approx_hgt_ft": 32,
+      "max_hgt_ft": 123.23998983
+    },
+    {
+      "objectid": 492071,
+      "address": "405-25 QUEEN ST",
+      "approx_hgt_ft": 16,
+      "max_hgt_ft": 81.44990733
+    },
+    {
+      "objectid": 492282,
+      "address": "229 S 9TH ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 47.32004933
+    },
+    {
+      "objectid": 492356,
+      "address": "259-61 S 17TH ST",
+      "approx_hgt_ft": 47,
+      "max_hgt_ft": 303.92995557999996
+    },
+    {
+      "objectid": 492642,
+      "address": "3600 CIVIC CENTER BLVD",
+      "approx_hgt_ft": 76,
+      "max_hgt_ft": 314.37012258
+    },
+    {
+      "objectid": 492835,
+      "address": "2001-05 WASHINGTON AVE",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 49.26996842
+    },
+    {
+      "objectid": 492861,
+      "address": "3615-35 CHESTNUT ST",
+      "approx_hgt_ft": 68,
+      "max_hgt_ft": 391.16986858
+    },
+    {
+      "objectid": 493894,
+      "address": "2429 WASHINGTON AVE",
+      "approx_hgt_ft": 18,
+      "max_hgt_ft": 64.86993442
+    },
+    {
+      "objectid": 494542,
+      "address": "2633-45 WHARTON ST",
+      "approx_hgt_ft": 18,
+      "max_hgt_ft": 55.839837169999996
+    },
+    {
+      "objectid": 494599,
+      "address": "3515 MOORE ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 3.26005567
+    },
+    {
+      "objectid": 495228,
+      "address": "3515 MOORE ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 3.48984483
+    },
+    {
+      "objectid": 496932,
+      "address": "124 S 16TH ST",
+      "approx_hgt_ft": 55,
+      "max_hgt_ft": 318.34984917
+    },
+    {
+      "objectid": 497888,
+      "address": "1265 N DOVER ST",
+      "approx_hgt_ft": 2,
+      "max_hgt_ft": 23.70993258
+    },
+    {
+      "objectid": 498459,
+      "address": "1912 CHESTNUT ST",
+      "approx_hgt_ft": 35,
+      "max_hgt_ft": 310.88013533000003
+    },
+    {
+      "objectid": 498567,
+      "address": "1837 SPRUCE ST",
+      "approx_hgt_ft": 52,
+      "max_hgt_ft": 201.22011383
+    },
+    {
+      "objectid": 498578,
+      "address": "338 SPRUCE ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 48.05004375
+    },
+    {
+      "objectid": 498649,
+      "address": null,
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 305.24990267000004
+    },
+    {
+      "objectid": 498703,
+      "address": null,
+      "approx_hgt_ft": 7,
+      "max_hgt_ft": 44.50985717
+    },
+    {
+      "objectid": 498959,
+      "address": "33-35 S 19TH ST",
+      "approx_hgt_ft": 38,
+      "max_hgt_ft": 130.61986333
+    },
+    {
+      "objectid": 499467,
+      "address": null,
+      "approx_hgt_ft": 2,
+      "max_hgt_ft": 6.600059669999999
+    },
+    {
+      "objectid": 499517,
+      "address": null,
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 3.50994275
+    },
+    {
+      "objectid": 501774,
+      "address": "3721 CHESTNUT ST",
+      "approx_hgt_ft": 43,
+      "max_hgt_ft": 283.06984632999996
+    },
+    {
+      "objectid": 544975,
+      "address": "1531-33 LOCUST ST",
+      "approx_hgt_ft": 66,
+      "max_hgt_ft": 267.21989475000004
+    },
+    {
+      "objectid": 544977,
+      "address": "14 S FRONT ST",
+      "approx_hgt_ft": 27,
+      "max_hgt_ft": 85.41996725
+    },
+    {
+      "objectid": 546041,
+      "address": "211 S CHRISTOPHER COLUMBUS BLVD",
+      "approx_hgt_ft": 73,
+      "max_hgt_ft": 271.89995867
+    }
+  ],
+  "tallest_buildings_m": [
+    {
+      "id": 115025,
+      "h": 297.48
+    },
+    {
+      "id": 418347,
+      "h": 278.59
+    },
+    {
+      "id": 268206,
+      "h": 229.82
+    },
+    {
+      "id": 490346,
+      "h": 226.77
+    },
+    {
+      "id": 301875,
+      "h": 221.59
+    },
+    {
+      "id": 413738,
+      "h": 218.24
+    },
+    {
+      "id": 302944,
+      "h": 206.35
+    },
+    {
+      "id": 388832,
+      "h": 188.06
+    },
+    {
+      "id": 325911,
+      "h": 184.1
+    },
+    {
+      "id": 392181,
+      "h": 176.17
+    }
+  ],
+  "trees_in_scene": 41906,
+  "render_tiles": 30,
+  "max_ground_texture_px": 12544,
+  "uv_fit_max_residual_m": 5.2087066022633796e-05,
+  "ground_median_filter_px": 5,
+  "frames": 304
+}

@@ -73,3 +73,45 @@ def test_same_seed_same_output():
         noise = torch.randn(C, H, W, generator=torch.Generator().manual_seed(9))
         runs.append(joint_denoise(noise, SIGMAS, two_grids(H, W), biased_predictor(x0, seed=3)))
     assert torch.equal(runs[0], runs[1])
+
+
+def l_shaped_active():
+    """An L-shaped region inside the canvas; the rest is inactive."""
+    active = np.zeros((H, W), bool)
+    active[:, :160] = True
+    active[160:, :] = True
+    return active
+
+
+def test_active_mask_leaves_inactive_cells_untouched():
+    from pixelphilly.windows import active_grids
+
+    x0 = make_target()
+    noise = torch.randn(C, H, W, generator=torch.Generator().manual_seed(5))
+    active = l_shaped_active()
+    grids = active_grids(two_grids(H, W), active)
+    oracle = lambda xw, y, x, s: (xw - x0[:, y : y + xw.shape[1], x : x + xw.shape[2]]) / s  # noqa: E731
+    out = joint_denoise(noise, SIGMAS, grids, oracle, active=torch.from_numpy(active))
+    act = torch.from_numpy(active)
+    # Active cells are fully denoised; inactive cells far from the region keep their noise
+    assert torch.allclose(out[:, act], x0[:, act], atol=1e-5)
+    far = ~torch.from_numpy(np.pad(active, 0))
+    far[:, :160 + WIN] = False
+    far[160 - WIN :, :] = False
+    assert torch.equal(out[:, far], noise[:, far])
+
+
+def test_active_mask_still_seamless():
+    from pixelphilly.windows import active_grids
+
+    x0 = make_target()
+    noise = torch.randn(C, H, W, generator=torch.Generator().manual_seed(5))
+    active = l_shaped_active()
+    grids = active_grids(two_grids(H, W), active)
+    joint = joint_denoise(noise, SIGMAS, grids, biased_predictor(x0), active=torch.from_numpy(active))
+    edges = sorted({p for g in grids for y, x in g for p in (y, y + WIN, x, x + WIN)} - {0, H, W})
+    # Measure only inside the active region (the bottom band is active across the full width)
+    band = to_image(joint)[160:, :]
+    ref = to_image(x0)[160:, :]
+    cols = [e for e in edges if 0 < e < W]
+    assert seam_ratio_lines(band, cols, []) < seam_ratio_lines(ref, cols, []) + 0.15

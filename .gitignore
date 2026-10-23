@@ -16,3 +16,6 @@ data/processed/*.png
 output/
 
 .DS_Store
+data/processed/*/tiles/
+data/raw/lidar/
+data/processed/*.npz
