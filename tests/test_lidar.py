@@ -308,3 +308,76 @@ def test_franklin_field_upper_deck_keeps_its_cascade_and_open_field():
     deck = sorted({round(p["h"]) for p in parts if 13 <= p["h"] <= 27})
     assert len(deck) >= 5, deck
     assert any(13 <= p["h"] <= 17 for p in parts), "the upper deck's front rows"
+
+
+def _rect(x0, y0, x1, y1, h):
+    return {"h": h, "polys": [[[[x0, y0], [x1, y0], [x1, y1], [x0, y1]]]]}
+
+
+def test_seating_rows_are_terraces():
+    # Franklin Field's upper deck: 2 m steps, each row a ~3 m strip. The
+    # faces between rows are seat risers, not façades, so they shouldn't get
+    # the brick wall tint (the drawing turned them into brick with windows)
+    from pixelphilly.lidar import terrace_parts
+
+    rows = [_rect(0, 3 * k, 100, 3 * k + 3, 14 + 2 * k) for k in range(6)]  # 14..24 m
+    assert terrace_parts(rows) == {1, 2, 3, 4}  # the front row and the rim are not mid-cascade
+
+
+def test_tower_setbacks_and_main_roofs_are_not_terraces():
+    from pixelphilly.lidar import terrace_parts
+
+    # A tower with 9 m setbacks (steps too big for seats)
+    tower = [_rect(0, 0, 40, 40, 100), _rect(5, 5, 35, 35, 109), _rect(10, 10, 30, 30, 118)]
+    assert terrace_parts(tower) == set()
+    # A main roof between a 2 m penthouse and a 3 m-lower wing: not a strip
+    block = [_rect(0, 0, 30, 30, 20), _rect(10, 10, 16, 16, 22.5), _rect(30, 0, 40, 30, 17)]
+    assert terrace_parts(block) == set()
+
+
+def test_only_footprints_around_a_field_are_stadiums():
+    # Seating-row coloring applies only to footprints that wrap a playing
+    # field. A pitched roof drawn in 2 m tiers looks just like a seating
+    # cascade (163 ordinary buildings matched), but no ordinary building
+    # encloses ~5,000 m² of open ground; a football field alone is ~5,350 m²
+    from shapely.geometry import Point, box
+
+    from pixelphilly.lidar import encloses_field
+
+    horseshoe = box(-100, -60, 100, 60).difference(box(-80, -40, 120, 40))  # Franklin Field-like, open at one end
+    assert encloses_field(horseshoe)
+    bowl = Point(0, 0).buffer(110).difference(Point(0, 0).buffer(70))  # the Linc-like ring
+    assert encloses_field(bowl)
+    u_building = box(0, 0, 60, 40).difference(box(15, 10, 45, 40))  # U with a 900 m² courtyard
+    assert not encloses_field(u_building)
+    assert not encloses_field(box(0, 0, 100, 30))  # a long warehouse
+
+
+def _fixture_parts(name):
+    from pathlib import Path
+
+    from shapely import wkt
+
+    from pixelphilly.lidar import footprint_base
+
+    z = np.load(Path(__file__).parent / "fixtures" / name)
+    fp = wkt.loads(str(z["footprint_wkt"]))
+    origin = tuple(z["origin"])
+    base = footprint_base(fp, z["ground"], origin, RES)
+    parts = building_parts(fp, z["dsm"], origin, RES, base=base,
+                           ceiling=float(z["ceiling"]), typical=float(z["typical"]))
+    return fp, parts
+
+
+def test_penn_quad_is_not_a_stadium_but_franklin_field_is():
+    # Real data: Penn's Quadrangle (3600 Spruce St) wraps lawns over
+    # 5,000 m², so it passed the field test, and two pitched-roof strips were
+    # colored as seat risers: its brick east wing drew gray and striped
+    # (downtown_lidar v3). A seating bowl has dozens of rows (Franklin Field
+    # 32, the Linc 42, CBP 34); the Quad has 2
+    from pixelphilly.lidar import stand_terraces
+
+    fp, parts = _fixture_parts("penn_quad_grid.npz")
+    assert stand_terraces(fp, parts) == set()
+    fp, parts = _fixture_parts("franklinfield_grid.npz")
+    assert len(stand_terraces(fp, parts)) >= 10

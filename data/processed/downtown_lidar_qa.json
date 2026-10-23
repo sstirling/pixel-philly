@@ -1,6 +1,6 @@
 {
   "buildings_downloaded": 71517,
-  "buildings_in_scene": 160824,
+  "buildings_in_scene": 161767,
   "buildings_dropped": [],
   "height_source_counts": {
     "approx_hgt": 71210,
@@ -1590,43 +1590,43 @@
   "tallest_buildings_m": [
     {
       "id": "418347-13",
-      "h": 345.77
+      "h": 345.33
     },
     {
       "id": "418347-11",
-      "h": 342.41
+      "h": 341.97
     },
     {
       "id": "418347-12",
-      "h": 342.41
+      "h": 341.97
     },
     {
       "id": "418347-10",
-      "h": 303.83
-    },
-    {
-      "id": "115025-22",
-      "h": 296.98
-    },
-    {
-      "id": "418347-8",
-      "h": 294.91
-    },
-    {
-      "id": "115025-18",
-      "h": 290.68
-    },
-    {
-      "id": "115025-19",
-      "h": 290.63
-    },
-    {
-      "id": "115025-17",
-      "h": 290.62
+      "h": 303.39
     },
     {
       "id": "115025-20",
-      "h": 290.62
+      "h": 296.57
+    },
+    {
+      "id": "418347-8",
+      "h": 294.47
+    },
+    {
+      "id": "115025-16",
+      "h": 290.26
+    },
+    {
+      "id": "115025-17",
+      "h": 290.22
+    },
+    {
+      "id": "115025-18",
+      "h": 290.21
+    },
+    {
+      "id": "115025-15",
+      "h": 290.2
     }
   ],
   "trees_in_scene": 41906,
@@ -1635,8 +1635,9 @@
   "uv_fit_max_residual_m": 5.2087066022633796e-05,
   "ground_median_filter_px": 5,
   "frames": 304,
-  "lidar_buildings_shaped": 56285,
-  "lidar_fallback_single_height": 463,
-  "lidar_parts": 145592,
+  "lidar_buildings_shaped": 56284,
+  "lidar_fallback_single_height": 464,
+  "lidar_parts": 146534,
+  "lidar_terrace_parts": 30,
   "lidar_margin_m": 100.0
 }

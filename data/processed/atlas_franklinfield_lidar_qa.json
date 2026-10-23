@@ -77,5 +77,9 @@
   "lidar_buildings_shaped": 57,
   "lidar_fallback_single_height": 5,
   "lidar_parts": 1096,
+  "lidar_terrace_parts": 32,
+  "lidar_stadiums": [
+    106422
+  ],
   "lidar_margin_m": 100.0
 }

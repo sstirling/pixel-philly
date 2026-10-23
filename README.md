@@ -129,6 +129,7 @@ Every script works on any area, picked with the `PP_AREA` environment variable (
 | `src/pixelphilly/lidar.py` | LAS → 0.5 m height grid, footprint base, stepped building parts, noise ceiling |
 | `scripts/04c_fetch_lidar.py` | Downloads the City LiDAR tiles an area needs |
 | `scripts/17_atlas_sheet.py` | Problem-atlas before/after sheet (`output/atlas/compare.html`) |
+| `scripts/18_qa_scan.py` | Pre-GPU QA gate: needles, stadiums, LiDAR fallbacks |
 | `render/` | three.js page that draws the scene (three.js r169 vendored, MIT) |
 | `prompts/redraw_v*.txt` | Redraw prompts, versioned; v3 is current. Each change gets a new file name. |
 | `scripts/01–11` | The pipeline. Run order is in "Reproduce it"; 08 builds the page, 09 checks alignment. |
@@ -291,9 +292,53 @@ uv run python scripts/15_joint_sample.py --full --volume --detach --name qwen_jo
     --prompt-text "Redraw this render as isometric pixel art in the pixel philly style."
 uv run python scripts/15_joint_sample.py --collect --name qwen_joint_light8       # repeat until done (~52 min)
 uv run python scripts/10_repaint_water.py --prompt qwen_joint_light8
-uv run python scripts/16_build_tiles.py --prompt qwen_joint_light8 --version v2 --with-photo
-# http://127.0.0.1:8137/viewer/?area=downtown_lidar&v=v2
+uv run python scripts/16_build_tiles.py --prompt qwen_joint_light8 --version v4 --with-photo
+# http://127.0.0.1:8137/viewer/?area=downtown_lidar&v=v4
 ```
+
+## Downtown and South Philly (Oct. 23)
+
+`config/south_lidar.json` covers downtown plus South Philadelphia in one area: bbox [-75.205, 39.880, -75.125, 39.975], 40th St/the Schuylkill to the Delaware and Girard Ave to the bottom of the Navy Yard, about 72 km².
+- **Why one area:** it's drawn in one joint pass, so there's no seam between downtown and South Philly. Today each area has its own projection origin and frame grid, so separately drawn areas wouldn't line up. Drawing region by region with the neighbor held fixed is deferred to the citywide plan.
+- **Scale:** 672 frames, 58 render tiles, 113 LiDAR tiles, 115,885 footprints.
+
+```bash
+export PP_AREA=south_lidar
+for s in 01_fetch_buildings 02_fetch_trees 03_fetch_imagery 04_fetch_water 04b_fetch_water_nhd 04c_fetch_lidar; do uv run python scripts/$s.py; done
+uv run python scripts/05_build_scene.py         # ~70 min the first time, 3.9 GB peak RAM
+uv run python scripts/06_render.py && uv run python scripts/06_render.py --mode mask && uv run python scripts/09_check_alignment.py
+uv run python scripts/18_qa_scan.py             # needles, stadiums, LiDAR fallbacks -> output/<area>/qa_scan.json
+uv run python scripts/15_joint_sample.py --full --volume --detach --name qwen_joint_light8 --lightning 8 \
+    --style /runs/lora/qe2511_oldcity_r16_v1/qe2511_oldcity_r16_v1.safetensors \
+    --prompt-text "Redraw this render as isometric pixel art in the pixel philly style."
+uv run python scripts/15_joint_sample.py --collect --name qwen_joint_light8       # repeat until done (~2 h)
+uv run python scripts/10_repaint_water.py --prompt qwen_joint_light8
+uv run python scripts/16_build_tiles.py --prompt qwen_joint_light8 --version v1 --with-photo
+# http://127.0.0.1:8137/viewer/?area=south_lidar&v=v1
+```
+
+**QA scan** (`scripts/18_qa_scan.py`, `src/pixelphilly/qa_scan.py`). This is the gate before paying for a drawing.
+- **Needles:** parts under 40 m² that are more than twice the tallest part within 3 m and over 20 m above it.
+- **Stadiums:** footprints given seat-colored risers.
+- **LiDAR fallbacks:** the count of single-height fallbacks.
+
+Check every hit against the 2024 aerial. The known exception is 905-11 Walnut St: a 51 m part that matches its footprint's typical City height.
+
+**Alignment exceptions:** sparse frames full of small objects (port and Navy Yard structures) can fall under IoU 0.97 with zero shift. One-pixel edge rounding between the WebGL and Python rasterizers dominates small outlines. These are reviewed with diff images, not waved through.
+
+## Open issues
+
+Tracked across rounds; details in CHANGELOG.
+
+| Issue | Where | Likely cause | Kind |
+|---|---|---|---|
+| Ships and cranes look unusual (Stephen, Oct. 23) | Navy Yard basin, Packer Ave terminal | Ships and cranes aren't in the footprint layer: ships are flat aerial texture on the water, and the water repaint partly paints over them (a white fragment in the basin). Cranes are flat smears with their shadows. Stacked containers extrude as buildings with the brick tint | Geometry, color and drawing |
+| Construction sites drawn with invented water or lawns | Penn's Landing and elsewhere | Drawing-model behavior on featureless ground | Model (training) |
+| Stadium outer walls drawn with windows | The Linc, CBP, Franklin Field | Drawing-model behavior: tall walls read as façades | Model (training) |
+| Franklin Field's lower deck missing | Franklin Field | Hidden under the upper deck; aerial LiDAR can't see it. Showing it would mean inferred geometry and raised parts in the renderer | Geometry (inferred) |
+| CBP's tallest element capped at 50.5 m (was 71 m) | Citizens Bank Park | The base is now street level, not the sunken field, and the 99.5th-percentile cap clips it | Geometry |
+| One kept needle, 51 m | 905-11 Walnut St | Matches the footprint's typical City height; the aerial is inconclusive | Geometry |
+| Count queries don't retry ArcGIS error bodies | `sources.py` | The feature path retries; the count path doesn't (failed once, Oct. 23) | Code |
 
 ## Licensing and open questions (for legal / standards)
 

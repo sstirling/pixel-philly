@@ -36,11 +36,13 @@ NOTES = {
                  "on the 74 m building next door (no City height on record), which had drawn as two spires.",
     "indhall": "Small change. Independence Hall's steeple appears, but it's thin at this zoom. "
                "The LiDAR drawing turned a shaded tree area into brown dirt (sampling variation, not LiDAR).",
-    "franklinfield": "Better. The stands slope down to the track in tiers; the baseline stands were solid walls.",
+    "franklinfield": "Better. The base now comes from the field, not the nearby rail cut (heights were 4.7 m too high), the upper deck "
+                     "keeps its rows, and seat risers take the seats' color. The lower deck under the overhang isn't visible to LiDAR.",
     "linc": "Much better. The baseline drew the inside of the bowl as an apartment-style facade. "
             "With LiDAR the bowl is open, with tiered seating and the canopy ring. The outer walls still get windows.",
     "cbp": "Much better. Open bowl with tiered seating around the field; the baseline drew window walls inside the park. "
-           "One 16 m² structure at 38 m on the stands was flattened as a spike; it may be real (a light tower or sign).",
+           "The sunken field used to set the base; it now comes from street level, so the tallest element (likely the scoreboard) "
+           "is capped at 50.5 m instead of 71 m.",
     "pennslanding": "Not targeted. The baseline drawing invented a swimming pool on the construction site; "
                     "the LiDAR drawing shows dirt. That difference is sampling luck, not a fix.",
 }

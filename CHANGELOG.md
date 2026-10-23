@@ -94,6 +94,116 @@ Total model spend for the pilot: 37 successful calls, about $4.96 at standard pr
 
 The land tone shifts are what tiny.london's joint denoising solves. A cheaper experiment would be to match each frame's color statistics to its neighbors where they overlap; that would need overlapping frames, which the current lattice doesn't have.
 
+## 2026-10-23 (evening): downtown + South Philly, one canvas (south_lidar v1)
+
+Stephen chose South Philly and the stadiums as the next ring, drawn with downtown as one combined canvas so there's no seam, and including the Navy Yard.
+
+### Pre-flight
+- **Area:** bbox [-75.205, 39.880, -75.125, 39.975], ~72 km².
+- **Frames:** 672 (plan limit 900). 58 render tiles.
+- **Viewer lon/lat fit:** max error 8.6e-7 px, so the cubic still holds.
+- **LiDAR:** 113 tiles (60 on disk, 53 new).
+
+### Data
+- 115,885 footprints, 53,072 trees, 124 PWD and 26 NHD water polygons, 26,215 z19 imagery tiles (13,426 new). Fetched Oct. 23.
+- The PWD fetch failed once with `KeyError: 'count'`: the count query returned an ArcGIS error body, and that path doesn't use the error-body retry. It succeeded on rerun. The count query should get the same retry (to do).
+- LiDAR on disk is now 85 GB.
+
+### Build and checks
+- **Scene build:** 69 min, 3.9 GB peak RAM (less than the 9–10 GB estimate). 104,846 footprints shaped into 232,853 parts; 1,107 single-height fallbacks. Grid cache 1.46 GB.
+- **Alignment:** 472 of 476 checked frames pass. The four exceptions (`frame_11_16`, `frame_31_23`, `frame_30_24`, `frame_35_15`; IoU 0.944–0.965) all have zero shift.
+  - Their diff images show 210–790 mismatched pixels, all one-pixel fringes on rows of small structures (port and Navy Yard).
+  - Reviewed and accepted. Downtown's earlier `frame_09_18` exception doesn't recur, because the lattice differs.
+- **New QA gate:** `scripts/18_qa_scan.py` (`src/pixelphilly/qa_scan.py`, test-first in `tests/test_qa_scan.py`), plus a `lidar_stadiums` QA key in `05_build_scene.py`.
+  - Stadiums: exactly the Linc, Citizens Bank Park and Franklin Field. The Wells Fargo Center (roofed) correctly does not pass.
+  - Needles: only the known 905-11 Walnut St piece.
+
+### Drawing
+- **Time and cost:** 119.6 min on one H100, ~$7.87. 2,594 windows, 69.3 GB peak.
+- **Seams:** median 1.009, 95th pct 1.38 (1,100 frame-border segments). Downtown v4 was 1.003 / 1.43.
+- **Tiles:** v1 is 6,535 tiles (854 MB) plus the 141 MB photo layer. Viewer: `?area=south_lidar&v=v1`.
+- **Spot checks:**
+  - The Linc and CBP: open bowls with tiered seating.
+  - The Wells Fargo Center: a roofed arena.
+  - The Navy Yard: Central Green and offices.
+  - The Packer Ave terminal: car lots.
+  - East Passyunk and Italian Market rowhouse grids: clean.
+  - City Hall: tower and William Penn.
+  - The refinery-edge water was checked against the 2024 aerial; the basins and causeway are real.
+- **Address search:** "1020 Pattison Ave", "1 Citizens Bank Way" and "1400 John F Kennedy Blvd" map inside the canvas through the viewer fit.
+- **Tests:** 71 pass. Old City byte-identical.
+
+### Known issues carried forward
+- **New (Stephen): ships and cranes at the Navy Yard look unusual.** Neither is in the footprint layer.
+  - Ships are flat aerial texture on the water, partly painted over by the water repaint.
+  - Cranes are flat smears with their shadows.
+  - Containers at the Packer Ave terminal extrude as brick-tinted buildings.
+  - Now in the README's "Open issues" table.
+- Construction sites.
+- Stadium outer walls drawn with windows.
+- Franklin Field's lower deck under the overhang.
+- The CBP scoreboard cap.
+- The Walnut St piece.
+
+**Spend:** south_lidar ~$7.87.
+
+## 2026-10-23 (afternoon): Penn's Quadrangle regression fixed, downtown_lidar v4
+
+- **Bug:** in v3, Penn's Quadrangle (490261, 3600 Spruce St) passed the "wraps a field" test (its lawns are over 5,000 m²). Two pitched-roof strips were colored as seat risers, and its brick east wing drew gray and striped.
+- **Test first:** a real-data fixture, `tests/fixtures/penn_quad_grid.npz`. `test_penn_quad_is_not_a_stadium_but_franklin_field_is` failed first.
+- **Fix:** `stand_terraces` requires both a wrapped field and at least `MIN_STAND_ROWS` seating rows.
+  - The subagent set it to 10. That still caught the Rivers Casino garage (1001-99 N Delaware Ave, 12 low split-level decks, confirmed on the 2024 aerial) and the Art Museum's stepped wings (12).
+  - Raised to 20. The three stadiums have 30–42 rows.
+  - Downtown now has 30 seating-row parts, all at Franklin Field.
+- **Checks:** 67 tests pass, and Old City is byte-identical.
+- **Atlas:** the Linc, Citizens Bank Park and Art Museum were re-rendered and redrawn (~$0.39), since their scenes had changed with the base and part-cap fixes. Sheet notes updated.
+- **downtown_lidar v4:**
+  - **Drawing:** 50.9 min, ~$3.35.
+  - **Seams:** median 1.003, 95th pct 1.43.
+  - **Alignment and needle scan:** unchanged (only the reviewed `frame_09_18` and the 905-11 Walnut piece).
+  - **Spot checks:** the Quad is brick again, Franklin Field keeps its gray seating rows, and the casino is unchanged.
+  - **Viewer:** `?area=downtown_lidar&v=v4`. v1–v3 are kept and not used.
+- **Spend:** downtown_lidar total ~$13.64 (four full drawings). Atlas total ~$5.32.
+
+## 2026-10-23 (later): Franklin Field stands, stadium base, downtown_lidar v3
+
+Stephen: Franklin Field is open-air with two cascading decks, and the drawing showed a flat-roofed building. Tests first for each fix, then the fix (subagent), then verification.
+
+### Causes and fixes (`src/pixelphilly/lidar.py`, `scripts/05_build_scene.py`)
+- **Wrong base.**
+  - **Cause:** the base came from ground in a ring outside the footprint. At Franklin Field the ring dips into the rail cut (base 7.0 m vs. the field at 11.7 m), so every part sat 4.7 m high and the field was a 4.7 m slab.
+  - **Fix:** footprints with ≥ 500 m² of their own ground returns use the median of that ground, clamped between the ring's 10th percentile and its median. Interior ground can only lift a base that dipped into a cut, never above the street.
+  - **Side effects:**
+    - **Cira Centre:** now 133.0 m, matching its published 437 ft. It was ~5 m too tall.
+    - **2301 Market:** now 130.7 m (City record 124.7–127.8 m). It was ~7.6 m higher.
+    - **Citizens Bank Park:** the sunken field set its old base, which is now street level, and the tallest element (likely the scoreboard) is capped at 50.5 m instead of 71 m.
+- **Seating rows merged.**
+  - **Cause:** the 60-part cap coarsened Franklin Field's tiers until the upper deck's 15–19 m rows vanished.
+  - **Fix:** the cap is now `max(60, built area / 100 m²)`.
+- **Seat risers drew as brick.**
+  - **Cause:** the 2 m faces between rows got the brick wall tint.
+  - **Fix:**
+    - `terrace_parts` marks mid-cascade strips (< 8 m wide, a same-building part 1–4 m above and another 1–4 m below).
+    - Their walls take the seats' aerial color instead of the tint.
+    - Applied only to footprints that wrap ≥ 5,000 m² of open area (`encloses_field`). Without that gate, pitched roofs on 163 ordinary buildings matched.
+- **Tests:** a real-data fixture, `tests/fixtures/franklinfield_grid.npz`. 66 pass. Old City byte-identical.
+
+### Option 2 (inferring the hidden lower deck) not done
+- Aerial LiDAR can't see under the upper deck. The lower deck shows only as its exposed front rows.
+- Inferring it needs raised parts in the renderer and would be geometry not in the data. Stephen chose to ship option 1 first.
+
+### downtown_lidar v3
+- **Rebuild:** 146,534 parts (63 seating-row parts). Alignment unchanged: only the reviewed edge-rounding frame `frame_09_18`. Needle scan: only the 905-11 Walnut piece.
+- **Drawing:** 51.1 min, ~$3.36. Tiles `v3`.
+- **Seams:** median 1.006, 95th pct 1.39 (525 frame-border segments).
+- **Franklin Field:** the north stand now draws as gray stepped seating rows instead of a brick building.
+- **Regression found: Penn's Quadrangle (3600 Spruce St).**
+  - It wraps lawns over 5,000 m², so it passed `encloses_field`.
+  - Its pitched-roof strips were marked as seating rows, and its long east wing lost its brick color (gray with vertical stripes).
+  - Other footprints passing the field test downtown: the Art Museum, 1600 Warfield St, 1001-99 N Delaware Ave, and three Penn's Landing/Columbus Blvd footprints.
+  - Not yet fixed.
+- **Spend:** downtown_lidar total ~$10.29 (three full drawings). Franklin Field atlas tests ~$0.30.
+
 ## 2026-10-23: downtown redrawn with LiDAR building shapes (downtown_lidar v2)
 
 Stephen approved redrawing downtown with LiDAR shapes after the atlas fixes. It runs as a new area, `config/downtown_lidar.json` (downtown plus `"building_shapes": "lidar"`), so v3 is untouched.

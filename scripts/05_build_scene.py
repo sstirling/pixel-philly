@@ -157,7 +157,7 @@ def mean_color(mosaic_arr, polys, to_px):
     return np.round(mosaic_arr[by0:by1, bx0:bx1][m].mean(axis=0)).astype(int).tolist()
 
 
-def wall_color(roof_rgb, height_m, tint):
+def wall_color(roof_rgb, height_m, tint, terrace=False):
     """Wall color for one building.
 
     The aerial shows roofs, not façades, and Philadelphia's flat roofs are
@@ -168,8 +168,12 @@ def wall_color(roof_rgb, height_m, tint):
     roof color. This is an assumption about appearance, not data: some low
     buildings are stone, stucco or glass. Set "wall_tint" to null in the
     config to turn it off.
+
+    Terrace parts (stadium seating rows, pixelphilly.lidar.terrace_parts)
+    keep their roof color: their step faces are seat risers, not façades,
+    and the tint drew Franklin Field's upper deck as brick with windows.
     """
-    if not tint or height_m > tint["max_height_m"]:
+    if terrace or not tint or height_m > tint["max_height_m"]:
         return roof_rgb
     k = tint["mix"]
     return [round(r * (1 - k) + b * k) for r, b in zip(roof_rgb, tint["color"])]
@@ -296,7 +300,7 @@ def lidar_shaped(cfg, frame, buildings):
         np.savez_compressed(cache, dsm=dsm, ground=ground, origin=np.array(origin))
     import time
 
-    out, shaped, fallback, n_parts = [], 0, 0, 0
+    out, shaped, fallback, n_parts, n_terrace, stadiums = [], 0, 0, 0, 0, []
     t0 = time.monotonic()
     for i, b in enumerate(buildings):
         if i and i % 5000 == 0:  # downtown has ~70,000 footprints
@@ -314,12 +318,19 @@ def lidar_shaped(cfg, frame, buildings):
             fallback += 1
             continue
         shaped += 1
+        # Seating rows skip the brick wall tint (colored(); not written to the
+        # scene). Stadium stands only: elsewhere stepped roofs look like rows
+        terraces = lidar.stand_terraces(fp, parts)
         for k, part in enumerate(parts):
-            out.append({"id": f"{b['id']}-{k}", "h": part["h"], "polys": part["polys"]})
+            out.append({"id": f"{b['id']}-{k}", "h": part["h"], "polys": part["polys"], "terrace": k in terraces})
             n_parts += 1
+        n_terrace += len(terraces)
+        if terraces:
+            stadiums.append(b["id"])
     print(f"  lidar shapes: {shaped:,} shaped into {n_parts:,} parts in {time.monotonic() - t0:.0f} s", flush=True)
     return out, {"lidar_buildings_shaped": shaped, "lidar_fallback_single_height": fallback,
-                 "lidar_parts": n_parts, "lidar_margin_m": lidar.LIDAR_MARGIN_M}
+                 "lidar_parts": n_parts, "lidar_terrace_parts": n_terrace, "lidar_stadiums": stadiums,
+                 "lidar_margin_m": lidar.LIDAR_MARGIN_M}
 
 
 def colored(buildings, ground, cfg, cache=None):
@@ -331,7 +342,7 @@ def colored(buildings, ground, cfg, cache=None):
             color = cache[b["id"]]
         else:
             roof = mean_color(ground["mosaic_arr"], b["polys"], ground["to_px"]) or [150, 140, 130]
-            color = wall_color(roof, b["h"], cfg.get("wall_tint"))
+            color = wall_color(roof, b["h"], cfg.get("wall_tint"), terrace=b.get("terrace", False))
             if cache is not None:
                 cache[b["id"]] = color
         out.append({"id": b["id"], "h": b["h"], "color": color, "polys": b["polys"]})

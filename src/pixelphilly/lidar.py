@@ -48,6 +48,36 @@ INSET_M = 0.5  # keeps wall-edge returns and overhanging trees out of the footpr
 # class-2 returns through skylights or under canopies don't count (most
 # buildings have none; ~40 of the ~1,450 atlas LiDAR footprints reach it)
 INTERIOR_GROUND_M2 = 500.0
+# Stadium seating rows come out as stepped parts, and the faces between them
+# are seat risers, not façades (the brick wall tint drew Franklin Field's
+# upper deck as brick with windows). A part is a terrace when it is a strip
+# narrower than TERRACE_MAX_WIDTH_M (seating rows are ~2-4 m deep; a main
+# roof or a tower setback is wider) and it touches a part of the same
+# building TERRACE_STEP_MIN_M-TERRACE_STEP_MAX_M taller and one that much
+# lower: mid-cascade. Rows climb ~2 m (Franklin Field's upper deck: 14.7,
+# 16.6, 18.6, 20.7, 23.5, 25.3 m); 1 m is below the 2 m tier step, and
+# office-tower setbacks are bigger (9 m in the test). Open ground below
+# doesn't count, so a single step (a parapet, a penthouse ring) never
+# qualifies, and the front row and the rim keep their walls
+TERRACE_MAX_WIDTH_M = 8.0
+TERRACE_STEP_MIN_M = 1.0
+TERRACE_STEP_MAX_M = 4.0
+# Only stadiums get terraces: a pitched roof drawn in 2 m tiers looks just
+# like a seating cascade (163 ordinary buildings matched), but stands wrap a
+# field. A footprint is a stadium when the open area inside its convex hull
+# (holes included) has one piece of at least FIELD_MIN_M2: a football field
+# alone is ~5,350 m², while rowhouse and campus courtyards are far smaller.
+# FIELD_CLEAN_M erodes and regrows that area so slivers between wings and
+# along a jagged outline don't join up into one big piece
+FIELD_MIN_M2 = 5000.0
+FIELD_CLEAN_M = 2.0
+# Wrapping open ground isn't enough on its own: Penn's Quadrangle wraps
+# lawns over 5,000 m² and two of its pitched-roof strips read as rows. A
+# seating bowl has dozens of rows (Franklin Field 30-32, the Linc 42, CBP
+# 34); the Quad has 2, and the Rivers Casino garage (1001-99 N Delaware Ave)
+# and the Art Museum's stepped wings 12 each
+MIN_STAND_ROWS = 20
+TERRACE_TOUCH_M = 0.6  # about one grid cell: adjacent parts' simplified edges don't meet exactly
 # Buildings within the area's bbox plus this margin get LiDAR shapes; farther
 # out they keep their single footprint height (keeps downloads to the tiles
 # around each spot; the shape test is about what's at the center)
@@ -399,6 +429,61 @@ def building_parts(footprint, ndsm: np.ndarray, origin, res: float, max_parts: i
             return parts
         step *= 1.5  # too many parts: coarser tiers
 
+
+
+def _strip_width(g) -> float:
+    """Short side of the rectangle with the same area and perimeter. Exact
+    for rectangles, and it follows a curved strip: a horseshoe of seats at
+    Franklin Field is ~3 m deep but its minimum rotated rectangle is 122 m
+    across. Compact shapes (no such rectangle) count as wide."""
+    half, area = g.length / 2, g.area
+    disc = half * half - 4 * area
+    return (half - np.sqrt(disc)) / 2 if disc > 0 else float(np.sqrt(area))
+
+
+def encloses_field(footprint) -> bool:
+    """Whether a footprint (shapely, local meters) wraps a playing field:
+    one open piece of at least FIELD_MIN_M2 inside its convex hull. The hull
+    closes a horseshoe open at one end (Franklin Field); a fully enclosed
+    field is a hole, which the hull difference includes too."""
+    open_area = footprint.convex_hull.difference(footprint)
+    open_area = open_area.buffer(-FIELD_CLEAN_M).buffer(FIELD_CLEAN_M)
+    pieces = getattr(open_area, "geoms", [open_area])
+    return any(g.area >= FIELD_MIN_M2 for g in pieces)
+
+def stand_terraces(footprint, parts) -> set[int]:
+    """terrace_parts for a stadium's stands: only when the footprint wraps a
+    field (encloses_field) and has at least MIN_STAND_ROWS terraces; else
+    no terraces, so stepped roofs elsewhere keep their wall color."""
+    if not encloses_field(footprint):
+        return set()
+    terraces = terrace_parts(parts)
+    return terraces if len(terraces) >= MIN_STAND_ROWS else set()
+
+def terrace_parts(parts) -> set[int]:
+    """Indexes of the parts of ONE building (as building_parts returns them)
+    that are mid-cascade seating rows (see TERRACE_*)."""
+    from shapely import STRtree
+    from shapely.geometry import Polygon
+    from shapely.ops import unary_union
+
+    geoms = [unary_union([Polygon(p[0], p[1:]) for p in part["polys"]]) for part in parts]
+    heights = [part["h"] for part in parts]
+    tree = STRtree(geoms)
+    out = set()
+    for i, g in enumerate(geoms):
+        if g.is_empty or _strip_width(g) >= TERRACE_MAX_WIDTH_M:
+            continue
+        up = down = False
+        for j in tree.query(g, predicate="dwithin", distance=TERRACE_TOUCH_M):
+            dh = heights[j] - heights[i]
+            if TERRACE_STEP_MIN_M <= dh <= TERRACE_STEP_MAX_M:
+                up = True
+            elif TERRACE_STEP_MIN_M <= -dh <= TERRACE_STEP_MAX_M:
+                down = True
+        if up and down:
+            out.add(i)
+    return out
 
 def dsm_from_las(paths, frame, bounds_local, res: float = 0.5):
     """Max-Z surface and min-Z ground grids (meters, NAVD88) over a local

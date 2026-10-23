@@ -44,3 +44,6 @@ The fetch extent is the ground seen by the whole frame lattice, which is larger 
 | `processed/oldcity_scene.json` | `05_build_scene.py` | Buildings (local meters, height, wall color), trees, camera, frame lattice, texture mapping |
 | `processed/oldcity_qa.json` | `05_build_scene.py` | Height sources, outliers, dropped records, texture-fit error |
 | `processed/<area>_lidar_grid.npz` | `05_build_scene.py` (areas with `"building_shapes": "lidar"`) | 0.5 m max-Z surface and min-Z ground grids in meters (NAVD88), local frame, over the area box plus 100 m. Git-ignored cache; delete it to rebuild from the LAS tiles |
+| `processed/south_lidar_*`, `processed/south_lidar/tiles/` | `05_build_scene.py` | Downtown + South Philly (`config/south_lidar.json`). Footprints (115,885), trees (53,072), PWD water (124) and NHD water (26) fetched Oct. 23, 2026; 26,215 z19 imagery tiles (13,426 new); 113 LiDAR tiles. LiDAR grid cache ~1.4 GB |
+
+**Storage.** The LiDAR tiles on disk are now 85 GB (113 tiles). They are git-ignored and can be downloaded again from PASDA with `04c_fetch_lidar.py`. The cached height grids in `processed/*_lidar_grid.npz` are what the scene builder reads, so the LAS files can be deleted once an area's grid is built (rebuilding the grid would need them again).

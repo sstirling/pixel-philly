@@ -64,5 +64,6 @@
   "lidar_buildings_shaped": 282,
   "lidar_fallback_single_height": 2,
   "lidar_parts": 517,
+  "lidar_terrace_parts": 0,
   "lidar_margin_m": 100.0
 }

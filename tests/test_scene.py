@@ -39,3 +39,11 @@ def test_downtown_tiles_fit_gpu_and_cover_each_frame_once():
     assert len(names) == len(set(names)), "a frame appears in two tiles"
     _, _, frames = area_setup(load_config("downtown"))
     assert set(names) == {f.name for f in frames}
+
+
+def test_terrace_parts_skip_the_brick_wall_tint():
+    # Seat risers take the seats' own aerial color, so stands don't draw as
+    # brick façades; ordinary low walls still get the tint
+    tint = {"max_height_m": 20, "color": [150, 82, 62], "mix": 0.55}
+    assert build_scene.wall_color([120, 130, 140], 16.0, tint) != [120, 130, 140]
+    assert build_scene.wall_color([120, 130, 140], 16.0, tint, terrace=True) == [120, 130, 140]
