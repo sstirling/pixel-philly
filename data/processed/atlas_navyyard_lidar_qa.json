@@ -1,0 +1,91 @@
+{
+  "buildings_downloaded": 166,
+  "buildings_in_scene": 766,
+  "buildings_dropped": [],
+  "height_source_counts": {
+    "approx_hgt": 159,
+    "default": 4,
+    "max_hgt": 3
+  },
+  "height_outliers_max_gt_ratio_x_approx": [
+    {
+      "objectid": 545683,
+      "address": "1400 KITTY HAWK AVE",
+      "approx_hgt_ft": 4,
+      "max_hgt_ft": 99.23014724999999
+    },
+    {
+      "objectid": 545685,
+      "address": "1400 KITTY HAWK AVE",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 38.179941080000006
+    }
+  ],
+  "tallest_buildings_m": [
+    {
+      "id": "410279-28",
+      "h": 42.77
+    },
+    {
+      "id": "410279-27",
+      "h": 41.15
+    },
+    {
+      "id": "410279-25",
+      "h": 38.82
+    },
+    {
+      "id": "410279-26",
+      "h": 38.4
+    },
+    {
+      "id": "410279-20",
+      "h": 37.28
+    },
+    {
+      "id": "410279-21",
+      "h": 37.27
+    },
+    {
+      "id": "s8-0",
+      "h": 36.82
+    },
+    {
+      "id": "410279-24",
+      "h": 36.67
+    },
+    {
+      "id": "410279-23",
+      "h": 36.23
+    },
+    {
+      "id": "410279-22",
+      "h": 36.14
+    }
+  ],
+  "trees_in_scene": 0,
+  "ground_texture_px": [
+    7680,
+    7168
+  ],
+  "ground_texture_source_px": [
+    7680,
+    7168
+  ],
+  "uv_fit_max_residual_m": 1.0663017999448194e-05,
+  "ground_median_filter_px": 5,
+  "frames": 10,
+  "lidar_buildings_shaped": 51,
+  "lidar_fallback_single_height": 6,
+  "lidar_parts": 605,
+  "lidar_terrace_parts": 0,
+  "lidar_stadiums": [],
+  "lidar_structures": 10,
+  "lidar_structure_parts": 46,
+  "lidar_structure_area_m2": 20490.6,
+  "lidar_structures_dropped_photo": 5,
+  "lidar_highway_mask": true,
+  "lidar_highway_masked_m2": 0.0,
+  "lidar_rail_mask": false,
+  "lidar_margin_m": 100.0
+}

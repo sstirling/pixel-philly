@@ -94,6 +94,157 @@ Total model spend for the pilot: 37 successful calls, about $4.96 at standard pr
 
 The land tone shifts are what tiny.london's joint denoising solves. A cheaper experiment would be to match each frame's color statistics to its neighbors where they overlap; that would need overlapping frames, which the current lattice doesn't have.
 
+## 2026-10-24 (overnight): Upper North and West Philly, merged map philly v4
+
+Stephen authorized an unattended run: Upper North, then West Philly, with a $15 GPU cap, a stop on anything troubling and no commits. **Spent: ~$4.92** (two join tests $0.27, Upper North $2.80, West $1.85).
+
+### Built
+- **Multiple neighbors** (subagent, tests first), so West could be held against South and North at once:
+  - `--known-area a,b` in precedence order;
+  - known pixels taken from the merged map's own sources, including water-band overrides (`regions.cell_sources`, `known_sources`);
+  - per-owner `water_band/<owner>/` re-repaints;
+  - ripples placed in the root area's (South's) coordinates through the chain (`ripple_root`);
+  - unions of N areas in `16_build_tiles.py`;
+  - `15_joint_sample.py --plan-only`.
+  - 118 tests pass.
+
+### Upper North (`config/upper_north_lidar.json`, Allegheny Ave to ~Wingohocking St)
+- **Size:** 235 frames, 200 new and 35 held from North. 36 new LiDAR tiles.
+- **Build:** 28 min, 4.75 GB. 40,344 footprints shaped. 740 structures, the largest checked on the aerial (all real: a hospital-scale building, a school, industrial buildings and a garage missing from the footprint layer, one construction site, a trailer row).
+- **Checks:** no needles, no stadiums. Alignment PASS (tolerant IoU min 0.9998).
+- **Join test:** 2.05–2.41. Full drawing 42.5 min, ~$2.80.
+
+### West Philly (`config/west_lidar.json`, 40th St to Cobbs Creek, Baltimore Ave to Girard Ave)
+- **Size:** 158 frames, 132 new; held: 24 from South, 2 from North (plus 3 South cells re-repainted by North). 20 new LiDAR tiles.
+- **Build:** 22 min, 4.3 GB. 43,948 footprints shaped. 702 structures, the largest checked on the aerial.
+  - All are real buildings. Most sit just past the city line in Upper Darby, where the City has no footprints, so LiDAR structures stand in for them up to where City imagery ends (past that, no-imagery clearing applies, as on the New Jersey side).
+- **Checks:** alignment PASS. Join test 2.02–2.36, plus one 4.42 edge that wasn't visible at 1/3 scale.
+- **Drawing:** 28.1 min, ~$1.85.
+
+### Merged map `philly` v4 (`?area=philly&v=v4`; v3 = without West)
+- **Size:** 1,202 cells (South 672, North 198, Upper North 200, West 132). 12,186 tiles, 1.7 GB plus the 289 MB photo layer.
+- **Search:** "3601 Market St", "4000 N Broad St", "1020 Pattison Ave" and "5200 Market St" all map inside.
+- **Seam ratios by edge type** (frame edges; 1.0 = invisible):
+
+| Edges | Count | Median | p90 | Max |
+|---|---|---|---|---|
+| Inside each region | 233–1,100 | 0.99–1.01 | 1.17–1.27 | |
+| South / North | 28 | 2.27 | | 4.23 |
+| North / Upper North | 28 | 2.45 | 4.62 | 5.90 |
+| South / West | 14 | 2.30 | | 4.60 |
+| North / West | 3 | | | 6.94 (corner, see below) |
+
+  - **Worst joins**, all land on large flat surfaces: a grass-texture change across a ball field, faint lines through parking lots.
+  - **The most visible (6.94):** at the North/West corner in a park, a pool is drawn dark navy on one side and light blue on the other.
+  - All are recorded in the README "Open issues" table.
+
+### Storage
+- LiDAR on disk is now 153 GB (git-ignored). The cached height grids would allow deleting the raw LAS files for finished regions.
+
+## 2026-10-24: North Philly, the first region drawn next to an existing one (philly v2)
+
+Stephen chose North Philly next, built with region machinery so the city can grow past one canvas (~1,300 frames, the 4-hour GPU cap).
+
+### Built
+- **Shared projection.** `"projection_origin"` in configs (`projection.local_frame`). Test first: the same lon/lat lands on the same screen pixel in both areas, and frames sit on one 1,024 px lattice.
+- **Known-band conditioning.**
+  - `joint_denoise(..., known=(x0_known, mask), start=...)`: RePaint in flow-matching form. CPU tests check exact reproduction of known cells, unchanged output with no band, and the repair invariants.
+  - `AreaSampler.joint_volume(..., known_frames, repair_width_px, repair_sigma)` VAE-encodes the neighbor's drawn frames. `15_joint_sample.py` adds `--known-area`, `--only-near-known` (boundary test), `--repair-*` and `--known-ramp`.
+  - `regions.py` holds the mask, union and placement helpers.
+- **Join tests on a 3 × 3-frame patch at Broad St** (~$0.12–0.16 each; seam ratio across the join, 1.0 = invisible):
+
+| Variant | Join | Inside the region | Notes |
+|---|---|---|---|
+| Ramped mask (8 cells) | 6.4–8.3 | ~1.0–1.6 | Latent blending made an olive smear: rejected |
+| Hard mask | 2.0–2.8 | | |
+| Hard mask + repair (σ 0.64, 200 px) | 1.6–2.5 | | Straddling roof reconciled. Chosen |
+| Repair σ 0.83, 300 px | 1.55–2.8 | | No better |
+
+  - An image-space crossfade measured 0.12, but only by blurring the join. Rejected for pixel art.
+- **Rail mask (`04e_fetch_rail.py`):** SEPTA Highspeed Lines route L (the El, 8 m buffer) and City Railroad Lines fcode 1700 (5 m), researched first. Test first (`test_rail_mask_buffers_the_el_and_surface_track`).
+- **Alignment check:** now judged on a 1 px tolerant IoU (`tolerant_iou`, test first).
+  - **Why:** North's dense rowhouse frames scored raw IoU 0.966 with zero shift. The cause is the Python rasterizer drawing each vertical wall 1 px wider than WebGL.
+  - A real 4 px offset still fails. Raw IoU stays in the report.
+- **Structures, vegetation false positives** (found in North's QA scan, checked on the aerial).
+  - **Cause:** cemetery trees, a roadside tree line and a ring of trees around a field passed the roughness test, because only flat cells become candidates.
+  - **Fix:** a solidity floor of 0.6 (trees 0.32–0.52, real objects 0.70–0.99). Five real-data fixtures; subagent.
+  - **Cost:** some lacy real clusters (a shed, container groups) now stay flat, as before structures existed.
+- **Water repaint for region runs (bugs found running North).**
+  - **Crash:** it expected drawings for the 41 band frames. It now writes only drawn frames, reads South's finished frames as halo context and uses South's ripple coordinates.
+  - **Dark line at the join:** a hard dark line in the Schuylkill at the join (seam 7.61). South's repaint had drawn a shore band along its old lattice edge.
+  - **Fix:** South's band frames are re-repainted with North as context (`water_band/`). Changes are confined to water: 2,096 px in one frame.
+- **Merged maps:** `16_build_tiles.py --areas ... --name philly` builds the union pyramid with band overrides. The fit stays at 1.4e-6 px over the union, and the viewer is unchanged.
+
+### North Philly
+- **Area:** bbox [-75.205, 39.975, -75.125, 40.005]. 239 lattice frames: 198 new, 41 band.
+- **Data:** 71,986 footprints, 41 LiDAR tiles (27 new).
+  - The USGS NHD service stalled. The NHD and LiDAR downloads were restarted in parallel (NHD with 12 one-minute retries).
+- **Build:** 27 min, 3.8 GB.
+  - 57,969 footprints shaped.
+  - 612 structures kept after the vegetation fix. The largest are East Park Reservoir's covered tanks and buildings missing from the footprint layer.
+  - No needles, no stadiums.
+- **Alignment:** PASS (tolerant IoU).
+- **Drawing:** 44.8 min, ~$2.95. Region total including boundary tests ~$3.48.
+- **Merged map `philly` v2:** 870 cells (South 672, North 198), 9,290 tiles, 1,164 MB plus a 195 MB photo layer. v1 has the water line and is not used.
+- **Join seams on v2:**
+
+| Edges | Median | p90 | Max |
+|---|---|---|---|
+| Join, 28 edges | 2.36 | 2.99 | 4.31 |
+| Inside North | 1.02 | 1.29 | 2.22 |
+| Inside South near the join | 1.02 | 1.23 | 1.73 |
+
+  - The worst remaining join edges are all land, where the regions drew straddling content slightly differently: a grass-texture change in the park and a faint line through a parking lot. Invisible at browsing zoom; in the README "Open issues".
+- **Tests:** 113 pass. Old City byte-identical.
+
+## 2026-10-23 (night): LiDAR structures (ships, containers) with a highway mask and photo check
+
+Stephen flagged ships and cranes at the Navy Yard and port. Neither is in the footprint layer, so they were flat aerial texture.
+
+### Built (tests first; subagent)
+- **`dsm_from_las(..., with_struct=True)`:** a class-1-only surface grid (bridge class 17, water, ground and noise excluded). Caches without it are regridded.
+- **`lidar.structures()`:** flat LiDAR objects with no footprint.
+  - Rules: 2.5–90 m tall, outside footprints by 1.5 m, ≥ 60 m², median 3×3 roughness < 0.3.
+  - Roughness measured: containers 0.02, ship 0.03, roofs 0.06, tree canopy 1.4–1.9.
+  - Each region is shaped with the existing stepped parts. Ids are `s<region>-<part>`.
+  - Walls take the object's aerial color ×0.85, with no brick tint.
+  - Ships are protected from the water repaint automatically (its mask comes from rendered silhouettes).
+- **Highway mask.**
+  - **Why:** the vendor labeled most of I-95's deck class 1, not bridge class 17 (one ramp: 186,515 vs. 12 points), so the viaducts came through as structures.
+  - **Fix:** a new `scripts/04d_fetch_highways.py` fetches City `Street_Centerline` with `CLASS` 1 (expressway), 9 and 10 (ramps). Buffers are 14 m for mainlines and 7 m for ramps.
+  - `fetch_features` gained a `where` parameter (default unchanged).
+  - North Philly will also need a rail layer for the El.
+- **2022 LiDAR vs. 2024 photo check (`photo_agrees`).**
+  - A structure is dropped when ≥ 50% of its pixels match the ground ring around it (within 25 RGB levels), or over water when ≥ 90% are one color.
+  - Calibrated on real regions:
+
+| Region | Same as ring | Result |
+|---|---|---|
+| Carrier | 0.03 | kept |
+| Ship gone by 2024 | 0.97 | dropped |
+| Containers | 0.18–0.29 | kept |
+| Empty pavement | 0.63–1.00 | dropped |
+
+  - Known miss: a plain roof matching the pavement around it is dropped (one small Navy Yard building without a footprint).
+- **ArcGIS count query:** it now retries error bodies (`query_json`; failed twice Oct. 23). Test first, separate subagent.
+- **QA scan:** reports the structure count and the 20 largest.
+
+### Atlas test (`output/atlas/structures_compare.jpg`)
+- **Spots:** `atlas_navyyard_lidar`, `atlas_packer_lidar`, `atlas_i95_lidar`, plus `atlas_indhall_lidar` as the tree regression. All four PASS alignment. GPU ~$0.54.
+- **Navy Yard:**
+  - The mothballed carrier (19 m, 15,381 m²) and two pier ships are 3D hulls.
+  - The ship gone by 2024 is dropped.
+  - The drawing model draws the carrier as a gray multistory building with windows, so it has volume but doesn't read as a ship.
+- **Packer Ave terminal:**
+  - The I-76 viaduct is masked, and empty 2022 container spots are dropped.
+  - Container blocks keep their colors, but the change from v1 is modest.
+- **I-95:** no viaduct walls. The kept structures are rows of parked trailers, which are in the 2024 photo.
+- **Washington Square:** no structures.
+- **Missing footprint:** a 79 m building near Independence Hall with no City footprint is now drawn.
+- **Cranes:** still not addressed (their lattice booms are too sparse).
+- **Tests:** 80 pass. Old City byte-identical.
+- **Not yet applied** to downtown_lidar or south_lidar.
+
 ## 2026-10-23 (evening): downtown + South Philly, one canvas (south_lidar v1)
 
 Stephen chose South Philly and the stadiums as the next ring, drawn with downtown as one combined canvas so there's no seam, and including the Navy Yard.

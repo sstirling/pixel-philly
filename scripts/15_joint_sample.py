@@ -19,6 +19,15 @@ Usage:
   PP_AREA=fishtown uv run python scripts/15_joint_sample.py --full --detach --name qwen_joint_light8 \\
       --style /runs/lora/qe2511_oldcity_r16_v1/qe2511_oldcity_r16_v1.safetensors --prompt-text "..."
   PP_AREA=fishtown uv run python scripts/15_joint_sample.py --collect --name qwen_joint_light8
+
+Drawing next to an area already drawn (both configs share "projection_origin"):
+  PP_AREA=north_lidar uv run python scripts/15_joint_sample.py --full --volume --name qwen_joint_light8 \
+      --known-area south_lidar [--known-name qwen_joint_light8] [--known-stage water] ...
+  Frames of this area at the same screen corner as a drawn frame of the
+  known area (the "known band") are held at those drawn pixels; only the
+  other frames are drawn and collected. Add --only-near-known N for a cheap
+  boundary test: the frames within N of the new frame that borders the band
+  nearest --center-lonlat (default: where Broad St crosses the boundary).
 """
 
 import argparse
@@ -36,6 +45,9 @@ from pixelphilly.windows import WIN, two_grids
 
 H100_PER_HOUR = 3.95  # Modal list price, Oct. 20, 2026; estimate only
 CROP = (4224, 2176, 1792)  # mosaic x, y, size: centered on the corner of frames (4,2)-(5,3)
+# Where N Broad St crosses the North/South Philly boundary (lat 39.975),
+# approximate: the default center of the --only-near-known boundary test
+BROAD_ST_BOUNDARY = (-75.1600, 39.975)
 
 
 def log_run(entry):
@@ -61,7 +73,31 @@ def main():
     ap.add_argument("--collect", action="store_true", help="fetch a run started with --detach")
     ap.add_argument("--volume", action="store_true",
                     help="--full only: large areas; frames go through the pp-runs Volume (implies --detach)")
+    ap.add_argument("--known-area", help="--volume only: areas already drawn next to this one, comma list in "
+                    "precedence order (e.g. south_lidar,north_lidar)")
+    ap.add_argument("--plan-only", action="store_true",
+                    help="with --known-area: print the known/new plan and exit (no Modal, no uploads)")
+    ap.add_argument("--known-name", "--known-prompt", dest="known_name",
+                    help="the known area's run name (default: --name)")
+    ap.add_argument("--known-stage", default="water",
+                    help="the known area's postprocessed stage: output/<known>/postprocessed/<run>/<stage>/")
+    ap.add_argument("--known-ramp", type=int, default=0,
+                    help="latent cells the known mask ramps over (default 0: a ramp of 8 smeared olive in the "
+                    "boundary test)")
+    ap.add_argument("--repair-width-px", type=int, default=200,
+                    help="with --known-area: redraw this wide a strip of new frames along the known band after "
+                    "the main pass, both sides held fixed (0 disables)")
+    ap.add_argument("--repair-sigma", type=float, default=0.6,
+                    help="noise level the repair strip restarts from (the schedule step nearest it)")
+    ap.add_argument("--only-near-known", type=int, metavar="N",
+                    help="boundary test: only the frames within N frames of a new frame bordering the known band")
+    ap.add_argument("--center-lonlat", help="lon,lat: with --only-near-known, the bordering new frame nearest this "
+                    f"point is the center (default {BROAD_ST_BOUNDARY[0]},{BROAD_ST_BOUNDARY[1]}, Broad St)")
     args = ap.parse_args()
+    if (args.known_area or args.only_near_known is not None) and not (args.full and args.volume):
+        ap.error("--known-area and --only-near-known need --full --volume")
+    if args.only_near_known is not None and not args.known_area:
+        ap.error("--only-near-known needs --known-area")
     if not args.collect and args.test_crop == args.full:
         ap.error("choose exactly one of --test-crop / --full (or --collect)")
 
@@ -77,9 +113,21 @@ def main():
     if args.collect:
         collect(cfg, args.name)
         return
+    known = None
+    if args.known_area:
+        center = tuple(float(v) for v in args.center_lonlat.split(",")) if args.center_lonlat else BROAD_ST_BOUNDARY
+        known = plan_known(cfg, args.known_area, args.known_name or args.name, args.known_stage,
+                           args.only_near_known, center)
+        if args.plan_only:
+            missing = [f.name for f in known["run"] if not area_dir(cfg, "renders", f"{f.name}.png").exists()]
+            print(f"renders missing: {len(missing)} of {len(known['run'])} (run 06_render.py before the GPU run)")
+            return
+    elif args.plan_only:
+        ap.error("--plan-only needs --known-area")
     print("environment:", modal.Function.from_name("pixel-philly", "check_env").remote())
     if args.full and args.volume:
-        start_volume_run(cfg, args.name, prompt, {k: v for k, v in common.items() if k != "prompt"})
+        start_volume_run(cfg, args.name, prompt, {k: v for k, v in common.items() if k != "prompt"}, known,
+                         args.known_ramp, args.repair_width_px, args.repair_sigma)
         return
     editor = modal.Cls.from_name("pixel-philly", "Editor")()
     mosaic = Image.open(area_dir(cfg, "renders", "mosaic.png")).convert("RGB")
@@ -151,25 +199,108 @@ def main():
     finish_full(cfg, args.name, res, time.time() - t0, prompt, {k: v for k, v in common.items() if k != "prompt"})
 
 
-def start_volume_run(cfg, name, prompt, settings):
+def override_areas(known_areas, prompt):
+    """Areas whose water_band/ re-repaints can change known pixels: the known
+    areas in order, then any other area with one (pixelphilly.regions
+    .cell_sources; later wins)."""
+    found = sorted(p.parts[-5] for p in (REPO_ROOT / "output").glob(f"*/postprocessed/{prompt}/water_band/report.json"))
+    return list(known_areas) + [a for a in found if a not in known_areas]
+
+
+def plan_known(cfg, known_areas, known_name, stage, only_near, center_lonlat):
+    """Which of this area's frames are already drawn in the known areas
+    (comma list in precedence order: a cell several have goes to the
+    first), the merged-map PNG for each (overrides included, so known
+    pixels == merged map), and (boundary test) which frames to run at all.
+    Refuses areas that don't share one screen space."""
+    from pixelphilly.regions import check_same_space, known_sources, lattice_distance, near_known
+
+    if isinstance(known_areas, str):
+        known_areas = [a.strip() for a in known_areas.split(",") if a.strip()]
+    kcfgs = [load_config(a) for a in known_areas]
+    try:
+        check_same_space([cfg, *kcfgs])
+    except ValueError as e:
+        raise SystemExit(str(e))
+    frame, cam, frames = area_setup(cfg)
+    sources = known_sources(frames, [(k["name"], area_setup(k)[2]) for k in kcfgs], known_name, stage, REPO_ROOT,
+                            override_from=override_areas(known_areas, known_name))
+    if not sources:
+        raise SystemExit(f"no frame of {cfg['name']} sits on a frame of {', '.join(known_areas)}")
+    missing = [str(p) for _, _, p in sources.values() if not p.exists()]
+    if missing:
+        raise SystemExit(f"{len(missing)} drawn known frames missing, e.g. {missing[:3]}")
+    shared = {n: kf for n, (_, kf, _) in sources.items()}
+    per_area = {a: sum(1 for o, _, _ in sources.values() if o == a) for a in known_areas}
+    run = frames
+    if only_near is not None:
+        e, n = frame.to_local([center_lonlat[0]], [center_lonlat[1]])
+        sx, sy = cam.world_to_screen(e, n, 0.0)
+        sx, sy = float(np.asarray(sx).ravel()[0]), float(np.asarray(sy).ravel()[0])
+        # Center on a NEW frame that borders the band: seen at 45 degrees the
+        # band is ~3 frames deep, so a known center gives a patch that is
+        # almost all known (7 of 8 at Broad St)
+        band = [f for f in frames if f.name in shared]
+        edge = [f for f in frames if f.name not in shared and any(lattice_distance(f, k) <= 1 for k in band)]
+        center = min(edge, key=lambda f: (f.x0 + f.size / 2 - sx) ** 2 + (f.y0 + f.size / 2 - sy) ** 2)
+        run = near_known(frames, shared.keys(), only_near, center=center)
+        print(f"boundary test around {center.name}: {len(run)} frames, {sum(f.name in shared for f in run)} known "
+              f"({', '.join(f.name for f in run if f.name in shared)}), "
+              f"{sum(f.name not in shared for f in run)} new ({', '.join(f.name for f in run if f.name not in shared)})")
+    overridden = sum(1 for _, _, p in sources.values() if "water_band" in p.parts)
+    print(f"{cfg['name']}: {len(frames)} frames, {len(sources)} known ({', '.join(f'{a} {c}' for a, c in per_area.items())}"
+          f"; {overridden} from water_band re-repaints), {len(frames) - len(sources)} new; this run: {len(run)} frames")
+    return {"areas": known_areas, "area": known_areas[0], "name": known_name, "stage": stage, "sources": sources,
+            "shared": shared, "per_area": per_area, "run": run, "only_near": only_near}
+
+
+def start_volume_run(cfg, name, prompt, settings, known=None, ramp=0, repair_width_px=200, repair_sigma=0.6):
     """Upload the area's render frames to the pp-runs Volume and start
-    AreaSampler.joint_volume detached (large areas: ~45 min)."""
+    AreaSampler.joint_volume detached (large areas: ~45 min). With `known`
+    (plan_known), the known area's drawn frames go up too, under this
+    area's frame names, and only the other frames are drawn."""
     import modal
 
+    from pixelphilly.regions import rebase
+
     _, _, frames = area_setup(cfg)
+    if known:
+        frames = known["run"]
+    payload = (rebase(frames) if known and known["only_near"] is not None
+               else [{"name": f.name, "col": f.col, "row": f.row} for f in frames])
+    missing = [f.name for f in frames if not area_dir(cfg, "renders", f"{f.name}.png").exists()]
+    if missing:
+        raise SystemExit(f"{len(missing)} renders missing in {area_dir(cfg, 'renders')} (run 06_render.py), "
+                         f"e.g. {missing[:3]}")
+    known_names = [f.name for f in frames if known and f.name in known["shared"]]
     vol = modal.Volume.from_name("pp-runs", create_if_missing=True)
     with vol.batch_upload(force=True) as batch:
         for f in frames:
             batch.put_file(str(area_dir(cfg, "renders", f"{f.name}.png")), f"/areas/{cfg['name']}/renders/{f.name}.png")
+        for k in known_names:
+            batch.put_file(str(known["sources"][k][2]), f"/areas/{cfg['name']}/joint/{name}/known/{k}.png")
     sampler = modal.Cls.from_name("pixel-philly", "AreaSampler")()
-    call = sampler.joint_volume.spawn(cfg["name"], name, [{"name": f.name, "col": f.col, "row": f.row} for f in frames],
-                                      cfg["camera"]["frame_px"], prompt, **settings)
+    call = sampler.joint_volume.spawn(cfg["name"], name, payload, cfg["camera"]["frame_px"], prompt,
+                                      known_frames=known_names or None, known_ramp_cells=ramp,
+                                      repair_width_px=repair_width_px, repair_sigma=repair_sigma, **settings)
     out_dir = area_dir(cfg, "joint", name)
     out_dir.mkdir(parents=True, exist_ok=True)
-    (out_dir / "call.json").write_text(json.dumps({
-        "call_id": call.object_id, "volume": True, "prompt": prompt, "settings": settings,
-        "started_at": datetime.now(timezone.utc).isoformat(timespec="seconds")}, indent=2) + "\n")
-    print(f"uploaded {len(frames)} frames; started {name} on Modal: call {call.object_id}")
+    info = {"call_id": call.object_id, "volume": True, "prompt": prompt, "settings": settings,
+            "started_at": datetime.now(timezone.utc).isoformat(timespec="seconds")}
+    if known:
+        info["known"] = {"area": known["area"], "areas": known["areas"], "run": known["name"], "stage": known["stage"],
+                         "per_area": {a: sum(1 for k in known_names if known["sources"][k][0] == a)
+                                      for a in known["areas"]},
+                         "frames": {k: known["shared"][k] for k in known_names},
+                         "frame_sources": {k: [known["sources"][k][0], known["sources"][k][1],
+                                               str(known["sources"][k][2].relative_to(REPO_ROOT))]
+                                           for k in known_names},
+                         "ramp_cells": ramp,
+                         "repair_width_px": repair_width_px, "repair_sigma": repair_sigma,
+                         "only_near_known": known["only_near"], "run_frames": [f.name for f in frames]}
+    (out_dir / "call.json").write_text(json.dumps(info, indent=2) + "\n")
+    print(f"uploaded {len(frames)} renders and {len(known_names)} known frames; "
+          f"started {name} on Modal: call {call.object_id}")
 
 
 def collect(cfg, name):
@@ -186,18 +317,21 @@ def collect(cfg, name):
         vol = modal.Volume.from_name("pp-runs")
         frame_dir = area_dir(cfg, "redraws", name)
         frame_dir.mkdir(parents=True, exist_ok=True)
-        _, _, frames = area_setup(cfg)
-        for f in frames:
-            with (frame_dir / f"{f.name}.png").open("wb") as fh:
-                for chunk in vol.read_file(f"/areas/{cfg['name']}/joint/{name}/frames/{f.name}.png"):
+        # Runs with a known band (or a boundary-test subset) return only the
+        # frames they drew
+        names = res.get("decoded_frames") or [f.name for f in area_setup(cfg)[2]]
+        for n in names:
+            with (frame_dir / f"{n}.png").open("wb") as fh:
+                for chunk in vol.read_file(f"/areas/{cfg['name']}/joint/{name}/frames/{n}.png"):
                     fh.write(chunk)
         (area_dir(cfg, "joint", name) / "result.json").write_text(json.dumps(
-            {"area": cfg["name"], "settings": info["settings"], "prompt": info["prompt"], **res}, indent=2) + "\n")
+            {"area": cfg["name"], "settings": info["settings"], "prompt": info["prompt"],
+             "known": info.get("known"), **res}, indent=2) + "\n")
         wall = res["total_seconds"]
         log_run({"run": f"15_joint_sample volume {cfg['name']}/{name}", "gpu": "H100", "wall_seconds": wall,
                  "estimated_cost_usd": round(wall / 3600 * H100_PER_HOUR, 2)})
         print(f"done in {wall / 60:.1f} min (~${wall / 3600 * H100_PER_HOUR:.2f}); {res['windows']} windows, "
-              f"{res['forwards']} forwards, peak {res['peak_gb']} GB; {len(frames)} frames in {frame_dir}")
+              f"{res['forwards']} forwards, peak {res['peak_gb']} GB; {len(names)} frames in {frame_dir}")
         return
     # Server-side time; container start and weight loading add ~1-2 min
     finish_full(cfg, name, res, res["total_seconds"], info["prompt"], info["settings"])

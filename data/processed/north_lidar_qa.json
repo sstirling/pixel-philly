@@ -1,0 +1,493 @@
+{
+  "buildings_downloaded": 71986,
+  "buildings_in_scene": 119789,
+  "buildings_dropped": [],
+  "height_source_counts": {
+    "approx_hgt": 71650,
+    "max_hgt": 286,
+    "default": 50
+  },
+  "height_outliers_max_gt_ratio_x_approx": [
+    {
+      "objectid": 13993,
+      "address": "3401-41 N BROAD ST",
+      "approx_hgt_ft": 56,
+      "max_hgt_ft": 172.28013108000002
+    },
+    {
+      "objectid": 19310,
+      "address": "3001 N 20TH ST",
+      "approx_hgt_ft": 4,
+      "max_hgt_ft": 15.14994075
+    },
+    {
+      "objectid": 148369,
+      "address": "3615 N 15TH ST",
+      "approx_hgt_ft": 15,
+      "max_hgt_ft": 45.039845
+    },
+    {
+      "objectid": 150620,
+      "address": "441 W ERIE AVE",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 48.25984708
+    },
+    {
+      "objectid": 153497,
+      "address": "3428 N 18TH ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 63.04996658
+    },
+    {
+      "objectid": 154487,
+      "address": "3419 N 19TH ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 7.24008825
+    },
+    {
+      "objectid": 155567,
+      "address": "3647 HAYWOOD ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 7.25015658
+    },
+    {
+      "objectid": 155810,
+      "address": "101 E ERIE AVE",
+      "approx_hgt_ft": 17,
+      "max_hgt_ft": 64.81992275
+    },
+    {
+      "objectid": 156349,
+      "address": "325 W GLENWOOD AVE # E",
+      "approx_hgt_ft": 17,
+      "max_hgt_ft": 66.29986225
+    },
+    {
+      "objectid": 160207,
+      "address": "1059 ROY ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 33.880045
+    },
+    {
+      "objectid": 160334,
+      "address": "3111 N 34TH ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 3.280137
+    },
+    {
+      "objectid": 161779,
+      "address": "101 E ERIE AVE",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 35.60003908
+    },
+    {
+      "objectid": 161871,
+      "address": "750 W SEDGLEY AVE",
+      "approx_hgt_ft": 8,
+      "max_hgt_ft": 24.43984358
+    },
+    {
+      "objectid": 163604,
+      "address": "160-64 W ATLANTIC ST",
+      "approx_hgt_ft": 8,
+      "max_hgt_ft": 25.09010075
+    },
+    {
+      "objectid": 164614,
+      "address": "3519 DILLMAN ST",
+      "approx_hgt_ft": 7,
+      "max_hgt_ft": 22.27010467
+    },
+    {
+      "objectid": 165215,
+      "address": "1500 W ALLEGHENY AVE",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 5.580114
+    },
+    {
+      "objectid": 167529,
+      "address": "800 W SEDGLEY AVE",
+      "approx_hgt_ft": 17,
+      "max_hgt_ft": 57.900115500000005
+    },
+    {
+      "objectid": 168872,
+      "address": "3601 CONSHOHOCKEN AVE",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 56.870042919999996
+    },
+    {
+      "objectid": 169841,
+      "address": "3233 W HUNTING PARK AVE",
+      "approx_hgt_ft": 3,
+      "max_hgt_ft": 10.18014442
+    },
+    {
+      "objectid": 170804,
+      "address": "3468 N BODINE ST",
+      "approx_hgt_ft": 7,
+      "max_hgt_ft": 23.49006833
+    },
+    {
+      "objectid": 172035,
+      "address": "3502-08 SCOTTS LN",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 4.42009333
+    },
+    {
+      "objectid": 175422,
+      "address": "3101-19 N 21ST ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 4.169837
+    },
+    {
+      "objectid": 180204,
+      "address": "260 W CORNWALL ST",
+      "approx_hgt_ft": 7,
+      "max_hgt_ft": 24.07983933
+    },
+    {
+      "objectid": 182852,
+      "address": "3326-48 W CLEARFIELD ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 8.73004008
+    },
+    {
+      "objectid": 192314,
+      "address": "3149 HARTVILLE ST",
+      "approx_hgt_ft": 7,
+      "max_hgt_ft": 23.04005242
+    },
+    {
+      "objectid": 193891,
+      "address": "2867 KENSINGTON AVE",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 43.570126249999994
+    },
+    {
+      "objectid": 193965,
+      "address": "3138 W YORK ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 3.43013992
+    },
+    {
+      "objectid": 194878,
+      "address": "4101 MONTGOMERY DR",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 62.48010683
+    },
+    {
+      "objectid": 195567,
+      "address": "2416 N CHADWICK ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 3.39015875
+    },
+    {
+      "objectid": 199005,
+      "address": "2944 GRANSBACK ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 49.19989142
+    },
+    {
+      "objectid": 201119,
+      "address": "1218 W CAMBRIA ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 3.05989567
+    },
+    {
+      "objectid": 201367,
+      "address": "2200-40 W SEDGLEY AVE",
+      "approx_hgt_ft": 3,
+      "max_hgt_ft": 13.74012625
+    },
+    {
+      "objectid": 203325,
+      "address": "2914 KENSINGTON AVE",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 34.289888669999996
+    },
+    {
+      "objectid": 205738,
+      "address": "2906 GRANSBACK ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 39.040074419999996
+    },
+    {
+      "objectid": 208197,
+      "address": "2772-74 CORAL ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 37.09014933
+    },
+    {
+      "objectid": 211130,
+      "address": "912 W SELTZER ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 3.40984475
+    },
+    {
+      "objectid": 213224,
+      "address": "2132-38 N 10TH ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 43.15993808
+    },
+    {
+      "objectid": 215967,
+      "address": "2735 DIAMOND ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 35.57004667
+    },
+    {
+      "objectid": 223547,
+      "address": "2250 N 7TH ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 3.14006342
+    },
+    {
+      "objectid": 225573,
+      "address": "2554 W GLENWOOD AVE",
+      "approx_hgt_ft": 20,
+      "max_hgt_ft": 62.16007475
+    },
+    {
+      "objectid": 227208,
+      "address": "1608 N 20TH ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 7.09989183
+    },
+    {
+      "objectid": 227307,
+      "address": "265-99 W BERKS ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 5.25004433
+    },
+    {
+      "objectid": 228545,
+      "address": "2554 W GLENWOOD AVE",
+      "approx_hgt_ft": 20,
+      "max_hgt_ft": 69.03991683000001
+    },
+    {
+      "objectid": 229593,
+      "address": "2227 FONTAIN ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 5.51005942
+    },
+    {
+      "objectid": 233394,
+      "address": "1526-30 N 26TH ST",
+      "approx_hgt_ft": 26,
+      "max_hgt_ft": 113.10993882999999
+    },
+    {
+      "objectid": 242738,
+      "address": "272 W NORRIS ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 3.40995275
+    },
+    {
+      "objectid": 245640,
+      "address": "2601-11 W GIRARD AVE",
+      "approx_hgt_ft": 16,
+      "max_hgt_ft": 52.469972250000005
+    },
+    {
+      "objectid": 247384,
+      "address": "1300-08 N BROAD ST",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 62.44991775
+    },
+    {
+      "objectid": 248178,
+      "address": "1451-57 N BROAD ST",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 52.009968
+    },
+    {
+      "objectid": 250444,
+      "address": "3400 W GIRARD AVE",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 55.25996408
+    },
+    {
+      "objectid": 253940,
+      "address": "3807 CAMBRIDGE ST",
+      "approx_hgt_ft": 2,
+      "max_hgt_ft": 35.06014633
+    },
+    {
+      "objectid": 254485,
+      "address": "3809 CAMBRIDGE ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 25.10983675
+    },
+    {
+      "objectid": 262598,
+      "address": "1525 W GIRARD AVE",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 60.32009958
+    },
+    {
+      "objectid": 263129,
+      "address": "3909 PENNSGROVE ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 28.88995692
+    },
+    {
+      "objectid": 264705,
+      "address": "3841 CAMBRIDGE ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 36.08998492
+    },
+    {
+      "objectid": 265743,
+      "address": "3400 W GIRARD AVE",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 59.450131999999996
+    },
+    {
+      "objectid": 265852,
+      "address": "3400 W GIRARD AVE",
+      "approx_hgt_ft": 2,
+      "max_hgt_ft": 28.10991417
+    },
+    {
+      "objectid": 326487,
+      "address": "1939-47 N FRONT ST",
+      "approx_hgt_ft": 23,
+      "max_hgt_ft": 74.05006417
+    },
+    {
+      "objectid": 409041,
+      "address": "1248 N BROAD ST",
+      "approx_hgt_ft": 41,
+      "max_hgt_ft": 136.6901265
+    },
+    {
+      "objectid": 419944,
+      "address": "3218 GERMANTOWN AVE",
+      "approx_hgt_ft": 17,
+      "max_hgt_ft": 54.12991033
+    },
+    {
+      "objectid": 482423,
+      "address": "2554 W GLENWOOD AVE",
+      "approx_hgt_ft": 20,
+      "max_hgt_ft": 60.06007675
+    },
+    {
+      "objectid": 483801,
+      "address": "2554 W GLENWOOD AVE",
+      "approx_hgt_ft": 21,
+      "max_hgt_ft": 64.53001492
+    },
+    {
+      "objectid": 484135,
+      "address": "1909 W OXFORD ST",
+      "approx_hgt_ft": 19,
+      "max_hgt_ft": 62.3598875
+    },
+    {
+      "objectid": 484740,
+      "address": "2501 RIDGE AVE",
+      "approx_hgt_ft": 19,
+      "max_hgt_ft": 59.54997958
+    },
+    {
+      "objectid": 485074,
+      "address": "4166 VIOLA ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 38.16990483
+    },
+    {
+      "objectid": 485106,
+      "address": "423 MILLER ST",
+      "approx_hgt_ft": 20,
+      "max_hgt_ft": 74.5600265
+    },
+    {
+      "objectid": 485712,
+      "address": "2533 W GIRARD AVE",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 43.679964580000004
+    },
+    {
+      "objectid": 497745,
+      "address": "2033 N AMERICAN ST",
+      "approx_hgt_ft": 8,
+      "max_hgt_ft": 26.00000383
+    },
+    {
+      "objectid": 497888,
+      "address": "1265 N DOVER ST",
+      "approx_hgt_ft": 2,
+      "max_hgt_ft": 23.70993258
+    },
+    {
+      "objectid": 498674,
+      "address": null,
+      "approx_hgt_ft": 2,
+      "max_hgt_ft": 12.05992308
+    }
+  ],
+  "tallest_buildings_m": [
+    {
+      "id": "485162-6",
+      "h": 95.12
+    },
+    {
+      "id": "485162-7",
+      "h": 95.04
+    },
+    {
+      "id": "485162-8",
+      "h": 93.43
+    },
+    {
+      "id": "485162-4",
+      "h": 90.76
+    },
+    {
+      "id": "485162-5",
+      "h": 90.75
+    },
+    {
+      "id": "485162-3",
+      "h": 85.71
+    },
+    {
+      "id": "478311-20",
+      "h": 84.33
+    },
+    {
+      "id": "478311-16",
+      "h": 78.27
+    },
+    {
+      "id": "478311-19",
+      "h": 75.82
+    },
+    {
+      "id": "478311-15",
+      "h": 74.94
+    }
+  ],
+  "trees_in_scene": 21074,
+  "render_tiles": 23,
+  "max_ground_texture_px": 12544,
+  "uv_fit_max_residual_m": 7.706899451885959e-05,
+  "ground_median_filter_px": 5,
+  "frames": 239,
+  "lidar_buildings_shaped": 57969,
+  "lidar_fallback_single_height": 768,
+  "lidar_parts": 104368,
+  "lidar_terrace_parts": 0,
+  "lidar_stadiums": [],
+  "lidar_structures": 612,
+  "lidar_structure_parts": 1404,
+  "lidar_structure_area_m2": 119124.1,
+  "lidar_structures_dropped_photo": 153,
+  "lidar_highway_mask": true,
+  "lidar_highway_masked_m2": 206914.0,
+  "lidar_rail_mask": true,
+  "lidar_margin_m": 100.0
+}

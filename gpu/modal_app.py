@@ -110,7 +110,53 @@ def check_env() -> dict:
     AutoProcessor.from_pretrained(f"{path}/processor")
     AutoTokenizer.from_pretrained(f"{path}/tokenizer")
     FlowMatchEulerDiscreteScheduler.from_pretrained(f"{path}/scheduler")
-    return {p: md.version(p) for p in ("torch", "torchvision", "diffusers", "transformers", "peft")}
+    out = {p: md.version(p) for p in ("torch", "torchvision", "diffusers", "transformers", "peft")}
+    out["known_band"] = _known_band_smoke()
+    return out
+
+
+def _known_band_smoke() -> dict:
+    """The known-band code path of AreaSampler.joint_volume on a tiny canvas
+    with a toy predictor (no model): the mask, the windows and
+    joint_denoise(known=...), so an import or shape error shows up here on a
+    CPU instead of on an H100."""
+    import numpy as np
+    import torch
+
+    from pixelphilly.joint_sampler import joint_denoise
+    from pixelphilly.regions import known_mask, repair_mask
+    from pixelphilly.windows import active_grids, two_grids
+
+    cell, win, C = 64, 128, 4
+    frames = [{"name": f"f{c}{r}", "col": c, "row": r} for r in range(2) for c in range(3)]
+    known = [f["name"] for f in frames if f["row"] == 1]
+    mask = known_mask(frames, known, cell, 8)
+    lh, lw = mask.shape
+    active = np.ones((lh, lw), bool)
+    grids = active_grids(two_grids(lh, lw, win=win, stride=96, shift=48), active, win)
+    x0_known = torch.full((C, lh, lw), 0.5)
+    noise = torch.randn((C, lh, lw), generator=torch.Generator().manual_seed(0))
+
+    def predict(x_win, y, x, sigma):  # velocity toward 0.5 everywhere
+        return (x_win - 0.5) / max(sigma, 1e-6)
+
+    lat = joint_denoise(noise, [1.0, 0.5, 0.0], grids, predict, win, active=torch.from_numpy(active),
+                        known=(x0_known, torch.from_numpy(mask)))
+    exact = bool(torch.allclose(lat[:, mask == 1.0], x0_known[:, mask == 1.0]))
+    if not exact:
+        raise RuntimeError("known cells are not reproduced exactly")
+    # The repair pass on the result: only the strip may change
+    fixed, strip = repair_mask(frames, known, cell, 10)
+    noise2 = torch.randn((C, lh, lw), generator=torch.Generator().manual_seed(1))
+    rgrids = active_grids(two_grids(lh, lw, win=win, stride=96, shift=48), strip, win)
+    rep = joint_denoise(noise2, [0.5, 0.0], rgrids, predict, win, active=torch.from_numpy(strip),
+                        known=(lat, torch.from_numpy(fixed)), start=0.5 * lat + 0.5 * noise2)
+    if not torch.equal(rep[:, ~torch.from_numpy(strip)], lat[:, ~torch.from_numpy(strip)]):
+        raise RuntimeError("the repair pass changed cells outside its strip")
+    return {"canvas_cells": [lh, lw], "windows": sum(len(g) for g in grids), "known_exact": exact,
+            "repair_strip_cells": int(strip.sum()), "repair_windows": sum(len(g) for g in rgrids),
+            "repair_fixed_exact": True,
+            "ramp_levels": int(len(np.unique(mask[(mask > 0) & (mask < 1)])))}
 
 
 class _QwenBase:
@@ -389,7 +435,28 @@ class AreaSampler(_QwenBase):
     @modal.method()
     def joint_volume(self, area: str, name: str, frames: list[dict], frame_px: int, prompt: str,
                      steps: int, cfg: float, seed: int, lightning: str | None = None,
-                     style: dict | None = None) -> dict:
+                     style: dict | None = None, known_frames: list[str] | None = None,
+                     known_ramp_cells: int = 0, repair_width_px: int = 200,
+                     repair_sigma: float = 0.6) -> dict:
+        """known_frames: names (in `frames`) whose drawn pixels are already
+        final, from a neighboring area drawn earlier (uploaded by
+        15_joint_sample.py --known-area to <out>/known/<frame>.png). They are
+        VAE-encoded to the latent the decoder turns back into that drawing
+        and held there by joint_denoise(known=...), with a mask of 1 on
+        their cells ramping to 0 over known_ramp_cells into the new frames
+        (pixelphilly.regions.known_mask). Their render is still the edit
+        model's conditioning, like every other frame. Only the other frames
+        are decoded and returned, so the old area's pixels stay
+        authoritative.
+
+        Repair pass (with known frames and repair_width_px > 0): after the
+        main denoise, the new frames' cells within repair_width_px of a known
+        cell (pixelphilly.regions.repair_mask) are re-noised to the schedule
+        step nearest repair_sigma with fresh noise (seed + 1) and redrawn with
+        the rest of the schedule, everything else held exactly as drawn, so
+        the strip is redrawn seeing both finished sides (tiny.london's repair
+        step, SDEdit-style). The boundary test without it drew a building
+        straddling the join gray on one side and beige on the other."""
         import os
 
         import numpy as np
@@ -401,9 +468,11 @@ class AreaSampler(_QwenBase):
         from PIL import Image
 
         from pixelphilly.joint_sampler import joint_denoise
+        from pixelphilly.regions import known_mask, repair_mask, repair_step
         from pixelphilly.windows import WIN, active_grids, two_grids
 
         Image.MAX_IMAGE_PIXELS = None
+        known_frames = list(known_frames or [])
         torch = self.torch
         pipe = self.pipe
         self._configure(lightning, style)
@@ -445,7 +514,6 @@ class AreaSampler(_QwenBase):
                 to_cpu = lambda t: None if t is None else t.to("cpu")  # noqa: E731
                 cache[(y, x)] = (to_cpu(emb), to_cpu(mask), None if neg is None else (to_cpu(neg[0]), to_cpu(neg[1])),
                                  to_cpu(cond))
-        t_encode = time.time() - t_start
 
         sched = pipe.scheduler
         mu = calculate_shift((WIN // 2) ** 2, sched.config.get("base_image_seq_len", 256),
@@ -477,10 +545,50 @@ class AreaSampler(_QwenBase):
                     v = comb * (torch.norm(v, dim=-1, keepdim=True) / torch.norm(comb, dim=-1, keepdim=True))
             return pipe._unpack_latents(v, WIN * 8, WIN * 8, 8)[0, :, 0].float()
 
+        known = None
+        if known_frames:
+            # Target latents of the drawn neighbor: _encode_vae_image returns
+            # (raw - latents_mean) / latents_std, which the decode below inverts
+            x0_known = torch.zeros((C, lh, lw), device=dev, dtype=torch.float32)
+            by_name = {f["name"]: f for f in frames}
+            with torch.no_grad():
+                for k in known_frames:
+                    f = by_name[k]
+                    img = Image.open(f"{out}/known/{k}.png").convert("RGB")
+                    vae_in = pipe.image_processor.preprocess(img, frame_px, frame_px).unsqueeze(2)
+                    lat = pipe._encode_vae_image(vae_in.to(dev, pipe.vae.dtype), generator=None)
+                    x0_known[:, f["row"] * cell:(f["row"] + 1) * cell, f["col"] * cell:(f["col"] + 1) * cell] = \
+                        lat[0, :, 0].float()
+            kmask = torch.from_numpy(known_mask(frames, known_frames, cell, known_ramp_cells)).to(dev)
+            known = (x0_known, kmask)
+        t_encode = time.time() - t_start
+
         noise = torch.randn((C, lh, lw), generator=torch.Generator(dev).manual_seed(seed), device=dev,
                             dtype=torch.float32)
-        latents = joint_denoise(noise, sigmas, grids, predict, WIN, active=torch.from_numpy(active).to(dev))
+        latents = joint_denoise(noise, sigmas, grids, predict, WIN, active=torch.from_numpy(active).to(dev),
+                                known=known)
         t_denoise = time.time() - t_start - t_encode
+        main_forwards = forwards["n"]
+
+        repair = None
+        if known_frames and repair_width_px > 0:
+            torch.save(latents.cpu(), f"{out}/latent_main.pt")  # before the repair, for comparison
+            t_rep = time.time()
+            fixed, strip = repair_mask(frames, known_frames, cell, repair_width_px // 8)
+            k = repair_step(sigmas, repair_sigma)
+            s0 = sigmas[k]
+            noise2 = torch.randn((C, lh, lw), generator=torch.Generator(dev).manual_seed(seed + 1), device=dev,
+                                 dtype=torch.float32)
+            # Windows touching the strip: a subset of the main pass's, so the
+            # conditioning cache already has them
+            rgrids = active_grids(two_grids(lh, lw), strip)
+            latents = joint_denoise(noise2, sigmas[k:], rgrids, predict, WIN, active=torch.from_numpy(strip).to(dev),
+                                    known=(latents, torch.from_numpy(fixed).to(dev)),
+                                    start=(1 - s0) * latents + s0 * noise2)
+            repair = {"width_px": repair_width_px, "sigma_target": repair_sigma, "start_step": k,
+                      "start_sigma": round(s0, 4), "steps": len(sigmas) - 1 - k, "strip_cells": int(strip.sum()),
+                      "windows_per_grid": [len(g_) for g_ in rgrids], "forwards": forwards["n"] - main_forwards,
+                      "seconds": round(time.time() - t_rep, 1)}
         # Save before decoding: a decode failure must not lose the run
         torch.save(latents.cpu(), f"{out}/latent.pt")
         runs.commit()
@@ -489,8 +597,9 @@ class AreaSampler(_QwenBase):
         std = 1.0 / torch.tensor(pipe.vae.config.latents_std).view(1, C, 1, 1, 1)
         halo = 16  # latent cells = 128 px of overlap so frame edges decode with context
         pipe.vae.disable_tiling()
+        decoded = [f for f in frames if f["name"] not in set(known_frames)]
         with torch.no_grad():
-            for f in frames:
+            for f in decoded:
                 y0, x0 = f["row"] * cell, f["col"] * cell
                 ya, xa = max(0, y0 - halo), max(0, x0 - halo)
                 yb, xb = min(lh, y0 + cell + halo), min(lw, x0 + cell + halo)
@@ -503,6 +612,9 @@ class AreaSampler(_QwenBase):
         runs.commit()
         return {
             "area": area, "name": name, "frames": len(frames), "canvas_px": [W, H],
+            "decoded_frames": [f["name"] for f in decoded], "known_frames": len(known_frames),
+            "known_ramp_cells": known_ramp_cells if known_frames else None,
+            "main_forwards": main_forwards, "repair": repair,
             "windows": len(keys), "windows_per_grid": [len(g_) for g_ in grids], "forwards": forwards["n"],
             "sigmas": [round(s, 4) for s in sigmas], "encode_seconds": round(t_encode, 1),
             "denoise_seconds": round(t_denoise, 1), "total_seconds": round(time.time() - t_start, 1),

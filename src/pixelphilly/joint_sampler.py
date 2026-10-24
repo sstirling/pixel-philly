@@ -38,6 +38,8 @@ def joint_denoise(
     win: int = WIN,
     on_step: Callable[[int, torch.Tensor], None] | None = None,
     active: torch.Tensor | None = None,
+    known: tuple[torch.Tensor, torch.Tensor] | None = None,
+    start: torch.Tensor | None = None,
 ) -> torch.Tensor:
     """Denoise a [C, H, W] latent canvas.
 
@@ -48,9 +50,24 @@ def joint_denoise(
     sigmas runs from ~1 down to 0 (len = steps + 1). grids[i % len(grids)]
     gives the window positions used at step i. on_step(i, latents) is called
     after each step, e.g. to checkpoint so a long run can resume.
+
+    known: optional (x0_known [C, H, W], mask [H, W] in 0..1) for drawing a
+    region next to one already drawn. After every step the masked cells are
+    reset to where the known image would be at that noise level,
+    (1 - sigma) * x0_known + sigma * noise, using this run's own noise
+    (RePaint, Lugmayr et al. 2022, https://arxiv.org/abs/2201.09865, in
+    flow-matching form). Windows overlapping the band see the neighbor's
+    real content at every step, so new content continues it; at sigma = 0
+    cells with mask 1 equal x0_known exactly. A mask that ramps from 1 to 0
+    spreads any remaining tone difference instead of leaving a hard edge.
+
+    start: optional initial latent (default `noise`). The region-join repair
+    pass re-noises a finished canvas to sigmas[0] with fresh noise and
+    passes that here, with `noise` the fresh noise (the known-cell target
+    above uses it) and `sigmas` the tail of the run's schedule.
     """
     _, height, width = noise.shape
-    latents = noise.clone()
+    latents = (noise if start is None else start).clone()
     weights = {}
     for g in grids:
         for y, x in g:
@@ -72,6 +89,10 @@ def joint_denoise(
             raise RuntimeError("a canvas cell is not covered by any window in this grid")
         step = torch.where(covered, vel / torch.where(covered, wsum, torch.ones_like(wsum)), torch.zeros_like(vel))
         latents = latents + (sigma_next - sigma) * step
+        if known is not None:
+            x0_known, mask = known
+            target = (1.0 - sigma_next) * x0_known + sigma_next * noise
+            latents = mask * target + (1.0 - mask) * latents
         if on_step is not None:
             on_step(i, latents)
     return latents

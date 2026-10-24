@@ -23,12 +23,8 @@ def _terms(u, v):
     return np.stack([np.ones_like(u), u, v, u * u, u * v, v * v, u**3, u * u * v, u * v * v, v**3], axis=-1)
 
 
-def fit_lonlat_to_px(cfg: dict, samples: int = 60) -> dict:
-    frame, cam, frames = area_setup(cfg)
-    size = cfg["camera"]["frame_px"]
-    x_origin = min(f.x0 - f.col * size for f in frames)
-    y_origin = min(f.y0 - f.row * size for f in frames)
-    west, south, east, north = render_ground_polygon(cfg).bounds
+def _fit(frame, cam, x_origin: float, y_origin: float, bounds, samples: int) -> dict:
+    west, south, east, north = bounds
     lon0, lat0 = (west + east) / 2, (south + north) / 2
     su, sv = (east - west) / 2, (north - south) / 2
 
@@ -45,6 +41,27 @@ def fit_lonlat_to_px(cfg: dict, samples: int = 60) -> dict:
         raise RuntimeError(f"lon/lat -> px fit is off by {err:.2f} px (limit 0.5)")
     return {"lon0": lon0, "lat0": lat0, "su": su, "sv": sv, "cx": cx.tolist(), "cy": cy.tolist(),
             "max_error_px": err, "bounds_wgs84": [west, south, east, north]}
+
+
+def fit_lonlat_to_px(cfg: dict, samples: int = 60) -> dict:
+    frame, cam, frames = area_setup(cfg)
+    size = cfg["camera"]["frame_px"]
+    x_origin = min(f.x0 - f.col * size for f in frames)
+    y_origin = min(f.y0 - f.row * size for f in frames)
+    return _fit(frame, cam, x_origin, y_origin, render_ground_polygon(cfg).bounds, samples)
+
+
+def fit_lonlat_to_px_union(cfgs, x_origin: float, y_origin: float, samples: int = 60) -> dict:
+    """The fit for one map made from several areas that share a screen space
+    (regions.check_same_space). Pixel (0, 0) is the union lattice's corner
+    (x_origin, y_origin in screen px, regions.union_lattice) and the fit
+    covers the union of the areas' rendered ground. Over South + North
+    Philly (~9 x 15 km) the cubic stays far below a pixel (1.4e-6 px)."""
+    from shapely.ops import unary_union
+
+    frame, cam, _ = area_setup(cfgs[0])
+    bounds = unary_union([render_ground_polygon(c) for c in cfgs]).bounds
+    return _fit(frame, cam, x_origin, y_origin, bounds, samples)
 
 
 def lonlat_to_px(fit: dict, lon, lat):

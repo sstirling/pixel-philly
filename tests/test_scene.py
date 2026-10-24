@@ -47,3 +47,34 @@ def test_terrace_parts_skip_the_brick_wall_tint():
     tint = {"max_height_m": 20, "color": [150, 82, 62], "mix": 0.55}
     assert build_scene.wall_color([120, 130, 140], 16.0, tint) != [120, 130, 140]
     assert build_scene.wall_color([120, 130, 140], 16.0, tint, terrace=True) == [120, 130, 140]
+
+
+def test_structures_skip_the_brick_tint_and_are_shaded():
+    # Ships, cranes and containers aren't brick buildings; their walls take
+    # their own aerial color, darkened for shading
+    tint = {"max_height_m": 20, "color": [150, 82, 62], "mix": 0.55}
+    assert build_scene.wall_color([200, 200, 200], 4.0, tint, structure=True) == [170, 170, 170]
+
+
+def test_rail_mask_buffers_the_el_and_surface_track(tmp_path, monkeypatch):
+    # The Market-Frankford El (SEPTA route L) and the City's surface track
+    # (fcode 1700) are masked out of LiDAR structures like expressways: the
+    # El's deck over Front St and Kensington Ave would otherwise come through
+    # as a long "structure"
+    import json
+
+    from shapely.geometry import Point
+
+    from pixelphilly.projection import LocalFrame
+
+    monkeypatch.setattr(build_scene, "RAW", tmp_path)
+    line = {"type": "LineString", "coordinates": [[-75.1342, 39.9753], [-75.1330, 39.9800]]}
+    for suffix, props in (("rail_el", {"Route": "L"}), ("rail", {"fcode": 1700})):
+        (tmp_path / f"t_{suffix}.geojson").write_text(json.dumps(
+            {"type": "FeatureCollection", "features": [{"type": "Feature", "geometry": line, "properties": props}]}))
+    frame = LocalFrame([-75.14, 39.97, -75.13, 39.98])
+    mask = build_scene.rail_mask({"name": "t"}, frame)
+    assert len(mask) == 2
+    e, n = frame.to_local([-75.1336], [39.97765])  # on the line
+    assert all(m.contains(Point(e[0], n[0])) for m in mask)
+    assert build_scene.rail_mask({"name": "none"}, frame) is None

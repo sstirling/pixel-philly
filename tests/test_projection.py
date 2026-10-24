@@ -114,3 +114,33 @@ def test_frustum_matches_screen_convention(cam):
     assert fr["top"] - fr["bottom"] == pytest.approx(1024 * cam.meters_per_pixel)
     # Screen y grows downward, view-space y grows upward
     assert fr["top"] == pytest.approx(-2048 * cam.meters_per_pixel)
+
+
+def test_shared_projection_origin_lines_regions_up():
+    # Regions drawn separately must share one screen space so they can be
+    # merged into one map: a config's "projection_origin" replaces the bbox
+    # center. North Philly uses South Philly's origin
+    import json
+
+    from pixelphilly.projection import REPO_ROOT, area_setup, local_frame
+
+    south = json.loads((REPO_ROOT / "config" / "south_lidar.json").read_text())
+    north = dict(south, name="north_test", bbox_wgs84=[-75.205, 39.975, -75.125, 40.005],
+                 projection_origin=[-75.165, 39.9275])
+    fs, cam_s, frames_s = area_setup(south)
+    fn, cam_n, frames_n = area_setup(north)
+    # Equal to float precision (the bbox-center arithmetic gives -75.16499999999999)
+    assert fn.lon0 == pytest.approx(fs.lon0, abs=1e-12) and fn.lat0 == pytest.approx(fs.lat0, abs=1e-12)
+    # The same point projects to the same screen pixel in both
+    lon, lat = -75.1636, 39.9800
+    es, ns = fs.to_local([lon], [lat])
+    en, nn = fn.to_local([lon], [lat])
+    (xs, ys), (xn, yn) = cam_s.world_to_screen(es, ns, 0.0), cam_n.world_to_screen(en, nn, 0.0)
+    assert abs(xs[0] - xn[0]) < 1e-6 and abs(ys[0] - yn[0]) < 1e-6
+    # Frames covering the same screen area sit on the same global lattice
+    lat_s = {(f.x0, f.y0) for f in frames_s}
+    lat_n = {(f.x0, f.y0) for f in frames_n}
+    assert lat_s & lat_n, "the regions overlap along Girard Ave"
+    assert all(x % 1024 == 0 and y % 1024 == 0 for x, y in lat_s | lat_n)
+    # Without the key, the origin is still the bbox center
+    assert local_frame(south).lon0 == (south["bbox_wgs84"][0] + south["bbox_wgs84"][2]) / 2

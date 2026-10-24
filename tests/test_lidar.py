@@ -381,3 +381,153 @@ def test_penn_quad_is_not_a_stadium_but_franklin_field_is():
     assert stand_terraces(fp, parts) == set()
     fp, parts = _fixture_parts("franklinfield_grid.npz")
     assert len(stand_terraces(fp, parts)) >= 10
+
+
+# --- LiDAR structures: ships, cranes, containers (objects with no footprint) ---
+
+def _struct_grids():
+    """Class-1 surface (structures and trees) over flat ground at 0 m."""
+    struct = np.full((SIZE, SIZE), np.nan)
+    ground = np.zeros((SIZE, SIZE))
+    return struct, ground
+
+
+def test_flat_container_block_becomes_a_structure():
+    # Packer Ave terminal: container stacks ~4 m, flat (roughness ~0.02),
+    # with no L&I footprint, so they rendered as flat photo texture and the
+    # model drew the aerial's container sides as little brick buildings
+    from pixelphilly.lidar import structures
+
+    E, N = grid_coords()
+    struct, ground = _struct_grids()
+    struct[(abs(E) < 15) & (abs(N) < 6)] = 4.0  # 360 m²
+    parts = structures(struct, ground, ORIGIN, RES, footprints=[])
+    assert parts and all(3 < p["h"] < 5 for p in parts)
+    assert parts_union(parts).contains(Point(0, 0))
+
+
+def test_tree_canopy_is_not_a_structure():
+    # Washington Square: canopy roughness 1.4-1.9 vs. 0.02-0.06 for
+    # containers, ships and roofs. Trees are drawn from the tree inventory
+    from pixelphilly.lidar import structures
+
+    E, N = grid_coords()
+    struct, ground = _struct_grids()
+    rng = np.random.default_rng(1)
+    canopy = (abs(E) < 20) & (abs(N) < 20)
+    struct[canopy] = rng.uniform(8, 18, canopy.sum())
+    assert structures(struct, ground, ORIGIN, RES, footprints=[]) == []
+
+
+def test_vehicle_sized_object_is_ignored():
+    from pixelphilly.lidar import structures
+
+    E, N = grid_coords()
+    struct, ground = _struct_grids()
+    struct[(abs(E) < 6) & (abs(N) < 1.25)] = 3.5  # a 30 m² bus
+    assert structures(struct, ground, ORIGIN, RES, footprints=[]) == []
+
+
+def test_structures_stay_off_footprints():
+    # A building's own returns belong to its footprint parts, not a structure
+    from pixelphilly.lidar import structures
+
+    E, N = grid_coords()
+    struct, ground = _struct_grids()
+    struct[(abs(E) < 30) & (abs(N) < 10)] = 12.0
+    fp = box(-30, -10, 0, 10)
+    parts = structures(struct, ground, ORIGIN, RES, footprints=[fp])
+    u = parts_union(parts)
+    assert not u.intersects(fp.buffer(1.0)), "nothing within 1.5 m of the footprint"
+    assert u.contains(Point(15, 0))
+
+
+def test_ship_over_water_is_a_structure():
+    # Navy Yard basin: no ground returns on water, so the base comes from the
+    # water level; a ship's hull and superstructure step up from it
+    from pixelphilly.lidar import structures
+
+    E, N = grid_coords()
+    struct, ground = _struct_grids()
+    ground[:] = np.nan  # all water
+    hull = (abs(E) < 60) & (abs(N) < 9)
+    struct[hull] = 9.0
+    struct[(abs(E - 10) < 8) & (abs(N) < 6)] = 24.0  # superstructure
+    parts = structures(struct, ground, ORIGIN, RES, footprints=[], water_level=0.0)
+    assert any(20 < p["h"] < 26 for p in parts)
+    assert parts_union(parts).contains(Point(-40, 0))
+
+
+def test_structures_skip_masked_highways():
+    # I-95's decks are mostly class 1, not bridge class 17 (one ramp: 186,515
+    # class-1 points vs. 12 class-17), so they came through as structures.
+    # The City street centerlines (CLASS 1 expressway, 9/10 ramps), buffered,
+    # mask them out
+    from pixelphilly.lidar import structures
+
+    E, N = grid_coords()
+    struct, ground = _struct_grids()
+    struct[(abs(N) < 8) & (abs(E) < 140)] = 12.0  # a 280 m viaduct deck
+    struct[(abs(E - 60) < 10) & (abs(N - 60) < 6)] = 4.0  # a container block
+    deck = box(-140, -8, 140, 8)
+    parts = structures(struct, ground, ORIGIN, RES, footprints=[], exclude=[deck.buffer(2)])
+    u = parts_union(parts)
+    assert not u.intersects(deck), "no structure on the masked deck"
+    assert u.contains(Point(60, 60)), "the container block is kept"
+
+
+def test_photo_must_agree_a_structure_is_there():
+    # The LiDAR (2022) and the aerial (2024) disagree where things moved: a
+    # ship moored in 2022 is gone in 2024, and container stacks shift. Keep a
+    # structure only if the photo shows something there
+    from pixelphilly.lidar import photo_agrees
+
+    rng = np.random.default_rng(0)
+    water = np.tile(np.array([62, 78, 70], np.uint8), (400, 1)) + rng.integers(0, 4, (400, 3)).astype(np.uint8)
+    pavement = np.tile(np.array([128, 126, 122], np.uint8), (400, 1)) + rng.integers(0, 5, (400, 3)).astype(np.uint8)
+    ship = rng.integers(60, 230, (400, 3)).astype(np.uint8)  # decks, superstructure, shadows
+    containers = np.concatenate([np.tile(c, (100, 1)) for c in ([170, 60, 50], [40, 80, 150], [220, 220, 215], [90, 110, 60])]).astype(np.uint8)
+    assert not photo_agrees(water, over_water=True)
+    assert photo_agrees(ship, over_water=True)
+    assert not photo_agrees(pavement, over_water=False)
+    assert photo_agrees(containers, over_water=False)
+
+
+def _north_fixture(name):
+    """Real-data window from the north_lidar grid (heights stored as int16
+    multiples of unit_m above offset_m; -32768 = no return)."""
+    from pathlib import Path
+
+    from shapely import wkt
+
+    z = np.load(Path(__file__).parent / "fixtures" / f"{name}.npz")
+
+    def grid(q):
+        return np.where(q == -32768, np.nan, q.astype(np.float32) * float(z["unit_m"]) + float(z["offset_m"]))
+
+    return (grid(z["struct_q"]), grid(z["ground_q"]), tuple(z["origin"]),
+            [wkt.loads(str(s)) for s in z["footprints"]], wkt.loads(str(z["region"])))
+
+
+def _structure_cover(name):
+    from pixelphilly.lidar import structures
+
+    struct, ground, origin, fps, region = _north_fixture(name)
+    parts = structures(struct, ground, origin, RES, fps, water_level=0.0)
+    return (parts_union(parts).intersection(region).area / region.area) if parts else 0.0
+
+
+@pytest.mark.parametrize("name", ["north_cemetery_trees", "north_roadside_trees", "north_field_ring_trees"])
+def test_tree_clusters_that_pass_the_roughness_test_are_not_structures(name):
+    # North Philly: tree clusters in a cemetery near Laurel Hill, along an
+    # elevated roadway's edge, and ringing a dirt field came through as
+    # 7-16 m "structures" (1,500-2,100 m²). Their cells that pass the
+    # flatness test are locally flat, but they're scattered fragments
+    assert _structure_cover(name) < 0.1
+
+
+@pytest.mark.parametrize("name", ["north_reservoir_tank", "north_flat_roof"])
+def test_solid_structures_without_footprints_are_kept(name):
+    # East Park Reservoir's covered tanks (~11 m, ~12,000 m² each) and a
+    # flat-roofed building at 39.9934, -75.1353, neither in the footprint layer
+    assert _structure_cover(name) > 0.5

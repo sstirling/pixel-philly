@@ -17,6 +17,7 @@ above sea level, and a slope that gentle doesn't show at this scale.
 
 import json
 import math
+import os
 from collections import Counter
 from pathlib import Path
 
@@ -157,7 +158,7 @@ def mean_color(mosaic_arr, polys, to_px):
     return np.round(mosaic_arr[by0:by1, bx0:bx1][m].mean(axis=0)).astype(int).tolist()
 
 
-def wall_color(roof_rgb, height_m, tint, terrace=False):
+def wall_color(roof_rgb, height_m, tint, terrace=False, structure=False):
     """Wall color for one building.
 
     The aerial shows roofs, not façades, and Philadelphia's flat roofs are
@@ -172,7 +173,13 @@ def wall_color(roof_rgb, height_m, tint, terrace=False):
     Terrace parts (stadium seating rows, pixelphilly.lidar.terrace_parts)
     keep their roof color: their step faces are seat risers, not façades,
     and the tint drew Franklin Field's upper deck as brick with windows.
+
+    Structures (ships, cranes, containers; pixelphilly.lidar.structures)
+    aren't brick buildings either: their walls take their own aerial color,
+    darkened 15% so the sides read as shaded.
     """
+    if structure:
+        return [round(c * 0.85) for c in roof_rgb]
     if terrace or not tint or height_m > tint["max_height_m"]:
         return roof_rgb
     k = tint["mix"]
@@ -277,6 +284,135 @@ def load_buildings(cfg, frame):
                        "outliers": outliers, "dropped": dropped}
 
 
+# Base for LiDAR structures over water (ships), m NAVD88. Approximate: the
+# Delaware and Schuylkill are tidal, with mean water near 0-1 m NAVD88
+WATER_LEVEL_M = 0.0
+# Highway mask for LiDAR structures (data/raw/<area>_highways.geojson,
+# scripts/04d_fetch_highways.py): City street centerlines buffered in local
+# m. Class 1 (expressway mainline) centerlines run one per carriageway (NB
+# and SB DELAWARE EXPY) or one for both (the Schuylkill Expy approach to
+# the Walt Whitman Bridge, whose deck came through as a 718 m, ~20 m wide
+# "structure"); 14 m each side covers three to four lanes plus shoulders and
+# the centerline's offset from the deck. Ramps (class 9, 10) are one or two
+# lanes: 7 m. SEPTA's elevated rail isn't a street; North Philly (the
+# Market-Frankford El) will need a rail layer
+HIGHWAY_BUFFER_M = 14.0
+RAMP_BUFFER_M = 7.0
+
+
+def highway_mask(cfg, frame):
+    """Buffered expressway and ramp centerlines in local m, or None if the
+    area has no highways file."""
+    from shapely.geometry import LineString, shape
+
+    path = RAW / f"{cfg['name']}_highways.geojson"
+    if not path.exists():
+        return None
+    out = []
+    for f in json.loads(path.read_text())["features"]:
+        if not f.get("geometry"):
+            continue
+        geom = shape(f["geometry"])
+        lines = list(getattr(geom, "geoms", [geom]))
+        width = HIGHWAY_BUFFER_M if f["properties"].get("class") == 1 else RAMP_BUFFER_M
+        for line in lines:
+            lon, lat = np.asarray(line.coords).T
+            e, n = frame.to_local(lon, lat)
+            out.append(LineString(np.column_stack([e, n])).buffer(width))
+    return out
+
+
+# Rail mask for LiDAR structures (scripts/04e_fetch_rail.py). The El's deck
+# carries two tracks on one SEPTA centerline (~10 m wide); City track lines
+# are drawn per track. Masking surface track too costs nothing, since
+# at-grade track never rises 2.5 m to become a structure
+EL_BUFFER_M = 8.0
+TRACK_BUFFER_M = 5.0
+
+
+def _buffered_lines(path, frame, width):
+    from shapely.geometry import LineString, shape
+
+    out = []
+    for f in json.loads(path.read_text())["features"]:
+        if not f.get("geometry"):
+            continue
+        geom = shape(f["geometry"])
+        for line in getattr(geom, "geoms", [geom]):
+            lon, lat = np.asarray(line.coords).T
+            e, n = frame.to_local(lon, lat)
+            out.append(LineString(np.column_stack([e, n])).buffer(width))
+    return out
+
+
+def rail_mask(cfg, frame):
+    """Buffered El and surface-track centerlines in local m, or None if the
+    area has neither rail file."""
+    parts = []
+    found = False
+    for suffix, width in (("rail_el", EL_BUFFER_M), ("rail", TRACK_BUFFER_M)):
+        path = RAW / f"{cfg['name']}_{suffix}.geojson"
+        if path.exists():
+            found = True
+            parts += _buffered_lines(path, frame, width)
+    return parts if found else None
+
+
+def photo_check(cfg, frame, s_parts):
+    """Drop structure regions the 2024 aerial doesn't show (the LiDAR is from
+    2022: ships leave, container stacks move; pixelphilly.lidar.photo_agrees).
+    Each region's pixels and its 3-15 m ground ring come from the z19 tiles
+    under it, so the single and tiled builds judge alike. Returns (kept
+    parts, dropped region count)."""
+    from shapely.geometry import Polygon
+    from shapely.ops import unary_union
+
+    from pixelphilly import lidar
+
+    z = cfg["imagery_zoom"]
+    by_region = {}
+    for part in s_parts:
+        by_region.setdefault(part["region"], []).append(part)
+    kept, dropped = [], 0
+    for k, parts in by_region.items():
+        g = unary_union([Polygon(p[0], p[1:]) for part in parts for p in part["polys"]])
+        ring = g.buffer(lidar.STRUCT_RING_M[1]).difference(g.buffer(lidar.STRUCT_RING_M[0]))
+        lon, lat = frame.to_wgs84(*np.asarray(ring.envelope.exterior.coords).T)
+        px, py = merc_px(lon, lat, z)
+        tile_range = (int(px.min() // TILE), int(px.max() // TILE), int(py.min() // TILE), int(py.max() // TILE))
+        try:
+            mosaic, origin_px, _ = build_mosaic(cfg, tile_range)
+        except FileNotFoundError:
+            kept.extend(parts)  # no photo here to judge by: keep the LiDAR's word
+            continue
+        arr = np.asarray(mosaic)
+
+        def to_px(e, n):
+            x, y = merc_px(*frame.to_wgs84(e, n), z)
+            return float(x - origin_px[0]), float(y - origin_px[1])
+
+        def pixels(geom):
+            mask = Image.new("L", mosaic.size)
+            d = ImageDraw.Draw(mask)
+            for pg in getattr(geom, "geoms", [geom]):
+                if pg.is_empty:
+                    continue
+                d.polygon([to_px(x, y) for x, y in pg.exterior.coords], fill=255)
+                for hole in pg.interiors:
+                    d.polygon([to_px(x, y) for x, y in hole.coords], fill=0)
+            return arr[np.asarray(mask) > 0]
+
+        if lidar.photo_agrees(pixels(g), parts[0]["over_water"], pixels(ring)):
+            kept.extend(parts)
+        else:
+            dropped += 1
+            if os.environ.get("PP_LIDAR_LOG") == "1":
+                print(f"  structure dropped (2024 photo shows nothing): {max(p['h'] for p in parts):.1f} m, "
+                      f"{g.area:.0f} m² at ({g.centroid.x:.1f}, {g.centroid.y:.1f}), "
+                      f"{'water' if parts[0]['over_water'] else 'land'}", flush=True)
+    return kept, dropped
+
+
 def lidar_shaped(cfg, frame, buildings):
     """Replace buildings inside the LiDAR region with stepped parts
     (pixelphilly.lidar). Each part keeps the building id with a suffix and is
@@ -291,13 +427,17 @@ def lidar_shaped(cfg, frame, buildings):
     name = cfg["name"]
     _, region = lidar.lidar_region_local(cfg)
     cache = PROCESSED / f"{name}_lidar_grid.npz"
-    if cache.exists():
-        z = np.load(cache)
-        dsm, ground, origin = z["dsm"], z["ground"], tuple(z["origin"])
+    z = np.load(cache) if cache.exists() else None
+    if z is not None and "struct" in z:
+        dsm, ground, origin, struct = z["dsm"], z["ground"], tuple(z["origin"]), z["struct"]
     else:
+        # Grids cached before structures existed lack the class-1 grid
+        if z is not None:
+            print(f"  {cache.name} has no class-1 structure grid: regridding from LAS", flush=True)
         tiles = (RAW / "lidar" / f"{name}_tiles.txt").read_text().split()
-        dsm, ground, origin = lidar.dsm_from_las([RAW / "lidar" / t for t in tiles], frame, region.bounds, lidar.RES_M)
-        np.savez_compressed(cache, dsm=dsm, ground=ground, origin=np.array(origin))
+        dsm, ground, origin, struct = lidar.dsm_from_las([RAW / "lidar" / t for t in tiles], frame, region.bounds,
+                                                         lidar.RES_M, with_struct=True)
+        np.savez_compressed(cache, dsm=dsm, ground=ground, origin=np.array(origin), struct=struct)
     import time
 
     out, shaped, fallback, n_parts, n_terrace, stadiums = [], 0, 0, 0, 0, []
@@ -328,8 +468,41 @@ def lidar_shaped(cfg, frame, buildings):
         if terraces:
             stadiums.append(b["id"])
     print(f"  lidar shapes: {shaped:,} shaped into {n_parts:,} parts in {time.monotonic() - t0:.0f} s", flush=True)
+
+    # Ships, cranes and container stacks have no footprint; the class-1 grid
+    # sees them (pixelphilly.lidar.structures). Ids s<region>-<part>; the
+    # flag (not written to the scene) skips the brick tint in colored()
+    t0 = time.monotonic()
+    fps = [unary_union([Polygon(p[0], p[1:]) for p in b["polys"]]).buffer(0) for b in buildings]
+    highways = highway_mask(cfg, frame)
+    rails = rail_mask(cfg, frame)
+    if highways is None:
+        print(f"  WARNING: no data/raw/{name}_highways.geojson (scripts/04d_fetch_highways.py): "
+              "structures run without the highway mask, so elevated expressway decks can come through",
+              flush=True)
+    s_parts = lidar.structures(struct, ground, origin, lidar.RES_M, fps, water_level=WATER_LEVEL_M,
+                               exclude=(highways or []) + (rails or []))
+    found = len({p["region"] for p in s_parts})
+    s_parts, dropped_photo = photo_check(cfg, frame, s_parts)
+    # Renumber the kept regions so ids stay s0, s1, ...
+    renum = {k: i for i, k in enumerate(sorted({p["region"] for p in s_parts}))}
+    s_parts = [{**p, "region": renum[p["region"]]} for p in s_parts]
+    n_regions = len(renum)
+    masked_m2 = unary_union(highways).intersection(region).area if highways else 0.0
+    s_area, per_region = 0.0, Counter()
+    for part in s_parts:
+        k = part["region"]
+        out.append({"id": f"s{k}-{per_region[k]}", "h": part["h"], "polys": part["polys"], "structure": True})
+        per_region[k] += 1
+        s_area += sum(Polygon(p[0], p[1:]).area for p in part["polys"])
+    print(f"  lidar structures: {found:,} found, {dropped_photo:,} dropped (2024 photo shows nothing), "
+          f"{n_regions:,} kept as {len(s_parts):,} parts in {time.monotonic() - t0:.0f} s", flush=True)
     return out, {"lidar_buildings_shaped": shaped, "lidar_fallback_single_height": fallback,
                  "lidar_parts": n_parts, "lidar_terrace_parts": n_terrace, "lidar_stadiums": stadiums,
+                 "lidar_structures": n_regions, "lidar_structure_parts": len(s_parts),
+                 "lidar_structure_area_m2": round(s_area, 1), "lidar_structures_dropped_photo": dropped_photo,
+                 "lidar_highway_mask": highways is not None, "lidar_highway_masked_m2": round(masked_m2, 1),
+                 "lidar_rail_mask": rails is not None,
                  "lidar_margin_m": lidar.LIDAR_MARGIN_M}
 
 
@@ -342,7 +515,8 @@ def colored(buildings, ground, cfg, cache=None):
             color = cache[b["id"]]
         else:
             roof = mean_color(ground["mosaic_arr"], b["polys"], ground["to_px"]) or [150, 140, 130]
-            color = wall_color(roof, b["h"], cfg.get("wall_tint"), terrace=b.get("terrace", False))
+            color = wall_color(roof, b["h"], cfg.get("wall_tint"), terrace=b.get("terrace", False),
+                               structure=b.get("structure", False))
             if cache is not None:
                 cache[b["id"]] = color
         out.append({"id": b["id"], "h": b["h"], "color": color, "polys": b["polys"]})

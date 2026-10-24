@@ -1,0 +1,97 @@
+{
+  "buildings_downloaded": 66,
+  "buildings_in_scene": 1120,
+  "buildings_dropped": [],
+  "height_source_counts": {
+    "approx_hgt": 45,
+    "max_hgt": 15,
+    "default": 6
+  },
+  "height_outliers_max_gt_ratio_x_approx": [
+    {
+      "objectid": 14875,
+      "address": "3117 S CHRISTOPHER COLUMBUS BLVD",
+      "approx_hgt_ft": 37,
+      "max_hgt_ft": 148.00985558000002
+    },
+    {
+      "objectid": 326703,
+      "address": "3117 S CHRISTOPHER COLUMBUS BLVD",
+      "approx_hgt_ft": 59,
+      "max_hgt_ft": 212.57001225
+    },
+    {
+      "objectid": 398268,
+      "address": "25 PATTISON AVE",
+      "approx_hgt_ft": 18,
+      "max_hgt_ft": 59.35989525
+    }
+  ],
+  "tallest_buildings_m": [
+    {
+      "id": "326703-897",
+      "h": 66.9
+    },
+    {
+      "id": "326703-856",
+      "h": 39.9
+    },
+    {
+      "id": "326703-858",
+      "h": 39.9
+    },
+    {
+      "id": "326703-859",
+      "h": 39.9
+    },
+    {
+      "id": "326703-860",
+      "h": 39.9
+    },
+    {
+      "id": "326703-861",
+      "h": 39.9
+    },
+    {
+      "id": "326703-862",
+      "h": 39.9
+    },
+    {
+      "id": "326703-863",
+      "h": 39.9
+    },
+    {
+      "id": "326703-864",
+      "h": 39.9
+    },
+    {
+      "id": "326703-865",
+      "h": 39.9
+    }
+  ],
+  "trees_in_scene": 3,
+  "ground_texture_px": [
+    7424,
+    7168
+  ],
+  "ground_texture_source_px": [
+    7424,
+    7168
+  ],
+  "uv_fit_max_residual_m": 1.0179506812769148e-05,
+  "ground_median_filter_px": 5,
+  "frames": 10,
+  "lidar_buildings_shaped": 15,
+  "lidar_fallback_single_height": 3,
+  "lidar_parts": 1018,
+  "lidar_terrace_parts": 0,
+  "lidar_stadiums": [],
+  "lidar_structures": 27,
+  "lidar_structure_parts": 51,
+  "lidar_structure_area_m2": 2301.2,
+  "lidar_structures_dropped_photo": 12,
+  "lidar_highway_mask": true,
+  "lidar_highway_masked_m2": 20114.1,
+  "lidar_rail_mask": false,
+  "lidar_margin_m": 100.0
+}

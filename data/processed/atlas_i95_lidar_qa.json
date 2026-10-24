@@ -1,0 +1,90 @@
+{
+  "buildings_downloaded": 97,
+  "buildings_in_scene": 263,
+  "buildings_dropped": [],
+  "height_source_counts": {
+    "approx_hgt": 84,
+    "max_hgt": 13
+  },
+  "height_outliers_max_gt_ratio_x_approx": [
+    {
+      "objectid": 326410,
+      "address": "8 OREGON AVE # B",
+      "approx_hgt_ft": 27,
+      "max_hgt_ft": 137.46013975000002
+    },
+    {
+      "objectid": 398268,
+      "address": "25 PATTISON AVE",
+      "approx_hgt_ft": 18,
+      "max_hgt_ft": 59.35989525
+    }
+  ],
+  "tallest_buildings_m": [
+    {
+      "id": 326509,
+      "h": 42.67
+    },
+    {
+      "id": "47025-0",
+      "h": 37.26
+    },
+    {
+      "id": "61197-62",
+      "h": 21.44
+    },
+    {
+      "id": "61197-63",
+      "h": 21.43
+    },
+    {
+      "id": "61197-61",
+      "h": 20.62
+    },
+    {
+      "id": "52200-3",
+      "h": 19.36
+    },
+    {
+      "id": "52200-2",
+      "h": 18.9
+    },
+    {
+      "id": "61197-59",
+      "h": 18.33
+    },
+    {
+      "id": 405249,
+      "h": 17.98
+    },
+    {
+      "id": "61197-60",
+      "h": 17.24
+    }
+  ],
+  "trees_in_scene": 1,
+  "ground_texture_px": [
+    7424,
+    7168
+  ],
+  "ground_texture_source_px": [
+    7424,
+    7168
+  ],
+  "uv_fit_max_residual_m": 1.0197527184982049e-05,
+  "ground_median_filter_px": 5,
+  "frames": 10,
+  "lidar_buildings_shaped": 25,
+  "lidar_fallback_single_height": 2,
+  "lidar_parts": 150,
+  "lidar_terrace_parts": 0,
+  "lidar_stadiums": [],
+  "lidar_structures": 27,
+  "lidar_structure_parts": 41,
+  "lidar_structure_area_m2": 2419.7,
+  "lidar_structures_dropped_photo": 15,
+  "lidar_highway_mask": true,
+  "lidar_highway_masked_m2": 71616.0,
+  "lidar_rail_mask": false,
+  "lidar_margin_m": 100.0
+}

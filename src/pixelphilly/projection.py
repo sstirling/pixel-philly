@@ -49,12 +49,16 @@ def area_dir(cfg: dict, *parts: str) -> Path:
 
 
 class LocalFrame:
-    """WGS84 <-> local east/north meters, centered on the bbox."""
+    """WGS84 <-> local east/north meters, centered on the bbox, or on
+    `origin` (lon, lat) when regions must share one screen space."""
 
-    def __init__(self, bbox_wgs84):
+    def __init__(self, bbox_wgs84, origin=None):
         west, south, east, north = bbox_wgs84
-        self.lon0 = (west + east) / 2
-        self.lat0 = (south + north) / 2
+        if origin is None:
+            self.lon0 = (west + east) / 2
+            self.lat0 = (south + north) / 2
+        else:
+            self.lon0, self.lat0 = float(origin[0]), float(origin[1])
         aeqd = (
             f"+proj=aeqd +lat_0={self.lat0} +lon_0={self.lon0} "
             "+x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs"
@@ -191,9 +195,17 @@ def frame_lattice(cam: IsoCamera, frame: LocalFrame, bbox_wgs84, size: int, max_
     return frames
 
 
+def local_frame(cfg: dict) -> LocalFrame:
+    """The config's local frame. "projection_origin" ([lon, lat]) puts
+    several regions in one screen space, so frames drawn separately sit on
+    one global lattice and merge into one map (North Philly uses South
+    Philly's origin); without it the origin is the bbox center."""
+    return LocalFrame(cfg["bbox_wgs84"], cfg.get("projection_origin"))
+
+
 def area_setup(cfg: dict):
     """The local frame, camera and frame lattice for a config."""
-    frame = LocalFrame(cfg["bbox_wgs84"])
+    frame = local_frame(cfg)
     cam = IsoCamera.from_config(cfg)
     frames = frame_lattice(
         cam, frame, cfg["bbox_wgs84"], cfg["camera"]["frame_px"], cfg["max_height_m"],

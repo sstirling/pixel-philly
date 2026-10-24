@@ -1,6 +1,6 @@
 {
   "buildings_downloaded": 1888,
-  "buildings_in_scene": 3408,
+  "buildings_in_scene": 3482,
   "buildings_dropped": [],
   "height_source_counts": {
     "approx_hgt": 1860,
@@ -223,5 +223,13 @@
   "lidar_fallback_single_height": 5,
   "lidar_parts": 1838,
   "lidar_terrace_parts": 0,
+  "lidar_stadiums": [],
+  "lidar_structures": 12,
+  "lidar_structure_parts": 74,
+  "lidar_structure_area_m2": 4192.4,
+  "lidar_structures_dropped_photo": 3,
+  "lidar_highway_mask": true,
+  "lidar_highway_masked_m2": 0.0,
+  "lidar_rail_mask": false,
   "lidar_margin_m": 100.0
 }

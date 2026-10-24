@@ -62,6 +62,56 @@ INTERIOR_GROUND_M2 = 500.0
 TERRACE_MAX_WIDTH_M = 8.0
 TERRACE_STEP_MIN_M = 1.0
 TERRACE_STEP_MAX_M = 4.0
+# LiDAR structures: ships, cranes and container stacks have no L&I footprint,
+# so they drew as flat aerial texture (containers' photographed sides became
+# little brick buildings). The class-1 grid sees them. A structure is a
+# connected region of class-1 cells outside every footprint, 2.5-90 m above
+# its local base, at least STRUCT_MIN_M2, and flat. Median 3x3 roughness
+# (std of 0.5 m max-Z cells) separates them from trees: containers 0.02, a
+# ship 0.03, rooftops 0.06, tree canopy 1.4-1.9 (Washington Sq.,
+# Rittenhouse). Bridges and elevated roads are flat too, but they're class
+# 17, which the structure grid leaves out
+STRUCT_FOOTPRINT_GAP_M = 1.5  # a building's own edge returns belong to its footprint parts
+STRUCT_MIN_HEIGHT_M = 2.5  # above parked cars and fences; a container stack is ~2.6 m per box
+STRUCT_MAX_HEIGHT_M = 90.0  # tallest ship superstructures and cranes are well under this; higher is noise
+STRUCT_MIN_M2 = 60.0  # one 40 ft container is ~30 m², a bus ~30 m²: single vehicles stay out
+STRUCT_MAX_ROUGH = 0.3  # flat objects 0.02-0.06 vs. canopy 1.4-1.9
+STRUCT_RING_M = (3.0, 15.0)  # ground ring that sets a region's base
+# Tree clusters can pass the roughness test: only flat cells (and one cell
+# around them) become candidates, so a canopy leaves a lacy region of locally
+# flat patches whose median roughness is low (north_lidar: 0.05-0.23). What
+# gives them away is shape. Solidity (area / convex hull area) measured on
+# north_lidar regions: trees 0.32 (ring around a dirt field), 0.37 (cemetery
+# near Laurel Hill), 0.52 (along an elevated roadway); real objects 0.70 (a
+# 2022 construction site), 0.71 (a school with solar panels), 0.83-0.92
+# (buildings and a warehouse with no footprint), 0.99 (East Park Reservoir's
+# covered tanks). Roughness p75 separates them only thinly (trees 0.19-0.28,
+# real up to 0.17)
+STRUCT_MIN_SOLIDITY = 0.6
+# Coarse ground for picking candidate cells before regions exist: the lowest
+# ground return per STRUCT_BLOCK_M block, spread into empty blocks (under a
+# big container yard or ship) up to STRUCT_FILL_BLOCKS blocks away. It only
+# gates candidates; each region's base is measured again from its own ring
+STRUCT_BLOCK_M = 16.0
+STRUCT_FILL_BLOCKS = 10
+STRUCT_CHUNK_ROWS = 2048  # row strips bound memory on the ~14k x 21k south grid
+# The LiDAR was flown in March 2022 and the aerial in 2024; ships leave and
+# container stacks move. A structure is kept only if the photo shows
+# something there: if PHOTO_SAME_FRAC or more of its pixels are within
+# PHOTO_COLOR_TOL (max RGB channel difference) of the median color of the
+# ground ring around it, the photo shows only that ground. Calibrated on the
+# 2024 aerial: kept regions measured 0.03 (the Navy Yard carrier) and
+# 0.18-0.29 (Packer container stacks); regions with nothing there measured
+# 0.63 (Packer pavement with a shadow strip), 0.97 (a basin berth whose
+# ship had left) and 0.98-1.00 (empty terminal pavement)
+PHOTO_COLOR_TOL = 25
+PHOTO_SAME_FRAC = 0.5
+# Over water, a region that is one color is open water even if a pier or
+# deck in the ring shifts the ring's median (the vanished ship's berth read
+# 0.95 one color vs. 0.71 for the carrier). On land a single color isn't
+# enough, since a plain roof is one color too. Also the rule with no ring
+PHOTO_UNIFORM_FRAC = 0.9
+
 # Only stadiums get terraces: a pitched roof drawn in 2 m tiers looks just
 # like a seating cascade (163 ordinary buildings matched), but stands wrap a
 # field. A footprint is a stadium when the open area inside its convex hull
@@ -131,9 +181,9 @@ def lidar_region_local(cfg):
     """(LocalFrame, shapely box in local meters) where buildings get LiDAR shapes."""
     from shapely.geometry import box
 
-    from .projection import LocalFrame
+    from .projection import local_frame
 
-    fr = LocalFrame(cfg["bbox_wgs84"])
+    fr = local_frame(cfg)
     w, s, e, n = cfg["bbox_wgs84"]
     ee, nn = fr.to_local([w, e], [s, n])
     m = LIDAR_MARGIN_M
@@ -485,12 +535,185 @@ def terrace_parts(parts) -> set[int]:
             out.add(i)
     return out
 
-def dsm_from_las(paths, frame, bounds_local, res: float = 0.5):
+
+def _roughness(a: np.ndarray) -> np.ndarray:
+    """3x3 nan-std per cell (float16), in row strips. Deviations are taken
+    from the center cell before squaring, so float32 keeps cm precision at
+    100 m heights."""
+    H, W = a.shape
+    out = np.full((H, W), np.nan, dtype=np.float16)
+    for r0 in range(0, H, STRUCT_CHUNK_ROWS):
+        r1 = min(r0 + STRUCT_CHUNK_ROWS, H)
+        p = np.pad(a[max(r0 - 1, 0):min(r1 + 1, H)].astype(np.float32),
+                   ((1 if r0 == 0 else 0, 1 if r1 == H else 0), (1, 1)), constant_values=np.nan)
+        c = p[1:-1, 1:-1]
+        s1 = np.zeros_like(c)
+        s2 = np.zeros_like(c)
+        n = np.zeros_like(c)
+        for i in range(3):
+            for j in range(3):
+                d = p[i:i + c.shape[0], j:j + c.shape[1]] - c
+                ok = np.isfinite(d)
+                d = np.where(ok, d, 0)
+                s1 += d
+                s2 += d * d
+                n += ok
+        with np.errstate(invalid="ignore", divide="ignore"):
+            var = s2 / n - (s1 / n) ** 2
+        out[r0:r1] = np.where(np.isfinite(c), np.sqrt(np.clip(var, 0, None)), np.nan)
+    return out
+
+
+def _dilate(m: np.ndarray) -> np.ndarray:
+    """3x3 binary dilation (scipy isn't a dependency)."""
+    p = np.pad(m, 1)
+    out = np.zeros_like(m)
+    for i in range(3):
+        for j in range(3):
+            out |= p[i:i + m.shape[0], j:j + m.shape[1]]
+    return out
+
+
+def _coarse_ground(ground: np.ndarray, res: float, water_level):
+    """(block grid, block size in cells): lowest ground per block, spread
+    into empty blocks, then the water level (or NaN) where none is near."""
+    import warnings
+
+    B = max(int(round(STRUCT_BLOCK_M / res)), 1)
+    H, W = ground.shape
+    hb, wb = -(-H // B), -(-W // B)
+    g = np.full((hb * B, wb * B), np.nan, dtype=np.float32)
+    g[:H, :W] = ground
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", RuntimeWarning)
+        blocks = np.nanmin(g.reshape(hb, B, wb, B), axis=(1, 3))
+        for _ in range(STRUCT_FILL_BLOCKS):
+            gap = np.isnan(blocks)
+            if not gap.any():
+                break
+            blocks[gap] = _median3(blocks)[gap]
+    if water_level is not None:
+        blocks = np.where(np.isnan(blocks), np.float32(water_level), blocks)
+    return blocks, B
+
+
+def structures(struct: np.ndarray, ground: np.ndarray, origin, res: float, footprints, water_level=None,
+               exclude=None):
+    """Extruded objects with no footprint (ships, cranes, container stacks;
+    see STRUCT_*), each region shaped with building_parts so a ship's
+    superstructure steps up from its hull.
+
+    struct: class-1-only max-Z grid; ground: class-2 min-Z grid (NaN where
+    none), both NAVD88 m on the DSM's grid convention. footprints: shapely
+    polygons in local m. water_level: base over water, where there's no
+    ground (None skips regions with no ground nearby). exclude: shapely
+    polygons in local m whose cells can't be structures (buffered highway
+    centerlines: I-95's decks are mostly class 1, not bridge class 17).
+    Returns parts [{"h", "polys", "region", "over_water"}], "region"
+    numbering the structures and "over_water" true where the base is the
+    water level."""
+    from rasterio.features import rasterize, shapes
+    from shapely.geometry import shape as to_shape
+
+    H, W = struct.shape
+    tf = _transform(origin, res)
+    blocks, B = _coarse_ground(ground, res, water_level)
+    cand = np.zeros((H, W), dtype=bool)
+    for r0 in range(0, H, STRUCT_CHUNK_ROWS):
+        r1 = min(r0 + STRUCT_CHUNK_ROWS, H)
+        base = blocks[np.arange(r0, r1)[:, None] // B, np.arange(W)[None, :] // B]
+        with np.errstate(invalid="ignore"):
+            above = struct[r0:r1] - base
+            cand[r0:r1] = (above >= STRUCT_MIN_HEIGHT_M) & (above <= STRUCT_MAX_HEIGHT_M)
+    shapes_out = [(f.buffer(STRUCT_FOOTPRINT_GAP_M), 1) for f in footprints or [] if not f.is_empty]
+    shapes_out += [(g, 1) for g in exclude or [] if not g.is_empty]
+    if shapes_out:
+        near = rasterize(shapes_out, out_shape=(H, W), transform=tf, fill=0, dtype="uint8").astype(bool)
+        cand &= ~near
+        del near
+    rough = _roughness(np.where(cand, struct, np.nan))
+    # Flat cells plus one cell around them: a ship's hull-to-deckhouse step
+    # is rough right at the step, and dropping it would split the ship
+    cand &= _dilate(rough < STRUCT_MAX_ROUGH)
+    if not cand.any():
+        return []
+
+    out = []
+    pad = int(np.ceil(STRUCT_RING_M[1] / res)) + 1
+    lo, hi = STRUCT_RING_M
+    k = 0
+    for geom, _ in shapes(cand.astype(np.uint8), mask=cand, transform=tf, connectivity=8):
+        poly = to_shape(geom)
+        if poly.area < STRUCT_MIN_M2:
+            continue
+        solidity = poly.area / poly.convex_hull.area
+        if solidity < STRUCT_MIN_SOLIDITY:
+            if os.environ.get("PP_LIDAR_LOG") == "1":
+                c = poly.centroid
+                print(f"lidar structure rejected (solidity {solidity:.2f}): {poly.area:.0f} m² at "
+                      f"({c.x:.1f}, {c.y:.1f})", file=sys.stderr)
+            continue
+        minx, miny, maxx, maxy = poly.bounds
+        c0 = max(int((minx - origin[0]) / res) - pad, 0)
+        c1 = min(int((maxx - origin[0]) / res) + pad + 1, W)
+        r0 = max(int((origin[1] - maxy) / res) - pad, 0)
+        r1 = min(int((origin[1] - miny) / res) + pad + 1, H)
+        sub_tf = _transform((origin[0] + c0 * res, origin[1] - r0 * res), res)
+        shape_ = (r1 - r0, c1 - c0)
+        inside = rasterize([(poly, 1)], out_shape=shape_, transform=sub_tf, fill=0, dtype="uint8").astype(bool)
+        r = rough[r0:r1, c0:c1][inside].astype(np.float32)
+        r = r[np.isfinite(r)]
+        if not r.size or float(np.median(r)) >= STRUCT_MAX_ROUGH:
+            continue
+        ring = rasterize([(poly.buffer(hi).difference(poly.buffer(lo)), 1)], out_shape=shape_, transform=sub_tf,
+                         fill=0, dtype="uint8").astype(bool)
+        g = ground[r0:r1, c0:c1][ring]
+        g = g[np.isfinite(g)]
+        over_water = not g.size
+        if g.size:
+            base = float(np.percentile(g, 10))
+        elif water_level is not None:
+            base = float(water_level)  # over water: no ground returns
+        else:
+            continue
+        # The ring base can sit above the coarse one that picked the cells
+        # (a trailer row beside a raised lot); keep only what clears the floor
+        parts = [p for p in building_parts(poly, struct, origin, res, base=base) or []
+                 if p["h"] >= STRUCT_MIN_HEIGHT_M]
+        if not parts:
+            continue
+        for part in parts:
+            out.append({**part, "region": k, "over_water": over_water})
+        k += 1
+    return out
+
+
+def photo_agrees(rgb: np.ndarray, over_water: bool, ring_rgb: np.ndarray | None = None) -> bool:
+    """Whether the 2024 aerial shows something where a 2022 LiDAR structure
+    stands (see PHOTO_*). rgb: (N, 3) pixels inside the structure; ring_rgb:
+    pixels of the ground ring around it. Without a ring, a region that is
+    one color is taken as empty water or pavement."""
+    rgb = np.asarray(rgb, dtype=np.int16).reshape(-1, 3)
+    if not len(rgb):
+        return True  # nothing to judge by: keep the LiDAR's word
+    own = (np.abs(rgb - np.median(rgb, axis=0)).max(axis=1) < PHOTO_COLOR_TOL).mean()
+    ring_rgb = None if ring_rgb is None else np.asarray(ring_rgb, dtype=np.int16).reshape(-1, 3)
+    if ring_rgb is None or not len(ring_rgb):
+        return own < PHOTO_UNIFORM_FRAC
+    same = (np.abs(rgb - np.median(ring_rgb, axis=0)).max(axis=1) < PHOTO_COLOR_TOL).mean()
+    if same >= PHOTO_SAME_FRAC:
+        return False
+    return not (over_water and own >= PHOTO_UNIFORM_FRAC)
+
+def dsm_from_las(paths, frame, bounds_local, res: float = 0.5, with_struct: bool = False):
     """Max-Z surface and min-Z ground grids (meters, NAVD88) over a local
     bounding box from City LAS tiles. Points are read in chunks and gridded
     with a sort-and-reduce, so a ~1 GB tile needs a few GB of RAM at most.
 
     Returns (dsm, ground, origin) where origin = (west, north) in local m.
+    With with_struct=True, returns (dsm, ground, origin, struct): struct is
+    the max Z of class 1 only (buildings, trees, ships, cranes, containers),
+    for structures(); bridges (17), water (9) and ground (2) are left out.
     """
     import laspy
     from pyproj import Transformer
@@ -501,6 +724,7 @@ def dsm_from_las(paths, frame, bounds_local, res: float = 0.5):
     origin = (e0, n1)
     dsm = np.full(H * W, -np.inf, dtype=np.float32)
     ground = np.full(H * W, np.inf, dtype=np.float32)
+    struct = np.full(H * W, -np.inf, dtype=np.float32) if with_struct else None
     to_wgs = Transformer.from_crs(LAS_CRS, "EPSG:4326", always_xy=True)
 
     def reduce_into(target, idx, z, op):
@@ -536,10 +760,18 @@ def dsm_from_las(paths, frame, bounds_local, res: float = 0.5):
                 g = cls[inside] == GROUND_CLASS
                 if g.any():
                     reduce_into(ground, idx[g], z[inside][g], np.minimum)
+                if with_struct:
+                    c1 = cls[inside] == 1
+                    if c1.any():
+                        reduce_into(struct, idx[c1], z[inside][c1], np.maximum)
     dsm = dsm.reshape(H, W)
     ground = ground.reshape(H, W)
     dsm[~np.isfinite(dsm)] = np.nan
     ground[~np.isfinite(ground)] = np.nan
+    if with_struct:
+        struct = struct.reshape(H, W)
+        struct[~np.isfinite(struct)] = np.nan
+        return dsm, ground, origin, struct
     return dsm, ground, origin
 
 

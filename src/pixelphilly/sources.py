@@ -57,6 +57,19 @@ def get_with_retry(url: str, params=None, tries: int = 6, timeout: int = 60, pos
     return r
 
 
+def query_json(url: str, params: dict, service: str, post: bool = False) -> dict:
+    """An ArcGIS query's JSON body, retried when it is an error. ArcGIS
+    sometimes reports a transient failure as HTTP 200 with an "error" body
+    ("Unable to perform query"), which get_with_retry can't see; the count
+    query hit one twice on Oct. 23 and crashed with KeyError: 'count'."""
+    for attempt in range(4):
+        body = get_with_retry(url, params, post=post).json()
+        if "error" not in body:
+            return body
+        time.sleep(2**attempt)
+    raise RuntimeError(f"{service}: {body['error']}")
+
+
 def fetch_features(
     service: str,
     layer: int,
@@ -67,12 +80,14 @@ def fetch_features(
     server_type: str = "FeatureServer",
     order_by: str | None = "objectid",
     polygon=None,
+    where: str = "1=1",
 ) -> Path:
     """Download every feature intersecting the bbox as GeoJSON (EPSG:4326).
 
     With `polygon` (a shapely WGS84 polygon), only features intersecting it
     are fetched, which for a large area seen at ~45 degrees halves the
-    download. The query is then sent by POST, since the polygon would
+    download. `where` filters by attribute (e.g. "class IN (1,9,10)" for
+    expressways and ramps); the default keeps every feature. The query is then sent by POST, since the polygon would
     overflow a URL; bbox_wgs84 should be the polygon's bounds.
 
     ArcGIS caps each response (2,000 records for these layers), so pages are
@@ -95,7 +110,7 @@ def fetch_features(
 
     url = f"{base_url}/{service}/{server_type}/{layer}/query"
     base = {
-        "where": "1=1",
+        "where": where,
         "geometry": ",".join(str(v) for v in bbox_wgs84),
         "geometryType": "esriGeometryEnvelope",
         "inSR": 4326,
@@ -116,15 +131,7 @@ def fetch_features(
     post = polygon is not None
     features, offset = [], 0
     while True:
-        # ArcGIS sometimes reports a transient failure as HTTP 200 with an
-        # "error" body ("Unable to perform query"); retry those too
-        for attempt in range(4):
-            page = get_with_retry(url, {**base, "resultOffset": offset}, post=post).json()
-            if "error" not in page:
-                break
-            time.sleep(2**attempt)
-        if "error" in page:
-            raise RuntimeError(f"{service}: {page['error']}")
+        page = query_json(url, {**base, "resultOffset": offset}, service, post=post)
         batch = page.get("features", [])
         features.extend(batch)
         offset += len(batch)
@@ -134,7 +141,7 @@ def fetch_features(
         if not batch or not more:
             break
 
-    count = get_with_retry(url, {**base, "returnCountOnly": "true", "f": "json"}, post=post).json()["count"]
+    count = query_json(url, {**base, "returnCountOnly": "true", "f": "json"}, service, post=post)["count"]
     if count != len(features):
         raise RuntimeError(f"{service}: server reports {count} features, downloaded {len(features)}")
 

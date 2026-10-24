@@ -129,7 +129,9 @@ Every script works on any area, picked with the `PP_AREA` environment variable (
 | `src/pixelphilly/lidar.py` | LAS → 0.5 m height grid, footprint base, stepped building parts, noise ceiling |
 | `scripts/04c_fetch_lidar.py` | Downloads the City LiDAR tiles an area needs |
 | `scripts/17_atlas_sheet.py` | Problem-atlas before/after sheet (`output/atlas/compare.html`) |
-| `scripts/18_qa_scan.py` | Pre-GPU QA gate: needles, stadiums, LiDAR fallbacks |
+| `scripts/18_qa_scan.py` | Pre-GPU QA gate: needles, stadiums, LiDAR fallbacks, structures |
+| `scripts/04d_fetch_highways.py`, `04e_fetch_rail.py` | Expressway, El and track centerlines that mask elevated decks out of LiDAR structures |
+| `src/pixelphilly/regions.py` | Region machinery: shared frames, known-band and repair masks, union lattice, frame placement |
 | `render/` | three.js page that draws the scene (three.js r169 vendored, MIT) |
 | `prompts/redraw_v*.txt` | Redraw prompts, versioned; v3 is current. Each change gets a new file name. |
 | `scripts/01–11` | The pipeline. Run order is in "Reproduce it"; 08 builds the page, 09 checks alignment. |
@@ -326,19 +328,52 @@ Check every hit against the 2024 aerial. The known exception is 905-11 Walnut St
 
 **Alignment exceptions:** sparse frames full of small objects (port and Navy Yard structures) can fall under IoU 0.97 with zero shift. One-pixel edge rounding between the WebGL and Python rasterizers dominates small outlines. These are reviewed with diff images, not waved through.
 
+## Regions: North Philly drawn next to South Philly (Oct. 23–24)
+
+One canvas tops out around 1,300 frames (the GPU job's 4-hour cap), so the city is drawn as regions, each drawn next to an existing neighbor and merged into one map.
+
+1. **Shared screen space.** `"projection_origin": [lon, lat]` in a config replaces the bbox center (`projection.local_frame`). `north_lidar` uses `south_lidar`'s origin [-75.165, 39.9275], so frames land on one global lattice: frame corners are multiples of 1,024 px from the origin.
+2. **Known band.** North's frames that South already drew (41 along Girard Ave) are held fixed. Their drawn pixels are VAE-encoded, and after every denoising step those cells are reset to where South's image would be at that noise level (`joint_denoise(..., known=...)`, RePaint in flow-matching form). Band frames aren't decoded, so South's pixels stay authoritative.
+   - **Hard mask:** a soft ramp mixed two images' latents into an olive smear (join seam ratio 6–8), so the mask is hard.
+3. **Repair pass.** A 200 px strip on the new side of the join is re-noised to σ ≈ 0.64 and redrawn, with everything else fixed (tiny.london's repair step). That reconciles buildings that straddle the join.
+4. **Water.** North's repaint reads South's finished frames as halo context and uses South's ripple coordinates. South's band frames are re-repainted with North as their neighbor (`water_band/`), which removes the dark shore line South had drawn along its old edge. Only water pixels change: 2,096 px in one frame.
+5. **Merge.** `16_build_tiles.py --areas south_lidar,north_lidar --name philly` builds one pyramid on the global lattice. The first-listed area owns shared cells, and band overrides replace their cells.
+
+```bash
+export PP_AREA=north_lidar        # config sets projection_origin to south_lidar's
+for s in 01_fetch_buildings 02_fetch_trees 03_fetch_imagery 04_fetch_water 04b_fetch_water_nhd 04c_fetch_lidar 04d_fetch_highways 04e_fetch_rail; do uv run python scripts/$s.py; done
+uv run python scripts/05_build_scene.py && uv run python scripts/06_render.py && uv run python scripts/06_render.py --mode mask
+uv run python scripts/09_check_alignment.py && uv run python scripts/18_qa_scan.py
+uv run modal deploy gpu/modal_app.py
+# cheap join test first (3 x 3 frames across the join, ~$0.15):
+uv run python scripts/15_joint_sample.py --full --volume --name qwen_joint_light8_boundary_rep --known-area south_lidar \
+    --known-name qwen_joint_light8 --only-near-known 1 --style /runs/lora/qe2511_oldcity_r16_v1/qe2511_oldcity_r16_v1.safetensors \
+    --prompt-text "Redraw this render as isometric pixel art in the pixel philly style."
+# full region (~45 min, ~$3):
+uv run python scripts/15_joint_sample.py --full --volume --detach --name qwen_joint_light8 --known-area south_lidar --known-name qwen_joint_light8 \
+    --style /runs/lora/qe2511_oldcity_r16_v1/qe2511_oldcity_r16_v1.safetensors \
+    --prompt-text "Redraw this render as isometric pixel art in the pixel philly style."
+uv run python scripts/15_joint_sample.py --collect --name qwen_joint_light8
+uv run python scripts/10_repaint_water.py --prompt qwen_joint_light8      # also re-repaints the band (water_band/)
+unset PP_AREA; uv run python scripts/16_build_tiles.py --areas south_lidar,north_lidar --name philly --version v2 --with-photo
+# http://127.0.0.1:8137/viewer/?area=philly&v=v4  (v4 = South, North, Upper North, West)
+```
+
+**The join today:** median seam ratio 2.36 across the 28 join edges, against 1.02 inside each region. At 1:1 the worst spots are a grass-texture change in the park and a faint line through a parking lot; rowhouse joins are hard to find. At normal browsing zoom the join doesn't show.
+
 ## Open issues
 
 Tracked across rounds; details in CHANGELOG.
 
 | Issue | Where | Likely cause | Kind |
 |---|---|---|---|
-| Ships and cranes look unusual (Stephen, Oct. 23) | Navy Yard basin, Packer Ave terminal | Ships and cranes aren't in the footprint layer: ships are flat aerial texture on the water, and the water repaint partly paints over them (a white fragment in the basin). Cranes are flat smears with their shadows. Stacked containers extrude as buildings with the brick tint | Geometry, color and drawing |
+| Ships and cranes look unusual (Stephen, Oct. 23): **partly fixed in the scene, not yet drawn** | Navy Yard basin, Packer Ave terminal | LiDAR structures (see `data/README.md`) now extrude ships and container stacks that have no footprint (Navy Yard atlas spot: the carrier and two moored ships). Their walls take their own color, darkened, and the water repaint keeps them, since they're scene buildings. Highways are masked by the City centerlines, and structures the 2024 photo doesn't show are dropped (a ship gone since 2022, moved containers). Cranes are partial: lattice booms give rough, sparse returns. Not yet rendered or drawn | Geometry, color and drawing |
 | Construction sites drawn with invented water or lawns | Penn's Landing and elsewhere | Drawing-model behavior on featureless ground | Model (training) |
 | Stadium outer walls drawn with windows | The Linc, CBP, Franklin Field | Drawing-model behavior: tall walls read as façades | Model (training) |
 | Franklin Field's lower deck missing | Franklin Field | Hidden under the upper deck; aerial LiDAR can't see it. Showing it would mean inferred geometry and raised parts in the renderer | Geometry (inferred) |
 | CBP's tallest element capped at 50.5 m (was 71 m) | Citizens Bank Park | The base is now street level, not the sunken field, and the 99.5th-percentile cap clips it | Geometry |
 | One kept needle, 51 m | 905-11 Walnut St | Matches the footprint's typical City height; the aerial is inconclusive | Geometry |
-| Count queries don't retry ArcGIS error bodies | `sources.py` | The feature path retries; the count path doesn't (failed once, Oct. 23) | Code |
+| Region joins slightly visible at 1:1 | All region joins (worst: a pool drawn two colors at the North/West corner, seam 6.94) | The two regions draw straddling content a little differently; the repair pass narrows it (join seam median 2.36 vs. 1.02 inside regions) | Sampler |
 
 ## Licensing and open questions (for legal / standards)
 
