@@ -361,6 +361,38 @@ unset PP_AREA; uv run python scripts/16_build_tiles.py --areas south_lidar,north
 
 **The join today:** median seam ratio 2.36 across the 28 join edges, against 1.02 inside each region. At 1:1 the worst spots are a grass-texture change in the park and a faint line through a parking lot; rowhouse joins are hard to find. At normal browsing zoom the join doesn't show.
 
+## Landmarks from public-domain references: experiment A (Oct. 25)
+
+Track 3 of the facades/landmarks plan: can a reference photo make a landmark look like itself?
+
+**Reference set.** `scripts/19_landmark_refs.py` writes `data/landmarks/manifest.json`: 40 landmarks inside the mapped regions, each with a Wikidata QID, Wikidata (P625) coordinates cross-checked against the City's AIS geocoder where there is a street address, the mapped regions that contain it, and up to 3 reference photos with source URL, image URL, license, author and a ready credit line. Photos come only from Library of Congress HABS/HAER (public domain) or Wikimedia Commons files licensed CC0, public domain or CC BY. CC BY-SA and all other licenses are rejected. The photos download to `data/landmarks/refs/<slug>/` (git-ignored). The choice of photo is a keyword heuristic; only photos with `"reviewed": true` have been checked by eye.
+
+**Multi-image edits.** `Editor.run` in `gpu/modal_app.py` takes two optional job fields: `style` (the style LoRA, as in `joint`) and `references` (PNG/JPEG bytes). With references the call is `image=[*references, render]`. diffusers takes the output size from the last image, so the render goes last and the prompt calls it "Picture 2". Without references the call is unchanged.
+
+```bash
+uv run python scripts/19_landmark_refs.py                  # manifest + downloads (~10 min, polite rate)
+uv run python scripts/20_landmark_experiment_a.py --refs city_hall=2,1 art_museum=1,0 --dry-run
+uv run python scripts/20_landmark_experiment_a.py --refs city_hall=2,1 art_museum=1,0   # ~2 min, ~$0.15
+```
+
+The inputs are 1,024 px crops of the atlas mosaics centered on each landmark (`output/landmarks/experiment_a/<slug>_render.png`; City Hall from `atlas_cityhall_lidar` at mosaic (1458, 1368), the art museum from `atlas_artmuseum_lidar` at (1536, 1478)). The comparison sheet is `output/landmarks/experiment_a.jpg`; scores are in `output/landmarks/experiment_a/results.json`. An output is accepted only if the whole-frame and central registration shifts are within 2 px and the central edge correlation is at least half of the no-reference output's. The whole-frame shift alone missed one output that pasted the photo into the middle of the frame.
+
+**Result.** With prompt p1 ("...match its facade, materials and details, but keep exactly the shapes and positions of Picture 2"), City Hall's tower turns from a generic Art Deco shaft into a recognizable City Hall tower: cream stone, clock faces, a slate-blue mansard and dormers. All 4 p1 outputs stayed on the render. The art museum gains columns on the north wing's facade and warmer sandstone, a smaller gain. Prompt p2 (which names the landmark and calls Picture 1 "a photo") copied the photo's viewpoint outright in 2 of 4 outputs. A reference can't add geometry the render lacks: City Hall's main block stays missing, and so does the Penn statue in most outputs.
+
+## Façades from property records and OpenStreetMap (Oct. 25–26)
+
+The aerial shows roofs, not walls, so renders had plain tinted walls and the drawing model invented façades. Areas with `"facades": "opa"` now draw walls from data, procedurally, in the renderer's wall shader. Paint only: building geometry, masks and alignment are unchanged, and a detail appears only where the data says the building has it.
+
+- **What each building is:** the City's property records (OPA, `scripts/04f_fetch_opa.py`), joined by parcel (about 98% of footprints in the atlas spots), then address, then location. The record gives the style (rowhouse with porch front, typical row, twin, mixed-use with storefront, warehouse, office tower, …), stories and main material. Owner, sale, tax and condition fields are never fetched; condition and vacancy are not drawn.
+- **What the shader paints:** a window grid per floor and bay (dark panes, a light sill), a storefront (bulkhead, glass, sign band) on mixed-use buildings, a porch (light porch-roof trim, a shadowed recess with posts) on porch-front rows, a cornice on rowhouses, and curtain-wall glass on modern towers.
+- **Which walls:** storefronts and porches go only on walls facing a street: a wall's outward ray must meet a City street centerline within 25 m (`scripts/04h_fetch_streets.py`, `facades.front_dirs`).
+- **Wall colour:** OpenStreetMap `building:colour` or `building:material` where mappers recorded them (`scripts/04g_fetch_osm.py`; mostly downtown; a tower's colored `building:part` colours that LiDAR part), else the record's material palette with a small per-building variation. OPA's "MASONRY" also covers limestone and terra cotta, so non-rowhouse buildings above 20 m with no OSM colour keep their own aerial colour, as before façades (City Hall's pale towers had turned red).
+- **Atlas spots:** `atlas_passyunk_fac`, `atlas_porch_fac` (Allegheny West), `atlas_twin_fac` (West Philadelphia), `atlas_indhall_fac`, `atlas_cityhall_fac`. Areas without the option are byte-identical.
+
+### Landmark references in the joint sampler (Oct. 26): tested, not recommended
+
+`15_joint_sample.py --full --volume --landmarks --landmark-baseline qwen_joint_light8` gives each approved landmark's windows its reference photo as a second conditioning image. On four atlas spots, it improved one landmark, the Union League. It visibly damaged seven: pasted photo patches, PSFS's sign floating in the sky, and a neighbor restyled. The automatic check, experiment A's rule, caught only one of the seven. Results are in `output/landmarks/joint_compare.jpg` and `.json`. Don't use the `qwen_joint_light8_landmarks` drawings.
+
 ## Open issues
 
 Tracked across rounds; details in CHANGELOG.

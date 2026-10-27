@@ -19,3 +19,6 @@ output/
 data/processed/*/tiles/
 data/raw/lidar/
 data/processed/*.npz
+
+# Landmark reference photos (Track 3): downloaded by scripts/19_landmark_refs.py; licenses in data/landmarks/manifest.json
+data/landmarks/refs/

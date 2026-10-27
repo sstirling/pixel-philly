@@ -957,5 +957,44 @@
   "lidar_highway_mask": true,
   "lidar_highway_masked_m2": 449932.5,
   "lidar_rail_mask": true,
-  "lidar_margin_m": 100.0
+  "lidar_margin_m": 100.0,
+  "facade_join": {
+    "parcel": 51528,
+    "address": 286,
+    "unmatched": 128,
+    "point": 4
+  },
+  "facade_match_rate": 0.998,
+  "facade_styles": {
+    "row_porch": 25184,
+    "twin": 7942,
+    "row_typical": 7030,
+    "row_postwar": 2827,
+    "detached": 2242,
+    "mixed_storefront": 1871,
+    "other": 1694,
+    "apartment_low": 1156,
+    "warehouse": 782,
+    "institutional": 585,
+    "row_modern": 243,
+    "river_row": 225,
+    "office_tower": 37
+  },
+  "facade_materials": {
+    "brick": 49546,
+    "stone": 1986,
+    "frame": 265,
+    "metal": 21
+  },
+  "facade_colour_source": {
+    "palette": 51271,
+    "aerial": 103,
+    "osm_material": 444
+  },
+  "facade_osm_footprints": 444,
+  "facade_osm_items": 1019,
+  "facade_street_fronts": 26412,
+  "facade_unmatched": "plain walls (no facade)",
+  "lawn_corrected_px": 132721429,
+  "lawn_park_px": 260493338
 }

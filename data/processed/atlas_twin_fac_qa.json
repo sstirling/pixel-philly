@@ -1,0 +1,178 @@
+{
+  "buildings_downloaded": 4667,
+  "buildings_in_scene": 6956,
+  "buildings_dropped": [],
+  "height_source_counts": {
+    "approx_hgt": 4661,
+    "max_hgt": 5,
+    "default": 1
+  },
+  "height_outliers_max_gt_ratio_x_approx": [
+    {
+      "objectid": 294541,
+      "address": "5012-20 SANSOM ST",
+      "approx_hgt_ft": 8,
+      "max_hgt_ft": 25.029906670000003
+    },
+    {
+      "objectid": 298393,
+      "address": "5100 PINE ST",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 65.63995582999999
+    },
+    {
+      "objectid": 302114,
+      "address": "523 S 48TH ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 42.43010892
+    },
+    {
+      "objectid": 302647,
+      "address": "5013 CEDAR AVE",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 58.710117249999996
+    },
+    {
+      "objectid": 304290,
+      "address": "4633 SPRUCE ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 33.659873669999996
+    },
+    {
+      "objectid": 309673,
+      "address": "5104 WILLOWS AVE",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 35.86994683
+    },
+    {
+      "objectid": 311258,
+      "address": "5007-09 WARRINGTON AVE",
+      "approx_hgt_ft": 15,
+      "max_hgt_ft": 57.56008133
+    },
+    {
+      "objectid": 311669,
+      "address": "4953 HAZEL AVE",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 54.219977750000005
+    },
+    {
+      "objectid": 320901,
+      "address": "4650 LARCHWOOD AVE",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 51.81993033
+    },
+    {
+      "objectid": 490471,
+      "address": "5301 CEDAR AVE",
+      "approx_hgt_ft": 33,
+      "max_hgt_ft": 167.02009783
+    },
+    {
+      "objectid": 492732,
+      "address": "4740 BALTIMORE AVE",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 31.920009750000002
+    }
+  ],
+  "tallest_buildings_m": [
+    {
+      "id": 491364,
+      "h": 49.38
+    },
+    {
+      "id": "491615-16",
+      "h": 34.63
+    },
+    {
+      "id": "491615-15",
+      "h": 30.35
+    },
+    {
+      "id": "408177-12",
+      "h": 30.21
+    },
+    {
+      "id": "408177-14",
+      "h": 29.56
+    },
+    {
+      "id": "491615-14",
+      "h": 29.38
+    },
+    {
+      "id": "408177-13",
+      "h": 29.3
+    },
+    {
+      "id": "408177-15",
+      "h": 29.3
+    },
+    {
+      "id": "408177-11",
+      "h": 27.64
+    },
+    {
+      "id": 491068,
+      "h": 26.21
+    }
+  ],
+  "trees_in_scene": 2170,
+  "ground_texture_px": [
+    7424,
+    7168
+  ],
+  "ground_texture_source_px": [
+    7424,
+    7168
+  ],
+  "uv_fit_max_residual_m": 1.0212443111776999e-05,
+  "ground_median_filter_px": 5,
+  "frames": 10,
+  "lidar_buildings_shaped": 1429,
+  "lidar_fallback_single_height": 3,
+  "lidar_parts": 3713,
+  "lidar_terrace_parts": 0,
+  "lidar_stadiums": [],
+  "lidar_structures": 3,
+  "lidar_structure_parts": 5,
+  "lidar_structure_area_m2": 113.8,
+  "lidar_structures_dropped_photo": 0,
+  "lidar_highway_mask": true,
+  "lidar_highway_masked_m2": 0.0,
+  "lidar_rail_mask": true,
+  "lidar_margin_m": 100.0,
+  "facade_join": {
+    "parcel": 4643,
+    "address": 21,
+    "unmatched": 3
+  },
+  "facade_match_rate": 0.999,
+  "facade_styles": {
+    "row_porch": 1913,
+    "twin": 1730,
+    "apartment_low": 257,
+    "mixed_storefront": 216,
+    "row_typical": 188,
+    "row_postwar": 107,
+    "other": 90,
+    "detached": 48,
+    "river_row": 44,
+    "institutional": 31,
+    "row_modern": 22,
+    "warehouse": 18
+  },
+  "facade_materials": {
+    "brick": 4650,
+    "stone": 10,
+    "frame": 4
+  },
+  "facade_colour_source": {
+    "palette": 4658,
+    "aerial": 6
+  },
+  "facade_osm_footprints": 0,
+  "facade_osm_items": 1,
+  "facade_street_fronts": 2109,
+  "facade_unmatched": "plain walls (no facade)"
+}

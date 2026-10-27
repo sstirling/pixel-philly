@@ -47,7 +47,16 @@ WATER_STYLE = {
 def nhd_geometry(cfg, frame, cam, x_origin: float, y_origin: float):
     """NHD water polygons in mosaic pixel coordinates (screen px minus the
     lattice origin)."""
-    data = json.loads((RAW / f"{cfg['name']}_water_nhd.geojson").read_text())
+    return water_geometry(cfg, frame, cam, x_origin, y_origin, "water_nhd")
+
+
+def water_geometry(cfg, frame, cam, x_origin: float, y_origin: float, suffix: str):
+    """Polygons of data/raw/<area>_<suffix>.geojson (NHD "water_nhd", PWD
+    "water") in mosaic pixel coordinates; empty if the file is missing."""
+    path = RAW / f"{cfg['name']}_{suffix}.geojson"
+    if not path.exists():
+        return Polygon()
+    data = json.loads(path.read_text())
     polys = []
     for feat in data["features"]:
         g = shape(feat["geometry"])

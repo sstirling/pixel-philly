@@ -78,3 +78,19 @@ def test_rail_mask_buffers_the_el_and_surface_track(tmp_path, monkeypatch):
     e, n = frame.to_local([-75.1336], [39.97765])  # on the line
     assert all(m.contains(Point(e[0], n[0])) for m in mask)
     assert build_scene.rail_mask({"name": "none"}, frame) is None
+
+
+def test_vectorized_mosaic_px_equals_the_scalar_mapping():
+    # The lawn mask projects whole rings at once (South Philly: ~116k
+    # footprints per tile, point by point, took hours); results must match
+    import numpy as np
+
+    from pixelphilly.projection import LocalFrame
+
+    frame = LocalFrame([-75.20, 39.88, -75.12, 39.98])
+    scalar, vector = build_scene.mosaic_px_funcs(frame, (37_000_000.0, 50_000_000.0), 19)
+    rng = np.random.default_rng(0)
+    e, n = rng.uniform(-3000, 3000, 200), rng.uniform(-3000, 3000, 200)
+    vx, vy = vector(e, n)
+    for i in range(200):
+        assert (vx[i], vy[i]) == scalar(e[i], n[i])

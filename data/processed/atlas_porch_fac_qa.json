@@ -1,0 +1,109 @@
+{
+  "buildings_downloaded": 5833,
+  "buildings_in_scene": 6501,
+  "buildings_dropped": [],
+  "height_source_counts": {
+    "approx_hgt": 5826,
+    "max_hgt": 7
+  },
+  "height_outliers_max_gt_ratio_x_approx": [],
+  "tallest_buildings_m": [
+    {
+      "id": 478490,
+      "h": 35.05
+    },
+    {
+      "id": 18836,
+      "h": 26.52
+    },
+    {
+      "id": 478230,
+      "h": 25.91
+    },
+    {
+      "id": 478513,
+      "h": 24.08
+    },
+    {
+      "id": 478538,
+      "h": 23.16
+    },
+    {
+      "id": 479780,
+      "h": 22.56
+    },
+    {
+      "id": "478198-10",
+      "h": 22.29
+    },
+    {
+      "id": "478198-9",
+      "h": 21.25
+    },
+    {
+      "id": 479380,
+      "h": 21.03
+    },
+    {
+      "id": 478196,
+      "h": 19.81
+    }
+  ],
+  "trees_in_scene": 681,
+  "ground_texture_px": [
+    7424,
+    6912
+  ],
+  "ground_texture_source_px": [
+    7424,
+    6912
+  ],
+  "uv_fit_max_residual_m": 9.647829263833437e-06,
+  "ground_median_filter_px": 5,
+  "frames": 10,
+  "lidar_buildings_shaped": 2539,
+  "lidar_fallback_single_height": 5,
+  "lidar_parts": 3184,
+  "lidar_terrace_parts": 0,
+  "lidar_stadiums": [],
+  "lidar_structures": 13,
+  "lidar_structure_parts": 23,
+  "lidar_structure_area_m2": 1474.4,
+  "lidar_structures_dropped_photo": 1,
+  "lidar_highway_mask": true,
+  "lidar_highway_masked_m2": 0.0,
+  "lidar_rail_mask": true,
+  "lidar_margin_m": 100.0,
+  "facade_join": {
+    "parcel": 5815,
+    "address": 13,
+    "unmatched": 5
+  },
+  "facade_match_rate": 0.999,
+  "facade_styles": {
+    "row_porch": 3192,
+    "row_typical": 2006,
+    "mixed_storefront": 265,
+    "other": 119,
+    "warehouse": 79,
+    "twin": 58,
+    "institutional": 40,
+    "row_postwar": 36,
+    "apartment_low": 23,
+    "detached": 8,
+    "row_modern": 2
+  },
+  "facade_materials": {
+    "brick": 5824,
+    "stone": 3,
+    "frame": 1
+  },
+  "facade_colour_source": {
+    "palette": 5820,
+    "aerial": 8
+  },
+  "facade_osm_footprints": 0,
+  "facade_osm_items": 0,
+  "facade_street_fronts": 3421,
+  "facade_unmatched": "plain walls (no facade)"
+}

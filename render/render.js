@@ -84,6 +84,14 @@ scene.add(ground);
 const roofParts = [];
 const wallParts = [];
 const wallColors = [];
+// Façades from property records (05_build_scene.py "facades": "opa"; see
+// src/pixelphilly/facades.py). Only when some building has one, so scenes
+// without façade data render exactly as before.
+const facadeOn = sceneData.buildings.some((b) => b.facade);
+const wallFacade = []; // per vertex: style id (0 = none), floor height m, bay spacing m, band flags
+const wallWindow = []; // per vertex: window color
+const wallTop = []; // per vertex: the building part's height (cornice)
+const wallFront = []; // per vertex: up to two street-facing directions (east, north); zeros = every wall
 
 function shapeFromRings(rings) {
   const toVec = ([e, n]) => new THREE.Vector2(e, n);
@@ -100,7 +108,10 @@ for (const b of sceneData.buildings) {
   geom.rotateX(-Math.PI / 2);
   const pos = geom.attributes.position.array;
   const nrm = geom.attributes.normal.array;
-  const color = new THREE.Color().setRGB(b.color[0] / 255, b.color[1] / 255, b.color[2] / 255, THREE.SRGBColorSpace);
+  const f = b.facade;
+  const rgb = f ? f.w : b.color;
+  const color = new THREE.Color().setRGB(rgb[0] / 255, rgb[1] / 255, rgb[2] / 255, THREE.SRGBColorSpace);
+  const win = f ? new THREE.Color().setRGB(f.g[0] / 255, f.g[1] / 255, f.g[2] / 255, THREE.SRGBColorSpace) : null;
   for (const g of geom.groups) {
     const slicePos = pos.slice(g.start * 3, (g.start + g.count) * 3);
     const sliceNrm = nrm.slice(g.start * 3, (g.start + g.count) * 3);
@@ -109,6 +120,20 @@ for (const b of sceneData.buildings) {
     } else {
       wallParts.push([slicePos, sliceNrm]);
       for (let i = 0; i < g.count; i++) wallColors.push(color.r, color.g, color.b);
+      if (facadeOn) {
+        for (let i = 0; i < g.count; i++) {
+          if (f) {
+            wallFacade.push(f.s, f.f, f.p, f.b);
+            wallWindow.push(win.r, win.g, win.b);
+            wallFront.push(...(f.d || [0, 0, 0, 0]));
+          } else {
+            wallFacade.push(0, 1, 1, 0);
+            wallWindow.push(0, 0, 0);
+            wallFront.push(0, 0, 0, 0);
+          }
+          wallTop.push(b.h);
+        }
+      }
     }
   }
   geom.dispose();
@@ -137,6 +162,111 @@ const roofs = new THREE.Mesh(roofGeom, aerialMat);
 const wallGeom = merged(wallParts);
 wallGeom.setAttribute("color", new THREE.BufferAttribute(new Float32Array(wallColors), 3));
 const wallMat = new THREE.MeshLambertMaterial({ vertexColors: true });
+if (facadeOn) {
+  wallGeom.setAttribute("facadeA", new THREE.BufferAttribute(new Float32Array(wallFacade), 4));
+  wallGeom.setAttribute("facadeWin", new THREE.BufferAttribute(new Float32Array(wallWindow), 3));
+  wallGeom.setAttribute("facadeTop", new THREE.BufferAttribute(new Float32Array(wallTop), 1));
+  wallGeom.setAttribute("facadeFront", new THREE.BufferAttribute(new Float32Array(wallFront), 4));
+  // Procedural façade, no textures or UVs: the floor comes from world
+  // height / floor height, the bay from the position along the wall (world
+  // x/z projected on the wall's horizontal direction, from its normal).
+  // Windows per floor and bay (dark panes with a 1 px lighter sill); band
+  // flags (facades.BAND_*): 1 storefront (bulkhead, glass with mullions,
+  // dark sign band), 2 porch (light porch-roof trim at about one floor, a
+  // shadowed recess with thin posts per bay), 4 cornice (dark strip at the
+  // roofline), 8 glass curtain wall (wide panes, thin mullions). Storefront
+  // and porch go on street-facing walls only (facade "d", from the City's
+  // street centerlines; without it, every wall). Paint only: geometry,
+  // masks and alignment are unchanged, and a detail appears only where the
+  // property record (or OSM) says the building has it
+  wallMat.onBeforeCompile = (shader) => {
+    shader.vertexShader = shader.vertexShader
+      .replace(
+        "#include <common>",
+        `#include <common>
+attribute vec4 facadeA;
+attribute vec3 facadeWin;
+attribute float facadeTop;
+attribute vec4 facadeFront;
+varying vec4 vFacadeFront;
+varying vec4 vFacade;
+varying vec3 vFacadeWin;
+varying float vFacadeTop;
+varying vec3 vFacadePos;
+varying vec3 vFacadeN;`,
+      )
+      .replace(
+        "#include <begin_vertex>",
+        `#include <begin_vertex>
+vFacade = facadeA;
+vFacadeWin = facadeWin;
+vFacadeTop = facadeTop;
+vFacadeFront = facadeFront;
+vFacadePos = (modelMatrix * vec4(transformed, 1.0)).xyz;
+vFacadeN = normal;`,
+      );
+    shader.fragmentShader = shader.fragmentShader
+      .replace(
+        "#include <common>",
+        `#include <common>
+varying vec4 vFacade;
+varying vec3 vFacadeWin;
+varying float vFacadeTop;
+varying vec3 vFacadePos;
+varying vec3 vFacadeN;
+varying vec4 vFacadeFront;
+bool facadeIsFront() {
+  // three.js z = -north, so the wall's (east, north) normal is (x, -z)
+  vec2 n = normalize(vec2(vFacadeN.x, -vFacadeN.z) + 1e-6);
+  if (dot(abs(vFacadeFront), vec4(1.0)) < 1e-3) return true;
+  return dot(n, vFacadeFront.xy) > 0.7 || dot(n, vFacadeFront.zw) > 0.7;
+}
+vec3 facadeColor(vec3 wall) {
+  float fh = vFacade.y;
+  float sp = vFacade.z;
+  int bands = int(vFacade.w + 0.5);
+  float y = vFacadePos.y;
+  float fl = floor(y / fh);
+  float yf = y - fl * fh; // meters above this floor's base
+  vec2 t = normalize(vec2(-vFacadeN.z, vFacadeN.x) + 1e-6);
+  float fx = fract(dot(vFacadePos.xz, t) / sp);
+  vec3 c = wall;
+  vec3 trim = mix(wall, vec3(0.86, 0.86, 0.82), 0.75);
+  bool front = facadeIsFront();
+  if ((bands & 8) != 0) {
+    if (fx > 0.08 && fx < 0.92 && yf > 0.12 * fh && yf < 0.92 * fh) c = vFacadeWin;
+  } else {
+    float w0 = 0.3 * fh, w1 = 0.75 * fh;
+    if (fx > 0.3 && fx < 0.7 && yf > w0 && yf < w1) c = vFacadeWin * 0.8;
+    else if (fx > 0.27 && fx < 0.73 && yf > w0 - 0.25 && yf <= w0) c = min(wall * 1.4, vec3(1.0)); // sill
+  }
+  if ((bands & 1) != 0 && fl < 0.5 && front) {
+    if (yf < 0.45) c = wall * 0.55; // bulkhead
+    else if (yf < 0.72 * fh) {
+      bool mullion = fx < 0.03 || fx > 0.97 || abs(fx - 0.5) < 0.03;
+      c = mullion ? wall * 0.35 : min(vFacadeWin * 1.45, vec3(1.0));
+    } else if (yf < 0.95 * fh) c = mix(wall, vec3(0.12, 0.14, 0.16), 0.7); // sign band
+  }
+  if ((bands & 2) != 0 && fl < 0.5 && front) {
+    if (yf > 0.70 * fh && yf < 0.98 * fh) c = trim; // porch roof
+    else if (yf > 0.66 * fh && yf <= 0.70 * fh) c = wall * 0.35; // its shadow line
+    else if (yf <= 0.66 * fh) {
+      c = wall * 0.55; // shadowed recess
+      if (fx > 0.3 && fx < 0.7 && yf > 0.15 * fh && yf < 0.6 * fh) c = vFacadeWin * 0.6;
+      if (fx < 0.3 / sp) c = trim; // a thin post per bay
+    }
+  }
+  if ((bands & 4) != 0 && y > vFacadeTop - 0.5) c = wall * 0.62;
+  return c;
+}`,
+      )
+      .replace(
+        "#include <color_fragment>",
+        `#include <color_fragment>
+if (vFacade.x > 0.5) diffuseColor.rgb = facadeColor(vColor);`,
+      );
+  };
+}
 const walls = new THREE.Mesh(wallGeom, wallMat);
 scene.add(roofs, walls);
 

@@ -1,0 +1,167 @@
+{
+  "buildings_downloaded": 9579,
+  "buildings_in_scene": 11846,
+  "buildings_dropped": [],
+  "height_source_counts": {
+    "approx_hgt": 9577,
+    "max_hgt": 2
+  },
+  "height_outliers_max_gt_ratio_x_approx": [
+    {
+      "objectid": 8706,
+      "address": "1114-16 SIGEL ST",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 50.230025669999996
+    },
+    {
+      "objectid": 330523,
+      "address": "1645 S BROAD ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 33.300022829999996
+    },
+    {
+      "objectid": 338003,
+      "address": "1212 S 10TH ST",
+      "approx_hgt_ft": 8,
+      "max_hgt_ft": 33.20000883
+    },
+    {
+      "objectid": 338025,
+      "address": "909 FEDERAL ST",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 41.889894670000004
+    },
+    {
+      "objectid": 343544,
+      "address": "1407 S BROAD ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 48.21999292
+    },
+    {
+      "objectid": 354996,
+      "address": "1527 S 8TH ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 33.95984583
+    },
+    {
+      "objectid": 357107,
+      "address": "1213 ANNIN ST",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 43.20983633
+    },
+    {
+      "objectid": 362209,
+      "address": "1800-02 E PASSYUNK AVE",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 40.019890079999996
+    },
+    {
+      "objectid": 366744,
+      "address": "1623 S BROAD ST",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 39.280120579999995
+    }
+  ],
+  "tallest_buildings_m": [
+    {
+      "id": "19903-20",
+      "h": 34.24
+    },
+    {
+      "id": 5551,
+      "h": 32.31
+    },
+    {
+      "id": "19903-19",
+      "h": 31.74
+    },
+    {
+      "id": 3869,
+      "h": 25.91
+    },
+    {
+      "id": "13002-15",
+      "h": 23.96
+    },
+    {
+      "id": "19903-18",
+      "h": 23.14
+    },
+    {
+      "id": "13002-12",
+      "h": 22.7
+    },
+    {
+      "id": "367696-2",
+      "h": 22.49
+    },
+    {
+      "id": "5688-14",
+      "h": 22.29
+    },
+    {
+      "id": "19903-17",
+      "h": 21.99
+    }
+  ],
+  "trees_in_scene": 2619,
+  "ground_texture_px": [
+    7680,
+    7168
+  ],
+  "ground_texture_source_px": [
+    7680,
+    7168
+  ],
+  "uv_fit_max_residual_m": 1.069407963113221e-05,
+  "ground_median_filter_px": 5,
+  "frames": 10,
+  "lidar_buildings_shaped": 3070,
+  "lidar_fallback_single_height": 17,
+  "lidar_parts": 5333,
+  "lidar_terrace_parts": 0,
+  "lidar_stadiums": [],
+  "lidar_structures": 2,
+  "lidar_structure_parts": 4,
+  "lidar_structure_area_m2": 251.0,
+  "lidar_structures_dropped_photo": 1,
+  "lidar_highway_mask": true,
+  "lidar_highway_masked_m2": 0.0,
+  "lidar_rail_mask": true,
+  "lidar_margin_m": 100.0,
+  "facade_join": {
+    "parcel": 9520,
+    "address": 44,
+    "unmatched": 14,
+    "point": 1
+  },
+  "facade_match_rate": 0.999,
+  "facade_styles": {
+    "row_typical": 8116,
+    "mixed_storefront": 577,
+    "row_modern": 252,
+    "other": 146,
+    "river_row": 124,
+    "apartment_low": 121,
+    "twin": 64,
+    "warehouse": 58,
+    "row_porch": 39,
+    "row_postwar": 35,
+    "institutional": 27,
+    "detached": 6
+  },
+  "facade_materials": {
+    "brick": 9504,
+    "frame": 40,
+    "stone": 21
+  },
+  "facade_colour_source": {
+    "palette": 9558,
+    "aerial": 6,
+    "osm": 1
+  },
+  "facade_osm_footprints": 1,
+  "facade_osm_items": 1,
+  "facade_street_fronts": 608,
+  "facade_unmatched": "plain walls (no facade)"
+}

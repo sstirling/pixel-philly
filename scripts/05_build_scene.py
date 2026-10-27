@@ -199,15 +199,27 @@ def tree_radius_m(dbh_in):
     return float(min(max(1.0 + 0.15 * dbh_in, 1.5), 7.0))
 
 
+def mosaic_px_funcs(frame, origin_px, z):
+    """(scalar, vectorized) local (e, n) meters -> mosaic pixels. The
+    vectorized form maps whole rings in one call (identical values)."""
+
+    def to_mosaic_px(e, n):
+        x, y = merc_px(*frame.to_wgs84(e, n), z)
+        return float(x - origin_px[0]), float(y - origin_px[1])
+
+    def to_mosaic_px_arr(e, n):
+        x, y = merc_px(*frame.to_wgs84(np.asarray(e, float), np.asarray(n, float)), z)
+        return np.asarray(x, float) - origin_px[0], np.asarray(y, float) - origin_px[1]
+
+    return to_mosaic_px, to_mosaic_px_arr
+
+
 def prepare_ground(cfg, frame, tile_range=None):
     """Mosaic, its extent in local meters, the quadratic UV fit, and the
     (optionally median-filtered) texture that goes on the ground and roofs."""
     mosaic, origin_px, z = build_mosaic(cfg, tile_range)
     full_size = mosaic.size
-
-    def to_mosaic_px(e, n):
-        x, y = merc_px(*frame.to_wgs84(e, n), z)
-        return float(x - origin_px[0]), float(y - origin_px[1])
+    to_mosaic_px, to_mosaic_px_arr = mosaic_px_funcs(frame, origin_px, z)
 
     # Extent of the mosaic in local meters (its corners)
     corner_lon = [origin_px[0], origin_px[0] + full_size[0]]
@@ -230,7 +242,8 @@ def prepare_ground(cfg, frame, tile_range=None):
     median_px = (cfg.get("ground_filter") or {}).get("median_px")
     if median_px:
         ground = ground.filter(ImageFilter.MedianFilter(median_px))
-    return {"mosaic_arr": np.asarray(mosaic), "to_px": to_mosaic_px, "extent_m": extent_m,
+    return {"mosaic_arr": np.asarray(mosaic), "to_px": to_mosaic_px, "to_px_arr": to_mosaic_px_arr,
+            "extent_m": extent_m,
             "uv": (cu, cv), "residual_m": residual_m, "ground": ground, "source_px": full_size,
             "median_px": median_px}
 
@@ -278,8 +291,11 @@ def load_buildings(cfg, frame):
         # region at that height; also not written to the scene
         approx = p.get("approx_hgt")
         typical = approx * FT_TO_M if approx and approx > 0 else None
-        buildings.append({"id": p.get("objectid"), "h": round(h, 2), "polys": polys, "ceiling_m": ceiling,
-                          "typical_m": typical})
+        b = {"id": p.get("objectid"), "h": round(h, 2), "polys": polys, "ceiling_m": ceiling, "typical_m": typical}
+        if cfg.get("facades") == "opa":
+            # For the property-record join (attach_facades); not written to the scene
+            b["parcel_id_num"], b["address"] = p.get("parcel_id_num"), p.get("address")
+        buildings.append(b)
     return buildings, {"downloaded": len(raw["features"]), "sources": sources,
                        "outliers": outliers, "dropped": dropped}
 
@@ -413,6 +429,218 @@ def photo_check(cfg, frame, s_parts):
     return kept, dropped
 
 
+def lawn_correct_ground(cfg, frame, ground, buildings):
+    """With "lawn_correct": true, shift dormant-grass pixels of the ground
+    texture toward green inside park polygons (data/raw/<area>_parks.geojson
+    and _nps_parks.geojson from 04j_fetch_parks.py), excluding building
+    footprints so roofs keep the aerial (pixelphilly.lawns). The texture is
+    replaced in place; mosaic_arr (wall colors) is left as is. Returns QA."""
+    if not cfg.get("lawn_correct"):
+        return {}
+    from shapely.geometry import Polygon, shape
+    from shapely.ops import unary_union
+
+    from pixelphilly import lawns
+
+    polys = []
+    for suffix in ("parks", "nps_parks"):
+        path = RAW / f"{cfg['name']}_{suffix}.geojson"
+        if not path.exists():
+            continue
+        for f in json.loads(path.read_text())["features"]:
+            if f.get("geometry"):
+                polys.extend(rings_local(shape(f["geometry"]), frame))
+    if not polys:
+        print("  lawn correction: no park polygons (scripts/04j_fetch_parks.py)", flush=True)
+        return {"lawn_corrected_px": 0}
+    img = ground["ground"]
+    to_px_arr = ground["to_px_arr"]
+
+    def px(coords):
+        c = np.asarray(coords, float)
+        x, y = to_px_arr(c[:, 0], c[:, 1])
+        return list(zip(x.tolist(), y.tolist()))
+
+    mask = Image.new("L", img.size, 0)
+    d = ImageDraw.Draw(mask)
+    for rings in polys:
+        d.polygon(px(rings[0]), fill=255)
+        for hole in rings[1:]:
+            d.polygon(px(hole), fill=0)
+    # Only footprints on this texture (a region tile's texture covers a
+    # fraction of ~116k footprints; drawing all of them, point by point,
+    # took hours for South Philly). The rest would fall outside the image
+    e0, n0, e1, n1 = ground["extent_m"]
+    for b in buildings:
+        if "_bbox" not in b:
+            xs = [x for rings in b["polys"] for x, _ in rings[0]]
+            ys = [y for rings in b["polys"] for _, y in rings[0]]
+            b["_bbox"] = (min(xs), min(ys), max(xs), max(ys))
+        bx0, by0, bx1, by1 = b["_bbox"]
+        if bx1 < e0 - 2 or bx0 > e1 + 2 or by1 < n0 - 2 or by0 > n1 + 2:
+            continue
+        for rings in b["polys"]:
+            g = Polygon(rings[0], rings[1:]).buffer(1.0)
+            for pg in getattr(g, "geoms", [g]):
+                d.polygon(px(pg.exterior.coords), fill=0)
+    region = np.asarray(mask) > 0
+    arr = np.asarray(img.convert("RGB"))
+    out = lawns.correct(arr, region)
+    changed = int((out != arr).any(axis=2).sum())
+    ground["ground"] = Image.fromarray(out)
+    print(f"  lawn correction: {changed:,} px in {int(region.sum()):,} px of parks", flush=True)
+    return {"lawn_corrected_px": changed, "lawn_park_px": int(region.sum())}
+
+
+def attach_facades(cfg, frame, buildings):
+    """With "facades": "opa" in the config, give each footprint a compact
+    façade from its property record (pixelphilly.facades; data from
+    scripts/04f_fetch_opa.py). Footprints with no record keep today's plain
+    walls, unless "facades_unmatched": "default" gives them a typology
+    default. Without the option nothing changes (scenes byte-identical).
+    Returns QA counts (join method, styles, materials)."""
+    if cfg.get("facades") != "opa":
+        return {}
+    from shapely.geometry import Point, Polygon
+    from shapely.ops import unary_union
+
+    from pixelphilly import facades
+    from pixelphilly.opa import assert_no_pii
+
+    opa = json.loads((RAW / f"{cfg['name']}_opa.geojson").read_text())
+    pwd = json.loads((RAW / f"{cfg['name']}_pwd_parcels.json").read_text())
+    assert_no_pii(opa)
+    assert_no_pii(pwd)
+    rows = []
+    for f in opa["features"]:
+        if not f.get("geometry"):
+            continue
+        lon, lat = f["geometry"]["coordinates"][:2]
+        e, n = frame.to_local([lon], [lat])
+        rows.append({**f["properties"], "_pt": Point(float(e[0]), float(n[0]))})
+    pwd_map = {str(r["parcelid"]): str(r["brt_id"]) for r in pwd["rows"] if r.get("brt_id")}
+    fps = []
+    for b in buildings:
+        geom = unary_union([Polygon(p[0], p[1:]) for p in b["polys"]]).buffer(0)
+        fps.append({"id": b["id"], "parcel_id_num": b.get("parcel_id_num"), "address": b.get("address"), "geom": geom})
+    matches = facades.join(fps, rows, pwd_map)
+    default = cfg.get("facades_unmatched") == "default"
+    osm_items = load_osm(cfg, frame)
+    osm = facades.osm_index(osm_items) if osm_items else None  # spatial index: regions have ~10^5 footprints
+    streets = load_streets(cfg, frame)
+    from shapely.strtree import STRtree
+
+    street_tree = STRtree(streets) if streets else None
+    how, styles, materials, colors = Counter(), Counter(), Counter(), Counter()
+    n_osm = n_front = 0
+    for b, fp in zip(buildings, fps):
+        rec, method = matches[fp["id"]]
+        how[method or "unmatched"] += 1
+        if rec is None and not default:
+            continue
+        osm_tags = facades.osm_match(fp["geom"], osm) if osm else {}
+        style = facades.style_of(rec, b["h"]) if rec else None
+        front = []
+        if street_tree is not None and style in ("row_porch", "mixed_storefront"):
+            # Porch and storefront bands go on street-facing walls only
+            near = [streets[i] for i in street_tree.query(fp["geom"].buffer(facades.FRONT_RAY_M + 5))]
+            front = facades.front_dirs(fp["geom"], near)
+        spec = facades.facade_spec(rec, b["h"], fp["geom"], b["id"], osm=osm_tags, front=front)
+        b["facade"] = facades.compact(spec)
+        if osm_items:
+            b["_facade_args"] = (rec, fp["geom"], front, osm_tags, osm)  # LiDAR parts check OSM parts
+        styles[spec["style"]] += 1
+        materials[spec["material"]] += 1
+        colors[spec["color_source"]] += 1
+        n_osm += bool(osm_tags)
+        n_front += bool(front)
+    total = len(buildings)
+    print(f"  facades: {total - how['unmatched']:,}/{total:,} footprints matched ({dict(how)}); "
+          f"styles {dict(styles.most_common())}; colour {dict(colors)}; OSM tags on {n_osm}; "
+          f"street fronts on {n_front}", flush=True)
+    return {"facade_join": dict(how), "facade_match_rate": round((total - how["unmatched"]) / max(total, 1), 3),
+            "facade_styles": dict(styles.most_common()), "facade_materials": dict(materials.most_common()),
+            "facade_colour_source": dict(colors), "facade_osm_footprints": n_osm,
+            "facade_osm_items": len(osm_items), "facade_street_fronts": n_front,
+            "facade_unmatched": "typology default" if default else "plain walls (no facade)"}
+
+
+def load_osm(cfg, frame):
+    """OSM building and building:part shapes with colour or material tags,
+    in local m (data/raw/<area>_osm.json from 04g_fetch_osm.py), or []."""
+    from shapely.geometry import Polygon
+    from shapely.ops import polygonize, unary_union
+
+    path = RAW / f"{cfg['name']}_osm.json"
+    if not path.exists():
+        return []
+    items = []
+    for el in json.loads(path.read_text())["elements"]:
+        tags = el.get("tags") or {}
+        if not (tags.get("building:colour") or tags.get("building:material")):
+            continue
+        rings = []
+        if el["type"] == "way" and el.get("geometry"):
+            rings = [el["geometry"]]
+        elif el["type"] == "relation":
+            rings = [m["geometry"] for m in el.get("members", []) if m.get("role") == "outer" and m.get("geometry")]
+        polys = []
+        for ring in rings:
+            e, n = frame.to_local([p["lon"] for p in ring], [p["lat"] for p in ring])
+            pts = list(zip(e, n))
+            if len(pts) >= 4 and pts[0] == pts[-1]:
+                polys.append(Polygon(pts).buffer(0))
+            elif len(pts) >= 2:  # relation outer ways in pieces
+                from shapely.geometry import LineString
+
+                polys.append(LineString(pts))
+        lines = [p for p in polys if p.geom_type == "LineString"]
+        polys = [p for p in polys if p.geom_type != "LineString"] + list(polygonize(unary_union(lines)) if lines else [])
+        geom = unary_union(polys) if polys else None
+        if geom is not None and not geom.is_empty and geom.area > 1:
+            items.append({"geom": geom, "tags": tags, "part": "building:part" in tags})
+    return items
+
+
+def load_streets(cfg, frame):
+    """All street centerlines in local m (data/raw/<area>_streets.geojson from
+    04h_fetch_streets.py), or [] (then porch and storefront bands go on every wall)."""
+    from shapely.geometry import LineString, shape
+
+    path = RAW / f"{cfg['name']}_streets.geojson"
+    if not path.exists():
+        return []
+    out = []
+    for f in json.loads(path.read_text())["features"]:
+        if not f.get("geometry"):
+            continue
+        g = shape(f["geometry"])
+        for line in getattr(g, "geoms", [g]):
+            lon, lat = np.asarray(line.coords).T[:2]
+            e, n = frame.to_local(lon, lat)
+            out.append(LineString(np.column_stack([e, n])))
+    return out
+
+
+def part_facade(b, part):
+    """A LiDAR part's façade: its building's, unless an OSM building:part (or
+    the building) gives this part a different colour or material (a
+    tower's dark top)."""
+    from shapely.geometry import Polygon
+    from shapely.ops import unary_union
+
+    from pixelphilly import facades
+
+    if "_facade_args" not in b:
+        return b.get("facade")
+    rec, geom, front, osm, items = b["_facade_args"]
+    pg = unary_union([Polygon(p[0], p[1:]) for p in part["polys"]]).buffer(0)
+    m = facades.osm_match(pg, items)
+    if not m or m == osm:
+        return b["facade"]
+    return facades.compact(facades.facade_spec(rec, b["h"], geom, b["id"], osm=m, front=front))
+
+
 def lidar_shaped(cfg, frame, buildings):
     """Replace buildings inside the LiDAR region with stepped parts
     (pixelphilly.lidar). Each part keeps the building id with a suffix and is
@@ -462,7 +690,10 @@ def lidar_shaped(cfg, frame, buildings):
         # scene). Stadium stands only: elsewhere stepped roofs look like rows
         terraces = lidar.stand_terraces(fp, parts)
         for k, part in enumerate(parts):
-            out.append({"id": f"{b['id']}-{k}", "h": part["h"], "polys": part["polys"], "terrace": k in terraces})
+            out.append({"id": f"{b['id']}-{k}", "h": part["h"], "polys": part["polys"], "terrace": k in terraces,
+                        # LiDAR parts keep their building's façade (floors line up across
+                        # parts), unless OSM tags this part differently
+                        **({"facade": part_facade(b, part)} if "facade" in b else {})})
             n_parts += 1
         n_terrace += len(terraces)
         if terraces:
@@ -512,14 +743,20 @@ def colored(buildings, ground, cfg, cache=None):
     out = []
     for b in buildings:
         if cache is not None and b["id"] in cache:
-            color = cache[b["id"]]
+            color, roof = cache[b["id"]]
         else:
             roof = mean_color(ground["mosaic_arr"], b["polys"], ground["to_px"]) or [150, 140, 130]
             color = wall_color(roof, b["h"], cfg.get("wall_tint"), terrace=b.get("terrace", False),
                                structure=b.get("structure", False))
             if cache is not None:
-                cache[b["id"]] = color
-        out.append({"id": b["id"], "h": b["h"], "color": color, "polys": b["polys"]})
+                cache[b["id"]] = (color, roof)
+        facade = b.get("facade")
+        if facade and facade.get("u"):
+            # Tall "MASONRY" with no OSM colour: its own aerial colour, untinted
+            # (pale stone stays pale; facades.facade_spec)
+            facade = {**{k: v for k, v in facade.items() if k != "u"}, "w": list(roof)}
+        out.append({"id": b["id"], "h": b["h"], "color": color, "polys": b["polys"],
+                    **({"facade": facade} if facade else {})})
     return out
 
 
@@ -585,9 +822,11 @@ def main_single(cfg, frame, cam, frames):
     """One scene for the whole area (areas whose mosaic fits the GPU)."""
     name = cfg["name"]
     ground = prepare_ground(cfg, frame)
+    buildings, info = load_buildings(cfg, frame)
+    lawn_qa = lawn_correct_ground(cfg, frame, ground, buildings)
     ground_path = PROCESSED / f"{name}_ground.jpg"
     ground["ground"].save(ground_path, quality=92)
-    buildings, info = load_buildings(cfg, frame)
+    facade_qa = attach_facades(cfg, frame, buildings)
     lidar_qa = {}
     if cfg.get("building_shapes") == "lidar":
         buildings, lidar_qa = lidar_shaped(cfg, frame, buildings)
@@ -603,6 +842,8 @@ def main_single(cfg, frame, cam, frames):
         "ground_median_filter_px": ground["median_px"],
         "frames": len(frames),
         **lidar_qa,
+        **facade_qa,
+        **lawn_qa,
     })
 
 
@@ -628,6 +869,7 @@ def main_tiled(cfg, frame, cam, frames):
     out_dir.mkdir(parents=True, exist_ok=True)
 
     buildings, info = load_buildings(cfg, frame)
+    facade_qa = attach_facades(cfg, frame, buildings)
     # Shape every footprint once, before tiling: render tiles overlap (each
     # reaches 360 m past its frames), so per-tile shaping would repeat work
     # and could split one building differently in two tiles
@@ -645,6 +887,7 @@ def main_tiled(cfg, frame, cam, frames):
         groups.setdefault((f.col // n_tile, f.row // n_tile), []).append(f)
 
     color_cache, index, residuals, tex_sizes, in_scene = {}, [], [], [], set()
+    lawn_qa = {}
     for (tc, tr), tile_frames in sorted(groups.items()):
         quads = []
         for f in tile_frames:
@@ -657,6 +900,8 @@ def main_tiled(cfg, frame, cam, frames):
         px, py = merc_px(lon, lat, z)
         tile_range = (int(px.min() // TILE), int(px.max() // TILE), int(py.min() // TILE), int(py.max() // TILE))
         ground = prepare_ground(cfg, frame, tile_range)
+        for k, v in lawn_correct_ground(cfg, frame, ground, buildings).items():
+            lawn_qa[k] = lawn_qa.get(k, 0) + v  # summed over tiles (tiles overlap)
         tex_sizes.append(max(ground["ground"].size))
         residuals.append(ground["residual_m"])
         stem = f"t_{tc:02d}_{tr:02d}"
@@ -687,6 +932,8 @@ def main_tiled(cfg, frame, cam, frames):
         "ground_median_filter_px": (cfg.get("ground_filter") or {}).get("median_px"),
         "frames": len(frames),
         **lidar_qa,
+        **facade_qa,
+        **lawn_qa,
     })
 
 

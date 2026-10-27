@@ -147,7 +147,8 @@ def main():
         "built": date.today().isoformat(),
         "credits": ("AI-generated illustration (Qwen-Image-Edit-2511 with a style LoRA trained on Gemini "
                     "3 Pro Image outputs; internal prototype). Data: City of Philadelphia building footprints, "
-                    "2024 aerial imagery and PPR tree inventory; USGS NHD water."),
+                    "2024 aerial imagery and PPR tree inventory; USGS NHD water.")
+        + (" " + OSM_CREDIT if (REPO_ROOT / "data" / "raw" / f"{cfg['name']}_osm.json").exists() else ""),
         "photo_credits": ("Photo layer: City of Philadelphia 2024 3-inch aerial imagery draped over L&I building "
                           "footprints extruded to LiDAR heights, rendered with the same camera as the "
                           "illustration. Building walls are untextured; tree shapes are stylized."),
@@ -164,6 +165,8 @@ PHOTO_CREDITS = ("Photo layer: City of Philadelphia 2024 3-inch aerial imagery d
                  "footprints extruded to LiDAR heights, rendered with the same camera as the "
                  "illustration. Building walls are untextured; tree shapes are stylized.")
 RAIL_CREDIT = "Rail: SEPTA; City of Philadelphia."
+# ODbL attribution, for areas whose façade colours use OpenStreetMap (04g_fetch_osm.py)
+OSM_CREDIT = "Façade colours in part © OpenStreetMap contributors (ODbL)."
 
 
 def union_layer(u, size, path_of):
@@ -298,7 +301,8 @@ def build_union(args):
         "source": f"{args.prompt}/{args.stage}",
         "band_overrides": overrides,
         "built": date.today().isoformat(),
-        "credits": CREDITS + (" " + RAIL_CREDIT if rail else ""),
+        "credits": CREDITS + (" " + RAIL_CREDIT if rail else "")
+        + (" " + OSM_CREDIT if any((REPO_ROOT / "data" / "raw" / f"{n}_osm.json").exists() for n in names) else ""),
         "photo_credits": PHOTO_CREDITS,
     }
     (out / "map.json").write_text(json.dumps(meta, indent=2) + "\n")

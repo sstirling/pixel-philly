@@ -25,9 +25,12 @@ class _QuietHandler(http.server.SimpleHTTPRequestHandler):
 class Renderer:
     """with Renderer(scene_rel_path, size) as r: img = r.frame(i) / r.view(frustum)"""
 
-    def __init__(self, scene_rel: str, size: int):
+    def __init__(self, scene_rel: str, size: int, page: str = "render/index.html"):
+        """page: the renderer page, relative to the repo (tests point it at a
+        copy of an earlier render.js to compare outputs)."""
         self.scene_rel = scene_rel
         self.size = size
+        self.page_rel = page
 
     def __enter__(self):
         from playwright.sync_api import sync_playwright
@@ -40,7 +43,7 @@ class Renderer:
         self.page = self.browser.new_page(viewport={"width": self.size, "height": self.size})
         errors = []
         self.page.on("pageerror", lambda e: errors.append(str(e)))
-        self.page.goto(f"http://127.0.0.1:{self.httpd.server_port}/render/index.html?scene={self.scene_rel}")
+        self.page.goto(f"http://127.0.0.1:{self.httpd.server_port}/{self.page_rel}?scene={self.scene_rel}")
         try:
             self.page.wait_for_function("window.sceneReady === true", timeout=300_000)
         except Exception:

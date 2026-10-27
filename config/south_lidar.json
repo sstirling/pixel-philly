@@ -32,5 +32,7 @@
   "clip_frames_to_area": true,
   "render_tile_frames": 4,
   "camera_distance_m": 20000.0,
-  "building_shapes": "lidar"
+  "building_shapes": "lidar",
+  "facades": "opa",
+  "lawn_correct": true
 }

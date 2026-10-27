@@ -36,5 +36,7 @@
   "projection_origin": [
     -75.165,
     39.9275
-  ]
+  ],
+  "facades": "opa",
+  "lawn_correct": true
 }

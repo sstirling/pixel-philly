@@ -172,3 +172,73 @@ def fetch_area_features(cfg: dict, service: str, layer: int, suffix: str, descri
         poly = render_ground_polygon(cfg)
         return fetch_features(service, layer, list(poly.bounds), out_name, description, polygon=poly, **kwargs)
     return fetch_features(service, layer, render_extent_wgs84(cfg), out_name, description, **kwargs)
+
+
+def fetch_carto(sql: str, bbox_wgs84, out_name: str, description: str, fmt: str = "GeoJSON",
+                page: int = 10000) -> Path:
+    """Run a City Carto SQL query (https://phl.carto.com/api/v2/sql) and
+    write the result to data/raw/<out_name>, paged with LIMIT/OFFSET (the
+    query must ORDER BY a unique key). fmt "GeoJSON" writes a
+    FeatureCollection, "json" writes {"rows": [...]}. Like fetch_features:
+    immutable once written, recorded in the manifest. Every result is
+    checked by opa.assert_no_pii before anything is written."""
+    from .opa import CARTO_SQL, assert_no_pii
+
+    out = RAW / out_name
+    if out.exists():
+        manifest = json.loads(MANIFEST.read_text()) if MANIFEST.exists() else {}
+        prior = manifest.get(out_name, {}).get("bbox_wgs84")
+        if prior is not None and [round(v, 7) for v in prior] != [round(v, 7) for v in bbox_wgs84]:
+            raise SystemExit(f"{out_name} was fetched for bbox {prior}, not {list(bbox_wgs84)}. "
+                             "Delete it (and its manifest entry will be replaced) to re-fetch.")
+        print(f"{out_name} already downloaded; raw files are immutable, skipping")
+        return out
+    items, offset = [], 0
+    while True:
+        params = {"q": f"{sql} LIMIT {page} OFFSET {offset}"}
+        if fmt == "GeoJSON":
+            params["format"] = "GeoJSON"
+        body = query_json(CARTO_SQL, params, "carto")
+        batch = body.get("features", []) if fmt == "GeoJSON" else body.get("rows", [])
+        items.extend(batch)
+        offset += len(batch)
+        if len(batch) < page:
+            break
+    data = {"type": "FeatureCollection", "features": items} if fmt == "GeoJSON" else {"rows": items}
+    assert_no_pii(data)
+    RAW.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(data))
+    record(out_name, {"description": description, "query_url": f"{CARTO_SQL}?{urlencode({'q': sql})}",
+                      "bbox_wgs84": list(bbox_wgs84), "feature_count": len(items)})
+    print(f"{out_name}: {len(items)} {'features' if fmt == 'GeoJSON' else 'rows'}")
+    return out
+
+
+OVERPASS = "https://overpass-api.de/api/interpreter"
+
+
+def fetch_overpass(query: str, bbox_wgs84, out_name: str, description: str) -> Path:
+    """Run an OpenStreetMap Overpass query (POST, with this project's
+    User-Agent) and write its JSON to data/raw/<out_name>, immutable once
+    written. The manifest records the ODbL license and the credit line the
+    map must show: "© OpenStreetMap contributors"."""
+    out = RAW / out_name
+    if out.exists():
+        print(f"{out_name} already downloaded; raw files are immutable, skipping")
+        return out
+    body = None
+    for attempt in range(4):
+        body = get_with_retry(OVERPASS, {"data": query}, timeout=180, post=True).json()
+        if "elements" in body:
+            break
+        time.sleep(2**attempt)
+    if not body or "elements" not in body:
+        raise RuntimeError(f"Overpass: no elements in the response ({str(body)[:200]})")
+    RAW.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(body))
+    record(out_name, {"description": description, "query_url": OVERPASS, "query": query,
+                      "bbox_wgs84": list(bbox_wgs84), "feature_count": len(body["elements"]),
+                      "license": "Open Database License (ODbL) 1.0, https://opendatacommons.org/licenses/odbl/",
+                      "credit": "© OpenStreetMap contributors"})
+    print(f"{out_name}: {len(body['elements'])} elements")
+    return out

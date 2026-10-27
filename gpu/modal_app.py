@@ -112,7 +112,56 @@ def check_env() -> dict:
     FlowMatchEulerDiscreteScheduler.from_pretrained(f"{path}/scheduler")
     out = {p: md.version(p) for p in ("torch", "torchvision", "diffusers", "transformers", "peft")}
     out["known_band"] = _known_band_smoke()
+    out["multi_image"] = _multi_image_smoke()
+    out["landmark_window"] = _landmark_window_smoke()
     return out
+
+
+def _landmark_window_smoke() -> dict:
+    """The token layout AreaSampler.joint_volume builds for a landmark
+    window, on a CPU with zero tensors (no weights): a reference of any
+    aspect ratio packs to as many tokens as its img_shapes entry says, and
+    the condition sequence [reference, render] matches img_shapes[1:]. Also
+    imports pixelphilly.landmarks inside the image."""
+    import torch
+    from diffusers import QwenImageEditPlusPipeline
+    from diffusers.pipelines.qwenimage.pipeline_qwenimage_edit_plus import VAE_IMAGE_SIZE, calculate_dimensions
+
+    from pixelphilly.landmarks import landmark_windows
+    from pixelphilly.windows import WIN, two_grids
+
+    C = 16
+    pack = QwenImageEditPlusPipeline._pack_latents
+    render = pack(torch.zeros(1, C, 1, WIN, WIN), 1, C, WIN, WIN)
+    checked = []
+    for w, h in ((1500, 1000), (768, 1024), (1024, 1024)):
+        rvw, rvh = calculate_dimensions(VAE_IMAGE_SIZE, w / h)
+        lat = torch.zeros(1, C, 1, rvh // 8, rvw // 8)
+        ref = pack(lat, 1, C, lat.shape[3], lat.shape[4])
+        shapes = [(1, WIN // 2, WIN // 2), (1, lat.shape[3] // 2, lat.shape[4] // 2), (1, WIN // 2, WIN // 2)]
+        cond = torch.cat([ref, render], dim=1)
+        if cond.shape[1] != sum(a * b * c for a, b, c in shapes[1:]):
+            raise RuntimeError(f"reference tokens don't match img_shapes for a {w}x{h} photo")
+        checked.append(int(ref.shape[1]))
+    got = landmark_windows({"x": (1536.0, 1536.0)}, two_grids(384, 384))
+    if not got:
+        raise RuntimeError("no landmark window found on a 3 x 3 frame canvas")
+    return {"ref_tokens": checked, "windows": len(got)}
+
+
+def _multi_image_smoke() -> dict:
+    """Editor.run's reference option relies on two pipeline conventions: the
+    prompt template numbers images "Picture 1", "Picture 2", ... in list
+    order, and the output size comes from the last image (Editor.run also
+    passes height/width explicitly). Checked here on a CPU, without weights."""
+    import inspect
+
+    from diffusers import QwenImageEditPlusPipeline
+
+    src = inspect.getsource(QwenImageEditPlusPipeline)
+    if "Picture {}" not in src and "Picture {i" not in src:
+        raise RuntimeError("QwenImageEditPlusPipeline no longer labels images 'Picture N'")
+    return {"picture_labels": True}
 
 
 def _known_band_smoke() -> dict:
@@ -213,14 +262,23 @@ class Editor(_QwenBase):
     @modal.method()
     def run(self, jobs: list[dict]) -> list[dict]:
         """Each job: image (PNG bytes), prompt, steps, cfg, seed, lightning
-        (None, "4" or "8"). Returns PNG bytes plus timing and peak memory."""
+        (None, "4" or "8"). Optional: style ({"path", "scale"}, as in joint)
+        and references (list of PNG bytes). Returns PNG bytes plus timing and
+        peak memory.
+
+        References are passed BEFORE the render, image=[*refs, render]:
+        QwenImageEditPlusPipeline takes the output size from the last image,
+        and the prompt must name the render by its position ("Picture 2" with
+        one reference). Without references the call is image=[render], the
+        same as before this option existed."""
         from PIL import Image
 
         torch = self.torch
         out = []
         for job in sorted(jobs, key=lambda j: str(j.get("lightning"))):
-            self._configure(job.get("lightning"))
+            self._configure(job.get("lightning"), job.get("style"))
             src = Image.open(io.BytesIO(job["image"])).convert("RGB")
+            refs = [Image.open(io.BytesIO(b)).convert("RGB") for b in job.get("references") or []]
             torch.cuda.reset_peak_memory_stats()
             torch.cuda.synchronize()
             t0 = time.time()
@@ -229,7 +287,7 @@ class Editor(_QwenBase):
                 # diffusers only runs true CFG when a negative prompt is given
                 kwargs["negative_prompt"] = job.get("negative_prompt", " ")
             result = self.pipe(
-                image=[src],
+                image=[*refs, src],
                 prompt=job["prompt"],
                 num_inference_steps=job["steps"],
                 true_cfg_scale=job["cfg"],
@@ -243,7 +301,8 @@ class Editor(_QwenBase):
             result.save(buf, "PNG")
             out.append(
                 {
-                    **{k: v for k, v in job.items() if k != "image"},
+                    **{k: v for k, v in job.items() if k not in ("image", "references")},
+                    **({"n_references": len(refs)} if refs else {}),
                     "png": buf.getvalue(),
                     "seconds": round(time.time() - t0, 2),
                     "peak_gb": round(torch.cuda.max_memory_allocated() / 1e9, 2),
@@ -437,7 +496,7 @@ class AreaSampler(_QwenBase):
                      steps: int, cfg: float, seed: int, lightning: str | None = None,
                      style: dict | None = None, known_frames: list[str] | None = None,
                      known_ramp_cells: int = 0, repair_width_px: int = 200,
-                     repair_sigma: float = 0.6) -> dict:
+                     repair_sigma: float = 0.6, landmarks: dict | None = None) -> dict:
         """known_frames: names (in `frames`) whose drawn pixels are already
         final, from a neighboring area drawn earlier (uploaded by
         15_joint_sample.py --known-area to <out>/known/<frame>.png). They are
@@ -456,12 +515,24 @@ class AreaSampler(_QwenBase):
         the rest of the schedule, everything else held exactly as drawn, so
         the strip is redrawn seeing both finished sides (tiny.london's repair
         step, SDEdit-style). The boundary test without it drew a building
-        straddling the join gray on one side and beige on the other."""
+        straddling the join gray on one side and beige on the other.
+
+        landmarks (optional, Track 3): {"prompt": text, "refs": {slug: path
+        in the Volume}, "windows": [[y, x, slug], ...]}. Each listed window
+        is conditioned like a 2-image edit, image=[reference, render crop]:
+        the prompt embedding sees both images ("Picture 1" = reference,
+        "Picture 2" = render) and the reference's VAE tokens sit between the
+        noise and the render tokens, with img_shapes [output, reference,
+        render], as QwenImageEditPlusPipeline does. Reference encodings are
+        computed once per landmark. Every other window is conditioned
+        exactly as without landmarks. Windows come from
+        pixelphilly.landmarks.plan (15_joint_sample.py --landmarks)."""
         import os
 
         import numpy as np
         from diffusers.pipelines.qwenimage.pipeline_qwenimage_edit_plus import (
             CONDITION_IMAGE_SIZE,
+            VAE_IMAGE_SIZE,
             calculate_dimensions,
             calculate_shift,
         )
@@ -499,6 +570,21 @@ class AreaSampler(_QwenBase):
         keys = sorted({k for g in grids for k in g})
         C = pipe.transformer.config.in_channels // 4
 
+        # Landmark windows (optional): reference encodings once per landmark
+        lm_win, ref_cache, lm_shapes = {}, {}, {}
+        if landmarks:
+            lm_win = {(int(y), int(x)): slug for y, x, slug in landmarks["windows"]}
+            with torch.no_grad():
+                for slug in sorted(set(lm_win.values())):
+                    ref = Image.open(landmarks["refs"][slug]).convert("RGB")
+                    rcw, rch = calculate_dimensions(CONDITION_IMAGE_SIZE, ref.width / ref.height)
+                    rvw, rvh = calculate_dimensions(VAE_IMAGE_SIZE, ref.width / ref.height)
+                    rvae = pipe.image_processor.preprocess(ref, rvh, rvw).unsqueeze(2)
+                    rlat = pipe._encode_vae_image(rvae.to(dev, pipe.vae.dtype), generator=None)
+                    rpacked = pipe._pack_latents(rlat, 1, C, rlat.shape[3], rlat.shape[4]).to(dtype).to("cpu")
+                    ref_cache[slug] = (pipe.image_processor.resize(ref, rch, rcw), rpacked,
+                                       (1, rlat.shape[3] // 2, rlat.shape[4] // 2))
+
         # Per-window conditioning, exactly as in Editor.joint, kept on the CPU
         cache = {}
         with torch.no_grad():
@@ -506,11 +592,20 @@ class AreaSampler(_QwenBase):
                 crop = Image.fromarray(canvas[y * 8:(y + WIN) * 8, x * 8:(x + WIN) * 8])
                 cw, ch = calculate_dimensions(CONDITION_IMAGE_SIZE, crop.width / crop.height)
                 cond_img = pipe.image_processor.resize(crop, ch, cw)
-                emb, mask = pipe.encode_prompt(prompt=prompt, image=[cond_img], device=dev)
-                neg = pipe.encode_prompt(prompt=" ", image=[cond_img], device=dev) if cfg > 1 else None
+                if (y, x) in lm_win:
+                    # [reference, render]: the render last, as "Picture 2"
+                    ref_img, rpacked, rshape = ref_cache[lm_win[(y, x)]]
+                    emb, mask = pipe.encode_prompt(prompt=landmarks["prompt"], image=[ref_img, cond_img], device=dev)
+                    neg = pipe.encode_prompt(prompt=" ", image=[ref_img, cond_img], device=dev) if cfg > 1 else None
+                    lm_shapes[(y, x)] = [[(1, WIN // 2, WIN // 2), rshape, (1, WIN // 2, WIN // 2)]]
+                else:
+                    emb, mask = pipe.encode_prompt(prompt=prompt, image=[cond_img], device=dev)
+                    neg = pipe.encode_prompt(prompt=" ", image=[cond_img], device=dev) if cfg > 1 else None
                 vae_in = pipe.image_processor.preprocess(crop, crop.height, crop.width).unsqueeze(2)
                 lat = pipe._encode_vae_image(vae_in.to(dev, pipe.vae.dtype), generator=None)
                 cond = pipe._pack_latents(lat, 1, C, WIN, WIN).to(dtype)
+                if (y, x) in lm_win:
+                    cond = torch.cat([rpacked.to(dev), cond], dim=1)
                 to_cpu = lambda t: None if t is None else t.to("cpu")  # noqa: E731
                 cache[(y, x)] = (to_cpu(emb), to_cpu(mask), None if neg is None else (to_cpu(neg[0]), to_cpu(neg[1])),
                                  to_cpu(cond))
@@ -523,27 +618,40 @@ class AreaSampler(_QwenBase):
         sigmas = [float(s) for s in sched.sigmas]
         shapes = [[(1, WIN // 2, WIN // 2), (1, WIN // 2, WIN // 2)]]
         forwards = {"n": 0}
+        # Per-forward timing by window kind, only with landmarks (the cuda
+        # syncs it needs would otherwise slow the default path)
+        timing = {"ref": [0, 0.0], "plain": [0, 0.0]}
 
         def g(t):
             return None if t is None else t.to(dev, non_blocking=True)
 
         def predict(x_win, y, x, sigma):
             emb, mask, neg, cond = cache[(y, x)]
+            shp = lm_shapes.get((y, x), shapes)
+            if lm_win:
+                torch.cuda.synchronize()
+                t0 = time.time()
             xin = pipe._pack_latents(x_win.unsqueeze(0).to(dtype), 1, C, WIN, WIN)
             hidden = torch.cat([xin, g(cond)], dim=1)
             t = torch.full((1,), sigma, device=dev, dtype=dtype)
             with torch.no_grad():
                 v = pipe.transformer(hidden_states=hidden, timestep=t, guidance=None, encoder_hidden_states_mask=g(mask),
-                                     encoder_hidden_states=g(emb), img_shapes=shapes, return_dict=False)[0][:, : xin.shape[1]]
+                                     encoder_hidden_states=g(emb), img_shapes=shp, return_dict=False)[0][:, : xin.shape[1]]
                 forwards["n"] += 1
                 if neg is not None:
                     nv = pipe.transformer(hidden_states=hidden, timestep=t, guidance=None,
                                           encoder_hidden_states_mask=g(neg[1]), encoder_hidden_states=g(neg[0]),
-                                          img_shapes=shapes, return_dict=False)[0][:, : xin.shape[1]]
+                                          img_shapes=shp, return_dict=False)[0][:, : xin.shape[1]]
                     forwards["n"] += 1
                     comb = nv + cfg * (v - nv)
                     v = comb * (torch.norm(v, dim=-1, keepdim=True) / torch.norm(comb, dim=-1, keepdim=True))
-            return pipe._unpack_latents(v, WIN * 8, WIN * 8, 8)[0, :, 0].float()
+            out_v = pipe._unpack_latents(v, WIN * 8, WIN * 8, 8)[0, :, 0].float()
+            if lm_win:
+                torch.cuda.synchronize()
+                k = "ref" if (y, x) in lm_win else "plain"
+                timing[k][0] += 1
+                timing[k][1] += time.time() - t0
+            return out_v
 
         known = None
         if known_frames:
@@ -619,4 +727,10 @@ class AreaSampler(_QwenBase):
             "sigmas": [round(s, 4) for s in sigmas], "encode_seconds": round(t_encode, 1),
             "denoise_seconds": round(t_denoise, 1), "total_seconds": round(time.time() - t_start, 1),
             "peak_gb": round(torch.cuda.max_memory_allocated() / 1e9, 2),
+            **({"landmarks": {
+                "windows": [[y, x, s] for (y, x), s in sorted(lm_win.items())],
+                "ref_tokens": {s: int(v[1].shape[1]) for s, v in ref_cache.items()},
+                "seconds_per_predict": {k: round(v[1] / v[0], 3) if v[0] else None for k, v in timing.items()},
+                "predicts": {k: v[0] for k, v in timing.items()},
+            }} if lm_win else {}),
         }

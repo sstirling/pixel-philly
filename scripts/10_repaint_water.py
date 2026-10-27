@@ -357,8 +357,101 @@ def main_tiled(cfg, args, frame, cam, frames):
         report["region"] = {"known_areas": names, "known_band_frames": per_area, "frames_written": len(todo),
                             "ripple_root": root, "ripple_offset_px": [ox, oy],
                             "mosaic_png": "skipped (16_build_tiles.py --areas)"}
+    if args.invented_water == "fix":
+        report["invented_water"] = fix_invented_water(cfg, frame, cam, frames, args, out_dir)
     (out_dir / "report.json").write_text(json.dumps(report, indent=2) + "\n")
     print(json.dumps(report, indent=2))
+
+
+# --- invented water on land (pixelphilly.invented_water) ----------------------
+INVENTED_HALO = 128  # px of context around each frame when looking for blobs
+WATER_MARGIN_PX = 24  # mapped water (NHD, PWD) grown by ~7 m: shores and piers stay the repaint's business
+POOL_RADIUS_PX = 85  # ~25 m: a blob this close to a City pool point is that pool
+
+
+def invented_water_context(cfg, frame, cam, x_origin, y_origin):
+    """(mapped water grown by WATER_MARGIN_PX, City pool points, NWI wetlands)
+    in mosaic px."""
+    from shapely.geometry import shape
+
+    water = unary_union([waterpaint.water_geometry(cfg, frame, cam, x_origin, y_origin, s)
+                         for s in ("water_nhd", "water")]).buffer(WATER_MARGIN_PX)
+    pools = []
+    path = REPO_ROOT / "data" / "raw" / f"{cfg['name']}_pools.geojson"
+    if path.exists():
+        for feat in json.loads(path.read_text())["features"]:
+            if feat.get("geometry"):
+                g = shape(feat["geometry"]).centroid
+                e, n = frame.to_local([g.x], [g.y])
+                sx, sy = cam.world_to_screen(np.asarray(e), np.asarray(n), 0.0)
+                pools.append((float(sx[0]) - x_origin, float(sy[0]) - y_origin))
+    wetlands = waterpaint.water_geometry(cfg, frame, cam, x_origin, y_origin, "wetlands")
+    return water, pools, wetlands
+
+
+def scan_invented_water(cfg, frames, size, drawing, renders, masks, water_geom, pools, wetlands_geom=None):
+    """Look for invented water frame by frame, each with INVENTED_HALO of
+    context. Returns (blobs, repaired): blobs as logged in report.json
+    (frame, area_px, bbox in mosaic px, exempt), merged across frames;
+    repaired: {frame name: repaired frame array} for frames with a
+    non-exempt blob (nothing is written here)."""
+    from pixelphilly import invented_water as iw
+
+    found, repaired = [], {}
+    for f in frames:
+        gx, gy = f.col * size - INVENTED_HALO, f.row * size - INVENTED_HALO
+        span = size + 2 * INVENTED_HALO
+        d = drawing.region(gx, gy, span, span)
+        r = renders.region(gx, gy, span, span)
+        bmask = waterpaint.grow(masks.region(gx, gy, span, span) > 127, 9)
+        ok = waterpaint.rasterize_view(water_geom, gx, gy, 1.0, span, span) if not water_geom.is_empty else \
+            np.zeros((span, span), bool)
+        local_pools = [(x - gx, y - gy) for x, y in pools if -500 < x - gx < span + 500 and -500 < y - gy < span + 500]
+        wet = (waterpaint.rasterize_view(wetlands_geom, gx, gy, 1.0, span, span)
+               if wetlands_geom is not None and not wetlands_geom.is_empty else None)
+        blobs = iw.find_blobs(d, r, ok, bmask, pools_px=local_pools, pool_radius_px=POOL_RADIUS_PX, wetlands=wet)
+        h0, h1 = INVENTED_HALO, INVENTED_HALO + size
+        mine = [b for b in blobs if b["bbox"][0] < h1 and b["bbox"][2] > h0 and b["bbox"][1] < h1 and b["bbox"][3] > h0]
+        for b in mine:
+            x0, y0, x1, y1 = b["bbox"]
+            found.append({"frame": f.name, "area_px": b["area_px"], "bbox": [x0 + gx, y0 + gy, x1 + gx, y1 + gy],
+                          "exempt": b["exempt"]})
+        if any(not b["exempt"] for b in mine):
+            repaired[f.name] = iw.repair(d, r, mine)[h0:h1, h0:h1]
+    # One entry per blob: frames that saw the same blob share an overlapping bbox
+    merged = []
+    for b in sorted(found, key=lambda b: -b["area_px"]):
+        x0, y0, x1, y1 = b["bbox"]
+        hit = next((m for m in merged if x0 < m["bbox"][2] and x1 > m["bbox"][0] and y0 < m["bbox"][3]
+                    and y1 > m["bbox"][1] and m["exempt"] == b["exempt"]), None)
+        if hit:
+            hit["frames"].append(b["frame"])
+            hit["bbox"] = [min(x0, hit["bbox"][0]), min(y0, hit["bbox"][1]), max(x1, hit["bbox"][2]),
+                           max(y1, hit["bbox"][3])]
+        else:
+            merged.append({"frames": [b["frame"]], "area_px": b["area_px"], "bbox": list(b["bbox"]),
+                           "exempt": b["exempt"]})
+    return merged, repaired
+
+
+def fix_invented_water(cfg, frame, cam, frames, args, out_dir):
+    """--invented-water fix: after the repaint, scan the finished frames and
+    rewrite those with invented water. Returns the report entry."""
+    size = cfg["camera"]["frame_px"]
+    x_origin = min(f.x0 - f.col * size for f in frames)
+    y_origin = min(f.y0 - f.row * size for f in frames)
+    done = [f for f in frames if (out_dir / f"{f.name}.png").exists()]
+    water_geom, pools, wetlands = invented_water_context(cfg, frame, cam, x_origin, y_origin)
+    blobs, repaired = scan_invented_water(
+        cfg, done, size, FrameReader(out_dir, done, size), FrameReader(area_dir(cfg, "renders"), frames, size),
+        FrameReader(area_dir(cfg, "masks"), frames, size, "L"), water_geom, pools, wetlands)
+    for name, img in repaired.items():
+        Image.fromarray(img).save(out_dir / f"{name}.png")
+    print(f"invented water: {sum(not b['exempt'] for b in blobs)} blobs repaired in {len(repaired)} frames, "
+          f"{sum(bool(b['exempt']) for b in blobs)} exempt")
+    from pixelphilly.invented_water import MIN_AREA_PX
+
+    return {"blobs": blobs, "frames_rewritten": sorted(repaired), "min_area_px": MIN_AREA_PX}
 
 
 def main():
@@ -369,6 +462,10 @@ def main():
                     "run's result.json)")
     ap.add_argument("--known-prompt", help="the known area's run (default: --prompt, or result.json's)")
     ap.add_argument("--known-stage", help="the known area's finished stage (default water)")
+    ap.add_argument("--invented-water", choices=["off", "fix"], default="off",
+                    help="fix: after the repaint, find water the model drew on open ground and repaint it from "
+                    "the render (pixelphilly.invented_water; every blob logged in report.json). Dry run: "
+                    "scripts/10b_scan_invented_water.py")
     args = ap.parse_args()
 
     cfg = load_config()
@@ -424,6 +521,14 @@ def main():
         "seam_ratio_before": round(before, 3),
         "seam_ratio_after": round(after, 3),
     }
+    if args.invented_water == "fix":
+        report["invented_water"] = fix_invented_water(cfg, frame, cam, frames, args, out_dir)
+        if report["invented_water"]["frames_rewritten"]:
+            mosaic = Image.open(out_dir / "mosaic.png").convert("RGB")
+            for f in frames:
+                if f.name in report["invented_water"]["frames_rewritten"]:
+                    mosaic.paste(Image.open(out_dir / f"{f.name}.png"), (f.col * size, f.row * size))
+            mosaic.save(out_dir / "mosaic.png")
     (out_dir / "report.json").write_text(json.dumps(report, indent=2) + "\n")
     print(json.dumps(report, indent=2))
 

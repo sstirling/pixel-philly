@@ -28,6 +28,16 @@ Drawing next to an area already drawn (both configs share "projection_origin"):
   other frames are drawn and collected. Add --only-near-known N for a cheap
   boundary test: the frames within N of the new frame that borders the band
   nearest --center-lonlat (default: where Broad St crosses the boundary).
+
+Landmark references (Track 3, off by default):
+  PP_AREA=atlas_cityhall_lidar uv run python scripts/15_joint_sample.py --full --volume \
+      --name qwen_joint_light8_landmarks --landmarks --landmark-baseline qwen_joint_light8 --style ... --prompt-text "..."
+  Approved landmarks (data/landmarks/manifest.json, status "ok") whose point
+  falls on the area get their primary photo as a second conditioning image
+  in the windows that have them near the middle (pixelphilly.landmarks).
+  On --collect, each landmark's frame is checked against the render and the
+  --landmark-baseline drawing (experiment A's rule); a rejected frame is
+  replaced by the baseline drawing and the rejection logged in result.json.
 """
 
 import argparse
@@ -35,6 +45,7 @@ import io
 import json
 import time
 from datetime import datetime, timezone
+from pathlib import Path
 
 import numpy as np
 from PIL import Image
@@ -91,6 +102,11 @@ def main():
                     help="noise level the repair strip restarts from (the schedule step nearest it)")
     ap.add_argument("--only-near-known", type=int, metavar="N",
                     help="boundary test: only the frames within N frames of a new frame bordering the known band")
+    ap.add_argument("--landmarks", action="store_true",
+                    help="--full --volume only: condition landmark windows on approved reference photos")
+    ap.add_argument("--landmark-baseline", default="qwen_joint_light8",
+                    help="with --landmarks: this area's existing drawing (no references), used for the safety "
+                    "check and as the fallback for rejected frames")
     ap.add_argument("--center-lonlat", help="lon,lat: with --only-near-known, the bordering new frame nearest this "
                     f"point is the center (default {BROAD_ST_BOUNDARY[0]},{BROAD_ST_BOUNDARY[1]}, Broad St)")
     args = ap.parse_args()
@@ -98,6 +114,10 @@ def main():
         ap.error("--known-area and --only-near-known need --full --volume")
     if args.only_near_known is not None and not args.known_area:
         ap.error("--only-near-known needs --known-area")
+    if args.landmarks and not (args.full and args.volume):
+        ap.error("--landmarks needs --full --volume")
+    if args.landmarks and args.known_area:
+        ap.error("--landmarks with --known-area is not supported yet")
     if not args.collect and args.test_crop == args.full:
         ap.error("choose exactly one of --test-crop / --full (or --collect)")
 
@@ -127,7 +147,8 @@ def main():
     print("environment:", modal.Function.from_name("pixel-philly", "check_env").remote())
     if args.full and args.volume:
         start_volume_run(cfg, args.name, prompt, {k: v for k, v in common.items() if k != "prompt"}, known,
-                         args.known_ramp, args.repair_width_px, args.repair_sigma)
+                         args.known_ramp, args.repair_width_px, args.repair_sigma,
+                         landmark_baseline=args.landmark_baseline if args.landmarks else None)
         return
     editor = modal.Cls.from_name("pixel-philly", "Editor")()
     mosaic = Image.open(area_dir(cfg, "renders", "mosaic.png")).convert("RGB")
@@ -254,7 +275,32 @@ def plan_known(cfg, known_areas, known_name, stage, only_near, center_lonlat):
             "shared": shared, "per_area": per_area, "run": run, "only_near": only_near}
 
 
-def start_volume_run(cfg, name, prompt, settings, known=None, ramp=0, repair_width_px=200, repair_sigma=0.6):
+def landmark_plan(cfg, payload, baseline):
+    """pixelphilly.landmarks.plan for this run's frames, with the window
+    grids computed exactly as AreaSampler.joint_volume computes them."""
+    from pixelphilly.landmarks import PROMPT_P1, WHERE, plan
+    from pixelphilly.windows import active_grids
+
+    size = cfg["camera"]["frame_px"]
+    cell = size // 8
+    cols, rows = max(f["col"] for f in payload) + 1, max(f["row"] for f in payload) + 1
+    active = np.zeros((rows * cell, cols * cell), bool)
+    for f in payload:
+        active[f["row"] * cell:(f["row"] + 1) * cell, f["col"] * cell:(f["col"] + 1) * cell] = True
+    grids = active_grids(two_grids(*active.shape), active)
+    scene_path = REPO_ROOT / "data" / "processed" / f"{cfg['name']}_scene.json"
+    scene = json.loads(scene_path.read_text()) if scene_path.exists() else None
+    p = plan(cfg, REPO_ROOT / "data" / "landmarks" / "manifest.json", scene, grids)
+    missing = sorted({lm["frame"] for lm in p["landmarks"].values()
+                      if not area_dir(cfg, "redraws", baseline, f"{lm['frame']}.png").exists()})
+    if missing:
+        raise SystemExit(f"--landmark-baseline {baseline} has no drawing for landmark frames {missing}")
+    p["prompt"] = PROMPT_P1.format(where=WHERE)
+    return p
+
+
+def start_volume_run(cfg, name, prompt, settings, known=None, ramp=0, repair_width_px=200, repair_sigma=0.6,
+                     landmark_baseline=None):
     """Upload the area's render frames to the pp-runs Volume and start
     AreaSampler.joint_volume detached (large areas: ~45 min). With `known`
     (plan_known), the known area's drawn frames go up too, under this
@@ -273,16 +319,29 @@ def start_volume_run(cfg, name, prompt, settings, known=None, ramp=0, repair_wid
         raise SystemExit(f"{len(missing)} renders missing in {area_dir(cfg, 'renders')} (run 06_render.py), "
                          f"e.g. {missing[:3]}")
     known_names = [f.name for f in frames if known and f.name in known["shared"]]
+    lm = landmark_plan(cfg, payload, landmark_baseline) if landmark_baseline else None
+    lm_arg = None
+    if lm is not None:
+        if not lm["landmarks"]:
+            raise SystemExit("--landmarks: no approved landmark falls on this area's frames")
+        refs = {s: f"/landmarks/refs/{s}{Path(v['local_path']).suffix}" for s, v in lm["landmarks"].items()}
+        lm_arg = {"prompt": lm["prompt"], "refs": {s: "/runs" + r for s, r in refs.items()},
+                  "windows": [[y, x, s] for (y, x), s in sorted(lm["windows"].items())]}
     vol = modal.Volume.from_name("pp-runs", create_if_missing=True)
     with vol.batch_upload(force=True) as batch:
         for f in frames:
             batch.put_file(str(area_dir(cfg, "renders", f"{f.name}.png")), f"/areas/{cfg['name']}/renders/{f.name}.png")
         for k in known_names:
             batch.put_file(str(known["sources"][k][2]), f"/areas/{cfg['name']}/joint/{name}/known/{k}.png")
+        if lm is not None:
+            for s, r in refs.items():
+                batch.put_file(str(REPO_ROOT / lm["landmarks"][s]["local_path"]), r)
     sampler = modal.Cls.from_name("pixel-philly", "AreaSampler")()
+    # landmarks is only passed when used, so the default call is unchanged
     call = sampler.joint_volume.spawn(cfg["name"], name, payload, cfg["camera"]["frame_px"], prompt,
                                       known_frames=known_names or None, known_ramp_cells=ramp,
-                                      repair_width_px=repair_width_px, repair_sigma=repair_sigma, **settings)
+                                      repair_width_px=repair_width_px, repair_sigma=repair_sigma,
+                                      **({"landmarks": lm_arg} if lm_arg else {}), **settings)
     out_dir = area_dir(cfg, "joint", name)
     out_dir.mkdir(parents=True, exist_ok=True)
     info = {"call_id": call.object_id, "volume": True, "prompt": prompt, "settings": settings,
@@ -298,9 +357,18 @@ def start_volume_run(cfg, name, prompt, settings, known=None, ramp=0, repair_wid
                          "ramp_cells": ramp,
                          "repair_width_px": repair_width_px, "repair_sigma": repair_sigma,
                          "only_near_known": known["only_near"], "run_frames": [f.name for f in frames]}
+    if lm is not None:
+        info["landmarks"] = {"prompt": lm["prompt"], "baseline": landmark_baseline,
+                             "windows": lm_arg["windows"],
+                             "landmarks": {s: {k: v[k] for k in ("name", "frame", "windows", "height_m", "canvas_px",
+                                                                 "local_path", "license", "credit", "source_url")}
+                                           for s, v in lm["landmarks"].items()}}
     (out_dir / "call.json").write_text(json.dumps(info, indent=2) + "\n")
     print(f"uploaded {len(frames)} renders and {len(known_names)} known frames; "
           f"started {name} on Modal: call {call.object_id}")
+    if lm is not None:
+        print(f"landmarks: {len(lm['landmarks'])} ({', '.join(sorted(lm['landmarks']))}) in "
+              f"{len(lm['windows'])} windows")
 
 
 def collect(cfg, name):
@@ -324,9 +392,12 @@ def collect(cfg, name):
             with (frame_dir / f"{n}.png").open("wb") as fh:
                 for chunk in vol.read_file(f"/areas/{cfg['name']}/joint/{name}/frames/{n}.png"):
                     fh.write(chunk)
+        safety = landmark_safety(cfg, name, info["landmarks"]) if info.get("landmarks") else None
         (area_dir(cfg, "joint", name) / "result.json").write_text(json.dumps(
             {"area": cfg["name"], "settings": info["settings"], "prompt": info["prompt"],
-             "known": info.get("known"), **res}, indent=2) + "\n")
+             "known": info.get("known"), **res,
+             **({"landmark_plan": info["landmarks"], "landmark_safety": safety} if safety is not None else {})},
+            indent=2) + "\n")
         wall = res["total_seconds"]
         log_run({"run": f"15_joint_sample volume {cfg['name']}/{name}", "gpu": "H100", "wall_seconds": wall,
                  "estimated_cost_usd": round(wall / 3600 * H100_PER_HOUR, 2)})
@@ -335,6 +406,40 @@ def collect(cfg, name):
         return
     # Server-side time; container start and weight loading add ~1-2 min
     finish_full(cfg, name, res, res["total_seconds"], info["prompt"], info["settings"])
+
+
+def landmark_safety(cfg, name, lm_info):
+    """Experiment A's check on each landmark's frame (pixelphilly.landmarks
+    .check_frame): the drawing with references against the render and the
+    baseline drawing. A frame with any rejected landmark is replaced by the
+    baseline drawing; the drawing with references is kept in
+    joint/<name>/rejected/ for inspection."""
+    import shutil
+
+    from pixelphilly.landmarks import center_box, check_frame
+
+    _, _, frames = area_setup(cfg)
+    by_name = {f.name: f for f in frames}
+    frame_dir = area_dir(cfg, "redraws", name)
+    base_dir = area_dir(cfg, "redraws", lm_info["baseline"])
+    out = {"baseline": lm_info["baseline"], "landmarks": {}, "fallback_frames": []}
+    for slug, lm in sorted(lm_info["landmarks"].items()):
+        f = by_name[lm["frame"]]
+        render = Image.open(area_dir(cfg, "renders", f"{f.name}.png")).convert("RGB")
+        drawn = Image.open(frame_dir / f"{f.name}.png").convert("RGB")
+        base = Image.open(base_dir / f"{f.name}.png").convert("RGB")
+        m = check_frame(render, drawn, base, center_box(*lm["canvas_px"], f))
+        out["landmarks"][slug] = {"frame": f.name, **m}
+        print(f"  {slug:26s} {f.name} {'ACCEPT' if m['accepted'] else 'REJECT'} shift {m['shift']} center "
+              f"{m['shift_center']} edge {m['edge_center']} (baseline {m['edge_center_baseline']}) {m['reason']}")
+    for fname in sorted({v["frame"] for v in out["landmarks"].values() if not v["accepted"]}):
+        rej = area_dir(cfg, "joint", name, "rejected")
+        rej.mkdir(parents=True, exist_ok=True)
+        shutil.copy(frame_dir / f"{fname}.png", rej / f"{fname}.png")
+        shutil.copy(base_dir / f"{fname}.png", frame_dir / f"{fname}.png")
+        out["fallback_frames"].append(fname)
+        print(f"  {fname}: replaced by the {lm_info['baseline']} drawing (original in {rej})")
+    return out
 
 
 def finish_full(cfg, name, res, wall, prompt, settings):

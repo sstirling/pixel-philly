@@ -1,5 +1,59 @@
 # Changelog
 
+## 2026-10-26: landmark references in the joint sampler (Track 3, test only)
+
+### Built
+- `src/pixelphilly/landmarks.py`, tested in `tests/test_landmarks.py`:
+  - Approved landmarks (status "ok", the primary photo; a hand-checked `coord_override` beats Wikidata's coordinate) are projected to canvas pixels.
+  - Each point is lifted to half the height of its building: the tallest LiDAR part sharing the footprint id of the nearest scene footprint. That gives City Hall 166 m (its tower), where a plain 30 m radius gave 49 m.
+  - Each landmark gets one window per grid: the window containing it whose center is nearest. Conflicts are assigned greedily. Without one window per grid, a landmark would see its reference on only half the steps.
+  - Also new: a safety check (`check_frame`, experiment A's rule).
+- `AreaSampler.joint_volume` gained an optional `landmarks` argument. Flagged windows are conditioned as a 2-image edit: [reference, render crop], with img_shapes [output, reference, render], as QwenImageEditPlusPipeline does. Reference encodings are cached once per landmark. All other windows, and the call without `landmarks`, are unchanged.
+- `check_env` gained `_landmark_window_smoke`, which checks the token layout on a CPU. Deployed Oct. 26 with no tasks running.
+- `scripts/15_joint_sample.py`:
+  - `--landmarks` and `--landmark-baseline` (off by default) upload the reference photos and pass the window map.
+  - call.json and result.json record the landmarks, windows, credits and timing.
+  - On `--collect`, each landmark's frame is checked; a rejected frame is replaced by the baseline drawing and kept in `joint/<run>/rejected/`.
+- `scripts/21_landmark_joint_compare.py`: `output/landmarks/joint_compare.jpg` and `.json`, including frame-border seam ratios.
+- `data/landmarks/manifest.json`: Fairmount Water Works got `coord_override` from AIS. Its Wikidata point sits on the art museum, 56 m from the museum's own point. Script 19 now preserves `excluded_reason` and `coord_override`.
+
+### Test run (qwen_joint_light8_landmarks; settings identical to qwen_joint_light8)
+- Four atlas spots (City Hall, art museum, 30th St, Independence Hall): 17 landmarks in 32 windows. GPU ~$0.61 (4 x 124–147 s).
+- Cost: a reference window takes 0.88–0.90 s per predict against 0.55 s plain (+61%). A reference adds ~4,000–4,200 tokens, about one more render crop. Peak memory is unchanged at 66.8 GB.
+- Automatic check: 16 of 17 accepted; Eastern State was rejected (photo pasted in, central shift (54, 178)) and fell back.
+- By eye: 1 better (Union League), 2 slightly better (the Comcast towers' glass), 6 unchanged, 1 minor artifact and 7 harmful, 6 of which the check accepted:
+  - PSFS's "SFS" sign floats in its frame and in the Convention Center's
+  - photo-like patches are pasted into PAFA, Merchants' Exchange and the Water Works river
+  - Christ Church's window restyles a neighbor
+- Frame-border seam ratios shift by −0.17 to +0.23; the Eastern State fallback frame rose 1.29 to 1.52.
+- Conclusion: not safe to turn on. Experiment A's rule catches whole-frame photo copies but not local pastes or sign leakage.
+
+## 2026-10-25: landmark references and experiment A (Track 3)
+
+### Built
+- `scripts/19_landmark_refs.py` and `data/landmarks/manifest.json`. The manifest covers 40 landmarks inside the mapped regions, with 102 reference photos:
+  - 18 from LoC HABS/HAER (public domain)
+  - 84 from Wikimedia Commons: 46 public domain, 11 CC0, 27 CC BY 2.0–4.0
+  - no CC BY-SA. The license filter rejects it along with "No restrictions" and every other license.
+  - Coordinates are from Wikidata P625. Where there is a street address they are checked against AIS: median gap ~40 m, max 225 m (the Convention Center, which covers several blocks).
+  - Cathedral Basilica, Liberty Place and Old St. Joseph's have no acceptable photo; every candidate is CC BY-SA.
+  - Photo choice is a keyword heuristic, and several picks are off-subject (paintings and documents in museum categories, game-day photos). Only the 4 photos used in experiment A are marked `reviewed`. The script keeps hand-set `reviewed` flags across rebuilds.
+- `Editor.run` (`gpu/modal_app.py`): optional `style` and `references` job fields. References go before the render (`image=[*refs, render]`) because diffusers sizes the output from the last image. With neither field set, the call is identical to before. The result only gains `n_references` when references were used. `check_env` gained `_multi_image_smoke`, which confirms the pipeline still labels images "Picture N". It ran green on Modal. Deployed Oct. 25; no tasks were running on the app. Calls already in flight keep the container image they started with, so a deploy doesn't disturb them.
+- `scripts/20_landmark_experiment_a.py`: experiment A, its scores, accept/reject rule and comparison sheet.
+
+### Reference review (Oct. 25)
+- Every candidate photo was checked by eye. Each one now carries `reviewed`, `pick` (primary, backup or null) and a `review_note`, and each landmark carries a `status` (ok, weak or needs_ref). Rerunning the script keeps all of these, along with references added during review and hand-fixed authors (`author_checked`).
+- Result: 31 landmarks have a good primary photo and 5 have a weak one (Franklin Institute and Wanamaker's are postcards; Cathedral Basilica shows the dome only; Academy of Natural Sciences shows the entrance bay only; Citizens Bank Park is a distant strip). 4 have none: Reading Terminal, Navy Yard, Penn Museum, Old St. Joseph's.
+- 9 photos were added from Commons searches, at most 2 searches per landmark and under the same license rule.
+- Fixed attribution on two picks whose Commons Artist field was empty: the PMA photo (PD-self, Rgordon6) and the Union League photo (Beyond My Ken; we use the CC BY 2.5 option of its triple license).
+- Outputs: `output/landmarks/picks.jpg` and `output/landmarks/picks.md`.
+
+### Experiment A
+- Inputs: City Hall and the art museum, as 1,024 px atlas crops. Settings: seed 0, style LoRA `qe2511_oldcity_r16_v1`, Lightning 8. Each landmark got 1 no-reference output and 2 references x 2 prompts.
+- GPU: 137 s on an H100, ~$0.15 estimated. Weight load took 37 s, and each image took 5–8 s at a 64.3 GB peak.
+- Accepted 8 of 10. The two rejects are prompt p2 with the first reference, where both landmarks were replaced by a restyled copy of the photo. The whole-frame registration shift caught only one of them (City Hall: −459, −165). The art museum's read (0, −1) because the bottom of the frame kept the render. The center shift and edge correlation caught both.
+- See the README section for what improved.
+
 ## 2026-10-20: Old City pilot
 
 ### Research and approach
@@ -724,3 +778,16 @@ Whether to redraw downtown with LiDAR shapes before expanding. That needs LiDAR 
 - 30 frames (6 × 5).
 - Alignment: all 27 frames that contain buildings match the Python projection with zero pixel offset; minimum IoU 0.991.
 - 11 unit tests pass.
+
+## 2026-10-25: Property-record façades (track 1)
+
+- **Data:** `scripts/04f_fetch_opa.py` fetches OPA property records (`opa_properties_public`, Carto SQL) with explicit columns, and `pwd_parcels` (parcelid, brt_id only). `src/pixelphilly/opa.py` refuses owner, mailing, sale, tax and exemption fields and `exterior_condition`, in the query and again on the downloaded file (tested). Editorial rule: condition and vacancy are never encoded.
+- **Join and spec** (`src/pixelphilly/facades.py`): parcel key, then address (condo majority), then point in footprint. Each footprint gets a style (row_porch, row_typical, twin, mixed_storefront, warehouse, office_tower, …), material, stories, floor height, wall and window colors (a fixed palette per material with a small per-building variation) and bands (storefront, porch, cornice, glass). Unit-tested on real OPA strings.
+- **Scene:** opt-in per config (`"facades": "opa"`); LiDAR parts inherit their building's façade; unmatched footprints and structures keep plain walls. Without the option scenes are byte-identical (Old City SHA and `atlas_indhall_lidar` unchanged).
+- **Renderer:** a procedural wall shader (`render/render.js`, `onBeforeCompile`): window grid per floor and bay, glass storefront, porch roof band, cornice, curtain wall. No textures or UVs; masks unaffected. Headless tests: windows on walls, not roofs; identical output to the previous renderer without façade data.
+- **Atlas spots** (`atlas_*_fac`): East Passyunk, an Allegheny West porch-front block, a West Philadelphia twin block, plus façade copies of Independence Hall and City Hall. Join match 98.0–99.9%, mostly by parcel. Alignment PASS, QA scan clean. Known limit: "MASONRY" covers limestone and terra cotta, so pale downtown towers render as brick (track 2, OSM colors, targets this).
+
+## 2026-10-26: Invented water and dormant lawns (review before enabling)
+
+- **Invented water** (`src/pixelphilly/invented_water.py`, `scripts/10b_scan_invented_water.py` dry run, `10_repaint_water.py --invented-water fix`): finds water-colored blobs (hue 185-215, saturation 0.18-0.60, value 0.44-0.85; ≥ 400 px) on open ground outside mapped water and building silhouettes; exempts blobs where the aerial is water-colored or a City pool (`PPR_Swimming_Pools`, `04i_fetch_pools.py`) is within 25 m; fills flat with the surrounding drawing's color. The value floor came from the first dry run's false positive (shaded blue-gray pavement). Off by default.
+- **Dormant lawns** (`src/pixelphilly/lawns.py`, `"lawn_correct": true`): inside City park properties and the NPS Independence NHP boundary (`04j_fetch_parks.py`), dormant-grass pixels of the ground texture shift toward green, brightness kept; roofs excluded. Areas without the flag are byte-identical.
