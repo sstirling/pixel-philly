@@ -290,3 +290,44 @@ def test_ripple_reference_is_the_root_of_the_known_chain():
         mx, my = mosaic_origin(frames)
         masks.append(waterpaint.ripple_mask(w, h, x - mx + ox, y - my + oy))
     assert masks[0].any() and all(np.array_equal(masks[0], m) for m in masks[1:])
+
+
+def test_owner_edges_lists_frame_borders_between_regions():
+    from pixelphilly.regions import owner_edges
+
+    # 3 x 2 union canvas: column 0 is A, columns 1-2 are B except (2, 1), which is C
+    cells = {(0, 0): ("A", "a0"), (0, 1): ("A", "a1"), (1, 0): ("B", "b0"), (1, 1): ("B", "b1"),
+             (2, 0): ("B", "b2"), (2, 1): ("C", "c0")}
+    edges = owner_edges(cells)
+    got = sorted((e["pair"], e["a"], e["b"], e["axis"]) for e in edges)
+    assert got == [
+        ("A|B", (0, 0), (1, 0), "x"), ("A|B", (0, 1), (1, 1), "x"),
+        ("B|C", (1, 1), (2, 1), "x"), ("B|C", (2, 0), (2, 1), "y"),
+    ]
+    # Pair names are in the cells' area order of first appearance, independent of direction
+    assert all(e["pair"] in ("A|B", "B|C") for e in edges)
+
+
+def test_redraw_plan_frees_the_listed_frames_and_keeps_a_known_ring():
+    from pixelphilly.projection import Frame
+    from pixelphilly.regions import redraw_plan
+
+    frames = [Frame(col=c, row=r, x0=c * 1024, y0=r * 1024, size=1024) for r in range(6) for c in range(6)]
+    shared = {f.name: f.name for f in frames}  # the area's own drawing: every frame known
+    run, known = redraw_plan(frames, shared, ["frame_02_02", "frame_03_02"], context=1)
+    names = {f.name for f in run}
+    # The two frames plus every frame within 1 of them: 4 x 3 = 12
+    assert len(run) == 12 and {"frame_01_01", "frame_04_03"} <= names and "frame_05_02" not in names
+    assert "frame_02_02" not in known and "frame_03_02" not in known
+    assert set(known) == names - {"frame_02_02", "frame_03_02"}
+
+
+def test_redraw_plan_refuses_unknown_frames():
+    import pytest
+
+    from pixelphilly.projection import Frame
+    from pixelphilly.regions import redraw_plan
+
+    frames = [Frame(col=0, row=0, x0=0, y0=0, size=1024)]
+    with pytest.raises(ValueError):
+        redraw_plan(frames, {}, ["frame_09_09"], context=1)

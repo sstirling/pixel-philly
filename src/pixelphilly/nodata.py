@@ -25,7 +25,7 @@ from shapely.geometry import Polygon, box
 from shapely.ops import unary_union
 from shapely.prepared import prep
 
-from .projection import render_ground_polygon
+from .projection import is_clipped, render_ground_polygon
 from .sources import RAW
 from .waterpaint import rasterize_view
 
@@ -72,7 +72,7 @@ def missing_tile_boxes(cfg) -> list[Polygon]:
         for x in range(x0, x1 + 1)
         if not (tile_dir / f"{y}_{x}.jpg").exists()
     ]
-    if boxes and cfg.get("clip_frames_to_area"):
+    if boxes and is_clipped(cfg):
         ground = prep(render_ground_polygon(cfg))
         boxes = [b for b in boxes if ground.intersects(b)]
     return boxes

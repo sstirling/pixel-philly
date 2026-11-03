@@ -15,7 +15,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 import requests
 
-from pixelphilly.projection import load_config, render_extent_wgs84, render_ground_polygon
+from pixelphilly.projection import is_clipped, load_config, render_extent_wgs84, render_ground_polygon
 from pixelphilly.sources import CITY_TILES, RAW, get_with_retry, record
 
 SERVICE = "CityImagery_2024_3in"
@@ -40,7 +40,7 @@ def main():
     out_dir.mkdir(parents=True, exist_ok=True)
 
     jobs = [(x, y) for y in range(y0, y1 + 1) for x in range(x0, x1 + 1)]
-    if cfg.get("clip_frames_to_area"):
+    if is_clipped(cfg):
         # Large clipped areas: only tiles the kept frames actually see
         from shapely.geometry import box
         from shapely.prepared import prep

@@ -165,10 +165,10 @@ def fetch_area_features(cfg: dict, service: str, layer: int, suffix: str, descri
     """fetch_features for an area config: by polygon for clipped areas
     (only the ground the kept frames see), by bounding box otherwise (the
     original behavior, so existing areas' queries are unchanged)."""
-    from .projection import render_extent_wgs84, render_ground_polygon
+    from .projection import is_clipped, render_extent_wgs84, render_ground_polygon
 
     out_name = f"{cfg['name']}_{suffix}.geojson"
-    if cfg.get("clip_frames_to_area"):
+    if is_clipped(cfg):
         poly = render_ground_polygon(cfg)
         return fetch_features(service, layer, list(poly.bounds), out_name, description, polygon=poly, **kwargs)
     return fetch_features(service, layer, render_extent_wgs84(cfg), out_name, description, **kwargs)

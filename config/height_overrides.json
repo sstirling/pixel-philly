@@ -1,0 +1,14 @@
+{
+  "about": "Footprints whose City height (approx_hgt/max_hgt) is a data error, checked against the 2024 aerial. Applied in scripts/05_build_scene.py (pixelphilly.reviewed). mode \"neighbor\": the median height of other footprints within 25 m; \"meters\": a fixed height in \"meters\". Overridden footprints are not LiDAR-shaped.",
+  "entries": [
+    {
+      "id": 478499,
+      "address": "5458 TACONY ST",
+      "mode": "neighbor",
+      "reason": "Recorded 138 ft (approx_hgt) on a 38 m² footprint. The 2024 aerial shows a small round object, possibly a tank, in a scrapyard with almost no shadow, so it can't be 42 m tall. The record is a data error. It tripped the needle gate in east_riverfront.",
+      "source": "City 2024 3-inch aerial (CityImagery_2024_3in z19), output/review/needle_478499_5458_tacony_st.jpg",
+      "reviewed": "2026-11-02",
+      "approved_by": "Stephen"
+    }
+  ]
+}

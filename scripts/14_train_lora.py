@@ -24,6 +24,7 @@ Usage:
   uv run python scripts/14_train_lora.py start
   uv run python scripts/14_train_lora.py status
   uv run python scripts/14_train_lora.py fetch
+  ... add --profile clean for Candidate B (qe2511_clean_r16_v1, no Gemini targets)
 """
 
 import argparse
@@ -50,14 +51,50 @@ HELDOUT_SAMPLES = ["frame_04_03", "frame_05_02", "frame_04_02"]
 TRAINSET = REPO_ROOT / "output" / "oldcity" / "trainset"
 LOCAL_DS = TRAINSET / "aitk"
 LOCAL_RUN = REPO_ROOT / "output" / "lora" / RUN
+# Held-out sample inputs as (area, frame); the old profile's are Old City's
+# held-out columns 4-5
+HELDOUT = [("oldcity", n) for n in HELDOUT_SAMPLES]
+SAMPLE_EVERY = 500
+TARGETS_NOTE = "gemini-3-pro-image redraw_v3, water repainted; internal use only"
+
+# --profile clean: Candidate B, the self-distilled LoRA (no Gemini anywhere).
+# Targets: prompt-only Qwen-Image-Edit-2511 redraws of our renders, filtered
+# (scripts/23_build_clean_trainset.py). Samples are drawn on three comparison
+# atlas spots, which the training set excludes. Samples every 1,000 steps
+# instead of 500 to save ~$0.30 of H100 time.
+PROFILES = {
+    "clean": {
+        "RUN": "qe2511_clean_r16_v1",
+        "DATASET": "clean_v1",
+        "CAPTION": "Redraw this render as isometric pixel art in the pixel philly clean style.",
+        "TRAINSET": REPO_ROOT / "output" / "trainset_clean",
+        "HELDOUT": [("atlas_passyunk_fac", "frame_01_01"), ("atlas_cityhall_fac", "frame_01_01"),
+                    ("atlas_porch_fac", "frame_01_01")],
+        "SAMPLE_EVERY": 1000,
+        "TARGETS_NOTE": "Qwen-Image-Edit-2511 + Lightning-8, no style LoRA, prompt 'Redraw this render as "
+                        "isometric pixel art.', on City open-data renders; filtered; see manifest.jsonl",
+    },
+}
+
+
+def use_profile(name):
+    """Switch the module settings to a profile (default: the original run)."""
+    global RUN, DATASET, CAPTION, TRAINSET, LOCAL_DS, LOCAL_RUN, HELDOUT, SAMPLE_EVERY, TARGETS_NOTE
+    if name == "oldcity":
+        return
+    p = PROFILES[name]
+    RUN, DATASET, CAPTION, TRAINSET = p["RUN"], p["DATASET"], p["CAPTION"], p["TRAINSET"]
+    HELDOUT, SAMPLE_EVERY, TARGETS_NOTE = p["HELDOUT"], p["SAMPLE_EVERY"], p["TARGETS_NOTE"]
+    LOCAL_DS = TRAINSET / "aitk"
+    LOCAL_RUN = REPO_ROOT / "output" / "lora" / RUN
 
 
 def config(n_pairs: int) -> dict:
     ds = f"/runs/datasets/{DATASET}"
     samples = []
-    for name in HELDOUT_SAMPLES:
-        samples.append({"prompt": open(LOCAL_DS / "heldout" / f"{name}.txt").read().strip(),
-                        "ctrl_img_1": f"{ds}/heldout/{name}.png"})
+    for area, name in HELDOUT:
+        samples.append({"prompt": open(LOCAL_DS / "heldout" / f"{area}__{name}.txt").read().strip(),
+                        "ctrl_img_1": f"{ds}/heldout/{area}__{name}.png"})
     return {
         "job": "extension",
         "config": {
@@ -105,7 +142,7 @@ def config(n_pairs: int) -> dict:
                     },
                     "sample": {
                         "sampler": "flowmatch",
-                        "sample_every": 500,
+                        "sample_every": SAMPLE_EVERY,
                         "sample_start_step": 0,
                         "width": 1024,
                         "height": 1024,
@@ -120,7 +157,7 @@ def config(n_pairs: int) -> dict:
             ],
         },
         "meta": {"name": RUN, "version": "1.0", "pairs": n_pairs,
-                 "targets": "gemini-3-pro-image redraw_v3, water repainted; internal use only"},
+                 "targets": TARGETS_NOTE},
     }
 
 
@@ -136,17 +173,16 @@ def prepare():
         shutil.copy(TRAINSET / "control" / f"{vid}.png", LOCAL_DS / "control" / f"{vid}.png")
         (LOCAL_DS / "target" / f"{vid}.txt").write_text(f"{CAPTION}\n")
 
-    # Held-out sample inputs: renders from columns 4-5, same fixed caption
+    # Held-out sample inputs (never in the training set), same fixed caption
     from pixelphilly.projection import area_setup, load_config
 
-    cfg = load_config("oldcity")
-    _, _, frames = area_setup(cfg)
-    by_name = {f.name: f for f in frames}
-    for name in HELDOUT_SAMPLES:
-        f = by_name[name]
-        assert f.col >= 4, f"{name} is not in the held-out columns"
-        shutil.copy(area_dir(cfg, "renders", f"{name}.png"), LOCAL_DS / "heldout" / f"{name}.png")
-        (LOCAL_DS / "heldout" / f"{name}.txt").write_text(f"{CAPTION}\n")
+    for area, name in HELDOUT:
+        cfg = load_config(area)
+        if area == "oldcity":
+            f = {fr.name: fr for fr in area_setup(cfg)[2]}[name]
+            assert f.col >= 4, f"{name} is not in the held-out columns"
+        shutil.copy(area_dir(cfg, "renders", f"{name}.png"), LOCAL_DS / "heldout" / f"{area}__{name}.png")
+        (LOCAL_DS / "heldout" / f"{area}__{name}.txt").write_text(f"{CAPTION}\n")
 
     cfg_yaml = LOCAL_DS / f"{RUN}.yaml"
     cfg_yaml.write_text(yaml.safe_dump(config(len(ok)), sort_keys=False))
@@ -157,7 +193,7 @@ def prepare():
     with vol.batch_upload(force=True) as batch:
         batch.put_directory(str(LOCAL_DS), f"/datasets/{DATASET}")
         batch.put_file(str(cfg_yaml), f"/configs/{RUN}.yaml")
-    print(f"uploaded {len(ok)} pairs + {len(HELDOUT_SAMPLES)} held-out samples and config {RUN}.yaml")
+    print(f"uploaded {len(ok)} pairs + {len(HELDOUT)} held-out samples and config {RUN}.yaml")
 
 
 def start():
@@ -217,4 +253,8 @@ def fetch():
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("command", choices=["prepare", "start", "status", "fetch"])
-    {"prepare": prepare, "start": start, "status": status, "fetch": fetch}[ap.parse_args().command]()
+    ap.add_argument("--profile", default="oldcity", choices=["oldcity", *PROFILES],
+                    help="oldcity: the original (Gemini-target) run; clean: Candidate B")
+    a = ap.parse_args()
+    use_profile(a.profile)
+    {"prepare": prepare, "start": start, "status": status, "fetch": fetch}[a.command]()

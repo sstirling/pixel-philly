@@ -1,0 +1,141 @@
+{
+  "_about": "Reviewed hold list for --invented-water fix (Stephen, Oct. 27, 2026). Boxes are in each area's mosaic px (as in 10b's blobs.json). Blobs centered inside a box are left as drawn and logged as held. Reviewed on the qwen_joint_light8_fac dry run.",
+  "south_lidar": [
+    {
+      "bbox": [
+        20600,
+        22500,
+        22900,
+        23950
+      ],
+      "reason": "lower South Philly basins and mudflats: aerial shows wet mud and puddles, not in NWI; unverified"
+    },
+    {
+      "bbox": [
+        26300,
+        23300,
+        26800,
+        23700
+      ],
+      "reason": "channels in the fill area: aerial shows vegetated channels; unverified"
+    },
+    {
+      "bbox": [
+        21800,
+        25740,
+        21960,
+        25860
+      ],
+      "reason": "olive mud beside the ballfield; unverified"
+    }
+  ],
+  "north_lidar": [
+    {
+      "bbox": [
+        9500,
+        16030,
+        9640,
+        16160
+      ],
+      "reason": "sports court that is blue in the aerial"
+    }
+  ],
+  "upper_north_lidar": [
+    {
+      "bbox": [
+        9150,
+        11340,
+        9400,
+        11490
+      ],
+      "reason": "light-blue roof of a building missing from the scene"
+    }
+  ],
+  "west_lidar": [
+    {
+      "bbox": [
+        6790,
+        3200,
+        7000,
+        3450
+      ],
+      "reason": "pale basin, possibly a drained pool; unverified"
+    }
+  ],
+  "southwest": [
+    {
+      "bbox": [
+        21359,
+        10443,
+        21923,
+        10905
+      ],
+      "reason": "wet graded ground and puddles beside a warehouse: the 2024 aerial shows dark wet mud (reviewed Nov. 2, 2026, output/review/iw_sw_21_10_aerial.jpg)"
+    },
+    {
+      "bbox": [
+        24472,
+        10710,
+        25455,
+        11129
+      ],
+      "reason": "flooded ditches and lots in the former refinery tank field: standing water in the 2024 aerial (reviewed Nov. 2, 2026, output/review/iw_sw_24_10_aerial.jpg)"
+    },
+    {
+      "bbox": [
+        26474,
+        12058,
+        26586,
+        12153
+      ],
+      "reason": "standing water beside a basin at the former refinery: the 2024 aerial shows a wet, muddy pond (reviewed Nov. 2, 2026, output/review/iw_sw_25_11_aerial.jpg)"
+    }
+  ],
+  "east_riverfront": [
+    {
+      "bbox": [
+        14499,
+        7556,
+        15517,
+        7707
+      ],
+      "reason": "two stormwater detention basins beside a warehouse lot: standing water in the 2024 aerial (reviewed Nov. 2, 2026, output/review/east_riverfront_iw_candidates_aerial.jpg)"
+    },
+    {
+      "bbox": [
+        9290,
+        10240,
+        9792,
+        10363
+      ],
+      "reason": "pond beside the Frankford Creek: water in the 2024 aerial (reviewed Nov. 2, 2026, output/review/east_riverfront_iw_candidates_aerial.jpg)"
+    },
+    {
+      "bbox": [
+        12434,
+        10570,
+        12687,
+        10830
+      ],
+      "reason": "stormwater basin between I-95 ramps: water in the 2024 aerial (reviewed Nov. 2, 2026, output/review/east_riverfront_iw_candidates_aerial.jpg)"
+    },
+    {
+      "bbox": [
+        16144,
+        11243,
+        16424,
+        11383
+      ],
+      "reason": "aeration tanks at a water treatment plant: dark open water in the 2024 aerial (reviewed Nov. 2, 2026, output/review/east_riverfront_iw_candidates_aerial.jpg)"
+    },
+    {
+      "bbox": [
+        15665,
+        7659,
+        15776,
+        7803
+      ],
+      "reason": "stormwater basin beside a warehouse: water in the 2024 aerial (reviewed Nov. 2, 2026, output/review/east_riverfront_iw_candidates_aerial.jpg)"
+    }
+  ]
+}

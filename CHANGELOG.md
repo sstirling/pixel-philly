@@ -1,5 +1,316 @@
 # Changelog
 
+## 2026-11-03: forest-green woods tried and redrawn (philly v10); it invents lakes, so Batch B was not started
+
+Stephen approved a forest-green woods fix with a redraw of the affected frames (cap $8), then Batch B. Batch B was **not** started: see the result below. No commits, no LiDAR prune.
+
+### Built (tests first)
+- **`"lawn_woods_mode": "forest"`** (`lawns.forest`): woods are shifted toward the renderer's tree-canopy green (hue 108°, saturation 0.55), with brightness remapped into 0.26–0.56, so the texture is kept and shadows can't go black.
+  - **Skipped:** paving, mapped water and footprints (+1 m).
+  - **Scope:** all woods, not only parks. Limiting it to park polygons made a hard edge at Cobbs Creek.
+  - **Tests:** real aerial fixtures (Wissahickon, West Fairmount, Washington Square).
+- **Feather:** woods weight feathered over ~16 m (`WOODS_FEATHER_M` 8 m, two box passes), tested. It softened the forest edge seen in `output/review/forest_westfairmount_join_nofeather.jpg`.
+- **Configs:** set on all eight citywide regions.
+- **Crops:** `output/review/forest_wissahickon.jpg`, `forest_westfairmount_join.jpg`, `forest_cobbs_creek.jpg` (`_nofeather` versions kept).
+
+### Redraw (`15_joint_sample.py --redraw`, 1-cell known ring, original style)
+| Region | Frames redrawn (ring) | GPU | Cost |
+|---|---|---|---|
+| west_north | 53 (118) | 25.8 min | ~$1.70 |
+| germantown | 84 (215) | 47.3 min | ~$3.11 |
+| southwest | 83 (202) | 44.0 min | ~$2.90 |
+| east_riverfront | 20 (79) | not drawn | ~$1.15 projected; it would have passed the $8 cap |
+
+- **Spend:** about $7.71. Redraws cost about $0.0145 per run frame, not $0.011 (the repair pass and ring).
+- **Merge:** originals in `redraws/qwen_joint_light8_fac_pre_forest/`; repainted with holds.
+- **Map:** `philly` v10 (`?area=philly&v=v10`). 897 deepest-level tiles differ from v9.
+
+### Result: worse in places
+- **Invented water in redrawn frames:** about 264,000 → 1,250,000 px, and blobs over 20,000 px went from 2 to 14. The model draws the smooth forest-green ground as lakes and rivers (`output/review/forest_invented_water/contact_sheet.png`).
+- **After repair:** the fix repaints those blobs from the render, leaving flat pale-green areas that still carry some ripple dashes and pieces of blue lake (`output/review/forest_iw_germantown_frame_08_18.jpg`). A creek the old drawing showed is drawn as a dark gray stripe.
+- **north|west_north join:** median 3.44 → 3.32, not the hoped-for 2.2–2.6. North's side was greened as lawn, west_north's side is now forest green, and the tone change still shows at 1:1 (`output/review/join_north_westnorth_after_forest_marked.png`).
+- **v10 seams (medians):** north|west_north 3.32, upper_north|germantown 2.43, west|west_north 2.48, south|southwest 2.61, west|southwest 1.73. East_riverfront pairs unchanged.
+- **Recommendation:** keep v9 as the current map. The pre-forest drawings can be restored at no GPU cost. Options for woods are in the report (for example, LiDAR-placed tree canopies in the render instead of a ground tint).
+
+## 2026-11-02 (night): Batch A finished: reviewed data fixes, east_riverfront drawn, holds (philly v9)
+
+Stephen approved the fixes below on Nov. 2. Original style throughout. No commits, and no LiDAR prune (`--apply` isn't approved).
+
+### Reviewed data fixes (tests first: `tests/test_reviewed.py`)
+- **`src/pixelphilly/reviewed.py`** is applied in `05_build_scene.py`. Unlisted footprints are untouched; Old City's SHA is unchanged.
+- **`config/height_overrides.json`:** footprint 478499, 5458 Tacony St, is recorded at 138 ft. The aerial shows a small round tank in a scrapyard with almost no shadow, so the record is a data error.
+  - Mode `neighbor`: the median height of footprints within 25 m, here 10.67 m from one neighbor. The footprint is kept out of LiDAR shaping.
+  - The needle gate now passes on corrected data, not on an exception (`output/review/needle_478499_before_after.jpg`).
+- **`config/stadium_exclusions.json`:** four non-stadiums that passed the seating-row rule, all checked on the 2024 aerial:
+  - 8500 Essington Ave, the airport terminal and garages;
+  - 4101 N Delaware Ave, Richmond Generating Station;
+  - 3622-40 G St, a sawtooth-roof plant;
+  - 3001 E Allegheny Ave, a pier warehouse.
+- **Airport result:** southwest was rebuilt with the exclusion. All 404 renders are bit-identical to the ones drawn, because the footprint has a property-record facade and the seating-row wall color isn't rendered. So the redraw was skipped ($0), and the drawing stands as is.
+  - Crops: `output/review/airport_render_before.jpg`, `airport_drawn_before.jpg`.
+  - `renders_v1/` and `masks_v1/` keep the earlier renders and masks.
+- **Runner:** the scene build now depends on both lists, so a change to either rebuilds scenes.
+- **`15_joint_sample.py --redraw frames --context N`:** redraws a few frames of a drawn area, with the frames around them held at their finished pixels (`regions.redraw_plan`, tested). It's built and tested but wasn't needed this time.
+
+### east_riverfront
+- **Drawn:** 227 frames (193 new). Gates pass: no needles, no stadiums, facade match 0.996, alignment clean.
+- **Cost:** 41.3 min of GPU, about $2.72 (estimated $2.50).
+- **Batch A total:** about $13.28 of the $15 cap (west_north $2.53, germantown $3.37, southwest $4.66, east_riverfront $2.72).
+
+### Invented-water holds (`config/invented_water_holds.json`; aerial review in `output/review/`)
+- **southwest:** three boxes:
+  - wet mud by a warehouse;
+  - flooded refinery ditches and lots (three blobs);
+  - standing water by a basin.
+- **Repaired, not held:** sw_32_16 (a grass field), sw_11_11 (forest floor) and germantown 05_13 (a dry skate bowl, not a pool).
+- **east_riverfront:** five boxes:
+  - two warehouse detention basins;
+  - a pond by Frankford Creek;
+  - an I-95 stormwater basin;
+  - water-treatment aeration tanks;
+  - another warehouse basin.
+- **Repaints:** both areas were re-repainted with `--invented-water fix`. Held: southwest 5 blobs, east_riverfront 8. The previous outputs are kept in `water_before_holds/`.
+
+### Joins (`output/philly/join_seams_v9.json`), medians
+| Pair | Median |
+|---|---|
+| south\|east_riverfront | 1.68 |
+| west\|southwest | 1.84 |
+| north\|east_riverfront | 2.17 |
+| upper_north\|east_riverfront | 2.44 |
+| upper_north\|germantown | 2.46 |
+| west\|west_north | 2.60 |
+| south\|southwest | 2.61 |
+| upper_north\|west_north | 2.63 |
+| north\|west_north | **3.44** |
+
+- **north|west_north (3.44):** it runs through West Fairmount Park's woods. north_lidar's side was drawn before the woods rule, with everything greened. west_north leaves leaf-off woods as aerial, and the model drew them dark brown to near black.
+  - Crops: `output/review/join_north_westnorth_worst_marked.png`, `join_north_westnorth_overview.jpg`.
+  - This is a style question for Stephen: keep the woods rule, or turn it off or soften it and redraw the affected frames.
+
+## 2026-11-02 (later): Batch A drawn in the original style; woods kept out of the lawn correction (philly v8)
+
+Style: `qe2511_oldcity_r16_v1`, prompt "Redraw this render as isometric pixel art in the pixel philly style.", Lightning 8, run `qwen_joint_light8_fac`, the same as the four drawn regions. Those four were not rebuilt or redrawn. No commits.
+
+### Woods in the lawn correction (tests first)
+- **Problem:** leaf-off forest floor falls in the dormant-grass band; `atlas_wissahickon_fac` greened 42% of its park pixels.
+- **Fix:** new config `"lawn_skip_woods": true` (set on the eight citywide regions only). The correction fades out where LiDAR canopy (cells > 2.5 m above ground, buildings excluded) covers 65–75% or more of the ground within 30 m (`lawns.woods_grid`, `sample_grid`; `05_build_scene.load_lidar_grid`, `woods_for`, `texture_local`). Calibration in `data/README.md`.
+- **Tests:** real 200 m fixtures (Wissahickon, Washington Square, Clark Park) plus synthetic grids. On the fixtures' centers, the woods weight averages 0.875 for Wissahickon, 0.019 for Washington Square and 0.022 for Clark Park.
+- **Crops:** `lawn_woods_*.jpg` in the session scratchpad. Inside the Wissahickon grid, corrected pixels fall 47% (the golf course stays green). Washington Square and Clark Park are essentially unchanged (−1.3%, −3.9%).
+
+### Bugs found running the regions (each with a test first, except the sheet)
+- `05_build_scene.py`: a clipped render tile's frames can form two pieces, so `reach.exterior` crashed (southwest). Fixed with `projection.outline_coords`.
+- `18_qa_scan.py`: a needle on an unshaped footprint has an integer id, so `rsplit` crashed (east_riverfront). Fixed with `qa_scan.footprint_id`.
+- `10b_scan_invented_water.py`: the contact sheet asked for known-band frames the region never drew (southwest). It now reads only drawn frames. New `--from-redraws` scans the drawings before the repaint and its fix.
+- New `scripts/25_join_seams.py` and `regions.owner_edges`: seam ratio per border between regions in the merged layout. On v7 it reproduces the earlier join medians (2.17–2.50).
+
+### Batch A (`scripts/22_run_region.py`, gates on, $15 cap)
+
+| Region | Frames (new) | Gates | GPU | Est. | Invented water repaired / exempt |
+|---|---|---|---|---|---|
+| west_north | 210 (108) | pass | 38.4 min, ~$2.53 | $2.31 | 15 / 4 |
+| germantown | 294 (254) | pass | 51.2 min, ~$3.37 | $3.23 | 26 / 10 |
+| southwest | 404 (255) | pass | 70.7 min, ~$4.66 | $4.44 | 15 / 15 |
+| east_riverfront | 227 (193) | **stopped: needle** | not drawn | $2.50 | |
+
+- **Spend:** about $10.56 (estimated from server time). Actual cost ran 5–10% above the $0.011-per-frame estimate.
+- **east_riverfront's needle:** footprint 478499, 5458 Tacony St: 38 m², 42.1 m, City record 138 ft. It's outside the LiDAR box, so it has a single height. The aerial shows a small round structure, possibly a tank or stack, and is inconclusive (`output/review/needle_478499_5458_tacony_st.jpg`). It awaits review.
+- **QA to review:**
+  - southwest: "stadium" 8500 Essington Ave is the airport terminal and garage complex, a likely false positive (`output/review/southwest_stadium_8500_essington.jpg`).
+  - east_riverfront: three "stadiums" (4101 N Delaware Ave, 3622-40 G St, 3001 E Allegheny Ave).
+- **Join seams** (`output/philly/join_seams_v8.json`), medians: west_lidar|southwest 1.84, upper_north|germantown 2.46, west_lidar|west_north 2.60, south|southwest 2.61, upper_north|west_north 2.63, north|west_north 3.44.
+  - The worst edge, 8.75 (south|southwest, a rail yard by the Schuylkill), looks continuous at half scale (`output/review/worst_join_south_southwest.jpg`).
+- **Invented water (dry run on the raw drawings):** `output/review/batchA_invented_water/contact_sheet.png` (20 largest). No holds were added; the candidates are listed in the report.
+- **LiDAR prune:** `--apply` was refused by the permission system (irreversible deletion needs Stephen). A dry run would free 210 tiles (142.8 GB) and keep the 57 that the Batch B regions need.
+## 2026-11-02: clean-style retraining stopped; the map keeps the original style
+
+- **v2 retraining:** the first test of a full-quality clean style (Qwen-Image-Edit-2511, 40/24 steps, CFG 4, negative prompt; four settings on six stress frames, ~$1.02; `output/trainset_clean_v2/sweep/`).
+  - **Better:** almost no invented cars and crisp outlines.
+  - **Worse:** much flatter and simpler than the original. Rowhouse texture is lost, woods turn to empty lawn, colors go cartoonish, and a concrete tower turned glass-blue.
+- **Decision (Stephen):** "demonstrably worse … use the original method." Retraining stopped before mass generation.
+- **Clean-style spend in total:** ~$14.58 (Phase 1 ~$13.56, v2 sweep ~$1.02).
+- **The citywide drawing** continues in the original style (`qe2511_oldcity_r16_v1`, run `qwen_joint_light8_fac`).
+- **README licensing note** updated: the Gemini-derived style is disclosed and the decision recorded.
+- **Clean-style code kept for reference:**
+  - `src/pixelphilly/trainset_clean.py`, `scripts/23_build_clean_trainset.py`;
+  - the v2 sweep and palette scripts;
+  - `scripts/14_train_lora.py --profile clean`.
+
+## 2026-11-02: clean style v2, steps 1-2 (sweep and palette; waiting for approval)
+
+- **Context:** Stephen called Phase 1's A and B "huge steps back". v2 aims at a look he likes, with no Gemini or old-LoRA anything.
+- **Code:** `scripts/25_clean_v2.py` (sweep, palette, palette-compare); `src/pixelphilly/palette.py` with tests first in `tests/test_palette.py` (8).
+- **Sweep:** 6 stress frames (the v1 views where prompt-only Qwen invented the most color; one each of rowhouse, tower, woods, port, stadium, industrial) x 4 settings.
+  - Settings: full Qwen-Image-Edit-2511, no Lightning, true CFG with a negative prompt (cars, people, text, clutter, noise, photo, 3d render...).
+  - Uses the deployed `Editor.run` unchanged; nothing redeployed.
+  - GPU: $1.02; 33.6 s per image at 40 steps, 20.3 s at 24.
+  - Sheets: `output/trainset_clean_v2/sweep/sheet.jpg` and `detail.jpg`.
+- **Result:**
+  - Prompt P1 invents far fewer specks than P2 (mostly 0.1-1.3% vs. 1.2-4.5%); P2 turned a rail line into a blue river.
+  - 24 steps look like 40.
+  - **Problems:** leaf-off woods drawn as empty flat lawn; one roof drawn as a light-blue pool; ground colors shift strongly toward cartoon green.
+- **Palette:** k-means k=56 with a fixed seed.
+  - **Renders-only palette** (`palette.json`): too drab. Glass goes beige, lawns olive, the canal gray.
+  - **Option palette from our own P1 targets** (`palette_targets.json`): keeps the look.
+  - Compared in `palette/palette_options.jpg`.
+- **Speck removal:** sieve the snapped index image (components of 40 px or less), remove only where the render lacks that color within 5 px, and only blobs at least 3 px thick, so mullions, lane lines and outlines survive.
+- **No mass generation yet.** No commits.
+
+## 2026-10-28 (night): clean-style Phase 1, A vs. B (no Gemini)
+
+- **Goal:** replace the Gemini-trained style LoRA. Two candidates were drawn on 8 atlas spots against the old style. No config or doc was switched; the old LoRA is untouched.
+- **Candidate A** (`qwen_joint_light8_nolora`): no style LoRA, prompt "Redraw this render as isometric pixel art."
+  - `15_joint_sample.py` needed no change for this.
+- **New terrain spots:** `atlas_wissahickon_fac`, `atlas_airport_fac`, `atlas_northeast_fac`.
+  - Same pattern as the `_fac` spots, plus `"lawn_correct": true`.
+  - Data fetched with 01–04k and 04c LiDAR (8 tiles). The airport's footprint query returned HTTP 400 once and worked on retry.
+  - All three passed the alignment check, with 0 needles. Northeast had 8 LiDAR single-height fallbacks.
+  - **Lawn correction at Wissahickon:** it shifted 13.4M of 31.6M park pixels, so the leaf-off forest floor is tinted green-yellow. The whole valley is parkland.
+  - **Northeast:** OPA says 73% twins (post-war, ranch, conventional, bi-level) and 16% singles.
+  - Old style and A drawn on all three.
+- **Old style repaint:** the 5 facade spots now also have `--invented-water fix` outputs (they had never been repainted), so all variants are compared after the same post-processing.
+- **Candidate B training set:**
+  - New: `src/pixelphilly/trainset_clean.py`, `scripts/23_build_clean_trainset.py` and `tests/test_trainset_clean.py` (30 tests, written first).
+  - **Filters:**
+    - registration shift;
+    - invented water;
+    - flat share on land, 0.26–0.72;
+    - invented color (saturated non-green specks) ≤ 1.2%;
+    - near-copy: mean difference ≥ 13;
+    - no-data gray ≤ 15%;
+    - tone outliers;
+    - speck median clean-up.
+  - **Fixes during the build:**
+    - flat share and tone are measured on land only, because the water repaint turned brown rivers blue and tripped both;
+    - the no-data check now matches the renderer's exact (128, 128, 128); flat white roofs had been flagged;
+    - the seed separator `__s` collided with `__south_lidar` and was replaced by `.seed<N>`;
+    - the near-copy rule was added after a contact sheet showed the color filter favoring near-copies.
+  - **Result:** 228 pairs kept from 523 tries on 332 views. The manifest is clean of Gemini, `redraw_v3` and old-LoRA references.
+- **Training:** `14_train_lora.py --profile clean` (the old run stays the default). Run `qe2511_clean_r16_v1`: rank 16, 2,000 steps, samples every 1,000 on 3 held-out atlas renders. `check_config` passed first: 228 pairs, offline model path.
+- **Candidate B drawings:** `qwen_joint_light8_cleanlora` on all 8 spots, plus the repaint fix.
+- **Comparison:** `scripts/24_style_compare.py` writes `output/style/compare.html`, `.jpg`, `metrics.json` and `notes.json`.
+  - **B v1 is worse than A on every spot:** more invented cars and colored specks (1.0–1.8% vs. 0.2–0.8%) and blockier texture.
+  - **A** draws clean geometry but invents cars, confetti, apron planes and lawns on paving.
+- **GPU** (`output/gpu_runs.jsonl`):
+  - A drawings $0.64
+  - old style and A on the new spots $0.77
+  - trainset pilot, seed 0 and seed 1: $0.34, $1.68, $1.17
+  - training $6.33
+  - B drawings $1.07
+  - estimated container overhead $1.56
+  - **Total ~$13.56** (cap $14).
+- **Tests:** full suite 344 pass (`tests/test_trainset_clean.py` 30 of them). No commits.
+
+## 2026-10-28: Phase 2 follow-ups (Stephen's decisions)
+
+- **Retired configs:** `downtown_lidar` and the 18 early atlas configs (`atlas_{franklinfield,30thst,artmuseum,cathedral,linc,cbp,cityhall,indhall,pennslanding}` and their `_lidar` twins).
+  - **Where they went:** `config/retired/`, with their LiDAR tile lists in `data/raw/lidar/retired/`. Their outputs stay on disk.
+  - **Why:** South Philly's map covers downtown, and the `_fac` atlas spots replace the old ones.
+  - **Tests:** the landmark tests now use `atlas_cityhall_fac` (same box).
+- **LiDAR pruned:**
+  - first pass: 76 tiles, 49.7 GB, blocked by nothing;
+  - after retiring: 45 more tiles, 44.4 GB.
+  - Raw LiDAR on disk: 164 GB before, now about 65 GB. Deletions are recorded in `data/raw/MANIFEST.json`, with PASDA URLs to re-download.
+- **Southwest region:** keeps its east edge at -75.189, covering the 2.4%-city cell at the Schuylkill mouth (~$0.60).
+- **QA exceptions:**
+  - added `s1762-0`, a truss portal on the elevated Walt Whitman Bridge approach (46 m, 7 m²), checked on the 2024 aerial;
+  - the crane note `s1459-0` was corrected (it hadn't been in the CHANGELOG): a Delaware terminal bulk-unloading crane, 41 m, checked on the aerial Oct. 27.
+- **Tests:** 340 pass.
+
+## 2026-10-28: Phase 2 infrastructure for citywide runs (no GPU, no commits)
+
+Test-first throughout; 336 tests pass (254 before). No GPU spend. Downloads: the city-limits polygon only.
+
+### Clipping to the city line
+- **New:** `scripts/04l_fetch_city_limits.py` fetches City `City_Limits/FeatureServer/0` (one polygon, Planning and Development) to `data/raw/city_limits.geojson`, recorded in the manifest.
+- **`"clip_to_city": true`:** `projection.area_setup` passes bbox ∩ city to `frame_lattice(ground=...)`, which keeps only frames that intersect that ground swept up to `max_height_m` (`swept_screen_polygon`: the outline, the outline lifted, and each edge's quad, which is exact for a concave outline where a convex hull isn't). The rectangle and frame indices still come from the bbox.
+- **Fetch extents:** `projection.is_clipped` now decides polygon fetches in `sources.fetch_area_features`, `03_fetch_imagery.py`, `nodata.py` and `05_build_scene.py`. `render_ground_polygon` follows the kept frames.
+- **Tests:** `tests/test_city_clip.py`, 15 tests on synthetic polygons: whole bbox = plain clipping, triangle and two-piece grounds, height sweep, missing file, re-read on change, and the four existing regions' frame counts pinned.
+- **Unchanged without the flag:** Old City scene rebuilt, SHA-256 `eaca18728d36a5de80ccb29fdc1e6b776be4d522434faa787cdd9a89802eaac4`. Frame lists, extents and ground polygons are identical for every existing config, including `south_lidar` (672 frames).
+
+### LiDAR pruning
+- **New:** `scripts/04m_prune_lidar.py` and `src/pixelphilly/lidar_tiles.py`. It's a dry run unless given `--apply`.
+- **Rule:** a tile is deleted only when every area listing it is a LiDAR config with a grid holding `struct`, which is what `05_build_scene.py` needs to skip the LAS files. Tiles that LiDAR configs not yet fetched will need, by the PASDA index, are kept.
+- **Records:** each deletion goes in `MANIFEST.json`: path, bytes, `deleted_at`, re-download URL, and the grids that replaced it.
+- **04c changes:** `04c_fetch_lidar.py` now shares the tile selection, verified identical on six areas' saved lists, and skips downloading when the area's grid is cached.
+- **Tests:** `tests/test_lidar_prune.py`, 12 tests.
+- **Dry run today:** 196 tiles on disk (164.3 GB). It would delete 76 tiles (49.7 GB) and keep 120 (114.6 GB):
+  - 54 are held by `downtown_lidar`, whose Oct. 22 grid predates `struct` (a tile can have several blockers);
+  - 75 (70.3 GB) are needed by the new regions;
+  - the rest by old atlas tile lists and `atlas_wissahickon_fac`.
+  - Before the region configs existed, the same run found 132 tiles (100.3 GB).
+  - 45 tiles (44.4 GB) are held only by `downtown_lidar` and the old atlas lists. Not applied.
+
+### Region runner
+- **New:** `scripts/22_run_region.py <area>` with `src/pixelphilly/region_runner.py`.
+- **What it runs:** every fetch, build and check, then the stop gates, the detached GPU draw with known areas, the collect loop, the repaint with `--invented-water fix`, the 10b dry-run report and `output/<area>/region_report.json`.
+- **Resumable:** steps are skipped by output freshness; the GPU launch is never repeated.
+- **Gates:** alignment (the 09 rule, moved into `qa.alignment_failed`; same verdicts on all 1,354 existing report rows), needles vs. `config/qa_exceptions.json` (new: the 905-11 Walnut piece and crane `s1459-0`), facade match ≥ 0.95, and frames × $0.011 ≤ `--budget-usd`.
+- **Tests:** `tests/test_region_runner.py`, 29 tests with a fake executor.
+- **Checked against real data:**
+  - `--plan` on `west_lidar` finds every step through the repaint already done.
+  - Gates on the four drawn regions: North, Upper North and West pass. South stops on `s1762-0` (46.2 m, 7 m², near the Packer Ave terminal), which isn't reviewed yet.
+
+### Regions
+- **Configs:** eight new region configs, copied from `west_lidar` plus `"clip_to_city": true`.
+- **Pre-flight:** `scripts/23_preflight_regions.py` with `src/pixelphilly/coverage.py` (4 tests). Table in the README.
+- **Box changes:** from the first proposal, to close gaps found by the coverage check:
+  - `lower_northeast` east to -74.970 (7.5 km² of Holmesburg–Torresdale riverfront was uncovered);
+  - `west_north` south to 39.963 and west to -75.285 (the Cobbs Creek strip, 1.8 km²);
+  - `east_riverfront` to -75.045 and 39.960;
+  - `southwest` to -75.285, 39.865 and -75.189 (Schuylkill mouth);
+  - `germantown` north to 40.082;
+  - `northwest` to -75.245 and -75.170;
+  - `roxborough` west to -75.270.
+- **Result:**
+  - Coverage: 0 uncovered cells out of 3,091.
+  - Size: 2,934 run frames (2,052 new), about $32 at $0.011 per run frame, about 8.3 GPU hours.
+  - LiDAR: 446 tiles to fetch, about 374 GB.
+  - No region exceeds 700 new frames (largest: `upper_northeast`, 544 new, 697 in the run).
+
+## 2026-10-27 (later): turf field and City Hall courtyard fixed (philly v7)
+
+- **Turf field fill** (South Philly; it had come out gray-teal).
+  - **Cause:** the "drawn green" band (hue 70–170, saturation 0.15) accepted a teal-gray pixel from the blob's edge.
+  - **Fix:** the band is now hue 75–140, saturation ≥ 0.25, value 0.30–0.85. When the ring around a blob has no lawn, the fill uses the window's drawn lawn color.
+  - **Test first:** `test_turf_fill_uses_a_real_lawn_green`.
+  - **Result:** the field is now green, with its markings kept.
+- **Invented lawn in City Hall's paved courtyard** (`invented_water.courtyard_lawn`, applied in the same `--invented-water fix` pass).
+  - **First version:** open ground enclosed by buildings. It flagged 207 rowhouse block interiors, real backyards drawn green (dormant brown in the March aerial). Rejected.
+  - **Rule now:** a courtyard is open ground overlapping a hole in ONE building's City footprint. It's flagged only where the aerial there is paving (saturation < 0.18). Then every greenish pixel within 25 m of the hole is repainted with the surrounding non-green paving color.
+  - **Tests first:** the courtyard is found; a green or dormant-grass courtyard is left alone; a rowhouse block interior is not a courtyard; the whole patch is repaired, shaded grass included; a park across the street from a courtyard open to it stays green.
+  - **Citywide dry run:** exactly one flag, the City Hall courtyard (7,036 px), now dark paving matching the aerial.
+- **Map:** `philly` v7. Tests: 254 pass. No GPU cost, no commits.
+
+## 2026-10-27: four regions redrawn with facades (philly v5), invented water fixed (philly v6)
+
+- **Redraw:** all four regions redrawn with property-record facades, the evidence-based glass rule, OSM colors and the dormant-lawn correction (run `qwen_joint_light8_fac`).
+  - **Order:** South first, then North (known South), then Upper North (known North) and West (known South + North) in parallel.
+  - **GPU, ~$15.19:** South $7.42, North $2.96, Upper North $2.93, West $1.88.
+  - **Merged map:** `philly` v5.
+- **v4 → v5:**
+  - **Improved:**
+    - the Liberty Place and Market St towers are now blue glass;
+    - Independence Hall's tower reads as brick with a white steeple;
+    - parks are green instead of dormant brown;
+    - rowhouse fronts are crisper.
+  - **New problem:** the AI drew green grass in City Hall's shadowed courtyard, where v4 had invented a pool. The courtyard isn't in any park polygon, so the lawn fix didn't cause it.
+- **Invented-water fix:** `10_repaint_water.py --invented-water fix`.
+  - **Hold list:** reviewed blobs that can't be confirmed as invented are left as drawn and logged as "held" (`config/invented_water_holds.json`, `invented_water.apply_holds`, test first). Held:
+    - the lower South Philly basins and mudflats (wet mud in the aerial, not in NWI);
+    - a vegetated channel area and an olive mud patch in South Philly;
+    - a sports court that is blue in the aerial;
+    - an Upper North light-blue roof (building missing from the scene);
+    - a pale West Philly basin.
+  - **Repaired:** South 31, North 10, Upper North 10, West 11. Held: 15, 1, 1, 1.
+  - **Spot checks:**
+    - railroad cuts drawn as canals are now ground;
+    - a West lot's blue patch blends in;
+    - the held mudflats are unchanged;
+    - the turf field drawn as a pool is now flat gray-teal: better, but not field green.
+  - **Map:** `philly` v6, 12,186 tiles, 1.75 GB plus a 346 MB photo layer.
+- **Tests:** 249 pass. No commits.
+
 ## 2026-10-26: landmark references in the joint sampler (Track 3, test only)
 
 ### Built

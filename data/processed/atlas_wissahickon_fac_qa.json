@@ -1,0 +1,127 @@
+{
+  "buildings_downloaded": 355,
+  "buildings_in_scene": 396,
+  "buildings_dropped": [],
+  "height_source_counts": {
+    "approx_hgt": 352,
+    "max_hgt": 3
+  },
+  "height_outliers_max_gt_ratio_x_approx": [
+    {
+      "objectid": 89700,
+      "address": "628 NAOMI ST",
+      "approx_hgt_ft": 22,
+      "max_hgt_ft": 85.53999592000001
+    },
+    {
+      "objectid": 410038,
+      "address": "5826 HENRY AVE",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 52.429905500000004
+    },
+    {
+      "objectid": 477588,
+      "address": "4130 CHERRY LN",
+      "approx_hgt_ft": 20,
+      "max_hgt_ft": 76.45005167000001
+    }
+  ],
+  "tallest_buildings_m": [
+    {
+      "id": 140275,
+      "h": 22.25
+    },
+    {
+      "id": 477437,
+      "h": 15.85
+    },
+    {
+      "id": 77524,
+      "h": 14.94
+    },
+    {
+      "id": 24149,
+      "h": 14.63
+    },
+    {
+      "id": "115333-5",
+      "h": 13.48
+    },
+    {
+      "id": "115333-3",
+      "h": 12.32
+    },
+    {
+      "id": "115333-4",
+      "h": 12.27
+    },
+    {
+      "id": 20582,
+      "h": 11.89
+    },
+    {
+      "id": 104856,
+      "h": 11.89
+    },
+    {
+      "id": 108999,
+      "h": 11.28
+    }
+  ],
+  "trees_in_scene": 646,
+  "ground_texture_px": [
+    7680,
+    7168
+  ],
+  "ground_texture_source_px": [
+    7680,
+    7168
+  ],
+  "uv_fit_max_residual_m": 1.0817400015783682e-05,
+  "ground_median_filter_px": 5,
+  "frames": 10,
+  "lidar_buildings_shaped": 6,
+  "lidar_fallback_single_height": 0,
+  "lidar_parts": 18,
+  "lidar_terrace_parts": 0,
+  "lidar_stadiums": [],
+  "lidar_structures": 17,
+  "lidar_structure_parts": 29,
+  "lidar_structure_area_m2": 1435.0,
+  "lidar_structures_dropped_photo": 9,
+  "lidar_highway_mask": true,
+  "lidar_highway_masked_m2": 0.0,
+  "lidar_rail_mask": true,
+  "lidar_margin_m": 100.0,
+  "facade_join": {
+    "parcel": 340,
+    "unmatched": 9,
+    "address": 6
+  },
+  "facade_match_rate": 0.975,
+  "facade_styles": {
+    "twin": 122,
+    "row_porch": 114,
+    "detached": 62,
+    "institutional": 19,
+    "apartment_low": 10,
+    "other": 9,
+    "mixed_storefront": 6,
+    "row_typical": 4
+  },
+  "facade_materials": {
+    "brick": 311,
+    "stone": 19,
+    "frame": 16
+  },
+  "facade_colour_source": {
+    "palette": 342,
+    "osm_material": 4
+  },
+  "facade_osm_footprints": 4,
+  "facade_osm_items": 58,
+  "facade_street_fronts": 119,
+  "facade_unmatched": "plain walls (no facade)",
+  "lawn_corrected_px": 13407411,
+  "lawn_park_px": 31562971
+}

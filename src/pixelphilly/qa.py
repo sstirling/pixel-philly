@@ -97,3 +97,22 @@ def seam_ratio_local(img: np.ndarray, cols, rows, band: int = 16) -> float:
             if len(nb) and nb.mean() > 0:
                 ratios.append(prof[i] / nb.mean())
     return float(np.median(ratios))
+
+
+def alignment_failed(row: dict) -> bool:
+    """The alignment check's verdict on one frame of
+    output/<area>/masks/alignment_report.json (scripts/09_check_alignment.py;
+    the region runner's gate uses the same rule).
+
+    Frames that are mostly river carry too few building pixels for the
+    shift search to mean anything; only frames with real content are
+    judged. On sparse frames the search can also tie between offsets while
+    the overlap is near perfect (downtown frame_23_09: IoU 0.995, "shift"
+    -4,-2); a real 4 px offset would pull IoU well below 0.99, so a shift
+    only fails a frame whose IoU is also under 0.99. Judged on the 1 px
+    tolerant IoU (edge rounding isn't misalignment); the raw IoU stays in
+    the report."""
+    dx, dy = row["best_shift_px"]
+    tiou = row["iou_1px"]
+    shifted = max(abs(dx), abs(dy)) > 2 and tiou < 0.99
+    return row["building_px"] > 5000 and (tiou < 0.97 or shifted)

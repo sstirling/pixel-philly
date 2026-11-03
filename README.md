@@ -131,6 +131,13 @@ Every script works on any area, picked with the `PP_AREA` environment variable (
 | `scripts/17_atlas_sheet.py` | Problem-atlas before/after sheet (`output/atlas/compare.html`) |
 | `scripts/18_qa_scan.py` | Pre-GPU QA gate: needles, stadiums, LiDAR fallbacks, structures |
 | `scripts/04d_fetch_highways.py`, `04e_fetch_rail.py` | Expressway, El and track centerlines that mask elevated decks out of LiDAR structures |
+| `scripts/04l_fetch_city_limits.py` | City limits polygon for `"clip_to_city"` regions |
+| `scripts/04m_prune_lidar.py`, `src/pixelphilly/lidar_tiles.py` | Deletes raw LiDAR tiles once every area needing them has a cached grid (dry run by default) |
+| `scripts/22_run_region.py`, `src/pixelphilly/region_runner.py` | One command per region: fetch → build → checks → stop gates → GPU draw → collect → repaint → report |
+| `scripts/23_preflight_regions.py`, `src/pixelphilly/coverage.py` | Region sizes, overlaps, LiDAR needs, viewer fit, and gaps inside the city line |
+| `config/qa_exceptions.json` | Reviewed needles and alignment frames the runner's gates let through |
+| `config/height_overrides.json`, `config/stadium_exclusions.json`, `src/pixelphilly/reviewed.py` | Reviewed fixes to source data, applied in the scene build: wrong City heights; footprints that aren't stadiums |
+| `scripts/25_join_seams.py` | Seam ratio for every border between regions in a merged map |
 | `src/pixelphilly/regions.py` | Region machinery: shared frames, known-band and repair masks, union lattice, frame placement |
 | `render/` | three.js page that draws the scene (three.js r169 vendored, MIT) |
 | `prompts/redraw_v*.txt` | Redraw prompts, versioned; v3 is current. Each change gets a new file name. |
@@ -356,7 +363,7 @@ uv run python scripts/15_joint_sample.py --full --volume --detach --name qwen_jo
 uv run python scripts/15_joint_sample.py --collect --name qwen_joint_light8
 uv run python scripts/10_repaint_water.py --prompt qwen_joint_light8      # also re-repaints the band (water_band/)
 unset PP_AREA; uv run python scripts/16_build_tiles.py --areas south_lidar,north_lidar --name philly --version v2 --with-photo
-# http://127.0.0.1:8137/viewer/?area=philly&v=v4  (v4 = South, North, Upper North, West)
+# http://127.0.0.1:8137/viewer/?area=philly&v=v7  (v7 = four regions with facades, invented water and courtyard fixes)
 ```
 
 **The join today:** median seam ratio 2.36 across the 28 join edges, against 1.02 inside each region. At 1:1 the worst spots are a grass-texture change in the park and a faint line through a parking lot; rowhouse joins are hard to find. At normal browsing zoom the join doesn't show.
@@ -393,6 +400,120 @@ The aerial shows roofs, not walls, so renders had plain tinted walls and the dra
 
 `15_joint_sample.py --full --volume --landmarks --landmark-baseline qwen_joint_light8` gives each approved landmark's windows its reference photo as a second conditioning image. On four atlas spots, it improved one landmark, the Union League. It visibly damaged seven: pasted photo patches, PSFS's sign floating in the sky, and a neighbor restyled. The automatic check, experiment A's rule, caught only one of the seven. Results are in `output/landmarks/joint_compare.jpg` and `.json`. Don't use the `qwen_joint_light8_landmarks` drawings.
 
+## Citywide regions: clipping, LiDAR pruning, the region runner (Oct. 28)
+
+The rest of the city is eight more regions on the same global lattice (`projection_origin` [-75.165, 39.9275]), each a copy of `west_lidar`'s settings plus `"clip_to_city": true`.
+
+**Clipping to the city line.** `scripts/04l_fetch_city_limits.py` fetches the City's `City_Limits` polygon. With `"clip_to_city": true`, `projection.area_setup` keeps only the frames that see bbox ∩ city (its ground outline swept up to `max_height_m`; `projection.swept_screen_polygon`), so edge regions don't draw Upper Darby, Montgomery County or New Jersey. Frame indices still come from the whole bbox, so mosaics line up. `render_ground_polygon` and every fetch extent follow the kept frames; they still include the ground those frames show just past the line, so no kept frame has a hole in its data. Configs without the flag are unchanged (Old City scene SHA-256 `eaca1872…eaac4`, all existing frame lists identical).
+
+**Pre-flight** (`scripts/23_preflight_regions.py`, no downloads): frames after clipping, frames shared with earlier regions (the known band), new frames, cost, LiDAR tiles, the viewer fit, and a coverage check: every global lattice cell that shows city ground must belong to some region. Result in `output/preflight_regions.json`.
+
+| Region | bbox | Frames | New | Known from | LiDAR tiles (on disk / to fetch, GB; tiles an earlier region fetches aren't counted again) |
+|---|---|---|---|---|---|
+| `east_riverfront` | -75.125, 39.960, -75.045, 40.010 | 227 | 193 | south 11, north 19, upper_north 4 | 53 (7 / 46, ~39) |
+| `west_north` | -75.285, 39.963, -75.205, 40.010 | 210 | 108 | south 10, north 23, upper_north 5, west 64 | 48 (22 / 26, ~22) |
+| `southwest` | -75.285, 39.865, -75.189, 39.945 | 404 | 255 | south 129, west 20 | 96 (27 / 69, ~58) |
+| `germantown` | -75.205, 40.035, -75.125, 40.082 | 294 | 254 | upper_north 40 | 58 (9 / 49, ~41) |
+| `roxborough` | -75.270, 40.010, -75.190, 40.075 | 319 | 190 | north 2, upper_north 53, west_north 1, germantown 73 | 69 (12 / 40, ~34) |
+| `lower_northeast` | -75.125, 40.010, -74.970, 40.060 | 539 | 473 | upper_north 22, east_riverfront 30, germantown 14 | 106 (4 / 89, ~75) |
+| `northwest` | -75.245, 40.050, -75.170, 40.100 | 244 | 35 | germantown 117, roxborough 92 | 58 (0 / 16, ~13) |
+| `upper_northeast` | -75.100, 40.050, -74.955, 40.140 | 697 | 544 | lower_northeast 153 | 141 (0 / 111, ~93) |
+
+All 3,091 lattice cells that show city ground are covered; no city ground lies outside every region's box. Union viewer fit 7.2e-5 px. Boxes were widened from the first proposal to close gaps (Holmesburg–Torresdale riverfront, the Cobbs Creek strip, Bridesburg's riverfront, the Schuylkill mouth and four slivers). Overlaps become known bands.
+
+**LiDAR pruning** (`scripts/04m_prune_lidar.py`; rules in `data/README.md`). A dry run by default; `--apply` deletes and records each tile in `data/raw/MANIFEST.json`.
+
+**Region runner** (`scripts/22_run_region.py`):
+
+```bash
+uv run python scripts/22_run_region.py germantown --known upper_north_lidar --plan             # steps and what's done
+uv run python scripts/22_run_region.py germantown --known upper_north_lidar --stop-before-gpu  # everything up to the gates
+uv run python scripts/22_run_region.py germantown --known upper_north_lidar --run-name <run> \
+    --prompt-text "<prompt>" [--style /runs/lora/<lora>.safetensors] [--known-run <run>] [--budget-usd 15]
+```
+
+- **Steps:** 04l, 01–04k (04b with 12 retries a minute apart; 04c skipped once the grid is cached), 05, 06 color and mask, 09, 18, then the gates, then `15_joint_sample.py --full --volume --detach` with the known areas, `--collect` every 2 minutes until done, `10_repaint_water.py --invented-water fix`, and the `10b_scan_invented_water.py` dry-run report (`output/<area>/invented_water_scan/<run>/`). `output/<area>/region_report.json` is written at every stop.
+- **Resumable:** a step is skipped when its outputs exist and are newer than its inputs (fetches: when their raw files exist). The GPU launch is never repeated once `joint/<run>/call.json` exists.
+- **Stop gates, before any GPU spend:** alignment FAIL (`qa.alignment_failed`, the rule 09 uses); any needle not in `config/qa_exceptions.json`; facade match rate under 0.95; or the run's frames × $0.011 over `--budget-usd`. Every frame in the run counts, known band included, since known frames still pass through the sampler (West: 158 frames, 132 new, 28.1 min).
+- `config/qa_exceptions.json` holds the reviewed 905-11 Walnut St piece and the South Philly port crane `s1459-0`. A needle matches by id within its areas, or anywhere within 3 m and 2 m of height, since structure ids are renumbered per area. South's scan also has `s1762-0` (46 m, 7 m², at -75.12585, 39.90468, near the Packer Ave terminal), not yet reviewed, so a rerun of `south_lidar` through the runner would stop there.
+- **Exceptions vs. fixes.** An exception lets a reviewed hit through the gate unchanged. When the hit is a data error, the data is fixed instead, in the scene build, so the gate passes on corrected data:
+  - `config/height_overrides.json` gives a footprint the median height of its neighbors within 25 m (`"neighbor"`) or a fixed height (`"meters"`), and keeps it out of LiDAR shaping. First entry: 5458 Tacony St, a small tank recorded at 138 ft.
+  - `config/stadium_exclusions.json` lists footprints that pass the seating-row rule but aren't stadiums: the airport terminal and garages, the Richmond Generating Station, a sawtooth-roof plant on G St, and a Port Richmond pier warehouse.
+  - Each entry records the reason, the aerial checked and the review date. Unlisted footprints are untouched (Old City byte-identical).
+- **Redrawing a few frames** of a drawn area: `15_joint_sample.py --full --volume --known-area <neighbors>,<area itself> --known-name <run> --redraw frame_a,frame_b [--context 2] --name <new run>`. The frames within `--context` stay at their finished pixels.
+- **Join seams:** `scripts/25_join_seams.py --areas ... --prompt <run> --version vN` (output `output/philly/join_seams_vN.json`).
+
+## A clean style: Phase 1 comparison (Oct. 28)
+
+The style LoRA in every drawing so far (`qe2511_oldcity_r16_v1`) was trained on Gemini 3 Pro Image outputs. Phase 1 tested two replacements that use no Gemini output anywhere. **Nothing has been switched yet.** Configs and docs still point at the old LoRA until Stephen picks.
+
+- **Candidate A: no style LoRA.** Qwen-Image-Edit-2511 + Lightning-8 (both Apache 2.0) with the prompt "Redraw this render as isometric pixel art." Run name `qwen_joint_light8_nolora`. `15_joint_sample.py` already worked without `--style`.
+- **Candidate B: a self-distilled LoRA.** `qe2511_clean_r16_v1`: rank 16, 2,000 steps, trained on 228 filtered A redraws of our own renders. Caption: "Redraw this render as isometric pixel art in the pixel philly clean style." Run name `qwen_joint_light8_cleanlora`.
+
+**Comparison:** `output/style/compare.html` (self-contained) and `compare.jpg`, with numbers in `metrics.json` and notes in `notes.json` (`scripts/24_style_compare.py`). It covers 8 atlas spots:
+- the 5 facade spots;
+- 3 new terrain spots:
+  - `atlas_wissahickon_fac`: woods, creek and Lincoln Drive;
+  - `atlas_airport_fac`: PHL terminal piers, apron and runway 9R/27L;
+  - `atlas_northeast_fac`: by OPA, 73% twins and 16% singles.
+
+Every variant got `10_repaint_water.py --invented-water fix`.
+
+**Result: B v1 is worse than A on all 8 spots.**
+- B's drawings are noisier and blockier, with more invented cars and colored specks: 1.0–1.8% of pixels vs. A's 0.2–0.8%, by the invented-color measure below.
+- Self-distillation amplified A's habits instead of filtering them out.
+- A draws clean pixel-art geometry and facades, but it invents:
+  - cars, including on roofs near City Hall;
+  - confetti in parking lots;
+  - planes on the airport apron;
+  - bright lawns where the render shows paving.
+- The old (Gemini-derived) style still invents the least.
+
+**The training set** (`scripts/23_build_clean_trainset.py`, `src/pixelphilly/trainset_clean.py`, tests in `tests/test_trainset_clean.py`):
+1. **plan:** classifies every region frame (South, North, Upper North, West) by terrain from measured features.
+   - Features: building, water and park share; lawn-green share; median footprint area; tallest footprint; known stadium and port locations.
+   - Frames within 512 px (~150 m) of any of the 8 comparison spots are excluded.
+   - The pick is stratified by terrain with a fixed seed: 213 full frames and 119 2x quarters.
+   - Quarters are re-rendered at 2x from the frame's render-tile scene, not cropped and upscaled, so edges and facade windows are drawn at full resolution. They register with the 1x render at 0 px.
+2. **generate:** `Editor.run` with A's prompt, Lightning-8 and seed 0, then seed 1 for views that failed. 523 images, ~4.5 s each.
+3. **filter:** mapped water repainted, then reject a pair if any of these hold:
+   - registration shift > 2 px;
+   - any invented-water blob;
+   - flat share outside 0.26–0.72 on land. Renders' median is 0.265. In the pilot, woods drawn as flat camouflage scored 0.75–0.82, good parks 0.68–0.70.
+   - invented color > 1.2% (A's median on the facade spots). This counts saturated non-green pixels where the render has no saturated color within 7 px: cars and confetti.
+   - near-copy: mean difference from the render < 13 levels. Copies invent the least color, so without this rule the color filter favored them.
+   - more than 15% of the view on the renderer's no-data gray;
+   - a tone outlier: robust z > 3.5 on mean luminance or chroma shift.
+
+   Small invented specks are painted over with a 9 px median before the color check (`remove_invented_specks`). In dense car areas the median is itself a car, so this helps little, and it likely left blotchy patches that B learned.
+4. **Result:** 228 of 523 tries kept. Per-pair provenance is in `output/trainset_clean/manifest.jsonl`: source render or re-rendered quarter, area, frame, model and Lightning commits, prompt, seed, every filter score. Every row passes `check_provenance` (no Gemini, `redraw_v3` or old LoRA/trainset reference). Rejected tries are in `rejected.jsonl`, contact sheets in `sheets/`.
+
+Kept by terrain: rowhouse 70, tower 40, river 36, industrial 27, park 18, port 15, woods 11, open 6, stadium 5. Woods and stadiums are thin because the city has few of them outside the comparison spots.
+
+```bash
+for a in wissahickon airport northeast; do export PP_AREA=atlas_${a}_fac
+  for s in 01_fetch_buildings 02_fetch_trees 03_fetch_imagery 04_fetch_water 04b_fetch_water_nhd 04c_fetch_lidar 04d_fetch_highways \
+           04e_fetch_rail 04f_fetch_opa 04g_fetch_osm 04h_fetch_streets 04i_fetch_pools 04j_fetch_parks 04k_fetch_wetlands; do uv run python scripts/$s.py; done
+  uv run python scripts/05_build_scene.py && uv run python scripts/06_render.py && uv run python scripts/06_render.py --mode mask
+  uv run python scripts/09_check_alignment.py && uv run python scripts/18_qa_scan.py; done
+# A on any spot (then --collect, then the repaint fix):
+uv run python scripts/15_joint_sample.py --full --volume --name qwen_joint_light8_nolora --lightning 8 --prompt-text "Redraw this render as isometric pixel art."
+uv run python scripts/10_repaint_water.py --prompt qwen_joint_light8_nolora --invented-water fix
+# B:
+uv run python scripts/23_build_clean_trainset.py plan
+uv run python scripts/23_build_clean_trainset.py generate                       # seed 0 (~$1.70)
+uv run python scripts/23_build_clean_trainset.py filter
+uv run python scripts/23_build_clean_trainset.py generate --seed 1 --only-rejected   # (~$1.20)
+uv run python scripts/23_build_clean_trainset.py filter
+uv run python scripts/14_train_lora.py prepare --profile clean && uv run python scripts/14_train_lora.py start --profile clean  # ~1.6 h, ~$6.30
+uv run python scripts/15_joint_sample.py --full --volume --name qwen_joint_light8_cleanlora --lightning 8 \
+    --style /runs/lora/qe2511_clean_r16_v1/qe2511_clean_r16_v1.safetensors \
+    --prompt-text "Redraw this render as isometric pixel art in the pixel philly clean style."
+uv run python scripts/24_style_compare.py
+```
+
+**GPU:** about $13.56 for Phase 1. That's $12.00 logged in `output/gpu_runs.jsonl`, plus an estimated $1.56 of container start and weight loading, which joint runs don't log.
+
 ## Open issues
 
 Tracked across rounds; details in CHANGELOG.
@@ -410,7 +531,13 @@ Tracked across rounds; details in CHANGELOG.
 ## Licensing and open questions (for legal / standards)
 
 - **City data.** OpenDataPhilly lists these layers under the "City of Philadelphia License". Its aerial imagery page says the city "retains all rights." Before publishing, confirm with maps@phila.gov that publication and AI-derived works are allowed.
-- **Gemini outputs as training data.** Phase 2's style LoRA was trained on Gemini outputs, for internal use (see Phase 2 above). Before publication, legal should decide whether that is consistent with the Gemini API terms, or the LoRA should be retrained on other targets.
+- **Gemini outputs as training data.** The map's style LoRA (`qe2511_oldcity_r16_v1`) was trained on Gemini 3 Pro Image outputs (see Phase 2 above). The Gemini API terms restrict using outputs to develop models.
+  - **Attempts to replace it with a clean style:**
+    - prompt-only drawing;
+    - a LoRA self-distilled from prompt-only drawings;
+    - a full-quality, palette-snapped variant.
+  - All three looked clearly worse (Stephen, Oct. 29 and Nov. 2; `output/style/compare.html`, `output/trainset_clean_v2/sweep/`).
+  - **Decision (Stephen, Nov. 2):** the map uses the original style. Counsel isn't available for this project. Anyone presenting or publishing the map should disclose that the style was trained on Gemini outputs.
 - **Labelling.** Treat the output as an AI-generated illustration and label it that way.
 - **Google 3D Tiles.** Deliberately not used; see the top of this file.
 

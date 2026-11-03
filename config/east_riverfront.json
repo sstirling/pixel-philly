@@ -1,0 +1,44 @@
+{
+  "name": "east_riverfront",
+  "label": "East riverfront: Port Richmond and Bridesburg, LiDAR building shapes, clipped to the city line",
+  "bbox_wgs84": [
+    -75.125,
+    39.96,
+    -75.045,
+    40.01
+  ],
+  "camera": {
+    "view_bearing_deg": 54,
+    "elevation_deg": 45,
+    "meters_per_pixel": 0.293,
+    "frame_px": 1024
+  },
+  "max_height_m": 360,
+  "imagery_zoom": 19,
+  "default_building_height_m": 10.0,
+  "ground_filter": {
+    "median_px": 5
+  },
+  "wall_tint": {
+    "max_height_m": 20,
+    "color": [
+      150,
+      82,
+      62
+    ],
+    "mix": 0.55
+  },
+  "height_outlier_ratio": 3.0,
+  "clip_frames_to_area": true,
+  "render_tile_frames": 4,
+  "camera_distance_m": 20000.0,
+  "building_shapes": "lidar",
+  "projection_origin": [
+    -75.165,
+    39.9275
+  ],
+  "facades": "opa",
+  "lawn_correct": true,
+  "clip_to_city": true,
+  "lawn_skip_woods": true
+}

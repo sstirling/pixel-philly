@@ -1,0 +1,505 @@
+[
+  {
+    "tile": "t_00_02",
+    "scene": "data/processed/east_riverfront/tiles/t_00_02.json",
+    "frames": [
+      "frame_02_11",
+      "frame_03_11"
+    ],
+    "buildings": 4314,
+    "trees": 232,
+    "texture_px": [
+      6400,
+      6656
+    ]
+  },
+  {
+    "tile": "t_00_03",
+    "scene": "data/processed/east_riverfront/tiles/t_00_03.json",
+    "frames": [
+      "frame_01_12",
+      "frame_02_12",
+      "frame_03_12",
+      "frame_00_13",
+      "frame_01_13",
+      "frame_02_13",
+      "frame_03_13",
+      "frame_00_14",
+      "frame_01_14",
+      "frame_02_14",
+      "frame_03_14",
+      "frame_01_15",
+      "frame_02_15",
+      "frame_03_15"
+    ],
+    "buildings": 12319,
+    "trees": 986,
+    "texture_px": [
+      11520,
+      11008
+    ]
+  },
+  {
+    "tile": "t_00_04",
+    "scene": "data/processed/east_riverfront/tiles/t_00_04.json",
+    "frames": [
+      "frame_03_16"
+    ],
+    "buildings": 4046,
+    "trees": 239,
+    "texture_px": [
+      5632,
+      5632
+    ]
+  },
+  {
+    "tile": "t_01_01",
+    "scene": "data/processed/east_riverfront/tiles/t_01_01.json",
+    "frames": [
+      "frame_07_07"
+    ],
+    "buildings": 4074,
+    "trees": 232,
+    "texture_px": [
+      5632,
+      5376
+    ]
+  },
+  {
+    "tile": "t_01_02",
+    "scene": "data/processed/east_riverfront/tiles/t_01_02.json",
+    "frames": [
+      "frame_06_08",
+      "frame_07_08",
+      "frame_05_09",
+      "frame_06_09",
+      "frame_07_09",
+      "frame_04_10",
+      "frame_05_10",
+      "frame_06_10",
+      "frame_07_10",
+      "frame_04_11",
+      "frame_05_11",
+      "frame_06_11",
+      "frame_07_11"
+    ],
+    "buildings": 16292,
+    "trees": 1063,
+    "texture_px": [
+      12544,
+      9728
+    ]
+  },
+  {
+    "tile": "t_01_03",
+    "scene": "data/processed/east_riverfront/tiles/t_01_03.json",
+    "frames": [
+      "frame_04_12",
+      "frame_05_12",
+      "frame_06_12",
+      "frame_07_12",
+      "frame_04_13",
+      "frame_05_13",
+      "frame_06_13",
+      "frame_07_13",
+      "frame_04_14",
+      "frame_05_14",
+      "frame_06_14",
+      "frame_07_14",
+      "frame_04_15",
+      "frame_05_15",
+      "frame_06_15",
+      "frame_07_15"
+    ],
+    "buildings": 31142,
+    "trees": 1941,
+    "texture_px": [
+      12288,
+      12032
+    ]
+  },
+  {
+    "tile": "t_01_04",
+    "scene": "data/processed/east_riverfront/tiles/t_01_04.json",
+    "frames": [
+      "frame_04_16",
+      "frame_05_16",
+      "frame_06_16",
+      "frame_07_16",
+      "frame_05_17",
+      "frame_06_17",
+      "frame_07_17",
+      "frame_07_18"
+    ],
+    "buildings": 21660,
+    "trees": 1826,
+    "texture_px": [
+      8704,
+      11008
+    ]
+  },
+  {
+    "tile": "t_02_00",
+    "scene": "data/processed/east_riverfront/tiles/t_02_00.json",
+    "frames": [
+      "frame_11_03"
+    ],
+    "buildings": 856,
+    "trees": 65,
+    "texture_px": [
+      5632,
+      5632
+    ]
+  },
+  {
+    "tile": "t_02_01",
+    "scene": "data/processed/east_riverfront/tiles/t_02_01.json",
+    "frames": [
+      "frame_10_04",
+      "frame_11_04",
+      "frame_09_05",
+      "frame_10_05",
+      "frame_11_05",
+      "frame_08_06",
+      "frame_09_06",
+      "frame_10_06",
+      "frame_11_06",
+      "frame_08_07",
+      "frame_09_07",
+      "frame_10_07",
+      "frame_11_07"
+    ],
+    "buildings": 12535,
+    "trees": 790,
+    "texture_px": [
+      12288,
+      9984
+    ]
+  },
+  {
+    "tile": "t_02_02",
+    "scene": "data/processed/east_riverfront/tiles/t_02_02.json",
+    "frames": [
+      "frame_08_08",
+      "frame_09_08",
+      "frame_10_08",
+      "frame_11_08",
+      "frame_08_09",
+      "frame_09_09",
+      "frame_10_09",
+      "frame_11_09",
+      "frame_08_10",
+      "frame_09_10",
+      "frame_10_10",
+      "frame_11_10",
+      "frame_08_11",
+      "frame_09_11",
+      "frame_10_11",
+      "frame_11_11"
+    ],
+    "buildings": 20906,
+    "trees": 1311,
+    "texture_px": [
+      12544,
+      12032
+    ]
+  },
+  {
+    "tile": "t_02_03",
+    "scene": "data/processed/east_riverfront/tiles/t_02_03.json",
+    "frames": [
+      "frame_08_12",
+      "frame_09_12",
+      "frame_10_12",
+      "frame_11_12",
+      "frame_08_13",
+      "frame_09_13",
+      "frame_10_13",
+      "frame_11_13",
+      "frame_08_14",
+      "frame_09_14",
+      "frame_10_14",
+      "frame_11_14",
+      "frame_08_15",
+      "frame_09_15",
+      "frame_10_15",
+      "frame_11_15"
+    ],
+    "buildings": 34030,
+    "trees": 2744,
+    "texture_px": [
+      12288,
+      12032
+    ]
+  },
+  {
+    "tile": "t_02_04",
+    "scene": "data/processed/east_riverfront/tiles/t_02_04.json",
+    "frames": [
+      "frame_08_16",
+      "frame_09_16",
+      "frame_10_16",
+      "frame_11_16",
+      "frame_08_17",
+      "frame_09_17",
+      "frame_10_17",
+      "frame_11_17",
+      "frame_08_18",
+      "frame_09_18",
+      "frame_10_18",
+      "frame_11_18",
+      "frame_09_19",
+      "frame_10_19",
+      "frame_11_19"
+    ],
+    "buildings": 31836,
+    "trees": 3873,
+    "texture_px": [
+      11776,
+      12032
+    ]
+  },
+  {
+    "tile": "t_02_05",
+    "scene": "data/processed/east_riverfront/tiles/t_02_05.json",
+    "frames": [
+      "frame_11_20"
+    ],
+    "buildings": 4581,
+    "trees": 894,
+    "texture_px": [
+      5888,
+      5376
+    ]
+  },
+  {
+    "tile": "t_03_00",
+    "scene": "data/processed/east_riverfront/tiles/t_03_00.json",
+    "frames": [
+      "frame_13_01",
+      "frame_14_01",
+      "frame_12_02",
+      "frame_13_02",
+      "frame_14_02",
+      "frame_12_03",
+      "frame_13_03",
+      "frame_14_03",
+      "frame_15_03"
+    ],
+    "buildings": 606,
+    "trees": 114,
+    "texture_px": [
+      10240,
+      9984
+    ]
+  },
+  {
+    "tile": "t_03_01",
+    "scene": "data/processed/east_riverfront/tiles/t_03_01.json",
+    "frames": [
+      "frame_12_04",
+      "frame_13_04",
+      "frame_14_04",
+      "frame_15_04",
+      "frame_12_05",
+      "frame_13_05",
+      "frame_14_05",
+      "frame_15_05",
+      "frame_12_06",
+      "frame_13_06",
+      "frame_14_06",
+      "frame_15_06",
+      "frame_12_07",
+      "frame_13_07",
+      "frame_14_07",
+      "frame_15_07"
+    ],
+    "buildings": 11294,
+    "trees": 801,
+    "texture_px": [
+      12288,
+      12032
+    ]
+  },
+  {
+    "tile": "t_03_02",
+    "scene": "data/processed/east_riverfront/tiles/t_03_02.json",
+    "frames": [
+      "frame_12_08",
+      "frame_13_08",
+      "frame_14_08",
+      "frame_15_08",
+      "frame_12_09",
+      "frame_13_09",
+      "frame_14_09",
+      "frame_15_09",
+      "frame_12_10",
+      "frame_13_10",
+      "frame_14_10",
+      "frame_15_10",
+      "frame_12_11",
+      "frame_13_11",
+      "frame_14_11",
+      "frame_15_11"
+    ],
+    "buildings": 11658,
+    "trees": 840,
+    "texture_px": [
+      12544,
+      12032
+    ]
+  },
+  {
+    "tile": "t_03_03",
+    "scene": "data/processed/east_riverfront/tiles/t_03_03.json",
+    "frames": [
+      "frame_12_12",
+      "frame_13_12",
+      "frame_14_12",
+      "frame_15_12",
+      "frame_12_13",
+      "frame_13_13",
+      "frame_14_13",
+      "frame_15_13",
+      "frame_12_14",
+      "frame_13_14",
+      "frame_14_14",
+      "frame_15_14",
+      "frame_12_15",
+      "frame_13_15",
+      "frame_14_15",
+      "frame_15_15"
+    ],
+    "buildings": 17439,
+    "trees": 1646,
+    "texture_px": [
+      12288,
+      12032
+    ]
+  },
+  {
+    "tile": "t_03_04",
+    "scene": "data/processed/east_riverfront/tiles/t_03_04.json",
+    "frames": [
+      "frame_12_16",
+      "frame_13_16",
+      "frame_14_16",
+      "frame_15_16",
+      "frame_12_17",
+      "frame_13_17",
+      "frame_14_17",
+      "frame_15_17",
+      "frame_12_18",
+      "frame_13_18",
+      "frame_14_18",
+      "frame_15_18",
+      "frame_12_19",
+      "frame_13_19",
+      "frame_14_19",
+      "frame_15_19"
+    ],
+    "buildings": 21154,
+    "trees": 2960,
+    "texture_px": [
+      12544,
+      12032
+    ]
+  },
+  {
+    "tile": "t_03_05",
+    "scene": "data/processed/east_riverfront/tiles/t_03_05.json",
+    "frames": [
+      "frame_12_20",
+      "frame_13_20",
+      "frame_14_20",
+      "frame_15_20",
+      "frame_13_21",
+      "frame_14_21",
+      "frame_15_21",
+      "frame_15_22"
+    ],
+    "buildings": 4867,
+    "trees": 804,
+    "texture_px": [
+      8704,
+      11008
+    ]
+  },
+  {
+    "tile": "t_04_01",
+    "scene": "data/processed/east_riverfront/tiles/t_04_01.json",
+    "frames": [
+      "frame_16_05",
+      "frame_17_05",
+      "frame_16_06",
+      "frame_17_06",
+      "frame_16_07",
+      "frame_17_07",
+      "frame_18_07"
+    ],
+    "buildings": 2559,
+    "trees": 177,
+    "texture_px": [
+      9216,
+      9984
+    ]
+  },
+  {
+    "tile": "t_04_02",
+    "scene": "data/processed/east_riverfront/tiles/t_04_02.json",
+    "frames": [
+      "frame_16_08",
+      "frame_17_08",
+      "frame_18_08",
+      "frame_16_09",
+      "frame_17_09",
+      "frame_18_09",
+      "frame_16_10",
+      "frame_17_10",
+      "frame_18_10",
+      "frame_16_11",
+      "frame_17_11",
+      "frame_18_11"
+    ],
+    "buildings": 2116,
+    "trees": 251,
+    "texture_px": [
+      11776,
+      11008
+    ]
+  },
+  {
+    "tile": "t_04_03",
+    "scene": "data/processed/east_riverfront/tiles/t_04_03.json",
+    "frames": [
+      "frame_16_12",
+      "frame_17_12",
+      "frame_18_12",
+      "frame_16_13",
+      "frame_17_13",
+      "frame_18_13",
+      "frame_16_14",
+      "frame_17_14",
+      "frame_16_15"
+    ],
+    "buildings": 3843,
+    "trees": 427,
+    "texture_px": [
+      11520,
+      8960
+    ]
+  },
+  {
+    "tile": "t_04_04",
+    "scene": "data/processed/east_riverfront/tiles/t_04_04.json",
+    "frames": [
+      "frame_16_16"
+    ],
+    "buildings": 255,
+    "trees": 21,
+    "texture_px": [
+      5632,
+      5632
+    ]
+  }
+]

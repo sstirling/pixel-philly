@@ -31,6 +31,14 @@ from pyproj import Transformer
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
+# City of Philadelphia city limits (scripts/04l_fetch_city_limits.py), used
+# by configs with "clip_to_city": true. CITY_FETCH_BBOX is the box the fetch
+# queries: the whole city (lon -75.280 to -74.956, lat 39.867 to 40.138) with
+# a margin.
+CITY_LIMITS = REPO_ROOT / "data" / "raw" / "city_limits.geojson"
+CITY_FETCH_BBOX = [-75.30, 39.85, -74.94, 40.15]
+_CITY_CACHE: dict = {}
+
 
 def load_config(name: str | None = None) -> dict:
     """Load config/<name>.json. Without a name, the PP_AREA environment
@@ -169,8 +177,45 @@ def area_screen_polygon(cam: IsoCamera, frame: LocalFrame, bbox_wgs84, max_heigh
     return MultiPoint(pts).convex_hull
 
 
+def swept_screen_polygon(cam: IsoCamera, frame: LocalFrame, ground_wgs84, max_height_m: float):
+    """A WGS84 ground (multi)polygon as seen on screen, swept from height 0
+    up to `max_height_m`, so anything up to that height standing on it falls
+    inside.
+
+    Raising a point moves it straight up the screen by the same amount
+    everywhere (world_to_screen is linear), so the swept shape is the
+    Minkowski sum of the ground outline with one vertical segment: the
+    outline, the outline lifted, and every edge's quad between them. For a
+    box this is exactly area_screen_polygon's convex hull; for a concave
+    outline such as the city line, a hull would keep frames that only see
+    the outside."""
+    import shapely
+    import shapely.affinity
+    from shapely.ops import unary_union
+
+    def to_screen(c):
+        e, n = frame.to_local(c[:, 0], c[:, 1])
+        sx, sy = cam.world_to_screen(e, n, 0.0)
+        return np.column_stack([sx, sy])
+
+    base = shapely.transform(ground_wgs84, to_screen)
+    x0, y0 = cam.world_to_screen(0.0, 0.0, 0.0)
+    x1, y1 = cam.world_to_screen(0.0, 0.0, max_height_m)
+    d = np.array([float(x1 - x0), float(y1 - y0)])
+    lifted = shapely.affinity.translate(base, *d)
+    polys = getattr(base, "geoms", [base])
+    rings = [r for p in polys for r in (p.exterior, *p.interiors)]
+    quads = []
+    for r in rings:
+        c = np.asarray(r.coords)[:, :2]
+        a, b = c[:-1], c[1:]
+        q = shapely.polygons(np.stack([a, b, b + d, a + d, a], axis=1))
+        quads.extend(q[shapely.area(q) > 0])
+    return unary_union([base, lifted, *quads])
+
+
 def frame_lattice(cam: IsoCamera, frame: LocalFrame, bbox_wgs84, size: int, max_height_m: float,
-                  clip: bool = False):
+                  clip: bool = False, ground=None):
     """Frames of `size` px that cover the bbox on the ground plus anything up
     to `max_height_m` tall standing on it. Frames sit on a lattice of whole
     multiples of `size` so neighboring frames share edges exactly.
@@ -178,7 +223,12 @@ def frame_lattice(cam: IsoCamera, frame: LocalFrame, bbox_wgs84, size: int, max_
     The lattice is the screen-aligned rectangle around the area. With
     clip=True only frames that actually intersect the area are kept: for a
     large area seen at ~45 degrees, about half the rectangle is empty corner.
-    Kept frames keep their rectangle (col, row) so mosaics still line up."""
+    Kept frames keep their rectangle (col, row) so mosaics still line up.
+
+    With `ground` (a WGS84 polygon inside the bbox, e.g. bbox ∩ city limits)
+    only frames that see that ground, or anything up to `max_height_m`
+    standing on it, are kept (swept_screen_polygon). The rectangle and its
+    indices still come from the whole bbox."""
     from shapely.geometry import box
 
     area = area_screen_polygon(cam, frame, bbox_wgs84, max_height_m)
@@ -190,9 +240,61 @@ def frame_lattice(cam: IsoCamera, frame: LocalFrame, bbox_wgs84, size: int, max_
         for r in range(r0, r1)
         for c in range(c0, c1)
     ]
-    if clip:
+    if ground is not None:
+        from shapely.prepared import prep
+
+        seen = prep(swept_screen_polygon(cam, frame, ground, max_height_m))
+        frames = [f for f in frames if seen.intersects(box(f.x0, f.y0, f.x0 + size, f.y0 + size))]
+    elif clip:
         frames = [f for f in frames if box(f.x0, f.y0, f.x0 + size, f.y0 + size).intersects(area)]
     return frames
+
+
+def outline_coords(geom) -> np.ndarray:
+    """(N, 2) outline coordinates whose extremes bound `geom`: the exterior
+    ring of a polygon, or the convex hull's for a multipolygon (a clipped
+    render tile's kept frames can form separate pieces)."""
+    ring = geom.exterior if geom.geom_type == "Polygon" else geom.convex_hull.exterior
+    return np.asarray(ring.coords)
+
+
+def city_polygon():
+    """The city limits as one WGS84 (multi)polygon, from CITY_LIMITS.
+    Cached, and re-read when the file changes."""
+    import shapely
+    from shapely.geometry import shape
+
+    path = Path(CITY_LIMITS)
+    if not path.exists():
+        raise FileNotFoundError(f"{path} is missing: run uv run python scripts/04l_fetch_city_limits.py "
+                                "(configs with \"clip_to_city\" need it)")
+    key = (str(path), path.stat().st_mtime_ns)
+    if key not in _CITY_CACHE:
+        feats = json.loads(path.read_text())["features"]
+        _CITY_CACHE.clear()
+        _CITY_CACHE[key] = shapely.union_all([shape(f["geometry"]) for f in feats]).buffer(0)
+    return _CITY_CACHE[key]
+
+
+def city_ground(cfg: dict):
+    """bbox ∩ city limits (WGS84) for configs with "clip_to_city": true,
+    else None. Regions along the city edge then keep only frames that see
+    the city (frame_lattice(ground=...)), and data is fetched for those."""
+    if not cfg.get("clip_to_city"):
+        return None
+    from shapely.geometry import box
+
+    g = box(*cfg["bbox_wgs84"]).intersection(city_polygon())
+    if g.is_empty or g.area == 0:
+        raise ValueError(f"{cfg.get('name')}: bbox {cfg['bbox_wgs84']} does not intersect the city limits")
+    return g
+
+
+def is_clipped(cfg: dict) -> bool:
+    """Does the config keep only part of its frame rectangle? Then data is
+    fetched for the kept frames' ground (render_ground_polygon) instead of
+    the rectangle's whole extent."""
+    return bool(cfg.get("clip_frames_to_area") or cfg.get("clip_to_city"))
 
 
 def local_frame(cfg: dict) -> LocalFrame:
@@ -209,7 +311,7 @@ def area_setup(cfg: dict):
     cam = IsoCamera.from_config(cfg)
     frames = frame_lattice(
         cam, frame, cfg["bbox_wgs84"], cfg["camera"]["frame_px"], cfg["max_height_m"],
-        clip=cfg.get("clip_frames_to_area", False),
+        clip=cfg.get("clip_frames_to_area", False), ground=city_ground(cfg),
     )
     return frame, cam, frames
 
@@ -217,7 +319,10 @@ def area_setup(cfg: dict):
 def render_ground_polygon(cfg: dict, margin_m: float = 50.0):
     """Ground seen by the kept frames, as a WGS84 shapely polygon: the union
     of each frame's footprint on the ground, grown by `margin_m`. For clipped
-    areas this is what gets downloaded, instead of the whole bounding box."""
+    areas this is what gets downloaded, instead of the whole bounding box.
+    With "clip_to_city" the kept frames are those that see the city, so this
+    shrinks with them; it still includes the ground those frames show past
+    the city line, so no kept frame has a hole in its data."""
     import shapely
     from shapely.geometry import Polygon
     from shapely.ops import unary_union
@@ -240,7 +345,7 @@ def render_extent_wgs84(cfg: dict, margin_m: float = 50.0):
     the area, so their corners see ground well outside the area's bbox. Data
     is fetched for this larger extent so no frame has empty ground in it.
     """
-    if cfg.get("clip_frames_to_area"):
+    if is_clipped(cfg):
         return list(render_ground_polygon(cfg, margin_m).bounds)
     frame, cam, frames = area_setup(cfg)
     size = cfg["camera"]["frame_px"]

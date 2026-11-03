@@ -389,7 +389,31 @@ def invented_water_context(cfg, frame, cam, x_origin, y_origin):
     return water, pools, wetlands
 
 
-def scan_invented_water(cfg, frames, size, drawing, renders, masks, water_geom, pools, wetlands_geom=None):
+def courtyard_geometry(cfg, frame, cam, x_origin, y_origin):
+    """Courtyard holes of the City's building footprints, in mosaic px at
+    ground level (pixelphilly.invented_water.courtyard_lawn)."""
+    from shapely.geometry import Polygon, shape
+
+    path = REPO_ROOT / "data" / "raw" / f"{cfg['name']}_buildings.geojson"
+    holes = []
+    if path.exists():
+        for feat in json.loads(path.read_text())["features"]:
+            if not feat.get("geometry"):
+                continue
+            g = shape(feat["geometry"])
+            for poly in getattr(g, "geoms", [g]):
+                for ring in getattr(poly, "interiors", []):
+                    lon, lat = np.asarray(ring.coords).T
+                    e, n = frame.to_local(lon, lat)
+                    sx, sy = cam.world_to_screen(np.asarray(e), np.asarray(n), 0.0)
+                    p = Polygon(np.column_stack([sx - x_origin, sy - y_origin])).buffer(0)
+                    if not p.is_empty:
+                        holes.append(p)
+    return unary_union(holes) if holes else Polygon()
+
+
+def scan_invented_water(cfg, frames, size, drawing, renders, masks, water_geom, pools, wetlands_geom=None,
+                        holds=(), courtyards_geom=None):
     """Look for invented water frame by frame, each with INVENTED_HALO of
     context. Returns (blobs, repaired): blobs as logged in report.json
     (frame, area_px, bbox in mosaic px, exempt), merged across frames;
@@ -410,12 +434,18 @@ def scan_invented_water(cfg, frames, size, drawing, renders, masks, water_geom, 
         wet = (waterpaint.rasterize_view(wetlands_geom, gx, gy, 1.0, span, span)
                if wetlands_geom is not None and not wetlands_geom.is_empty else None)
         blobs = iw.find_blobs(d, r, ok, bmask, pools_px=local_pools, pool_radius_px=POOL_RADIUS_PX, wetlands=wet)
+        # Lawn the model invented in a paved courtyard (City Hall, v5); the
+        # silhouettes are used ungrown so courtyards stay open
+        if courtyards_geom is not None and not courtyards_geom.is_empty:
+            holes = waterpaint.rasterize_view(courtyards_geom, gx, gy, 1.0, span, span)
+            blobs += iw.courtyard_lawn(d, r, masks.region(gx, gy, span, span) > 127, holes)
+        blobs = iw.apply_holds(blobs, gx, gy, holds)
         h0, h1 = INVENTED_HALO, INVENTED_HALO + size
         mine = [b for b in blobs if b["bbox"][0] < h1 and b["bbox"][2] > h0 and b["bbox"][1] < h1 and b["bbox"][3] > h0]
         for b in mine:
             x0, y0, x1, y1 = b["bbox"]
             found.append({"frame": f.name, "area_px": b["area_px"], "bbox": [x0 + gx, y0 + gy, x1 + gx, y1 + gy],
-                          "exempt": b["exempt"]})
+                          "exempt": b["exempt"], "kind": b.get("kind", "invented water")})
         if any(not b["exempt"] for b in mine):
             repaired[f.name] = iw.repair(d, r, mine)[h0:h1, h0:h1]
     # One entry per blob: frames that saw the same blob share an overlapping bbox
@@ -423,15 +453,24 @@ def scan_invented_water(cfg, frames, size, drawing, renders, masks, water_geom, 
     for b in sorted(found, key=lambda b: -b["area_px"]):
         x0, y0, x1, y1 = b["bbox"]
         hit = next((m for m in merged if x0 < m["bbox"][2] and x1 > m["bbox"][0] and y0 < m["bbox"][3]
-                    and y1 > m["bbox"][1] and m["exempt"] == b["exempt"]), None)
+                    and y1 > m["bbox"][1] and m["exempt"] == b["exempt"] and m["kind"] == b["kind"]), None)
         if hit:
             hit["frames"].append(b["frame"])
             hit["bbox"] = [min(x0, hit["bbox"][0]), min(y0, hit["bbox"][1]), max(x1, hit["bbox"][2]),
                            max(y1, hit["bbox"][3])]
         else:
             merged.append({"frames": [b["frame"]], "area_px": b["area_px"], "bbox": list(b["bbox"]),
-                           "exempt": b["exempt"]})
+                           "exempt": b["exempt"], "kind": b["kind"]})
     return merged, repaired
+
+
+def load_holds(cfg):
+    """Reviewed hold list for this area (config/invented_water_holds.json):
+    flags a person couldn't confirm as invented, left as drawn."""
+    path = REPO_ROOT / "config" / "invented_water_holds.json"
+    if not path.exists():
+        return []
+    return json.loads(path.read_text()).get(cfg["name"], [])
 
 
 def fix_invented_water(cfg, frame, cam, frames, args, out_dir):
@@ -444,7 +483,8 @@ def fix_invented_water(cfg, frame, cam, frames, args, out_dir):
     water_geom, pools, wetlands = invented_water_context(cfg, frame, cam, x_origin, y_origin)
     blobs, repaired = scan_invented_water(
         cfg, done, size, FrameReader(out_dir, done, size), FrameReader(area_dir(cfg, "renders"), frames, size),
-        FrameReader(area_dir(cfg, "masks"), frames, size, "L"), water_geom, pools, wetlands)
+        FrameReader(area_dir(cfg, "masks"), frames, size, "L"), water_geom, pools, wetlands,
+        holds=load_holds(cfg), courtyards_geom=courtyard_geometry(cfg, frame, cam, x_origin, y_origin))
     for name, img in repaired.items():
         Image.fromarray(img).save(out_dir / f"{name}.png")
     print(f"invented water: {sum(not b['exempt'] for b in blobs)} blobs repaired in {len(repaired)} frames, "

@@ -1,0 +1,131 @@
+{
+  "buildings_downloaded": 2792,
+  "buildings_in_scene": 3734,
+  "buildings_dropped": [],
+  "height_source_counts": {
+    "approx_hgt": 2780,
+    "max_hgt": 8,
+    "default": 4
+  },
+  "height_outliers_max_gt_ratio_x_approx": [
+    {
+      "objectid": 275669,
+      "address": "8310 BUSTLETON AVE",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 42.189988750000005
+    },
+    {
+      "objectid": 314397,
+      "address": "2199 STRAHLE ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 54.16993525
+    },
+    {
+      "objectid": 501001,
+      "address": "1926 FULLER ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 41.16986283
+    }
+  ],
+  "tallest_buildings_m": [
+    {
+      "id": 320384,
+      "h": 33.83
+    },
+    {
+      "id": "512570-2",
+      "h": 17.8
+    },
+    {
+      "id": "505059-4",
+      "h": 15.57
+    },
+    {
+      "id": "512570-3",
+      "h": 14.42
+    },
+    {
+      "id": "501001-1",
+      "h": 13.72
+    },
+    {
+      "id": "505059-3",
+      "h": 13.21
+    },
+    {
+      "id": "505059-1",
+      "h": 13.15
+    },
+    {
+      "id": "505059-2",
+      "h": 13.14
+    },
+    {
+      "id": "505059-0",
+      "h": 12.89
+    },
+    {
+      "id": 514449,
+      "h": 12.8
+    }
+  ],
+  "trees_in_scene": 388,
+  "ground_texture_px": [
+    7424,
+    7168
+  ],
+  "ground_texture_source_px": [
+    7424,
+    7168
+  ],
+  "uv_fit_max_residual_m": 1.0278589580822994e-05,
+  "ground_median_filter_px": 5,
+  "frames": 10,
+  "lidar_buildings_shaped": 970,
+  "lidar_fallback_single_height": 8,
+  "lidar_parts": 1908,
+  "lidar_terrace_parts": 0,
+  "lidar_stadiums": [],
+  "lidar_structures": 2,
+  "lidar_structure_parts": 4,
+  "lidar_structure_area_m2": 634.1,
+  "lidar_structures_dropped_photo": 0,
+  "lidar_highway_mask": true,
+  "lidar_highway_masked_m2": 0.0,
+  "lidar_rail_mask": true,
+  "lidar_margin_m": 100.0,
+  "facade_join": {
+    "parcel": 2774,
+    "unmatched": 8,
+    "address": 4,
+    "point": 6
+  },
+  "facade_match_rate": 0.997,
+  "facade_styles": {
+    "twin": 1887,
+    "detached": 678,
+    "other": 66,
+    "apartment_low": 53,
+    "mixed_storefront": 42,
+    "row_typical": 33,
+    "institutional": 20,
+    "row_porch": 3,
+    "warehouse": 1,
+    "row_postwar": 1
+  },
+  "facade_materials": {
+    "brick": 2557,
+    "frame": 217,
+    "stone": 10
+  },
+  "facade_colour_source": {
+    "palette": 2783,
+    "aerial": 1
+  },
+  "facade_osm_footprints": 0,
+  "facade_osm_items": 0,
+  "facade_street_fronts": 42,
+  "facade_unmatched": "plain walls (no facade)",
+  "lawn_corrected_px": 2323379,
+  "lawn_park_px": 5171505
+}

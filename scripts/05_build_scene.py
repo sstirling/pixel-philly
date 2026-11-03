@@ -31,7 +31,7 @@ from shapely.geometry import shape
 from shapely.validation import make_valid
 
 from pixelphilly.heights import FT_TO_M, building_height
-from pixelphilly.projection import REPO_ROOT, area_setup, load_config
+from pixelphilly.projection import REPO_ROOT, area_setup, is_clipped, load_config, outline_coords
 from pixelphilly.sources import RAW
 
 PROCESSED = REPO_ROOT / "data" / "processed"
@@ -82,11 +82,11 @@ def build_mosaic(cfg, tile_range=None):
         x0, x1, y0, y1 = tile_range
     tile_dir = RAW / "imagery" / "CityImagery_2024_3in" / str(z)
     w, h = (x1 - x0 + 1) * TILE, (y1 - y0 + 1) * TILE
-    mosaic = Image.new("RGB", (w, h), (128, 128, 128) if cfg.get("clip_frames_to_area") else (0, 0, 0))
+    mosaic = Image.new("RGB", (w, h), (128, 128, 128) if is_clipped(cfg) else (0, 0, 0))
     for ty in range(y0, y1 + 1):
         for tx in range(x0, x1 + 1):
             path = tile_dir / f"{ty}_{tx}.jpg"
-            if not path.exists() and cfg.get("clip_frames_to_area"):
+            if not path.exists() and is_clipped(cfg):
                 continue
             with Image.open(path) as t:
                 mosaic.paste(t.convert("RGB"), ((tx - x0) * TILE, (ty - y0) * TILE))
@@ -296,8 +296,16 @@ def load_buildings(cfg, frame):
             # For the property-record join (attach_facades); not written to the scene
             b["parcel_id_num"], b["address"] = p.get("parcel_id_num"), p.get("address")
         buildings.append(b)
+    # Reviewed corrections to City heights (config/height_overrides.json;
+    # pixelphilly.reviewed). Footprints not listed are untouched
+    from pixelphilly import reviewed
+
+    overridden = reviewed.apply_height_overrides(buildings, reviewed.load(reviewed.HEIGHT_OVERRIDES),
+                                                 cfg["default_building_height_m"])
+    for o in overridden:
+        print(f"  height override {o['id']}: {o['from_m']} m -> {o['to_m']} m ({o['mode']})", flush=True)
     return buildings, {"downloaded": len(raw["features"]), "sources": sources,
-                       "outliers": outliers, "dropped": dropped}
+                       "outliers": outliers, "dropped": dropped, "height_overrides": overridden}
 
 
 # Base for LiDAR structures over water (ships), m NAVD88. Approximate: the
@@ -433,8 +441,9 @@ def lawn_correct_ground(cfg, frame, ground, buildings):
     """With "lawn_correct": true, shift dormant-grass pixels of the ground
     texture toward green inside park polygons (data/raw/<area>_parks.geojson
     and _nps_parks.geojson from 04j_fetch_parks.py), excluding building
-    footprints so roofs keep the aerial (pixelphilly.lawns). The texture is
-    replaced in place; mosaic_arr (wall colors) is left as is. Returns QA."""
+    footprints so roofs keep the aerial (pixelphilly.lawns). With
+    "lawn_skip_woods": true (LiDAR areas), not in leaf-off woods. The texture
+    is replaced in place; mosaic_arr (wall colors) is left as is. Returns QA."""
     if not cfg.get("lawn_correct"):
         return {}
     from shapely.geometry import Polygon, shape
@@ -463,6 +472,11 @@ def lawn_correct_ground(cfg, frame, ground, buildings):
 
     mask = Image.new("L", img.size, 0)
     d = ImageDraw.Draw(mask)
+    forest_mode = bool(cfg.get("lawn_skip_woods") and cfg.get("lawn_woods_mode") == "forest")
+    # Forest mode works on woods anywhere, not only in parks: building
+    # footprints (+1 m) are kept out with their own mask
+    bmask = Image.new("L", img.size, 0) if forest_mode else None
+    bd = ImageDraw.Draw(bmask) if forest_mode else None
     for rings in polys:
         d.polygon(px(rings[0]), fill=255)
         for hole in rings[1:]:
@@ -483,13 +497,61 @@ def lawn_correct_ground(cfg, frame, ground, buildings):
             g = Polygon(rings[0], rings[1:]).buffer(1.0)
             for pg in getattr(g, "geoms", [g]):
                 d.polygon(px(pg.exterior.coords), fill=0)
+                if bd is not None:
+                    bd.polygon(px(pg.exterior.coords), fill=255)
     region = np.asarray(mask) > 0
     arr = np.asarray(img.convert("RGB"))
-    out = lawns.correct(arr, region)
+    qa = {}
+    if cfg.get("lawn_skip_woods"):
+        # Leaf-off woods: the forest floor reads as dormant grass; fade the
+        # correction out where the LiDAR says woods (pixelphilly.lawns)
+        w, origin, block = woods_for(cfg, frame, buildings)
+        ys, xs = np.nonzero(region)
+        e, n = texture_local(ground, xs, ys)
+        woods = lawns.sample_grid(w, origin, block, e, n)
+        weight = region.astype(np.float32)
+        weight[ys, xs] = 1.0 - woods
+        qa = {"lawn_woods_px": int((woods > 0.5).sum())}
+        region_arg = weight
+    else:
+        region_arg = region
+    out = lawns.correct(arr, region_arg)
+    if cfg.get("lawn_skip_woods") and cfg.get("lawn_woods_mode") == "forest":
+        # Woods shifted toward forest green (pixelphilly.lawns.forest) instead
+        # of left as the leaf-off aerial. Mapped water stays as is: the water
+        # repaint finds water by its render color
+        wmask = Image.new("L", img.size, 0)
+        wd = ImageDraw.Draw(wmask)
+        for suffix in ("water", "water_nhd"):
+            path = RAW / f"{cfg['name']}_{suffix}.geojson"
+            if not path.exists():
+                continue
+            for f in json.loads(path.read_text())["features"]:
+                if f.get("geometry"):
+                    for rings in rings_local(shape(f["geometry"]), frame):
+                        wd.polygon(px(rings[0]), fill=255)
+                        for hole in rings[1:]:
+                            wd.polygon(px(hole), fill=0)
+        # Woods anywhere on the texture, not only in park polygons (a park
+        # line through continuous woods made a hard edge at Cobbs Creek).
+        # Sampled every 8 px (~1.8 m, finer than the 2 m woods blocks) and
+        # interpolated, so a 12k x 12k tile texture stays cheap
+        H, W = region.shape
+        step = 8
+        gy, gx = np.mgrid[0:H:step, 0:W:step]
+        ge, gn = texture_local(ground, gx.ravel(), gy.ravel())
+        wc = lawns.sample_grid(w, origin, block, ge, gn).reshape(gx.shape)
+        fw = np.asarray(Image.fromarray(np.round(wc * 255).astype(np.uint8)).resize((W, H), Image.BILINEAR),
+                        np.float32) / 255.0
+        fw *= (np.asarray(wmask) == 0) & (np.asarray(bmask) == 0)
+        out = lawns.forest(out, fw)
+        qa["lawn_forest_px"] = int((fw > 0.5).sum())
     changed = int((out != arr).any(axis=2).sum())
     ground["ground"] = Image.fromarray(out)
-    print(f"  lawn correction: {changed:,} px in {int(region.sum()):,} px of parks", flush=True)
-    return {"lawn_corrected_px": changed, "lawn_park_px": int(region.sum())}
+    print(f"  lawn correction: {changed:,} px in {int(region.sum()):,} px of parks"
+          + (f" ({qa['lawn_woods_px']:,} px of woods " + ("forest green)" if "lawn_forest_px" in qa
+                                                          else "left as aerial)") if qa else ""), flush=True)
+    return {"lawn_corrected_px": changed, "lawn_park_px": int(region.sum()), **qa}
 
 
 def attach_facades(cfg, frame, buildings):
@@ -641,6 +703,110 @@ def part_facade(b, part):
     return facades.compact(facades.facade_spec(rec, b["h"], geom, b["id"], osm=m, front=front))
 
 
+def load_lidar_grid(cfg, frame):
+    """(dsm, ground, origin, struct) for the area: the cached grid
+    (data/processed/<area>_lidar_grid.npz), or gridded from the LAS tiles
+    and cached."""
+    from pixelphilly import lidar
+
+    name = cfg["name"]
+    _, region = lidar.lidar_region_local(cfg)
+    cache = PROCESSED / f"{name}_lidar_grid.npz"
+    z = np.load(cache) if cache.exists() else None
+    if z is not None and "struct" in z:
+        return z["dsm"], z["ground"], tuple(z["origin"]), z["struct"]
+    # Grids cached before structures existed lack the class-1 grid
+    if z is not None:
+        print(f"  {cache.name} has no class-1 structure grid: regridding from LAS", flush=True)
+    tiles = (RAW / "lidar" / f"{name}_tiles.txt").read_text().split()
+    dsm, ground, origin, struct = lidar.dsm_from_las([RAW / "lidar" / t for t in tiles], frame, region.bounds,
+                                                     lidar.RES_M, with_struct=True)
+    np.savez_compressed(cache, dsm=dsm, ground=ground, origin=np.array(origin), struct=struct)
+    return dsm, ground, origin, struct
+
+
+_WOODS = {}
+
+
+def woods_for(cfg, frame, buildings):
+    """(weight grid, origin, block m) of leaf-off woods for the area
+    (pixelphilly.lawns.woods_grid), from the LiDAR grid with building
+    footprints (+1 m) left out. Computed once per area."""
+    from rasterio.features import rasterize
+    from shapely.geometry import Polygon
+
+    from pixelphilly import lawns, lidar
+
+    if cfg["name"] in _WOODS:
+        return _WOODS[cfg["name"]]
+    dsm, ground, origin, _ = load_lidar_grid(cfg, frame)
+    shapes = []
+    for b in buildings:
+        for rings in b["polys"]:
+            g = Polygon(rings[0], rings[1:])
+            if g.is_valid and not g.is_empty:
+                shapes.append((g.buffer(1.0), 1))
+    tr = lidar._transform(origin, lidar.RES_M)
+    bmask = rasterize(shapes, out_shape=dsm.shape, transform=tr, fill=0, dtype="uint8").astype(bool) if shapes \
+        else np.zeros(dsm.shape, bool)
+    with np.errstate(invalid="ignore"):
+        h = np.where(bmask, np.nan, dsm - ground).astype(np.float32)
+    del bmask
+    forest = cfg.get("lawn_woods_mode") == "forest"
+    w, block = lawns.woods_grid(h, lidar.RES_M, feather_m=lawns.WOODS_FEATHER_M if forest else 0.0)
+    _WOODS[cfg["name"]] = (w, origin, block)
+    return _WOODS[cfg["name"]]
+
+
+def woods_trees(cfg, frame, buildings, trees):
+    """With "woods_trees": "lidar" (experiment, Nov. 3): add a stylized
+    canopy (the street-tree geometry) at LiDAR treetops in woods,
+    pixelphilly.lawns.canopy_trees. Returns trees plus the added ones."""
+    if cfg.get("woods_trees") != "lidar":
+        return trees
+    from rasterio.features import rasterize
+    from shapely.geometry import Polygon
+
+    from pixelphilly import lawns, lidar
+
+    w, origin, block = woods_for(cfg, frame, buildings)
+    dsm, ground, origin, _ = load_lidar_grid(cfg, frame)
+    shapes = [(Polygon(r[0], r[1:]).buffer(1.0), 1) for b in buildings for r in b["polys"]
+              if Polygon(r[0], r[1:]).is_valid]
+    bmask = rasterize(shapes, out_shape=dsm.shape, transform=lidar._transform(origin, lidar.RES_M), fill=0,
+                      dtype="uint8").astype(bool) if shapes else np.zeros(dsm.shape, bool)
+    with np.errstate(invalid="ignore"):
+        h = np.where(bmask, np.nan, dsm - ground).astype(np.float32)
+    added = [[e, n, r] for e, n, r in lawns.canopy_trees(h, lidar.RES_M, origin, w, block)]
+    print(f"  woods trees: {len(added):,} canopies at LiDAR treetops", flush=True)
+    return trees + added
+
+
+def texture_local(ground, xs, ys):
+    """Local (e, n) meters of ground-texture pixel centers. The texture is
+    Web Mercator; over a render tile local meters are a smooth function of
+    its pixels, so a quadratic fitted to to_px_arr samples inverts it."""
+    e0, n0, e1, n1 = ground["extent_m"]
+    ee, nn = np.meshgrid(np.linspace(e0, e1, 25), np.linspace(n0, n1, 25))
+    ee, nn = ee.ravel(), nn.ravel()
+    px, py = ground["to_px_arr"](ee, nn)
+    px, py = np.asarray(px, float), np.asarray(py, float)
+    s = max(px.max() - px.min(), py.max() - py.min(), 1.0)
+
+    def terms(x, y):
+        x, y = x / s, y / s
+        return np.stack([np.ones_like(x), x, y, x * x, x * y, y * y], axis=-1)
+
+    A = terms(px, py)
+    ce, *_ = np.linalg.lstsq(A, ee, rcond=None)
+    cn, *_ = np.linalg.lstsq(A, nn, rcond=None)
+    err = float(np.max(np.hypot(A @ ce - ee, A @ cn - nn)))
+    if err > 0.25:
+        raise RuntimeError(f"texture -> local fit is off by {err:.2f} m (limit 0.25 m)")
+    T = terms(np.asarray(xs, float) + 0.5, np.asarray(ys, float) + 0.5)
+    return T @ ce, T @ cn
+
+
 def lidar_shaped(cfg, frame, buildings):
     """Replace buildings inside the LiDAR region with stepped parts
     (pixelphilly.lidar). Each part keeps the building id with a suffix and is
@@ -654,27 +820,20 @@ def lidar_shaped(cfg, frame, buildings):
 
     name = cfg["name"]
     _, region = lidar.lidar_region_local(cfg)
-    cache = PROCESSED / f"{name}_lidar_grid.npz"
-    z = np.load(cache) if cache.exists() else None
-    if z is not None and "struct" in z:
-        dsm, ground, origin, struct = z["dsm"], z["ground"], tuple(z["origin"]), z["struct"]
-    else:
-        # Grids cached before structures existed lack the class-1 grid
-        if z is not None:
-            print(f"  {cache.name} has no class-1 structure grid: regridding from LAS", flush=True)
-        tiles = (RAW / "lidar" / f"{name}_tiles.txt").read_text().split()
-        dsm, ground, origin, struct = lidar.dsm_from_las([RAW / "lidar" / t for t in tiles], frame, region.bounds,
-                                                         lidar.RES_M, with_struct=True)
-        np.savez_compressed(cache, dsm=dsm, ground=ground, origin=np.array(origin), struct=struct)
+    dsm, ground, origin, struct = load_lidar_grid(cfg, frame)
     import time
 
     out, shaped, fallback, n_parts, n_terrace, stadiums = [], 0, 0, 0, 0, []
+    from pixelphilly import reviewed
+
+    excluded, stadiums_excluded = reviewed.load(reviewed.STADIUM_EXCLUSIONS), []
     t0 = time.monotonic()
     for i, b in enumerate(buildings):
         if i and i % 5000 == 0:  # downtown has ~70,000 footprints
             print(f"  lidar shapes: {i:,}/{len(buildings):,} footprints, {time.monotonic() - t0:.0f} s", flush=True)
         fp = unary_union([Polygon(p[0], p[1:]) for p in b["polys"]]).buffer(0)
-        if fp.is_empty or not region.contains(fp.centroid):
+        # Reviewed height overrides keep their single height
+        if fp.is_empty or not region.contains(fp.centroid) or b.get("height_override"):
             out.append(b)
             continue
         base = lidar.footprint_base(fp, ground, origin, lidar.RES_M)
@@ -688,7 +847,13 @@ def lidar_shaped(cfg, frame, buildings):
         shaped += 1
         # Seating rows skip the brick wall tint (colored(); not written to the
         # scene). Stadium stands only: elsewhere stepped roofs look like rows
-        terraces = lidar.stand_terraces(fp, parts)
+        # Reviewed non-stadiums (config/stadium_exclusions.json) keep ordinary walls
+        if reviewed.stadium_excluded(b["id"], excluded):
+            terraces = set()
+            if lidar.stand_terraces(fp, parts):
+                stadiums_excluded.append(b["id"])
+        else:
+            terraces = lidar.stand_terraces(fp, parts)
         for k, part in enumerate(parts):
             out.append({"id": f"{b['id']}-{k}", "h": part["h"], "polys": part["polys"], "terrace": k in terraces,
                         # LiDAR parts keep their building's façade (floors line up across
@@ -730,6 +895,7 @@ def lidar_shaped(cfg, frame, buildings):
           f"{n_regions:,} kept as {len(s_parts):,} parts in {time.monotonic() - t0:.0f} s", flush=True)
     return out, {"lidar_buildings_shaped": shaped, "lidar_fallback_single_height": fallback,
                  "lidar_parts": n_parts, "lidar_terrace_parts": n_terrace, "lidar_stadiums": stadiums,
+                 **({"lidar_stadiums_excluded": stadiums_excluded} if stadiums_excluded else {}),
                  "lidar_structures": n_regions, "lidar_structure_parts": len(s_parts),
                  "lidar_structure_area_m2": round(s_area, 1), "lidar_structures_dropped_photo": dropped_photo,
                  "lidar_highway_mask": highways is not None, "lidar_highway_masked_m2": round(masked_m2, 1),
@@ -811,6 +977,7 @@ def write_qa(cfg, info, buildings_count, tallest, trees_count, extra):
         "height_outliers_max_gt_ratio_x_approx": info["outliers"],
         "tallest_buildings_m": tallest,
         "trees_in_scene": trees_count,
+        **({"height_overrides": info["height_overrides"]} if info.get("height_overrides") else {}),
         **extra,
     }
     (PROCESSED / f"{cfg['name']}_qa.json").write_text(json.dumps(qa, indent=2) + "\n")
@@ -831,7 +998,7 @@ def main_single(cfg, frame, cam, frames):
     if cfg.get("building_shapes") == "lidar":
         buildings, lidar_qa = lidar_shaped(cfg, frame, buildings)
     buildings = colored(buildings, ground, cfg)
-    trees = load_trees(cfg, frame)
+    trees = woods_trees(cfg, frame, buildings, load_trees(cfg, frame))
     scene = scene_dict(cfg, frame, cam, frames, ground, f"data/processed/{ground_path.name}", buildings, trees)
     (PROCESSED / f"{name}_scene.json").write_text(json.dumps(scene, separators=(",", ":")))
     tallest = sorted(({"id": b["id"], "h": b["h"]} for b in buildings), key=lambda b: -b["h"])[:10]
@@ -876,7 +1043,7 @@ def main_tiled(cfg, frame, cam, frames):
     lidar_qa = {}
     if cfg.get("building_shapes") == "lidar":
         buildings, lidar_qa = lidar_shaped(cfg, frame, buildings)
-    trees = load_trees(cfg, frame)
+    trees = woods_trees(cfg, frame, buildings, load_trees(cfg, frame))
     # Spatial indexes over footprints (by exterior bbox) and trees
     b_boxes = [box(*Polygon(b["polys"][0][0]).bounds) for b in buildings]
     b_tree = STRtree(b_boxes)
@@ -896,7 +1063,7 @@ def main_tiled(cfg, frame, cam, frames):
             quads.append(Polygon(zip(e, n)))
         reach = unary_union(quads).buffer(TILE_REACH_M)
         # z19 tile range covering the reach region
-        lon, lat = frame.to_wgs84(*np.asarray(reach.exterior.coords).T)
+        lon, lat = frame.to_wgs84(*outline_coords(reach).T)
         px, py = merc_px(lon, lat, z)
         tile_range = (int(px.min() // TILE), int(px.max() // TILE), int(py.min() // TILE), int(py.max() // TILE))
         ground = prepare_ground(cfg, frame, tile_range)

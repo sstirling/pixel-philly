@@ -303,3 +303,44 @@ def ripple_root(area, known_of) -> str:
         if nxt in seen:
             raise ValueError(f"known-area cycle: {' -> '.join(seen + [nxt])}")
         seen.append(nxt)
+
+
+def owner_edges(cells, order=None) -> list[dict]:
+    """Frame borders between cells owned by different areas in a union
+    (union_lattice()["cells"]: {(col, row): (area, frame)}): one entry per
+    shared border, {"pair": "A|B", "a": cell, "b": cell, "axis": "x" (a is
+    left of b) or "y" (a is above b)}. Pair names follow `order` (default:
+    the areas' order of first appearance in `cells`), so A|B and B|A are one
+    pair."""
+    if order is None:
+        order = []
+        for a, _ in cells.values():
+            if a not in order:
+                order.append(a)
+    rank = {a: i for i, a in enumerate(order)}
+    out = []
+    for (c, r), (a, _) in cells.items():
+        for axis, nb in (("x", (c + 1, r)), ("y", (c, r + 1))):
+            if nb in cells and cells[nb][0] != a:
+                b = cells[nb][0]
+                first, second = sorted((a, b), key=lambda n: rank.get(n, len(rank)))
+                out.append({"pair": f"{first}|{second}", "a": (c, r), "b": nb, "axis": axis})
+    return out
+
+
+def redraw_plan(frames, shared: dict, redraw, context: int):
+    """(run frames, known {name: known name}) for redrawing a few frames of
+    an area that is already drawn (15_joint_sample.py --redraw): the listed
+    frames are drawn again, and every frame within `context` (Chebyshev, on
+    the global lattice) is held at its finished pixels as a known band, so
+    the redrawn frames meet their surroundings without seams. `shared` is
+    plan_known's {frame: known frame} with the area's own drawing among the
+    known areas."""
+    redraw = set(redraw)
+    names = {f.name for f in frames}
+    if redraw - names:
+        raise ValueError(f"--redraw frames not in the area: {sorted(redraw - names)}")
+    targets = [f for f in frames if f.name in redraw]
+    run = [f for f in frames if any(lattice_distance(f, t) <= context for t in targets)]
+    known = {f.name: shared[f.name] for f in run if f.name not in redraw and f.name in shared}
+    return run, known

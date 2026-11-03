@@ -1,0 +1,51 @@
+{
+  "about": "Reviewed QA hits that may pass the region runner's gates (scripts/22_run_region.py, pixelphilly.region_runner). A needle matches an entry by id within one of its areas, or by position (within match_m meters, by lon/lat) and height (within match_h_m) in any area, since structure ids (s<region>-<part>) are renumbered per area. Alignment entries name one frame of one area. Add an entry only after checking the hit against the 2024 aerial; say what was checked in note.",
+  "match_m": 3.0,
+  "match_h_m": 2.0,
+  "needles": [
+    {
+      "id": "310603-9",
+      "areas": [
+        "downtown_lidar",
+        "south_lidar"
+      ],
+      "address": "905-11 WALNUT ST",
+      "lonlat": [
+        -75.156289,
+        39.948598
+      ],
+      "h_m": 51.29,
+      "reviewed": "2026-10-22",
+      "note": "6.5-8.8 m\u00b2, 51 m part kept because it matches the footprint's 49 m typical City height (approx_hgt 161 ft) while most of the footprint measures 13 m; the aerial is inconclusive (CHANGELOG Oct. 22; README Open issues)."
+    },
+    {
+      "id": "s1459-0",
+      "areas": [
+        "south_lidar"
+      ],
+      "address": null,
+      "lonlat": [
+        -75.126297,
+        39.916283
+      ],
+      "h_m": 40.86,
+      "reviewed": "2026-10-23",
+      "note": "Delaware River bulk-unloading crane at the terminal near 39.9163,-75.1263: a LiDAR structure with no footprint, 33 m\u00b2, 41 m. Checked on the 2024 aerial Oct. 27: the crane's boom and machinery house are there (Stephen shown)."
+    },
+    {
+      "id": "s1762-0",
+      "areas": [
+        "south_lidar"
+      ],
+      "address": null,
+      "lonlat": [
+        -75.12585,
+        39.90468
+      ],
+      "h_m": 46.2,
+      "reviewed": "2026-10-28",
+      "note": "Truss portal on the elevated Walt Whitman Bridge approach over the Packer Ave terminal: a LiDAR structure (7 m\u00b2, 46 m) at the green steel portal frame visible in the 2024 aerial. Real structure; the deck itself is masked as highway."
+    }
+  ],
+  "alignment": []
+}

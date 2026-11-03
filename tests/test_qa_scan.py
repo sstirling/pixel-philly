@@ -33,3 +33,14 @@ def test_large_or_low_parts_are_ignored():
 def test_isolated_tall_sliver_with_no_neighbors_is_found():
     parts = [rect("4-0", 0, 0, 2, 2, 60.0)]
     assert [h["id"] for h in find_needles(parts)] == ["4-0"]
+
+
+def test_footprint_id_of_parts_whole_buildings_and_structures():
+    # Whole (unshaped) buildings keep the City's integer objectid; LiDAR parts
+    # are "<objectid>-<part>" and structures "s<region>-<part>"
+    # (east_riverfront's first scan crashed on an int id, Nov. 2)
+    from pixelphilly.qa_scan import footprint_id
+
+    assert footprint_id(310603) == "310603"
+    assert footprint_id("310603-9") == "310603"
+    assert footprint_id("s1459-0") == "s1459"

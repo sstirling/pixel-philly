@@ -45,3 +45,10 @@ def find_needles(parts) -> list[dict]:
             hits.append({"id": part["id"], "h_m": h, "neighbor_max_m": top, "area_m2": round(g.area, 1),
                          "local_xy": [round(c.x, 1), round(c.y, 1)]})
     return hits
+
+
+def footprint_id(part_id) -> str:
+    """The footprint (or structure region) a scene part belongs to: whole
+    buildings keep the City's integer objectid, LiDAR parts are
+    "<objectid>-<part>", structures "s<region>-<part>"."""
+    return str(part_id).rsplit("-", 1)[0] if "-" in str(part_id) else str(part_id)

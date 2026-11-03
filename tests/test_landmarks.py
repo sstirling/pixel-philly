@@ -93,7 +93,7 @@ def test_landmark_height_is_the_tallest_part_of_the_nearest_footprint():
 
 
 def test_canvas_point_matches_the_frame_lattice():
-    cfg = load_config("atlas_cityhall_lidar")
+    cfg = load_config("atlas_cityhall_fac")
     frame, cam, frames = area_setup(cfg)
     for f in frames:
         # The ground point seen at a frame's top-left corner lands on that
@@ -107,7 +107,7 @@ def test_canvas_point_matches_the_frame_lattice():
 
 
 def test_lifting_moves_the_point_up_the_screen():
-    cfg = load_config("atlas_cityhall_lidar")
+    cfg = load_config("atlas_cityhall_fac")
     frame, cam, frames = area_setup(cfg)
     x0, y0 = canvas_point(frame, cam, frames, -75.1636, 39.9523, 0.0)
     x1, y1 = canvas_point(frame, cam, frames, -75.1636, 39.9523, 80.0)
@@ -132,10 +132,10 @@ def test_safety_rule_matches_experiment_a():
     assert not ok and "edge" in why
 
 
-@pytest.mark.skipif(not (REPO_ROOT / "data/processed/atlas_cityhall_lidar_scene.json").exists()
+@pytest.mark.skipif(not (REPO_ROOT / "data/processed/atlas_cityhall_fac_scene.json").exists()
                     or not (REPO_ROOT / "data/landmarks/manifest.json").exists(), reason="needs local data")
 def test_plan_finds_city_hall_in_its_atlas_spot():
-    cfg = load_config("atlas_cityhall_lidar")
+    cfg = load_config("atlas_cityhall_fac")
     _, _, frames = area_setup(cfg)
     size = cfg["camera"]["frame_px"]
     cols, rows = max(f.col for f in frames) + 1, max(f.row for f in frames) + 1
@@ -144,7 +144,7 @@ def test_plan_finds_city_hall_in_its_atlas_spot():
         active[f.row * size // 8:(f.row + 1) * size // 8, f.col * size // 8:(f.col + 1) * size // 8] = True
     grids = active_grids(two_grids(*active.shape), active)
     keys = {k for g in grids for k in g}
-    scene = json.loads((REPO_ROOT / "data/processed/atlas_cityhall_lidar_scene.json").read_text())
+    scene = json.loads((REPO_ROOT / "data/processed/atlas_cityhall_fac_scene.json").read_text())
     p = plan(cfg, REPO_ROOT / "data/landmarks/manifest.json", scene, grids)
     assert "city_hall" in p["landmarks"]
     ch = p["landmarks"]["city_hall"]

@@ -46,7 +46,10 @@ def sheet(blobs, path):
         half = max(80, (max(x1 - x0, y1 - y0) // 2) + 60)
         gx, gy = cx - half, cy - half
         src = REPO_ROOT / b["source"]
-        d = rp.FrameReader(src, frames, size).region(gx, gy, 2 * half, 2 * half)
+        # Region runs draw only their new frames: a blob beside the known
+        # band must not ask for a band frame this area has no drawing of
+        drawn = [f for f in frames if (src / f"{f.name}.png").exists()]
+        d = rp.FrameReader(src, drawn, size).region(gx, gy, 2 * half, 2 * half)
         r = rp.FrameReader(renders_dir(cfg, RENDERS[0]), frames, size).region(gx, gy, 2 * half, 2 * half)
         outline = Image.fromarray(d).copy()
         ImageDraw.Draw(outline).rectangle([x0 - gx, y0 - gy, x1 - gx, y1 - gy], outline=(255, 0, 255), width=3)
@@ -79,6 +82,8 @@ def main():
                     "used when it exists, else renders")
     ap.add_argument("--sheet-reasons", default="NWI wetland,roof-like (building missing)",
                     help="also draw a sheet of blobs exempted for these reasons (to check the exemptions)")
+    ap.add_argument("--from-redraws", action="store_true",
+                    help="scan output/<area>/redraws/<prompt>/ (before repaint and fix) even when postprocessed exists")
     args = ap.parse_args()
     RENDERS[0] = args.renders
     out = Path(args.out)
@@ -89,14 +94,17 @@ def main():
         frame, cam, frames = area_setup(cfg)
         size = cfg["camera"]["frame_px"]
         post = area_dir(cfg, "postprocessed", args.prompt, "water")
-        src = post if post.exists() else area_dir(cfg, "redraws", args.prompt)
+        # --from-redraws: the drawings as the model made them, before the
+        # repaint and its invented-water fix (what the fix repaired)
+        src = post if post.exists() and not args.from_redraws else area_dir(cfg, "redraws", args.prompt)
         done = [f for f in frames if (src / f"{f.name}.png").exists()]
         x_origin = min(f.x0 - f.col * size for f in frames)
         y_origin = min(f.y0 - f.row * size for f in frames)
         water_geom, pools, wetlands = rp.invented_water_context(cfg, frame, cam, x_origin, y_origin)
         blobs, _ = rp.scan_invented_water(
             cfg, done, size, rp.FrameReader(src, done, size), rp.FrameReader(renders_dir(cfg, args.renders), frames, size),
-            rp.FrameReader(area_dir(cfg, "masks"), frames, size, "L"), water_geom, pools, wetlands)
+            rp.FrameReader(area_dir(cfg, "masks"), frames, size, "L"), water_geom, pools, wetlands,
+            holds=rp.load_holds(cfg), courtyards_geom=rp.courtyard_geometry(cfg, frame, cam, x_origin, y_origin))
         flagged = [b for b in blobs if not b["exempt"]]
         reasons = {}
         for b in blobs:

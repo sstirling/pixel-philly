@@ -1,0 +1,37 @@
+{
+  "about": "Footprints that pass the stand-terrace (stadium seating) rule, lidar.stand_terraces, but are not stadiums, checked against the 2024 aerial. Their LiDAR parts keep ordinary walls instead of seat-colored risers. Applied in scripts/05_build_scene.py (pixelphilly.reviewed).",
+  "entries": [
+    {
+      "id": 386385,
+      "address": "8500 ESSINGTON AVE",
+      "reason": "Philadelphia International Airport terminal and parking garage complex. Stepped garage decks and terminal roofs read as seating rows around an open area. Not a stadium.",
+      "source": "City 2024 3-inch aerial, output/review/southwest_stadium_8500_essington.jpg",
+      "reviewed": "2026-11-02",
+      "approved_by": "Stephen"
+    },
+    {
+      "id": 1262,
+      "address": "4101 N DELAWARE AVE",
+      "reason": "Richmond Generating Station, a derelict power plant: stepped boiler-house roofs and open bays. Not a stadium.",
+      "source": "City 2024 3-inch aerial, output/review/east_riverfront_stadium_1262.jpg",
+      "reviewed": "2026-11-02",
+      "approved_by": "Stephen (rule: exclude candidates that aren't real stadiums)"
+    },
+    {
+      "id": 7097,
+      "address": "3622-40 G ST",
+      "reason": "An industrial plant whose sawtooth roofs read as rows of seating. Not a stadium.",
+      "source": "City 2024 3-inch aerial, output/review/east_riverfront_stadium_7097.jpg",
+      "reviewed": "2026-11-02",
+      "approved_by": "Stephen (rule: exclude candidates that aren't real stadiums)"
+    },
+    {
+      "id": 9075,
+      "address": "3001 E ALLEGHENY AVE",
+      "reason": "A Port Richmond pier warehouse complex: the footprint wraps an open paved yard. Not a stadium.",
+      "source": "City 2024 3-inch aerial, output/review/east_riverfront_stadium_9075.jpg",
+      "reviewed": "2026-11-02",
+      "approved_by": "Stephen (rule: exclude candidates that aren't real stadiums)"
+    }
+  ]
+}

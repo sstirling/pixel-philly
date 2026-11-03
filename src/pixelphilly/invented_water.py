@@ -62,7 +62,12 @@ ROOF_MAX_S = 0.20
 # H 61, S 0.39; the pale West Philly basin (H 55) and a railroad cut (H 44)
 # stay with the ring median
 GREEN_AERIAL = {"h": (58.0, 170.0), "s_min": 0.20}
-GREEN_RING = {"h": (70.0, 170.0), "s_min": 0.15}  # drawn greens in the ring
+# Drawn lawn greens. Hue 75-140 and saturation >= 0.25: the first band
+# (hue 70-170, sat 0.15) accepted the teal-gray edge of the turf-field pool
+# (hue 157, sat 0.15) as "green" and filled the field gray-teal
+GREEN_RING = {"h": (75.0, 140.0), "s_min": 0.25, "v": (0.30, 0.85)}
+# Invented lawn in a courtyard: the aerial under it isn't green (City Hall's
+# courtyard is shadowed paving: hue ~30, sat < 0.15)
 RING_PX = 10
 HOLE_FILL_PX = 64  # holes smaller than this inside a blob are the model's ripple dashes; bigger ones are objects
 FRINGE_PX = 3  # antialiased bluish edge pixels just outside WATER_BAND go with the blob
@@ -155,6 +160,67 @@ def _grow(mask, px):
     return np.asarray(img) > 127
 
 
+def _lawn_green(rgb):
+    h, s_, v = _hsv(rgb)
+    return ((h >= GREEN_RING["h"][0]) & (h <= GREEN_RING["h"][1]) & (s_ >= GREEN_RING["s_min"])
+            & (v >= GREEN_RING["v"][0]) & (v <= GREEN_RING["v"][1]))
+
+
+COURTYARD_REACH_PX = 85  # ~25 m: how far past the footprint hole a confirmed courtyard's lawn is taken
+COURTYARD_PAVING_MAX_S = 0.18  # aerial saturation: City Hall's paving < 0.15, dormant grass 0.25-0.40
+
+
+def courtyard_lawn(drawing, render, buildings, holes, min_area=MIN_AREA_PX):
+    """Lawn the model drew in a paved courtyard. holes: bool mask of courtyard
+    holes in building footprints (a hole in ONE building's outline, as at
+    City Hall). Open ground merely enclosed by separate buildings doesn't
+    count: rowhouse block interiors are real backyards, and with an
+    enclosure test 207 of them were flagged (dormant brown in the March
+    aerial, correctly drawn green). A drawn-green blob in a hole is invented
+    when the aerial there is paving (low saturation, not green or dormant
+    grass). Returns blobs in find_blobs' format, filled with the ring's
+    non-green paving."""
+    from rasterio.features import rasterize, shapes
+    from rasterio.transform import Affine
+    from shapely.geometry import shape
+
+    # A courtyard is a component of open ground that overlaps a footprint
+    # hole by at least min_area. The hole can be smaller than the visible
+    # courtyard (at City Hall it covered only part of the drawn grass), so
+    # once the courtyard is confirmed every greenish pixel in it is taken,
+    # including shaded grass outside the strict lawn band
+    if (_lawn_green(drawing) & holes & ~buildings).sum() < min_area:
+        return []
+    h_, s_, v_ = _hsv(drawing)
+    greenish = (h_ >= 60) & (h_ <= 160) & (s_ >= 0.15) & (v_ >= 0.12)
+    near = _grow(holes, COURTYARD_REACH_PX)
+    out = []
+    open_ground = ~buildings
+    for geom, _ in shapes(open_ground.astype(np.uint8), mask=open_ground, connectivity=4):
+        poly = shape(geom)
+        if poly.area < min_area:
+            continue
+        bx0, by0, bx1, by1 = (int(round(v)) for v in poly.bounds)
+        comp = rasterize([(poly, 1)], out_shape=(by1 - by0, bx1 - bx0), transform=Affine.translation(bx0, by0),
+                         fill=0, dtype="uint8").astype(bool)
+        if (comp & holes[by0:by1, bx0:bx1]).sum() < min_area:
+            continue
+        # Only near the hole: a courtyard open to the street joins the whole
+        # street network as open ground, and parks beyond it must stay green
+        lawn = comp & greenish[by0:by1, bx0:bx1] & near[by0:by1, bx0:bx1]
+        if lawn.sum() < min_area:
+            continue
+        ys, xs = np.nonzero(lawn)
+        x0, y0, x1, y1 = bx0 + xs.min(), by0 + ys.min(), bx0 + xs.max() + 1, by0 + ys.max() + 1
+        m = lawn[y0 - by0:y1 - by0, x0 - bx0:x1 - bx0]
+        _, sr, _ = _hsv(render[y0:y1, x0:x1][m])
+        if np.median(sr) >= COURTYARD_PAVING_MAX_S:
+            continue
+        out.append({"area_px": int(m.sum()), "bbox": [int(x0), int(y0), int(x1), int(y1)], "mask_bbox": m, "exempt": None,
+                    "kind": "courtyard lawn", "fill": "non_green"})
+    return out
+
+
 def repair(drawing, render, blobs):
     """A copy of drawing with every non-exempt blob (plus its bluish fringe)
     filled flat with the surrounding drawing's typical color: the ring pixel
@@ -179,11 +245,46 @@ def repair(drawing, render, blobs):
         h_r, s_r, _ = _hsv(render[full])
         green_aerial = (GREEN_AERIAL["h"][0] <= np.median(h_r) <= GREEN_AERIAL["h"][1]
                         and np.median(s_r) >= GREEN_AERIAL["s_min"])
-        if green_aerial:
-            h_s, s_s, _ = _hsv(src)
-            greens = src[(h_s >= GREEN_RING["h"][0]) & (h_s <= GREEN_RING["h"][1]) & (s_s >= GREEN_RING["s_min"])]
+        if b.get("fill") == "non_green":
+            # Invented lawn: fill with the ring's paving, never its greens
+            keep = ~_lawn_green(src)
+            if keep.any():
+                src = src[keep]
+        elif green_aerial:
+            greens = src[_lawn_green(src)]
+            if not len(greens):
+                # No lawn right around the blob (a turf field ringed by
+                # paving): use the window's drawn lawn color
+                window = drawing[~full]
+                greens = window[_lawn_green(window)]
             if len(greens):
                 src = greens
         med = np.median(src.astype(float), axis=0)
         out[full] = src[np.argmin(((src.astype(float) - med) ** 2).sum(axis=1))]
+    return out
+
+
+def apply_holds(blobs, gx, gy, holds):
+    """Mark blobs on the reviewed hold list as exempt ("held: <reason>").
+
+    holds: [{"bbox": [x0, y0, x1, y1] in the area's mosaic px, "reason": ...}].
+    A blob is held when its center, shifted by the window origin (gx, gy),
+    falls inside a hold box. The list is for flags a person reviewed and
+    couldn't confirm as invented (mudflats missing from the wetland map, a
+    court that really is blue), so repair leaves them as drawn. Blobs that
+    are already exempt keep their reason."""
+    if not holds:
+        return blobs
+    out = []
+    for b in blobs:
+        b = dict(b)
+        if not b["exempt"]:
+            x0, y0, x1, y1 = b["bbox"]
+            cx, cy = (x0 + x1) / 2 + gx, (y0 + y1) / 2 + gy
+            for h in holds:
+                hx0, hy0, hx1, hy1 = h["bbox"]
+                if hx0 <= cx <= hx1 and hy0 <= cy <= hy1:
+                    b["exempt"] = f"held: {h['reason']}"
+                    break
+        out.append(b)
     return out

@@ -1,0 +1,738 @@
+{
+  "buildings_downloaded": 62939,
+  "buildings_in_scene": 136317,
+  "buildings_dropped": [],
+  "height_source_counts": {
+    "approx_hgt": 62652,
+    "max_hgt": 219,
+    "default": 68
+  },
+  "height_outliers_max_gt_ratio_x_approx": [
+    {
+      "objectid": 11459,
+      "address": "650 CARPENTER LN",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 34.63996392
+    },
+    {
+      "objectid": 13055,
+      "address": "223-27 E HAINES ST",
+      "approx_hgt_ft": 21,
+      "max_hgt_ft": 86.78995142000001
+    },
+    {
+      "objectid": 13936,
+      "address": "126 E WASHINGTON LN",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 43.279949079999994
+    },
+    {
+      "objectid": 16440,
+      "address": "5716 N 2ND ST",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 41.970101500000006
+    },
+    {
+      "objectid": 16721,
+      "address": "5350 BELFIELD AVE",
+      "approx_hgt_ft": 19,
+      "max_hgt_ft": 67.07995482999999
+    },
+    {
+      "objectid": 18908,
+      "address": "280 W WASHINGTON LN",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 37.32005083
+    },
+    {
+      "objectid": 26708,
+      "address": "5540 LENA ST",
+      "approx_hgt_ft": 24,
+      "max_hgt_ft": 72.66015942
+    },
+    {
+      "objectid": 28724,
+      "address": "40 E CHELTEN AVE",
+      "approx_hgt_ft": 21,
+      "max_hgt_ft": 139.16000958
+    },
+    {
+      "objectid": 30575,
+      "address": "424 E WISTER ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 48.99015283
+    },
+    {
+      "objectid": 30796,
+      "address": "149 W WALNUT LN",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 57.55991858
+    },
+    {
+      "objectid": 31698,
+      "address": "710 E CHELTEN AVE",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 36.049888419999995
+    },
+    {
+      "objectid": 36677,
+      "address": "145 E POMONA ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 33.27004617
+    },
+    {
+      "objectid": 37507,
+      "address": "627 CHELTEN AVE",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 36.6400885
+    },
+    {
+      "objectid": 38795,
+      "address": "6240 N 13TH ST",
+      "approx_hgt_ft": 25,
+      "max_hgt_ft": 94.47991325
+    },
+    {
+      "objectid": 40128,
+      "address": "5987 N OPAL ST",
+      "approx_hgt_ft": 23,
+      "max_hgt_ft": 71.60991666999999
+    },
+    {
+      "objectid": 41553,
+      "address": "6142 OLD YORK RD",
+      "approx_hgt_ft": 8,
+      "max_hgt_ft": 28.33987925
+    },
+    {
+      "objectid": 41618,
+      "address": "6332 N 12TH ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 28.549909
+    },
+    {
+      "objectid": 44682,
+      "address": "5971-73 N OPAL ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 57.25002825
+    },
+    {
+      "objectid": 46083,
+      "address": "6301-11 N BROAD ST",
+      "approx_hgt_ft": 15,
+      "max_hgt_ft": 46.67002792
+    },
+    {
+      "objectid": 48487,
+      "address": "5648 CHEW AVE",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 60.19000042
+    },
+    {
+      "objectid": 50252,
+      "address": "23 W COULTER ST",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 46.150085669999996
+    },
+    {
+      "objectid": 51352,
+      "address": "323 HIGH ST",
+      "approx_hgt_ft": 26,
+      "max_hgt_ft": 90.38004491999999
+    },
+    {
+      "objectid": 52470,
+      "address": "6211-51 N PARK AVE",
+      "approx_hgt_ft": 20,
+      "max_hgt_ft": 71.92996775
+    },
+    {
+      "objectid": 56535,
+      "address": "5994 N OPAL ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 47.17993983
+    },
+    {
+      "objectid": 57969,
+      "address": "5937 N BROAD ST",
+      "approx_hgt_ft": 8,
+      "max_hgt_ft": 25.309958249999998
+    },
+    {
+      "objectid": 59557,
+      "address": "528 E RITTENHOUSE ST",
+      "approx_hgt_ft": 8,
+      "max_hgt_ft": 28.169949499999998
+    },
+    {
+      "objectid": 59654,
+      "address": "5949 N CAMAC ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 60.00000133
+    },
+    {
+      "objectid": 59846,
+      "address": "149 HERMAN ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 38.94003033
+    },
+    {
+      "objectid": 60251,
+      "address": "5215 N BROAD ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 37.72015942
+    },
+    {
+      "objectid": 60591,
+      "address": "5939 N HUTCHINSON ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 31.71988875
+    },
+    {
+      "objectid": 60746,
+      "address": "6000 N 5TH ST",
+      "approx_hgt_ft": 20,
+      "max_hgt_ft": 66.519986
+    },
+    {
+      "objectid": 61861,
+      "address": "5826 N CAMAC ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 39.88998358
+    },
+    {
+      "objectid": 62279,
+      "address": "244 W JOHNSON ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 35.42990075
+    },
+    {
+      "objectid": 62534,
+      "address": "6027 MORTON ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 34.85988917
+    },
+    {
+      "objectid": 62893,
+      "address": "612 ARBUTUS ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 29.54996725
+    },
+    {
+      "objectid": 62931,
+      "address": "440 E WOODLAWN ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 33.909842829999995
+    },
+    {
+      "objectid": 63138,
+      "address": "82 W DUVAL ST",
+      "approx_hgt_ft": 21,
+      "max_hgt_ft": 65.1099215
+    },
+    {
+      "objectid": 63535,
+      "address": "5939 N PARK AVE",
+      "approx_hgt_ft": 26,
+      "max_hgt_ft": 79.23000417
+    },
+    {
+      "objectid": 63968,
+      "address": "274 W NEDRO AVE",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 28.900108919999997
+    },
+    {
+      "objectid": 64219,
+      "address": "515 LOCUST AVE",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 47.499948329999995
+    },
+    {
+      "objectid": 64413,
+      "address": "5943 N 13TH ST",
+      "approx_hgt_ft": 24,
+      "max_hgt_ft": 80.09005442
+    },
+    {
+      "objectid": 68770,
+      "address": "42 E HAINES ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 45.77008575
+    },
+    {
+      "objectid": 68826,
+      "address": "119 W WALNUT LN",
+      "approx_hgt_ft": 19,
+      "max_hgt_ft": 57.90986467
+    },
+    {
+      "objectid": 69050,
+      "address": "5634R N 18TH ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 4.31007625
+    },
+    {
+      "objectid": 71188,
+      "address": "6800 WISSAHICKON AVE",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 36.50992808
+    },
+    {
+      "objectid": 71493,
+      "address": "213 W DUVAL ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 31.230075
+    },
+    {
+      "objectid": 72088,
+      "address": "78-80 W WASHINGTON LN",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 34.58999942
+    },
+    {
+      "objectid": 72153,
+      "address": "6043 GERMANTOWN AVE",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 53.939860079999995
+    },
+    {
+      "objectid": 72170,
+      "address": "537 E ASHMEAD ST",
+      "approx_hgt_ft": 24,
+      "max_hgt_ft": 72.45997417000001
+    },
+    {
+      "objectid": 73832,
+      "address": "2101 W CLARKSON AVE",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 8.6299285
+    },
+    {
+      "objectid": 75812,
+      "address": "223-27 E HAINES ST",
+      "approx_hgt_ft": 22,
+      "max_hgt_ft": 74.23006500000001
+    },
+    {
+      "objectid": 75991,
+      "address": "236 W CHEW AVE",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 45.20999783
+    },
+    {
+      "objectid": 76864,
+      "address": "5803 N 2ND ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 39.20999783
+    },
+    {
+      "objectid": 77181,
+      "address": "223-27 E HAINES ST",
+      "approx_hgt_ft": 21,
+      "max_hgt_ft": 73.17986725
+    },
+    {
+      "objectid": 77430,
+      "address": "23-27 E CHELTEN AVE",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 43.72985792
+    },
+    {
+      "objectid": 78305,
+      "address": "146 W TULPEHOCKEN ST",
+      "approx_hgt_ft": 18,
+      "max_hgt_ft": 57.089905
+    },
+    {
+      "objectid": 79030,
+      "address": "429-31 W TABOR RD",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 39.17985917
+    },
+    {
+      "objectid": 79188,
+      "address": "5517 N 5TH ST",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 44.01987432999999
+    },
+    {
+      "objectid": 79482,
+      "address": "5531 N AMERICAN ST",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 44.81999716999999
+    },
+    {
+      "objectid": 80310,
+      "address": "41 W WALNUT LN",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 38.759994580000004
+    },
+    {
+      "objectid": 80358,
+      "address": "22-24 W CHELTEN AVE",
+      "approx_hgt_ft": 43,
+      "max_hgt_ft": 150.91985483000002
+    },
+    {
+      "objectid": 82206,
+      "address": "421 W OLNEY AVE",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 35.689946330000005
+    },
+    {
+      "objectid": 83670,
+      "address": "5525-27 N AMERICAN ST",
+      "approx_hgt_ft": 23,
+      "max_hgt_ft": 79.08010625
+    },
+    {
+      "objectid": 84636,
+      "address": "143 W WALNUT LN",
+      "approx_hgt_ft": 23,
+      "max_hgt_ft": 78.24996867
+    },
+    {
+      "objectid": 84738,
+      "address": "6118 GREENE ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 66.49985833
+    },
+    {
+      "objectid": 84827,
+      "address": "127 HARVEY ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 42.179930250000005
+    },
+    {
+      "objectid": 86213,
+      "address": "5621 N 3RD ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 39.96001233
+    },
+    {
+      "objectid": 86536,
+      "address": "5525 N 6TH ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 48.94993217
+    },
+    {
+      "objectid": 88078,
+      "address": "43-45 W RITTENHOUSE ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 46.00015358
+    },
+    {
+      "objectid": 89700,
+      "address": "628 NAOMI ST",
+      "approx_hgt_ft": 22,
+      "max_hgt_ft": 85.53999592000001
+    },
+    {
+      "objectid": 89791,
+      "address": "107 W SCHOOL HOUSE LN",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 53.51994542
+    },
+    {
+      "objectid": 90013,
+      "address": "685 W JOHNSON ST",
+      "approx_hgt_ft": 8,
+      "max_hgt_ft": 29.55008725
+    },
+    {
+      "objectid": 90085,
+      "address": "304 E BRINGHURST ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 53.58992258
+    },
+    {
+      "objectid": 91262,
+      "address": "437-49 COLLOM ST",
+      "approx_hgt_ft": 2,
+      "max_hgt_ft": 8.209863
+    },
+    {
+      "objectid": 92721,
+      "address": "5801 WAYNE AVE",
+      "approx_hgt_ft": 16,
+      "max_hgt_ft": 60.26996692
+    },
+    {
+      "objectid": 92938,
+      "address": "5439 N AMERICAN ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 37.20000608
+    },
+    {
+      "objectid": 93607,
+      "address": "224 W WALNUT LN",
+      "approx_hgt_ft": 18,
+      "max_hgt_ft": 60.57999808
+    },
+    {
+      "objectid": 95295,
+      "address": "1006 W CLIVEDEN ST",
+      "approx_hgt_ft": 19,
+      "max_hgt_ft": 58.909952080000004
+    },
+    {
+      "objectid": 95456,
+      "address": "5452-58 GERMANTOWN AVE",
+      "approx_hgt_ft": 8,
+      "max_hgt_ft": 24.55007325
+    },
+    {
+      "objectid": 95946,
+      "address": "225 E ASHMEAD ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 43.22012325
+    },
+    {
+      "objectid": 96176,
+      "address": "100-26 W CHELTEN AVE",
+      "approx_hgt_ft": 16,
+      "max_hgt_ft": 62.0698675
+    },
+    {
+      "objectid": 96358,
+      "address": "125 W SCHOOL HOUSE LN",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 41.9399765
+    },
+    {
+      "objectid": 97121,
+      "address": "278 W WASHINGTON LN",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 4.65984833
+    },
+    {
+      "objectid": 99290,
+      "address": "649 W JOHNSON ST",
+      "approx_hgt_ft": 24,
+      "max_hgt_ft": 74.05990317
+    },
+    {
+      "objectid": 104657,
+      "address": "243 E WISTER ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 49.919912
+    },
+    {
+      "objectid": 245724,
+      "address": "6814 MILTON ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 31.91992183
+    },
+    {
+      "objectid": 306316,
+      "address": "1201-17 VERNON RD",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 36.99010608
+    },
+    {
+      "objectid": 313952,
+      "address": "7406 GERMANTOWN AVE",
+      "approx_hgt_ft": 42,
+      "max_hgt_ft": 150.66
+    },
+    {
+      "objectid": 317054,
+      "address": "215 W GRAVERS LN",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 36.0601395
+    },
+    {
+      "objectid": 406398,
+      "address": "5809 N BROAD ST",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 48.11987258
+    },
+    {
+      "objectid": 422963,
+      "address": "5633 N 3RD ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 40.869842829999996
+    },
+    {
+      "objectid": 423023,
+      "address": "45 W SCHOOL HOUSE LN",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 44.64012932999999
+    },
+    {
+      "objectid": 463252,
+      "address": "8125-27 GERMANTOWN AVE",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 31.4499675
+    },
+    {
+      "objectid": 497151,
+      "address": "209 PELHAM RD",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 42.15007808
+    },
+    {
+      "objectid": 520595,
+      "address": "7428 BOYER ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 50.47003658
+    },
+    {
+      "objectid": 526143,
+      "address": "1224 OAK LN",
+      "approx_hgt_ft": 19,
+      "max_hgt_ft": 61.07009775
+    },
+    {
+      "objectid": 538479,
+      "address": "500 BRINTON ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 46.400110000000005
+    },
+    {
+      "objectid": 539548,
+      "address": "520 BRINTON ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 35.8800825
+    },
+    {
+      "objectid": 541042,
+      "address": "6313 LAWNTON AVE",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 47.48995317
+    },
+    {
+      "objectid": 541390,
+      "address": "160 CARPENTER LN",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 36.560021420000005
+    },
+    {
+      "objectid": 541676,
+      "address": "704 CHELTEN AVE",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 3.2200205800000004
+    },
+    {
+      "objectid": 542215,
+      "address": "1242 CHELTEN AVE",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 38.28005967
+    },
+    {
+      "objectid": 542402,
+      "address": "6248 N BROAD ST",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 44.56006458
+    },
+    {
+      "objectid": 543334,
+      "address": "6321R LIMEKILN PIKE",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 46.259913170000004
+    }
+  ],
+  "tallest_buildings_m": [
+    {
+      "id": "12301-9",
+      "h": 60.45
+    },
+    {
+      "id": "12301-8",
+      "h": 57.9
+    },
+    {
+      "id": "285972-13",
+      "h": 56.01
+    },
+    {
+      "id": "285972-14",
+      "h": 55.19
+    },
+    {
+      "id": "285972-12",
+      "h": 54.62
+    },
+    {
+      "id": "285972-11",
+      "h": 52.65
+    },
+    {
+      "id": "285972-10",
+      "h": 52.51
+    },
+    {
+      "id": "285972-9",
+      "h": 52.46
+    },
+    {
+      "id": "12301-7",
+      "h": 52.33
+    },
+    {
+      "id": "285972-8",
+      "h": 49.73
+    }
+  ],
+  "trees_in_scene": 16825,
+  "render_tiles": 27,
+  "max_ground_texture_px": 12544,
+  "uv_fit_max_residual_m": 0.0004990545765476976,
+  "ground_median_filter_px": 5,
+  "frames": 294,
+  "lidar_buildings_shaped": 56636,
+  "lidar_fallback_single_height": 360,
+  "lidar_parts": 124332,
+  "lidar_terrace_parts": 0,
+  "lidar_stadiums": [],
+  "lidar_structures": 1625,
+  "lidar_structure_parts": 5682,
+  "lidar_structure_area_m2": 364092.3,
+  "lidar_structures_dropped_photo": 479,
+  "lidar_highway_mask": true,
+  "lidar_highway_masked_m2": 0.0,
+  "lidar_rail_mask": true,
+  "lidar_margin_m": 100.0,
+  "facade_join": {
+    "parcel": 62363,
+    "unmatched": 197,
+    "point": 74,
+    "address": 305
+  },
+  "facade_match_rate": 0.997,
+  "facade_styles": {
+    "row_porch": 22664,
+    "twin": 13317,
+    "row_postwar": 12515,
+    "detached": 6647,
+    "row_typical": 2616,
+    "apartment_low": 1611,
+    "mixed_storefront": 1246,
+    "other": 1206,
+    "institutional": 506,
+    "warehouse": 227,
+    "row_modern": 91,
+    "river_row": 89,
+    "office_tower": 7
+  },
+  "facade_materials": {
+    "brick": 56362,
+    "stone": 5615,
+    "frame": 755,
+    "metal": 10
+  },
+  "facade_colour_source": {
+    "palette": 62652,
+    "osm_material": 37,
+    "aerial": 53
+  },
+  "facade_osm_footprints": 37,
+  "facade_osm_items": 310,
+  "facade_street_fronts": 23187,
+  "facade_unmatched": "plain walls (no facade)",
+  "lawn_corrected_px": 187861176,
+  "lawn_park_px": 247860306,
+  "lawn_woods_px": 43676856,
+  "lawn_forest_px": 60330126
+}

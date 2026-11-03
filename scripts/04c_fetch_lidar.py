@@ -16,19 +16,18 @@ Writes data/raw/lidar/Philadelphia_<Id>.las (git-ignored) and records each
 tile in data/raw/MANIFEST.json. Downloads stream to a .part file and are
 renamed when complete, so an interrupted run resumes cleanly.
 
+Skips the download when the area's height grid is already cached
+(data/processed/<area>_lidar_grid.npz with "struct"), since raw tiles may
+have been pruned (scripts/04m_prune_lidar.py).
+
 Usage: PP_AREA=atlas_cityhall uv run python scripts/04c_fetch_lidar.py
 """
 
-import shapefile
-from pyproj import Transformer
-from shapely.geometry import shape
-
-from pixelphilly.lidar import LAS_CRS, lidar_region_local
-from pixelphilly.projection import load_config
+from pixelphilly.lidar import LAS_CRS
+from pixelphilly.lidar_tiles import INDEX_FILES, grid_valid, index_url, las_url, tiles_in_index
+from pixelphilly.projection import REPO_ROOT, load_config
 from pixelphilly.sources import RAW, record, session
 
-BASE = "https://www.pasda.psu.edu/download/phillyLiDAR/2022"
-INDEX_FILES = ["Philadelphia_Tiles.shp", "Philadelphia_Tiles.shx", "Philadelphia_Tiles.dbf", "Philadelphia_Tiles.prj"]
 LIDAR = RAW / "lidar"
 
 
@@ -46,52 +45,41 @@ def fetch(url, dest):
 
 
 def tiles_for(cfg):
-    """Tile ids whose footprint intersects the LiDAR region."""
-    import numpy as np
-    import shapely
-
+    """Tile file names whose footprint intersects the LiDAR region (the
+    official index is downloaded on first use)."""
     idx_dir = LIDAR / "index"
     idx_dir.mkdir(parents=True, exist_ok=True)
     for name in INDEX_FILES:
-        fetch(f"{BASE}/Metadata_and_Reports/ESRI_shapefiles/{name}", idx_dir / name)
-    to_sp = Transformer.from_crs("EPSG:4326", LAS_CRS, always_xy=True)
-    fr, region = lidar_region_local(cfg)
-
-    def local_to_sp(c):
-        lon, lat = fr.to_wgs84(c[:, 0], c[:, 1])
-        return np.column_stack(to_sp.transform(lon, lat))
-
-    area = shapely.transform(region, local_to_sp)
-    reader = shapefile.Reader(str(idx_dir / "Philadelphia_Tiles.shp"))
-    fields = [f[0] for f in reader.fields[1:]]
-    out = []
-    for sr in reader.iterShapeRecords():
-        if shape(sr.shape.__geo_interface__).intersects(area):
-            rec = dict(zip(fields, sr.record))
-            out.append(rec)
-    return out, fields
+        fetch(index_url(name), idx_dir / name)
+    return tiles_in_index(cfg, idx_dir)
 
 
 def main():
     cfg = load_config()
-    tiles, fields = tiles_for(cfg)
-    # The tile name field is "Id" in the index (files are Philadelphia_<Id>.las)
-    key = next(f for f in fields if f.lower() == "id")
-    names = [f"Philadelphia_{int(t[key])}.las" for t in tiles]
+    names = tiles_for(cfg)
     print(f"{cfg['name']}: {len(names)} LiDAR tiles: {', '.join(names)}")
+    tile_list = LIDAR / f"{cfg['name']}_tiles.txt"
+    # Raw tiles are pruned once gridded (scripts/04m_prune_lidar.py); with a
+    # valid grid cached, 05_build_scene.py never reads them, so don't fetch
+    # them again. Delete the grid to force a regrid.
+    if grid_valid(REPO_ROOT / "data" / "processed" / f"{cfg['name']}_lidar_grid.npz"):
+        print("  height grid already cached: not downloading LAS tiles")
+        if not tile_list.exists():
+            tile_list.write_text("\n".join(names) + "\n")
+        return
     for name in names:
         dest = LIDAR / name
-        if fetch(f"{BASE}/LAS/Classified_LAS/{name}", dest):
+        if fetch(las_url(name), dest):
             record(f"lidar/{name}", {
                 "description": "City of Philadelphia 2022 classified LiDAR (LAS 1.4), PASDA dataset 7154",
-                "url": f"{BASE}/LAS/Classified_LAS/{name}",
+                "url": las_url(name),
                 "crs": f"{LAS_CRS} (PA State Plane South, US ft; NAVD88 ft) - not stored in the file",
                 "bytes": dest.stat().st_size,
             })
             print(f"  downloaded {name} ({dest.stat().st_size / 1e9:.2f} GB)")
         else:
             print(f"  {name} already downloaded")
-    (LIDAR / f"{cfg['name']}_tiles.txt").write_text("\n".join(names) + "\n")
+    tile_list.write_text("\n".join(names) + "\n")
 
 
 if __name__ == "__main__":

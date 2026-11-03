@@ -1,0 +1,384 @@
+{
+  "buildings_downloaded": 45039,
+  "buildings_in_scene": 79966,
+  "buildings_dropped": [],
+  "height_source_counts": {
+    "approx_hgt": 44561,
+    "default": 181,
+    "max_hgt": 297
+  },
+  "height_outliers_max_gt_ratio_x_approx": [
+    {
+      "objectid": 26457,
+      "address": "4274 ADAMS AVE",
+      "approx_hgt_ft": 8,
+      "max_hgt_ft": 27.180021749999998
+    },
+    {
+      "objectid": 30016,
+      "address": "4284-86 ORCHARD ST",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 49.08005058
+    },
+    {
+      "objectid": 30208,
+      "address": "4777 GARDEN ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 30.84013342
+    },
+    {
+      "objectid": 31051,
+      "address": "3800 JASPER ST",
+      "approx_hgt_ft": 24,
+      "max_hgt_ft": 77.58003958
+    },
+    {
+      "objectid": 142058,
+      "address": "1427 UNITY ST",
+      "approx_hgt_ft": 15,
+      "max_hgt_ft": 52.60006467
+    },
+    {
+      "objectid": 147480,
+      "address": "1550 RUAN ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 35.210117419999996
+    },
+    {
+      "objectid": 148016,
+      "address": "4202 CLOUD ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 45.21014142
+    },
+    {
+      "objectid": 154512,
+      "address": "1701R CHURCH ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 58.50989517
+    },
+    {
+      "objectid": 155782,
+      "address": "4413 FRANKFORD AVE",
+      "approx_hgt_ft": 15,
+      "max_hgt_ft": 46.8600265
+    },
+    {
+      "objectid": 157712,
+      "address": "4567 TACKAWANNA ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 47.71984708
+    },
+    {
+      "objectid": 158898,
+      "address": "4570-72 DITMAN ST",
+      "approx_hgt_ft": 15,
+      "max_hgt_ft": 52.309869750000004
+    },
+    {
+      "objectid": 159116,
+      "address": "2316-18 ORTHODOX ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 39.560047080000004
+    },
+    {
+      "objectid": 159388,
+      "address": "1669 WORRELL ST",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 40.15991025
+    },
+    {
+      "objectid": 161407,
+      "address": "1529 DEAL ST",
+      "approx_hgt_ft": 3,
+      "max_hgt_ft": 11.679859500000001
+    },
+    {
+      "objectid": 163263,
+      "address": "4240 LEIPER ST",
+      "approx_hgt_ft": 24,
+      "max_hgt_ft": 76.68010799999999
+    },
+    {
+      "objectid": 163389,
+      "address": "101 E ERIE AVE",
+      "approx_hgt_ft": 17,
+      "max_hgt_ft": 64.81992275
+    },
+    {
+      "objectid": 166861,
+      "address": "743 E ATLANTIC ST",
+      "approx_hgt_ft": 16,
+      "max_hgt_ft": 56.38010742
+    },
+    {
+      "objectid": 167656,
+      "address": "1301-31 E LUZERNE ST",
+      "approx_hgt_ft": 16,
+      "max_hgt_ft": 57.8001305
+    },
+    {
+      "objectid": 168529,
+      "address": "5600 TACONY ST",
+      "approx_hgt_ft": 21,
+      "max_hgt_ft": 68.42015917
+    },
+    {
+      "objectid": 169290,
+      "address": "101 E ERIE AVE",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 35.60003908
+    },
+    {
+      "objectid": 176517,
+      "address": "3415 KENSINGTON AVE",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 36.730045669999996
+    },
+    {
+      "objectid": 187185,
+      "address": "3644 EMERALD ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 37.610085
+    },
+    {
+      "objectid": 187967,
+      "address": "3219 JASPER ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 31.829939829999997
+    },
+    {
+      "objectid": 189170,
+      "address": "3315 FRANKFORD AVE",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 34.15001833
+    },
+    {
+      "objectid": 198864,
+      "address": "3450 J ST",
+      "approx_hgt_ft": 32,
+      "max_hgt_ft": 124.18996833
+    },
+    {
+      "objectid": 199673,
+      "address": "3149 HARTVILLE ST",
+      "approx_hgt_ft": 7,
+      "max_hgt_ft": 23.04005242
+    },
+    {
+      "objectid": 201245,
+      "address": "2867 KENSINGTON AVE",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 43.570126249999994
+    },
+    {
+      "objectid": 205158,
+      "address": "3147-53 EMERALD ST",
+      "approx_hgt_ft": 15,
+      "max_hgt_ft": 45.389932079999994
+    },
+    {
+      "objectid": 206322,
+      "address": "2944 GRANSBACK ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 49.19989142
+    },
+    {
+      "objectid": 209733,
+      "address": "2533 E WESTMORELAND ST",
+      "approx_hgt_ft": 8,
+      "max_hgt_ft": 24.53010767
+    },
+    {
+      "objectid": 210641,
+      "address": "2914 KENSINGTON AVE",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 34.289888669999996
+    },
+    {
+      "objectid": 213051,
+      "address": "2906 GRANSBACK ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 39.040074419999996
+    },
+    {
+      "objectid": 213703,
+      "address": "3261 CHATHAM ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 37.65008975
+    },
+    {
+      "objectid": 215501,
+      "address": "2772-74 CORAL ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 37.09014933
+    },
+    {
+      "objectid": 223496,
+      "address": "3144 BELGRADE ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 34.199882
+    },
+    {
+      "objectid": 224713,
+      "address": "2052 E MONMOUTH ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 45.219927500000004
+    },
+    {
+      "objectid": 230393,
+      "address": "3645 CARBON ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 30.98994467
+    },
+    {
+      "objectid": 241669,
+      "address": "2816 SALMON ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 34.660060079999994
+    },
+    {
+      "objectid": 423277,
+      "address": "1813-25 E HILTON ST",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 47.04998233
+    },
+    {
+      "objectid": 478496,
+      "address": "901 E LYCOMING ST",
+      "approx_hgt_ft": 20,
+      "max_hgt_ft": 63.71008183
+    },
+    {
+      "objectid": 478640,
+      "address": "635-53 E ERIE AVE",
+      "approx_hgt_ft": 23,
+      "max_hgt_ft": 85.94006567
+    },
+    {
+      "objectid": 478833,
+      "address": "4519-45 TACONY ST",
+      "approx_hgt_ft": 36,
+      "max_hgt_ft": 122.43015633
+    },
+    {
+      "objectid": 483119,
+      "address": "2520 E SOMERSET ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 48.10006725
+    }
+  ],
+  "tallest_buildings_m": [
+    {
+      "id": 499167,
+      "h": 73.15
+    },
+    {
+      "id": "1262-106",
+      "h": 52.63
+    },
+    {
+      "id": "1262-100",
+      "h": 52.42
+    },
+    {
+      "id": "1262-101",
+      "h": 52.42
+    },
+    {
+      "id": "1262-103",
+      "h": 52.42
+    },
+    {
+      "id": "1262-104",
+      "h": 52.42
+    },
+    {
+      "id": "1262-105",
+      "h": 52.42
+    },
+    {
+      "id": "1262-99",
+      "h": 52.07
+    },
+    {
+      "id": "1262-98",
+      "h": 48.94
+    },
+    {
+      "id": "484245-14",
+      "h": 47.91
+    }
+  ],
+  "trees_in_scene": 7542,
+  "height_overrides": [
+    {
+      "id": 478499,
+      "mode": "neighbor",
+      "from_m": 42.06,
+      "to_m": 10.67,
+      "neighbors": 1
+    }
+  ],
+  "render_tiles": 23,
+  "max_ground_texture_px": 12544,
+  "uv_fit_max_residual_m": 0.00015972116695077792,
+  "ground_median_filter_px": 5,
+  "frames": 227,
+  "lidar_buildings_shaped": 37831,
+  "lidar_fallback_single_height": 499,
+  "lidar_parts": 70850,
+  "lidar_terrace_parts": 0,
+  "lidar_stadiums": [],
+  "lidar_stadiums_excluded": [
+    1262,
+    7097,
+    9075
+  ],
+  "lidar_structures": 834,
+  "lidar_structure_parts": 1908,
+  "lidar_structure_area_m2": 115879.1,
+  "lidar_structures_dropped_photo": 1376,
+  "lidar_highway_mask": true,
+  "lidar_highway_masked_m2": 598124.9,
+  "lidar_rail_mask": true,
+  "lidar_margin_m": 100.0,
+  "facade_join": {
+    "address": 284,
+    "parcel": 44507,
+    "unmatched": 200,
+    "point": 48
+  },
+  "facade_match_rate": 0.996,
+  "facade_styles": {
+    "row_typical": 19300,
+    "row_porch": 10811,
+    "row_postwar": 3541,
+    "twin": 3164,
+    "other": 1661,
+    "warehouse": 1606,
+    "mixed_storefront": 1473,
+    "row_modern": 1427,
+    "detached": 782,
+    "river_row": 419,
+    "apartment_low": 362,
+    "institutional": 293
+  },
+  "facade_materials": {
+    "brick": 43414,
+    "frame": 1159,
+    "metal": 193,
+    "stone": 73
+  },
+  "facade_colour_source": {
+    "palette": 44766,
+    "aerial": 73
+  },
+  "facade_osm_footprints": 0,
+  "facade_osm_items": 0,
+  "facade_street_fronts": 12155,
+  "facade_unmatched": "plain walls (no facade)",
+  "lawn_corrected_px": 45973823,
+  "lawn_park_px": 56108247,
+  "lawn_woods_px": 47880,
+  "lawn_forest_px": 13082914
+}

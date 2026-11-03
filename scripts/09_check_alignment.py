@@ -26,6 +26,7 @@ from shapely.geometry import Polygon
 from shapely.ops import unary_union
 
 from pixelphilly.projection import IsoCamera, REPO_ROOT, area_dir, load_config
+from pixelphilly.qa import alignment_failed
 from pixelphilly.scenes import scene_paths
 
 MAX_SHIFT = 4
@@ -151,16 +152,8 @@ def main():
         row = {"frame": f["name"], "iou": round(iou, 4), "iou_1px": round(tiou, 4), "best_shift_px": [dx, dy],
                "building_px": int(np.count_nonzero(expected))}
         report.append(row)
-        # Frames that are mostly river carry too few building pixels for the
-        # shift search to mean anything; only judge frames with real content.
-        # On sparse frames the search can also tie between offsets while the
-        # overlap is near perfect (downtown frame_23_09: IoU 0.995, "shift"
-        # -4,-2); a real 4 px offset would pull IoU well below 0.99, so a
-        # shift only fails a frame whose IoU is also under 0.99.
-        # Judged on the 1 px tolerant IoU (edge rounding isn't misalignment);
-        # the raw IoU stays in the report
-        shifted = max(abs(dx), abs(dy)) > 2 and tiou < 0.99
-        if row["building_px"] > 5000 and (tiou < 0.97 or shifted):
+        # The rule (and why) is in pixelphilly.qa.alignment_failed
+        if alignment_failed(row):
             failures.append(row)
         if f["name"] == "frame_02_02":
             overlay = np.zeros((size, size, 3), np.uint8)

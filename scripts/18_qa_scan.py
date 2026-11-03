@@ -18,7 +18,7 @@ import json
 from shapely.geometry import Polygon
 
 from pixelphilly.projection import REPO_ROOT, area_dir, load_config
-from pixelphilly.qa_scan import find_needles
+from pixelphilly.qa_scan import find_needles, footprint_id
 from pixelphilly.scenes import scene_paths
 
 
@@ -40,7 +40,7 @@ def main():
 
     needles = find_needles(list(parts.values()))
     for n in needles:
-        n.update(describe(n["id"].rsplit("-", 1)[0]))
+        n.update(describe(footprint_id(n["id"])))
     # Structures (s<region>-<part>): one entry per region, its tallest part's
     # height, total area and center in local m
     regions = {}

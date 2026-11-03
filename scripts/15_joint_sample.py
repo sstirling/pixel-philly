@@ -107,6 +107,9 @@ def main():
     ap.add_argument("--landmark-baseline", default="qwen_joint_light8",
                     help="with --landmarks: this area's existing drawing (no references), used for the safety "
                     "check and as the fallback for rejected frames")
+    ap.add_argument("--redraw", help="with --known-area (including this area itself): redraw only these frames "
+                    "(comma list), holding the frames around them at their finished pixels")
+    ap.add_argument("--context", type=int, default=2, help="--redraw: known frames this many cells around")
     ap.add_argument("--center-lonlat", help="lon,lat: with --only-near-known, the bordering new frame nearest this "
                     f"point is the center (default {BROAD_ST_BOUNDARY[0]},{BROAD_ST_BOUNDARY[1]}, Broad St)")
     args = ap.parse_args()
@@ -138,6 +141,17 @@ def main():
         center = tuple(float(v) for v in args.center_lonlat.split(",")) if args.center_lonlat else BROAD_ST_BOUNDARY
         known = plan_known(cfg, args.known_area, args.known_name or args.name, args.known_stage,
                            args.only_near_known, center)
+        if args.redraw:
+            # Redraw a few frames of an area already drawn: list the area itself
+            # among --known-area (after its neighbors, so band cells keep the
+            # merged map's pixels); the frames within --context stay known
+            from pixelphilly.regions import redraw_plan
+
+            run, shared = redraw_plan(area_setup(cfg)[2], known["shared"],
+                                      [f.strip() for f in args.redraw.split(",") if f.strip()], args.context)
+            known.update(run=run, shared=shared, only_near=args.context,
+                         sources={k: v for k, v in known["sources"].items() if k in shared})
+            print(f"redraw: {len(run) - len(shared)} frames ({args.redraw}) with {len(shared)} known around them")
         if args.plan_only:
             missing = [f.name for f in known["run"] if not area_dir(cfg, "renders", f"{f.name}.png").exists()]
             print(f"renders missing: {len(missing)} of {len(known['run'])} (run 06_render.py before the GPU run)")
