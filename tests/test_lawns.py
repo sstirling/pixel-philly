@@ -240,3 +240,36 @@ def test_canopy_trees_skip_nodata_and_lawns():
     assert lawns.canopy_trees(h, 0.5, (0.0, 100.0), w, 2.0) == []
     h = np.full((200, 200), 15.0, np.float32)
     assert lawns.canopy_trees(h, 0.5, (0.0, 100.0), np.zeros((50, 50), np.float32), 2.0) == []
+
+
+def test_canopy_thins_toward_the_woods_edge():
+    # Trees end in a wall at the woods-mask edge without thinning (test spot,
+    # Nov. 3): density must rise from sparse at the edge to full ~15 m in
+    rng = np.random.default_rng(3)
+    h = np.zeros((600, 600), np.float32)
+    h[:, :300] = np.where(rng.random((600, 300)) < 0.95, rng.uniform(10, 25, (600, 300)), 0.2)
+    w, block = lawns.woods_grid(h, 0.5)
+    trees = lawns.canopy_trees(h, 0.5, (0.0, 300.0), w, block)
+    xs = np.array([t[0] for t in trees])
+    edge = float(np.max(xs))  # outermost tree, near the woods edge (~150 m)
+    outer = ((xs > edge - 10.0)).sum()  # last 10 m
+    inner = ((xs > edge - 60.0) & (xs <= edge - 50.0)).sum()  # 10 m strip well inside
+    assert inner > 0 and outer <= 0.6 * inner, (outer, inner)
+    # Deterministic
+    assert trees == lawns.canopy_trees(h, 0.5, (0.0, 300.0), w, block)
+
+
+def test_neighbor_canopies_fill_in_beyond_the_own_lidar_box():
+    # Germantown's frames at the Wissahickon reach past its LiDAR box, so its
+    # scene had no treetops there while roxborough's did (Nov. 4). Treetops
+    # from a neighbor's grid are added only outside the own box and inside
+    # the area's rendered extent.
+    from shapely.geometry import box
+
+    own = [(10.0, 10.0, 4.0)]
+    own_box = box(0, 0, 100, 100)
+    extent = box(-50, -50, 150, 150)
+    neighbor = [(20.0, 20.0, 4.0), (120.0, 20.0, 4.0), (300.0, 20.0, 4.0)]
+    got = lawns.merge_canopy_trees(own, own_box, [neighbor], extent)
+    assert got == [(10.0, 10.0, 4.0), (120.0, 20.0, 4.0)]
+

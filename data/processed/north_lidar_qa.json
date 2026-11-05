@@ -471,15 +471,24 @@
       "h": 74.94
     }
   ],
-  "trees_in_scene": 21074,
+  "trees_in_scene": 35395,
+  "height_overrides": [
+    {
+      "id": 478499,
+      "mode": "neighbor",
+      "from_m": 7.62,
+      "to_m": 7.32,
+      "neighbors": 29
+    }
+  ],
   "render_tiles": 23,
   "max_ground_texture_px": 12544,
   "uv_fit_max_residual_m": 7.706899451885959e-05,
   "ground_median_filter_px": 5,
   "frames": 239,
-  "lidar_buildings_shaped": 57969,
+  "lidar_buildings_shaped": 57968,
   "lidar_fallback_single_height": 768,
-  "lidar_parts": 104368,
+  "lidar_parts": 104367,
   "lidar_terrace_parts": 0,
   "lidar_stadiums": [],
   "lidar_structures": 612,
@@ -527,6 +536,7 @@
   "facade_osm_items": 157,
   "facade_street_fronts": 16856,
   "facade_unmatched": "plain walls (no facade)",
-  "lawn_corrected_px": 208741749,
-  "lawn_park_px": 396648495
+  "lawn_corrected_px": 217293610,
+  "lawn_park_px": 396648495,
+  "lawn_woods_px": 42986343
 }

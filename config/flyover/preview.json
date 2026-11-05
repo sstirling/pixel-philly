@@ -1,0 +1,14 @@
+{
+  "about": "Preview flyover for scripts/29_flyover.py. Each shot moves the camera from the previous shot's end to its own target over `seconds`. `scale` is map pixels per video pixel: 0.5 = 2x magnification (crisp, nearest-neighbor), 1 = 1:1, larger = zoomed out. `\"fit\": true` zooms out to the whole map. Coordinates are lon/lat (WGS84); optional `z` aims at a height in meters (City Hall's base is hidden behind the towers south of it, so the start aims at its tower).",
+  "version": "v14",
+  "size": [1920, 1080],
+  "fps": 30,
+  "start": {"name": "City Hall tower", "lonlat": [-75.16355, 39.95240], "z": 110, "scale": 1.0},
+  "shots": [
+    {"name": "hold on City Hall", "seconds": 2.5, "hold": true},
+    {"name": "down Broad St to Washington Ave", "seconds": 14, "lonlat": [-75.16700, 39.93860], "z": 0},
+    {"name": "pull back to the whole city", "seconds": 10, "fit": true},
+    {"name": "hold on the city", "seconds": 3, "hold": true}
+  ],
+  "credit": "Pixel Philly (preview). AI-generated illustration; style trained on Google Gemini outputs. Data: City of Philadelphia, PASDA, USGS, © OpenStreetMap contributors."
+}

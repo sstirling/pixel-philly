@@ -1,0 +1,556 @@
+{
+  "buildings_downloaded": 27130,
+  "buildings_in_scene": 66743,
+  "buildings_dropped": [],
+  "height_source_counts": {
+    "approx_hgt": 26942,
+    "max_hgt": 131,
+    "default": 57
+  },
+  "height_outliers_max_gt_ratio_x_approx": [
+    {
+      "objectid": 10770,
+      "address": "591 PAOLI AVE",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 38.12996458
+    },
+    {
+      "objectid": 11983,
+      "address": "464 EVERGREEN AVE",
+      "approx_hgt_ft": 22,
+      "max_hgt_ft": 77.58995067
+    },
+    {
+      "objectid": 25734,
+      "address": "8610 WISSAHICKON AVE",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 29.48011075
+    },
+    {
+      "objectid": 28713,
+      "address": "8707 OLD LINE RD",
+      "approx_hgt_ft": 18,
+      "max_hgt_ft": 61.66997042
+    },
+    {
+      "objectid": 34109,
+      "address": "220 SHAWMONT AVE",
+      "approx_hgt_ft": 17,
+      "max_hgt_ft": 61.07996267
+    },
+    {
+      "objectid": 36676,
+      "address": "145 E POMONA ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 33.27004617
+    },
+    {
+      "objectid": 37439,
+      "address": "605 ORIOLE ST",
+      "approx_hgt_ft": 22,
+      "max_hgt_ft": 67.40006583
+    },
+    {
+      "objectid": 39972,
+      "address": "460 AURANIA ST",
+      "approx_hgt_ft": 15,
+      "max_hgt_ft": 51.59008208
+    },
+    {
+      "objectid": 40109,
+      "address": "7328 HILL RD",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 33.769960329999996
+    },
+    {
+      "objectid": 40481,
+      "address": "176 SHAWMONT AVE",
+      "approx_hgt_ft": 21,
+      "max_hgt_ft": 110.47993325
+    },
+    {
+      "objectid": 40931,
+      "address": "714 SHAWMONT AVE",
+      "approx_hgt_ft": 7,
+      "max_hgt_ft": 22.039917329999998
+    },
+    {
+      "objectid": 41333,
+      "address": "7855 GETTYSBURG AVE",
+      "approx_hgt_ft": 23,
+      "max_hgt_ft": 83.74992608
+    },
+    {
+      "objectid": 42866,
+      "address": "7434 HILL RD",
+      "approx_hgt_ft": 2,
+      "max_hgt_ft": 8.80989567
+    },
+    {
+      "objectid": 44323,
+      "address": "448R SHAWMONT AVE",
+      "approx_hgt_ft": 17,
+      "max_hgt_ft": 94.90989108000001
+    },
+    {
+      "objectid": 48648,
+      "address": "7508 FOWLER ST",
+      "approx_hgt_ft": 20,
+      "max_hgt_ft": 61.690076669999996
+    },
+    {
+      "objectid": 49526,
+      "address": "1003 LIVEZEY LN",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 40.91015333
+    },
+    {
+      "objectid": 51458,
+      "address": "403 DEARNLEY ST",
+      "approx_hgt_ft": 17,
+      "max_hgt_ft": 56.9201025
+    },
+    {
+      "objectid": 54265,
+      "address": "900 WISES MILL RD",
+      "approx_hgt_ft": 18,
+      "max_hgt_ft": 57.50010558
+    },
+    {
+      "objectid": 57697,
+      "address": "401 DEARNLEY ST",
+      "approx_hgt_ft": 16,
+      "max_hgt_ft": 48.06993375
+    },
+    {
+      "objectid": 58064,
+      "address": "581 PAOLI AVE",
+      "approx_hgt_ft": 15,
+      "max_hgt_ft": 47.429997
+    },
+    {
+      "objectid": 201364,
+      "address": "713 MANATAWNA AVE",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 77.39008733
+    },
+    {
+      "objectid": 245722,
+      "address": "6814 MILTON ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 31.91992183
+    },
+    {
+      "objectid": 305064,
+      "address": "704 HENDREN ST",
+      "approx_hgt_ft": 28,
+      "max_hgt_ft": 90.87985892
+    },
+    {
+      "objectid": 306314,
+      "address": "1201-17 VERNON RD",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 36.99010608
+    },
+    {
+      "objectid": 313950,
+      "address": "7406 GERMANTOWN AVE",
+      "approx_hgt_ft": 42,
+      "max_hgt_ft": 150.66
+    },
+    {
+      "objectid": 317052,
+      "address": "215 W GRAVERS LN",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 36.0601395
+    },
+    {
+      "objectid": 414631,
+      "address": "8600R RIDGE AVE",
+      "approx_hgt_ft": 23,
+      "max_hgt_ft": 78.17013567000001
+    },
+    {
+      "objectid": 414821,
+      "address": "2 LOTHIAN PL",
+      "approx_hgt_ft": 22,
+      "max_hgt_ft": 72.75995908
+    },
+    {
+      "objectid": 422831,
+      "address": "399 PORT ROYAL AVE",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 50.299998
+    },
+    {
+      "objectid": 422834,
+      "address": "7834 EVA ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 95.58010417
+    },
+    {
+      "objectid": 424105,
+      "address": "908 GLENROY RD",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 83.95984158
+    },
+    {
+      "objectid": 460717,
+      "address": "210 WHITEMARSH ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 34.06007617
+    },
+    {
+      "objectid": 462167,
+      "address": "931 MANATAWNA AVE",
+      "approx_hgt_ft": 23,
+      "max_hgt_ft": 75.340117
+    },
+    {
+      "objectid": 463250,
+      "address": "8125-27 GERMANTOWN AVE",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 31.4499675
+    },
+    {
+      "objectid": 467233,
+      "address": "916 CLYDE LN",
+      "approx_hgt_ft": 22,
+      "max_hgt_ft": 66.740032
+    },
+    {
+      "objectid": 467728,
+      "address": "950 CLYDE LN",
+      "approx_hgt_ft": 24,
+      "max_hgt_ft": 85.18004975000001
+    },
+    {
+      "objectid": 468089,
+      "address": "961 CLYDE LN",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 44.889991249999994
+    },
+    {
+      "objectid": 468988,
+      "address": "901 SEQUOIA RD",
+      "approx_hgt_ft": 23,
+      "max_hgt_ft": 76.68984325000001
+    },
+    {
+      "objectid": 471811,
+      "address": "939 CLYDE LN",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 58.629979829999996
+    },
+    {
+      "objectid": 472682,
+      "address": "8730 LYKENS LN",
+      "approx_hgt_ft": 8,
+      "max_hgt_ft": 24.560082079999997
+    },
+    {
+      "objectid": 473832,
+      "address": "784 MANATAWNA AVE",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 56.04995592
+    },
+    {
+      "objectid": 497149,
+      "address": "209 PELHAM RD",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 42.15007808
+    },
+    {
+      "objectid": 497373,
+      "address": "7830 GETTYSBURG AVE",
+      "approx_hgt_ft": 19,
+      "max_hgt_ft": 66.26005225
+    },
+    {
+      "objectid": 500242,
+      "address": "8724 LYKENS LN",
+      "approx_hgt_ft": 19,
+      "max_hgt_ft": 62.37994575
+    },
+    {
+      "objectid": 500267,
+      "address": "860 MANATAWNA AVE",
+      "approx_hgt_ft": 31,
+      "max_hgt_ft": 93.2199665
+    },
+    {
+      "objectid": 501207,
+      "address": "923 MANATAWNA AVE",
+      "approx_hgt_ft": 18,
+      "max_hgt_ft": 69.08996167
+    },
+    {
+      "objectid": 504966,
+      "address": "914 SEQUOIA RD",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 79.72985442
+    },
+    {
+      "objectid": 506599,
+      "address": "846 CATHEDRAL RD",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 46.13001083
+    },
+    {
+      "objectid": 507491,
+      "address": "801 INVERNESS LN",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 64.04011342
+    },
+    {
+      "objectid": 507501,
+      "address": "8616 OLD LINE RD",
+      "approx_hgt_ft": 18,
+      "max_hgt_ft": 69.87993075
+    },
+    {
+      "objectid": 511411,
+      "address": "500 SPRING LN",
+      "approx_hgt_ft": 15,
+      "max_hgt_ft": 56.9200035
+    },
+    {
+      "objectid": 512363,
+      "address": "847 CATHEDRAL RD",
+      "approx_hgt_ft": 17,
+      "max_hgt_ft": 51.88014817
+    },
+    {
+      "objectid": 517182,
+      "address": "8601 STEEPLE DR",
+      "approx_hgt_ft": 7,
+      "max_hgt_ft": 21.73015008
+    },
+    {
+      "objectid": 517817,
+      "address": "8612 TIONA ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 30.18006617
+    },
+    {
+      "objectid": 519342,
+      "address": "3 SUMMIT PL",
+      "approx_hgt_ft": 15,
+      "max_hgt_ft": 48.450091920000006
+    },
+    {
+      "objectid": 520593,
+      "address": "7428 BOYER ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 50.47003658
+    },
+    {
+      "objectid": 521569,
+      "address": "7918 CADILLAC LN",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 39.74004017
+    },
+    {
+      "objectid": 524327,
+      "address": "952 CATHEDRAL RD",
+      "approx_hgt_ft": 27,
+      "max_hgt_ft": 87.08998483
+    },
+    {
+      "objectid": 528463,
+      "address": "900 WISES MILL RD",
+      "approx_hgt_ft": 17,
+      "max_hgt_ft": 140.00006733
+    },
+    {
+      "objectid": 530523,
+      "address": "7924 CADILLAC LN",
+      "approx_hgt_ft": 19,
+      "max_hgt_ft": 67.76001025000001
+    },
+    {
+      "objectid": 533614,
+      "address": "890 WISES MILL RD",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 119.46985908
+    },
+    {
+      "objectid": 533789,
+      "address": "654 SUMMIT AVE",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 33.980045749999995
+    },
+    {
+      "objectid": 534413,
+      "address": "7928 RIDGE AVE",
+      "approx_hgt_ft": 16,
+      "max_hgt_ft": 56.54999292
+    },
+    {
+      "objectid": 534429,
+      "address": "633 WISES MILL RD",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 41.66006425
+    },
+    {
+      "objectid": 536035,
+      "address": "617 SHAWMONT AVE",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 43.20006842
+    },
+    {
+      "objectid": 536149,
+      "address": "8200 RIDGE AVE",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 87.38004258
+    },
+    {
+      "objectid": 537083,
+      "address": "604 CRESTVIEW RD",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 68.72999425
+    },
+    {
+      "objectid": 538477,
+      "address": "500 BRINTON ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 46.400110000000005
+    },
+    {
+      "objectid": 539546,
+      "address": "520 BRINTON ST",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 35.8800825
+    },
+    {
+      "objectid": 540781,
+      "address": "481 AURANIA ST",
+      "approx_hgt_ft": 8,
+      "max_hgt_ft": 54.41004916999999
+    },
+    {
+      "objectid": 541345,
+      "address": "651 WIGARD AVE",
+      "approx_hgt_ft": 16,
+      "max_hgt_ft": 52.690000669999996
+    },
+    {
+      "objectid": 541388,
+      "address": "160 CARPENTER LN",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 36.560021420000005
+    },
+    {
+      "objectid": 543443,
+      "address": "265 PORT ROYAL AVE",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 54.230069
+    }
+  ],
+  "tallest_buildings_m": [
+    {
+      "id": "285970-13",
+      "h": 55.99
+    },
+    {
+      "id": "285970-14",
+      "h": 55.19
+    },
+    {
+      "id": "285970-12",
+      "h": 54.63
+    },
+    {
+      "id": "285970-11",
+      "h": 52.65
+    },
+    {
+      "id": "285970-10",
+      "h": 52.52
+    },
+    {
+      "id": "285970-9",
+      "h": 52.44
+    },
+    {
+      "id": "285970-8",
+      "h": 49.74
+    },
+    {
+      "id": "285970-2",
+      "h": 47.97
+    },
+    {
+      "id": "285970-3",
+      "h": 47.97
+    },
+    {
+      "id": "285970-4",
+      "h": 47.56
+    }
+  ],
+  "trees_in_scene": 76305,
+  "render_tiles": 25,
+  "max_ground_texture_px": 12544,
+  "uv_fit_max_residual_m": 0.00024305854527866902,
+  "ground_median_filter_px": 5,
+  "frames": 244,
+  "lidar_buildings_shaped": 20970,
+  "lidar_fallback_single_height": 221,
+  "lidar_parts": 55859,
+  "lidar_terrace_parts": 0,
+  "lidar_stadiums": [],
+  "lidar_stadiums_excluded": [
+    322343
+  ],
+  "lidar_structures": 1428,
+  "lidar_structure_parts": 4724,
+  "lidar_structure_area_m2": 236519.1,
+  "lidar_structures_dropped_photo": 2311,
+  "lidar_highway_mask": true,
+  "lidar_highway_masked_m2": 13557.7,
+  "lidar_rail_mask": true,
+  "lidar_margin_m": 100.0,
+  "facade_join": {
+    "parcel": 26857,
+    "unmatched": 67,
+    "address": 109,
+    "point": 97
+  },
+  "facade_match_rate": 0.998,
+  "facade_styles": {
+    "twin": 8966,
+    "row_postwar": 6215,
+    "detached": 5871,
+    "row_porch": 3180,
+    "apartment_low": 1042,
+    "other": 560,
+    "row_typical": 366,
+    "mixed_storefront": 333,
+    "institutional": 209,
+    "row_modern": 203,
+    "warehouse": 95,
+    "river_row": 19,
+    "office_tower": 4
+  },
+  "facade_materials": {
+    "brick": 22460,
+    "stone": 3526,
+    "frame": 1074,
+    "metal": 3
+  },
+  "facade_colour_source": {
+    "osm_material": 217,
+    "palette": 26829,
+    "aerial": 12,
+    "osm": 5
+  },
+  "facade_osm_footprints": 222,
+  "facade_osm_items": 474,
+  "facade_street_fronts": 3271,
+  "facade_unmatched": "plain walls (no facade)",
+  "lawn_corrected_px": 173667704,
+  "lawn_park_px": 410745051,
+  "lawn_woods_px": 199458508,
+  "golf_turf_px": 18311779
+}

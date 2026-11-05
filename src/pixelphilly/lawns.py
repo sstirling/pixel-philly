@@ -194,6 +194,10 @@ def forest(rgb: np.ndarray, weight: np.ndarray) -> np.ndarray:
 TREE_SPACING_M = 7.0
 TREE_MIN_H_M = 5.0  # a treetop, not a shrub
 TREE_RADIUS_M = (3.0, 5.0)  # render radius (05_build_scene.tree_radius_m clamps street trees to 1.5-7 m)
+# Edge thinning: the share of woods blocks within TREE_EDGE_M sets the
+# density, 0 at the mask edge (share 0.5) up to full where the share
+# reaches 1, so a forest doesn't end in a wall of canopies (test spot, Nov. 3)
+TREE_EDGE_M = 15.0
 
 
 def canopy_trees(h: np.ndarray, res: float, origin, woods: np.ndarray, woods_block_m: float) -> list:
@@ -210,6 +214,9 @@ def canopy_trees(h: np.ndarray, res: float, origin, woods: np.ndarray, woods_blo
     hb = hb.reshape(rows, k, cols, k).transpose(0, 2, 1, 3).reshape(rows, cols, k * k)
     arg = hb.argmax(axis=2)
     top = np.take_along_axis(hb, arg[..., None], axis=2)[..., 0]
+    inside = (woods > 0.5).astype(np.float64)
+    share = _box_mean(inside, max(1, int(round(TREE_EDGE_M / woods_block_m))))
+    density = np.clip((share - 0.5) / 0.5, 0.0, 1.0)
     for br, bc in zip(*np.nonzero(top > TREE_MIN_H_M)):
         r = br * k + arg[br, bc] // k
         c = bc * k + arg[br, bc] % k
@@ -218,7 +225,61 @@ def canopy_trees(h: np.ndarray, res: float, origin, woods: np.ndarray, woods_blo
         wr, wc = int((r * res) / woods_block_m), int((c * res) / woods_block_m)
         if wr >= woods.shape[0] or wc >= woods.shape[1] or woods[wr, wc] <= 0.5:
             continue
+        # Deterministic thinning near the edge: a hash of the block position
+        if ((int(br) * 73856093) ^ (int(bc) * 19349663)) % 1000 / 1000.0 >= density[wr, wc]:
+            continue
         rad = float(np.clip(0.6 * TREE_SPACING_M * (0.8 + 0.2 * min(top[br, bc], 25.0) / 25.0),
                             *TREE_RADIUS_M))
         out.append((round(float(e), 2), round(float(n), 2), round(rad, 2)))
     return out
+
+
+# ------------------------------------------------------------------- golf
+# Course turf (golf.courses): dormant fairways run past DORMANT_BAND, both
+# saturated (Byrne: S ~0.61) and bleached (Saint Martin's: V ~0.86, S
+# ~0.21, drawn like sand). GOLF_BAND covers both; brightness is kept, so
+# mow lines and shade stay (no texture is added: smooth uniform green was
+# drawn as lakes, Nov. 3). Fairways, greens and tees (where OSM maps them)
+# get a lighter, yellower green than the rough.
+GOLF_BAND = {"h": (30.0, 75.0), "s": (0.15, 0.70), "v": (0.30, 0.92)}
+GOLF_FAIRWAY_HUE = 82.0
+GOLF_FAIRWAY_LIFT = 1.04  # slightly lighter
+GOLF_ROUGH_HUE = TARGET_HUE
+GOLF_MIN_SAT = 0.32
+
+
+def correct_golf(rgb: np.ndarray, weight: np.ndarray, fairway: np.ndarray) -> np.ndarray:
+    """rgb (H, W, 3) uint8; weight (H, W) 0-1 (course turf: course outline
+    minus bunkers, water hazards, buildings and woods); fairway (H, W) bool
+    (OSM fairways, greens, tees). Returns a corrected copy."""
+    out = rgb.copy()
+    h, s, v = _hsv(rgb)
+    b = GOLF_BAND
+    w = weight * _ramp(h, *b["h"], EDGE["h"]) * _ramp(s, *b["s"], EDGE["s"]) * _ramp(v, *b["v"], EDGE["v"])
+    sel = w > 0
+    if not sel.any():
+        return out
+    k = w[sel] * STRENGTH
+    target = np.where(fairway[sel], GOLF_FAIRWAY_HUE, GOLF_ROUGH_HUE)
+    h2 = h[sel] + (target - h[sel]) * k
+    s2 = s[sel] + (np.maximum(s[sel], GOLF_MIN_SAT) - s[sel]) * k
+    lift = np.where(fairway[sel], GOLF_FAIRWAY_LIFT, 1.0)
+    v2 = np.clip(v[sel] * (1 + (lift - 1) * k), 0, 1)
+    out[sel] = np.clip(np.round(_hsv_to_rgb(h2, s2, v2) * 255), 0, 255).astype(np.uint8)
+    return out
+
+
+def merge_canopy_trees(own, own_box, neighbors, extent) -> list:
+    """Own treetops plus neighbors' (other regions' LiDAR grids, same local
+    frame) that lie outside own_box (the area's LiDAR box) and inside extent
+    (the ground its frames show), so frames reaching past the area's own
+    LiDAR still get canopies (germantown at the Wissahickon, Nov. 4)."""
+    from shapely.geometry import Point
+    from shapely.prepared import prep
+
+    pe, po = prep(extent), prep(own_box)
+    out = list(own)
+    for trees in neighbors:
+        out.extend(t for t in trees if pe.contains(Point(t[0], t[1])) and not po.contains(Point(t[0], t[1])))
+    return out
+

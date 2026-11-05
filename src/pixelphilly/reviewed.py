@@ -84,3 +84,31 @@ def apply_height_overrides(buildings: list[dict], overrides: dict, default_m: fl
 
 def stadium_excluded(building_id, exclusions: dict) -> bool:
     return str(building_id) in exclusions
+
+
+STRUCTURE_EXCLUSIONS = REPO_ROOT / "config" / "structure_exclusions.json"
+STRUCTURE_MATCH_M = 5.0
+
+
+def drop_excluded_structures(parts: list[dict], exclusions: dict, to_local):
+    """(kept parts, dropped exclusion ids). LiDAR structure parts ({"region",
+    "polys"} in local m) of every region within STRUCTURE_MATCH_M of a
+    reviewed point (config/structure_exclusions.json, "lonlat") are dropped.
+    to_local: (lon, lat) -> local (e, n)."""
+    if not exclusions or not parts:
+        return parts, []
+    from shapely.geometry import Point, Polygon
+    from shapely.ops import unary_union
+
+    regions = {}
+    for p in parts:
+        regions.setdefault(p["region"], []).extend(Polygon(r[0], r[1:]) for r in p["polys"])
+    shapes = {k: unary_union(v) for k, v in regions.items()}
+    drop, hit = set(), []
+    for key, e in exclusions.items():
+        pt = Point(*to_local(*e["lonlat"]))
+        found = [k for k, g in shapes.items() if g.distance(pt) <= STRUCTURE_MATCH_M]
+        if found:
+            drop.update(found)
+            hit.append(key)
+    return [p for p in parts if p["region"] not in drop], hit

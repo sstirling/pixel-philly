@@ -265,6 +265,17 @@ def plan_known(cfg, known_areas, known_name, stage, only_near, center_lonlat):
     missing = [str(p) for _, _, p in sources.values() if not p.exists()]
     if missing:
         raise SystemExit(f"{len(missing)} drawn known frames missing, e.g. {missing[:3]}")
+    # Known pixels must be final: no neighbor redraw merged but not yet
+    # repainted, and no neighbor run still drawing (Nov. 4 seams)
+    from pixelphilly.regions import in_flight_runs, stale_known
+
+    stale = stale_known(sources, known_name, REPO_ROOT)
+    if stale:
+        raise SystemExit(f"{len(stale)} known frames are older than their drawings (repaint pending), "
+                         f"e.g. {stale[:3]}; repaint those areas first")
+    flying = [r for r in in_flight_runs(known_areas, REPO_ROOT) if r.split("/")[0] != cfg["name"]]
+    if flying:
+        raise SystemExit(f"known areas still drawing: {flying}; collect and repaint them first")
     shared = {n: kf for n, (_, kf, _) in sources.items()}
     per_area = {a: sum(1 for o, _, _ in sources.values() if o == a) for a in known_areas}
     run = frames

@@ -83,7 +83,7 @@ def test_stadium_exclusion():
     assert not reviewed.stadium_excluded(1262, ex)
 
 
-@pytest.mark.parametrize("name", ["height_overrides.json", "stadium_exclusions.json"])
+@pytest.mark.parametrize("name", ["height_overrides.json", "stadium_exclusions.json", "structure_exclusions.json"])
 def test_reviewed_files_are_documented(name):
     # Every entry says what was checked, where, and when
     data = json.loads((REPO_ROOT / "config" / name).read_text())
@@ -92,3 +92,20 @@ def test_reviewed_files_are_documented(name):
         assert e["id"] and e["reason"] and e["source"] and e["reviewed"], e
         if name == "height_overrides.json":
             assert e["mode"] in reviewed.MODES
+
+
+def test_structure_exclusion_drops_the_region_at_a_reviewed_point():
+    # LiDAR structures have no stable ids (renumbered per build and area), so
+    # a reviewed exclusion is a point: the region containing it is dropped
+    # (roxborough s858: a 2022 object on a lot that is rubble in the 2024 aerial)
+    parts = [{"region": 0, "h": 21.0, "polys": [_sq(0, 0, 100)]},
+             {"region": 0, "h": 15.0, "polys": [_sq(100, 0, 50)]},
+             {"region": 1, "h": 5.0, "polys": [_sq(500, 500, 20)]}]
+    ex = {"rubble": {"id": "rubble", "lonlat": [0.0, 0.0]}}
+    to_local = lambda lon, lat: (60.0, 40.0)  # noqa: E731  the point lands inside region 0's first part
+    kept, dropped = reviewed.drop_excluded_structures(parts, ex, to_local)
+    assert [p["region"] for p in kept] == [1] and dropped == ["rubble"]
+    far = lambda lon, lat: (300.0, 300.0)  # noqa: E731
+    kept, dropped = reviewed.drop_excluded_structures(parts, ex, far)
+    assert len(kept) == 3 and dropped == []
+    assert reviewed.drop_excluded_structures(parts, {}, far) == (parts, [])

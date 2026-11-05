@@ -437,6 +437,51 @@ def photo_check(cfg, frame, s_parts):
     return kept, dropped
 
 
+_GOLF = {}
+
+
+def golf_layers(cfg, frame):
+    """Local-meter rings of the area's golf layers (pixelphilly.golf),
+    cached: {"courses", "construction", "fairway", "bunker", "hazard"}.
+    Courses are OSM leisure=golf_course outlines (no driving ranges, no
+    disused) plus PPR properties named "Golf" (Walnut Lane isn't a course in
+    OSM); construction courses come from config/golf.json."""
+    if cfg["name"] in _GOLF:
+        return _GOLF[cfg["name"]]
+    from shapely.geometry import shape
+
+    from pixelphilly import golf
+
+    path = RAW / f"{cfg['name']}_golf.json"
+    reviewed = json.loads((REPO_ROOT / "config" / "golf.json").read_text())
+    cons = {e["id"] for e in reviewed["construction"]}
+    parsed = golf.parse(json.loads(path.read_text())["elements"]) if path.exists() else {"courses": [], "features": {}}
+    out = {"courses": [], "construction": [], "fairway": [], "bunker": [], "hazard": []}
+    for c in golf.courses(parsed, cons):
+        out["courses"].extend(rings_local(c["geom"], frame))
+    cons_geoms = [c["geom"] for c in golf.construction(parsed, cons)]
+    for g in cons_geoms:
+        out["construction"].extend(rings_local(g, frame))
+    parks = RAW / f"{cfg['name']}_parks.geojson"
+    if parks.exists():
+        for f in json.loads(parks.read_text())["features"]:
+            if f.get("geometry") and "golf" in (f["properties"].get("official_name") or "").lower():
+                g = shape(f["geometry"]).buffer(0)
+                # A PPR golf property mostly over a reviewed construction
+                # course is construction as a whole (golf.ppr_construction)
+                key = "construction" if golf.ppr_construction([g], cons_geoms) else "courses"
+                out[key].extend(rings_local(g, frame))
+    for kind in ("fairway", "green", "tee"):
+        for g in parsed["features"].get(kind, []):
+            out["fairway"].extend(rings_local(g, frame))
+    for g in parsed["features"].get("bunker", []):
+        out["bunker"].extend(rings_local(g, frame))
+    for g in golf.water_hazards(parsed):
+        out["hazard"].extend(rings_local(g, frame))
+    _GOLF[cfg["name"]] = out
+    return out
+
+
 def lawn_correct_ground(cfg, frame, ground, buildings):
     """With "lawn_correct": true, shift dormant-grass pixels of the ground
     texture toward green inside park polygons (data/raw/<area>_parks.geojson
@@ -481,6 +526,22 @@ def lawn_correct_ground(cfg, frame, ground, buildings):
         d.polygon(px(rings[0]), fill=255)
         for hole in rings[1:]:
             d.polygon(px(hole), fill=0)
+    golf_on = bool(cfg.get("golf_correct"))
+    gm = {}
+    if golf_on:
+        # Course turf gets the golf band instead (lawns.correct_golf);
+        # construction courses get no correction at all
+        layers = golf_layers(cfg, frame)
+        for key in ("courses", "construction", "fairway", "bunker", "hazard"):
+            gm[key] = Image.new("L", img.size, 0)
+            gd_ = ImageDraw.Draw(gm[key])
+            for rings in layers[key]:
+                gd_.polygon(px(rings[0]), fill=255)
+                for hole in rings[1:]:
+                    gd_.polygon(px(hole), fill=0)
+        gdraw = ImageDraw.Draw(gm["courses"])
+    else:
+        gdraw = None
     # Only footprints on this texture (a region tile's texture covers a
     # fraction of ~116k footprints; drawing all of them, point by point,
     # took hours for South Philly). The rest would fall outside the image
@@ -499,7 +560,14 @@ def lawn_correct_ground(cfg, frame, ground, buildings):
                 d.polygon(px(pg.exterior.coords), fill=0)
                 if bd is not None:
                     bd.polygon(px(pg.exterior.coords), fill=255)
+                if gdraw is not None:
+                    gdraw.polygon(px(pg.exterior.coords), fill=0)
     region = np.asarray(mask) > 0
+    if golf_on:
+        course = np.asarray(gm["courses"]) > 0
+        cons = np.asarray(gm["construction"]) > 0
+        region &= ~course & ~cons
+        golf_turf = course & ~cons & (np.asarray(gm["bunker"]) == 0) & (np.asarray(gm["hazard"]) == 0)
     arr = np.asarray(img.convert("RGB"))
     qa = {}
     if cfg.get("lawn_skip_woods"):
@@ -516,6 +584,16 @@ def lawn_correct_ground(cfg, frame, ground, buildings):
     else:
         region_arg = region
     out = lawns.correct(arr, region_arg)
+    if golf_on and golf_turf.any():
+        gweight = golf_turf.astype(np.float32)
+        if cfg.get("lawn_skip_woods"):
+            # Wooded rough stays woods (trees or aerial), as in parks
+            w_, origin_, block_ = woods_for(cfg, frame, buildings)
+            gy_, gx_ = np.nonzero(golf_turf)
+            ge_, gn_ = texture_local(ground, gx_, gy_)
+            gweight[gy_, gx_] = 1.0 - lawns.sample_grid(w_, origin_, block_, ge_, gn_)
+        out = lawns.correct_golf(out, gweight, np.asarray(gm["fairway"]) > 0)
+        qa["golf_turf_px"] = int(golf_turf.sum())
     if cfg.get("lawn_skip_woods") and cfg.get("lawn_woods_mode") == "forest":
         # Woods shifted toward forest green (pixelphilly.lawns.forest) instead
         # of left as the leaf-off aerial. Mapped water stays as is: the water
@@ -550,7 +628,8 @@ def lawn_correct_ground(cfg, frame, ground, buildings):
     ground["ground"] = Image.fromarray(out)
     print(f"  lawn correction: {changed:,} px in {int(region.sum()):,} px of parks"
           + (f" ({qa['lawn_woods_px']:,} px of woods " + ("forest green)" if "lawn_forest_px" in qa
-                                                          else "left as aerial)") if qa else ""), flush=True)
+                                                          else "left as aerial)") if "lawn_woods_px" in qa else "")
+          + (f"; golf turf {qa['golf_turf_px']:,} px" if "golf_turf_px" in qa else ""), flush=True)
     return {"lawn_corrected_px": changed, "lawn_park_px": int(region.sum()), **qa}
 
 
@@ -758,27 +837,77 @@ def woods_for(cfg, frame, buildings):
     return _WOODS[cfg["name"]]
 
 
-def woods_trees(cfg, frame, buildings, trees):
-    """With "woods_trees": "lidar" (experiment, Nov. 3): add a stylized
-    canopy (the street-tree geometry) at LiDAR treetops in woods,
-    pixelphilly.lawns.canopy_trees. Returns trees plus the added ones."""
-    if cfg.get("woods_trees") != "lidar":
-        return trees
+def _grid_trees(dsm, ground, origin, buildings, crop=None):
+    """Treetops (lawns.canopy_trees) from a LiDAR grid, optionally cropped
+    to a local-meter box (minx, miny, maxx, maxy), with building footprints
+    (+1 m) left out."""
     from rasterio.features import rasterize
     from shapely.geometry import Polygon
 
     from pixelphilly import lawns, lidar
 
-    w, origin, block = woods_for(cfg, frame, buildings)
-    dsm, ground, origin, _ = load_lidar_grid(cfg, frame)
+    res = lidar.RES_M
+    if crop is not None:
+        c0 = max(0, int((crop[0] - origin[0]) / res)); c1 = min(dsm.shape[1], int((crop[2] - origin[0]) / res) + 1)
+        r0 = max(0, int((origin[1] - crop[3]) / res)); r1 = min(dsm.shape[0], int((origin[1] - crop[1]) / res) + 1)
+        if c0 >= c1 or r0 >= r1:
+            return []
+        dsm, ground = dsm[r0:r1, c0:c1], ground[r0:r1, c0:c1]
+        origin = (origin[0] + c0 * res, origin[1] - r0 * res)
     shapes = [(Polygon(r[0], r[1:]).buffer(1.0), 1) for b in buildings for r in b["polys"]
               if Polygon(r[0], r[1:]).is_valid]
-    bmask = rasterize(shapes, out_shape=dsm.shape, transform=lidar._transform(origin, lidar.RES_M), fill=0,
+    bmask = rasterize(shapes, out_shape=dsm.shape, transform=lidar._transform(origin, res), fill=0,
                       dtype="uint8").astype(bool) if shapes else np.zeros(dsm.shape, bool)
     with np.errstate(invalid="ignore"):
         h = np.where(bmask, np.nan, dsm - ground).astype(np.float32)
-    added = [[e, n, r] for e, n, r in lawns.canopy_trees(h, lidar.RES_M, origin, w, block)]
-    print(f"  woods trees: {len(added):,} canopies at LiDAR treetops", flush=True)
+    w, block = lawns.woods_grid(h, res)
+    return lawns.canopy_trees(h, res, origin, w, block)
+
+
+def woods_trees(cfg, frame, buildings, trees):
+    """With "woods_trees": true (Nov. 3): add a stylized canopy (the
+    street-tree geometry) at LiDAR treetops in woods, pixelphilly.lawns
+    .canopy_trees. Frames reach past the area's own LiDAR box, so treetops
+    there come from other regions' cached grids (same projection origin,
+    same local meters; lawns.merge_canopy_trees). Returns trees plus the
+    added ones."""
+    if cfg.get("woods_trees") not in (True, "lidar"):
+        return trees
+    import shapely
+
+    from pixelphilly import lawns, lidar
+    from pixelphilly.lidar_tiles import grid_valid
+    from pixelphilly.projection import local_frame, render_ground_polygon
+    from pixelphilly.region_runner import CITY_REGIONS
+
+    dsm, ground, origin, _ = load_lidar_grid(cfg, frame)
+    own = _grid_trees(dsm, ground, origin, buildings)
+    del dsm, ground
+    _, own_box = lidar.lidar_region_local(cfg)
+    extent = shapely.transform(render_ground_polygon(cfg),
+                               lambda c: np.column_stack(frame.to_local(c[:, 0], c[:, 1])))
+    neighbors, used = [], []
+    for other in CITY_REGIONS:
+        path = PROCESSED / f"{other}_lidar_grid.npz"
+        if other == cfg["name"] or not (REPO_ROOT / "config" / f"{other}.json").exists() or not grid_valid(path):
+            continue
+        ocfg = load_config(other)
+        lf = local_frame(ocfg)
+        if abs(lf.lon0 - frame.lon0) > 1e-9 or abs(lf.lat0 - frame.lat0) > 1e-9:
+            continue
+        _, obox = lidar.lidar_region_local(ocfg)
+        need = obox.intersection(extent).difference(own_box)
+        if need.is_empty or need.area < 100:
+            continue
+        z = np.load(path)
+        crop = need.buffer(60.0).bounds
+        neighbors.append(_grid_trees(z["dsm"], z["ground"], tuple(z["origin"]), buildings, crop))
+        used.append(other)
+        del z
+    merged = lawns.merge_canopy_trees(own, own_box, neighbors, extent)
+    added = [[e, n, r] for e, n, r in merged]
+    print(f"  woods trees: {len(added):,} canopies at LiDAR treetops ({len(own):,} own, "
+          f"{len(added) - len(own):,} from {', '.join(used) or 'no neighbors'})", flush=True)
     return trees + added
 
 
@@ -880,6 +1009,15 @@ def lidar_shaped(cfg, frame, buildings):
                                exclude=(highways or []) + (rails or []))
     found = len({p["region"] for p in s_parts})
     s_parts, dropped_photo = photo_check(cfg, frame, s_parts)
+    # Reviewed exclusions (config/structure_exclusions.json): objects the
+    # 2022 LiDAR saw that the 2024 aerial shows gone but the photo check kept
+    from pixelphilly import reviewed
+
+    s_parts, dropped_reviewed = reviewed.drop_excluded_structures(
+        s_parts, reviewed.load(reviewed.STRUCTURE_EXCLUSIONS),
+        lambda lon, lat: tuple(float(v) for v in frame.to_local(lon, lat)))
+    for k in dropped_reviewed:
+        print(f"  structure dropped (reviewed exclusion {k})", flush=True)
     # Renumber the kept regions so ids stay s0, s1, ...
     renum = {k: i for i, k in enumerate(sorted({p["region"] for p in s_parts}))}
     s_parts = [{**p, "region": renum[p["region"]]} for p in s_parts]
@@ -898,6 +1036,7 @@ def lidar_shaped(cfg, frame, buildings):
                  **({"lidar_stadiums_excluded": stadiums_excluded} if stadiums_excluded else {}),
                  "lidar_structures": n_regions, "lidar_structure_parts": len(s_parts),
                  "lidar_structure_area_m2": round(s_area, 1), "lidar_structures_dropped_photo": dropped_photo,
+                 **({"lidar_structures_dropped_reviewed": dropped_reviewed} if dropped_reviewed else {}),
                  "lidar_highway_mask": highways is not None, "lidar_highway_masked_m2": round(masked_m2, 1),
                  "lidar_rail_mask": rails is not None,
                  "lidar_margin_m": lidar.LIDAR_MARGIN_M}

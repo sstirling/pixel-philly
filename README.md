@@ -435,12 +435,16 @@ uv run python scripts/22_run_region.py germantown --known upper_north_lidar --ru
 - **Steps:** 04l, 01–04k (04b with 12 retries a minute apart; 04c skipped once the grid is cached), 05, 06 color and mask, 09, 18, then the gates, then `15_joint_sample.py --full --volume --detach` with the known areas, `--collect` every 2 minutes until done, `10_repaint_water.py --invented-water fix`, and the `10b_scan_invented_water.py` dry-run report (`output/<area>/invented_water_scan/<run>/`). `output/<area>/region_report.json` is written at every stop.
 - **Resumable:** a step is skipped when its outputs exist and are newer than its inputs (fetches: when their raw files exist). The GPU launch is never repeated once `joint/<run>/call.json` exists.
 - **Stop gates, before any GPU spend:** alignment FAIL (`qa.alignment_failed`, the rule 09 uses); any needle not in `config/qa_exceptions.json`; facade match rate under 0.95; or the run's frames × $0.011 over `--budget-usd`. Every frame in the run counts, known band included, since known frames still pass through the sampler (West: 158 frames, 132 new, 28.1 min).
-- `config/qa_exceptions.json` holds the reviewed 905-11 Walnut St piece and the South Philly port crane `s1459-0`. A needle matches by id within its areas, or anywhere within 3 m and 2 m of height, since structure ids are renumbered per area. South's scan also has `s1762-0` (46 m, 7 m², at -75.12585, 39.90468, near the Packer Ave terminal), not yet reviewed, so a rerun of `south_lidar` through the runner would stop there.
+- `config/qa_exceptions.json` holds the reviewed 905-11 Walnut St piece and the South Philly port crane `s1459-0`. A needle matches by id within its areas, or anywhere within 3 m and 2 m of height, since structure ids are renumbered per area. South's `s1762-0` (46 m, 7 m², at -75.12585, 39.90468, near the Packer Ave terminal) was reviewed Oct. 28 and is in the exceptions too, with 310603-9 and the Bleigh Ave water tower (21880-1).
 - **Exceptions vs. fixes.** An exception lets a reviewed hit through the gate unchanged. When the hit is a data error, the data is fixed instead, in the scene build, so the gate passes on corrected data:
   - `config/height_overrides.json` gives a footprint the median height of its neighbors within 25 m (`"neighbor"`) or a fixed height (`"meters"`), and keeps it out of LiDAR shaping. First entry: 5458 Tacony St, a small tank recorded at 138 ft.
-  - `config/stadium_exclusions.json` lists footprints that pass the seating-row rule but aren't stadiums: the airport terminal and garages, the Richmond Generating Station, a sawtooth-roof plant on G St, and a Port Richmond pier warehouse.
+  - `config/stadium_exclusions.json` lists footprints that pass the seating-row rule but aren't stadiums: the airport terminal and garages, the Richmond Generating Station, a sawtooth-roof plant on G St, and a Port Richmond pier warehouse, a care-home campus at 8700 Ridge Ave, Holmesburg Prison, Fox Chase Cancer Center, Jefferson Torresdale Hospital and the Philadelphia Mills mall.
+  - `config/structure_exclusions.json` lists LiDAR structures (objects with no footprint) the 2022 LiDAR saw but the 2024 aerial shows gone, by a reviewed lon/lat point. First entry: a 42,000 m² rubble lot by the Manayunk Canal.
   - Each entry records the reason, the aerial checked and the review date. Unlisted footprints are untouched (Old City byte-identical).
-- **Redrawing a few frames** of a drawn area: `15_joint_sample.py --full --volume --known-area <neighbors>,<area itself> --known-name <run> --redraw frame_a,frame_b [--context 2] --name <new run>`. The frames within `--context` stay at their finished pixels.
+- **Woods as trees** (`"woods_trees": true`, all 12 city regions since Nov. 4; `lawns.canopy_trees`): woods get the street-tree canopy geometry at LiDAR treetops, one per 7 m block, thinned over 15 m toward the woods edge. Treetops from the neighboring regions' LiDAR grids (same projection origin) fill the area beyond a region's own LiDAR box, so woods don't stop in a straight line at a region border (`lawns.merge_canopy_trees`). A tinted forest floor was tried and failed: the model read the smooth green as water (CHANGELOG, Nov. 3).
+- **Golf courses** (`"golf_correct": true`, all 12 city regions; `pixelphilly.golf`, `lawns.correct_golf`, `scripts/04n_fetch_golf.py`): inside OSM golf courses and PPR "Golf" properties, turf gets a wider lawn band (hue 30–75, S 0.15–0.70, V 0.30–0.92), fairways, greens and tees a yellower, lighter green (hue ~82) and rough the park target. Bunkers and water hazards are left out; wooded rough stays woods. Reviewed construction sites (Cobbs Creek "Olde" and Karakung, `config/golf.json`) get no correction. OSM golf water hazards are water candidates for the repaint, so the Bala clubhouse pond stays water. OSM names the Torresdale course "Union League Golf Club"; that name is unverified, so don't use it in captions without a source.
+- **Invented-water review:** `10b_scan_invented_water.py --from-redraws` lists what the repair changed; real water (ponds, pools, creeks outside the mapped polygons) goes into `config/invented_water_holds.json` after a check on the 2024 aerial, and the area is repainted. Known gap: the scan's hue band (185–215°) misses teal water (hue ~165°). A teal lake the model drew on the Cobbs Creek construction site was found by eye and redrawn (CHANGELOG, Nov. 4); a teal scan elsewhere found only real basins and pools.
+- **Redrawing a few frames** of a drawn area: `15_joint_sample.py --full --volume --known-area <neighbors>,<area itself> --known-name <run> --redraw frame_a,frame_b [--context 2] --name <new run>`. The frames within `--context` stay at their finished pixels. Known pixels must be final: 15 refuses to run if a known frame's drawing is newer than its repainted PNG (a redraw merged, its repaint pending, or a later area's `water_band/` re-repaint not rerun) or if a known area has a GPU run in flight, and 16 refuses to build a map with such cells (`regions.stale_known`, `in_flight_runs`). Run redraws of neighboring areas one after another, each repainted before the next. An area's known pixels only cover cells in its own frame list: to match a seam with an area that has no frame there, redraw on that area's side.
 - **Join seams:** `scripts/25_join_seams.py --areas ... --prompt <run> --version vN` (output `output/philly/join_seams_vN.json`).
 
 ## A clean style: Phase 1 comparison (Oct. 28)
@@ -514,6 +518,95 @@ uv run python scripts/24_style_compare.py
 
 **GPU:** about $13.56 for Phase 1. That's $12.00 logged in `output/gpu_runs.jsonl`, plus an estimated $1.56 of container start and weight loading, which joint runs don't log.
 
+## The talk map: v14, frozen (Nov. 4)
+
+`philly` v14 is the map for Stephen's talk: all 12 regions, 37,681 tiles per layer. It is frozen. Don't rebuild or edit `output/philly/tiles/v14/`; build v15 instead.
+- **Manifest:** `output/philly/FROZEN_v14.json` lists the file count, bytes, tiles per layer, regions, drawing run, prompt, LoRA and date. It also holds a SHA-256 over every file (`scripts/26_freeze_map.py`).
+- **Check it:** `uv run python scripts/26_freeze_map.py --name philly --version v14 --verify`.
+- **Viewer:** it now opens `?area=philly&v=v14` by default. Older versions stay available with `?area=...&v=...`.
+
+**Offline copy** (`scripts/27_offline_copy.py`): `output/philly_offline_v14/` holds the viewer, the vendored OpenSeadragon, the v14 tiles (both layers), the manifest, start scripts (`start.command`/`start.sh`/`start.bat`, Python's built-in server on 127.0.0.1:8137) and a README with the steps. The copy sets `data-offline="1"`, which turns off address search, the only feature that calls a remote API (the City's AIS). With networking off, a Playwright check logged no request off 127.0.0.1 (CHANGELOG, Nov. 4).
+
+```bash
+uv run python scripts/27_offline_copy.py --name philly --version v14   # -> output/philly_offline_v14/
+cd output/philly_offline_v14 && sh start.sh                             # http://127.0.0.1:8137/viewer/?area=philly&v=v14
+```
+
+**Hosting plan** (research only; nothing uploaded and no accounts made; sources checked Nov. 4, 2026):
+
+- **Recommended: Cloudflare R2 behind a custom domain.**
+  - Storage is $0.015/GB-month with 10 GB-month free.
+  - Writes cost $4.50 per million and reads $0.36 per million, with 1M writes and 10M reads free each month.
+  - Egress is free.
+  - At ~5.5 GB and ~75k objects (both layers), the one-time upload and storage fall inside the free tier.
+  - Sources: https://developers.cloudflare.com/r2/pricing/, https://developers.cloudflare.com/r2/buckets/public-buckets/.
+- **Use a custom domain, not r2.dev.** The r2.dev URL is rate-limited, gets no caching and is meant for development. A custom domain puts Cloudflare's cache in front, so cache hits never reach R2. The domain must be a zone in the same Cloudflare account; a partial (CNAME) setup works when the DNS is hosted elsewhere.
+- **Caching:**
+  - Cloudflare caches `.webp` by default.
+  - The `.dzi` and `map.json` files need a cache rule, or a short `Cache-Control`.
+  - Turn on Smart Tiered Cache.
+- **Paths:** keep versioned prefixes (`/v14/`). Upload tiles with `Cache-Control: public, max-age=31536000, immutable`, and never overwrite them. A new version goes under a new prefix.
+- **What Stephen needs to provide:**
+  - A Cloudflare account with R2 enabled. Checkout asks for a payment method even for free-tier use.
+  - The account ID and a bucket name.
+  - An R2 API token with Object Read & Write scoped to that bucket. It gives an access key ID and a secret, and the secret is shown once. Keep both out of git.
+  - A subdomain on Cloudflare DNS, e.g. `map.example.org`.
+  - The viewer's origin, for CORS.
+- **Commands** (rclone ≥ 1.59, https://developers.cloudflare.com/r2/examples/rclone/):
+
+```ini
+# ~/.config/rclone/rclone.conf
+[r2]
+type = s3
+provider = Cloudflare
+access_key_id = <ACCESS_KEY_ID>
+secret_access_key = <SECRET>
+endpoint = https://<ACCOUNT_ID>.r2.cloudflarestorage.com
+acl = private
+no_check_bucket = true
+```
+
+```bash
+B=r2:<BUCKET>/philly/v14
+rclone copy output/philly/tiles/v14 $B --exclude "*.dzi" --exclude "map.json" \
+  --transfers 32 --checkers 64 --s3-no-check-bucket --progress \
+  --header-upload "Cache-Control: public, max-age=31536000, immutable"
+rclone copy output/philly/tiles/v14 $B --include "*.dzi" --s3-no-check-bucket \
+  --header-upload "Content-Type: application/xml" --header-upload "Cache-Control: public, max-age=300"
+rclone copy output/philly/tiles/v14 $B --include "map.json" --s3-no-check-bucket \
+  --header-upload "Content-Type: application/json" --header-upload "Cache-Control: public, max-age=300"
+rclone check output/philly/tiles/v14 $B --one-way --size-only        # nothing missing
+curl -I https://map.example.org/philly/v14/map_files/12/0_0.webp     # Content-Type image/webp, Cache-Control set
+```
+
+- **CORS:**
+  - Needed only if the viewer is served from a different origin than the tiles. The simplest setup puts the viewer files in the same bucket, so no CORS is needed.
+  - Otherwise, set the CORS policy in the dashboard: `[{"AllowedOrigins":["https://<viewer origin>"],"AllowedMethods":["GET","HEAD"],"AllowedHeaders":["*"],"MaxAgeSeconds":86400}]`. Or use `npx wrangler r2 bucket cors set <BUCKET> --file cors.json`.
+  - With cross-origin tiles, set OpenSeadragon's `crossOriginPolicy: "Anonymous"`.
+  - `wrangler r2 object put` uploads one file per call, so it isn't practical for the tiles.
+- **Content types:** rclone is expected to set `image/webp` from the extension, but this wasn't verified in its docs. Check with `curl -I` after the first upload.
+- **Alternatives** (all checked Nov. 4):
+  - GitHub Pages: no. Sites are capped at 1 GB, with a 100 GB/month soft bandwidth limit.
+  - Cloudflare Pages: the free plan allows 20,000 files, the paid plan 100,000.
+  - Vercel: a CLI deploy is capped at 15,000 files.
+  - Netlify: deploys reportedly fail around 40,000 files.
+  - S3 + CloudFront works, with request fees past the free tier.
+  - Backblaze B2 + Cloudflare, or Bunny CDN ($0.01/GB), also work.
+- **Before publishing** (licenses; for Stephen and the credits page he is writing):
+  - **City imagery:** the photo layer is the City's 2024 aerial imagery, and the illustration is derived from it. OpenDataPhilly says the City "retains all rights" to the aerials. Confirm with maps@phila.gov before public hosting. Publishing only the illustration layer narrows this question but doesn't remove it.
+  - **OpenStreetMap (ODbL):** OSM data shaped the façade colors and the golf-course corrections. Credit "© OpenStreetMap contributors" on the page. The map's credits string mentions OSM only for façade colors; it should cover golf courses too.
+  - **Gemini disclosure:** the style LoRA was trained on Gemini 3 Pro Image outputs, and the Gemini API terms restrict using outputs to develop models. Stephen decided (Nov. 2) to disclose it wherever the map is presented or published; see Licensing below.
+  - **Other credits:** check the remaining sources for the credits page: USGS NHD water; LiDAR (2022, "City of Philadelphia via PASDA"); USFWS NWI wetlands; PPR parks and trees; the City water (PWD), limits and footprint layers; SEPTA rail.
+
+## Preview flyover video (Nov. 5)
+
+`uv run python scripts/29_flyover.py preview` renders `output/flyover/preview.mp4` from the frozen v14 tiles. The video is 30 s at 1080p, 30 fps: City Hall's tower, down Broad St, then a pull-back to the whole city.
+
+- **Editing the route:** the camera path lives in `config/flyover/preview.json`; that file's `about` explains the fields. Copy it to `config/flyover/<name>.json` for another route.
+- **Test cuts:** add `--seconds 10`.
+- **Pixel art:** keep close-up scales at 1 or 0.5 and pan at a constant scale, so the pixels stay crisp.
+- **Credit line:** the burned-in credit is provisional until the credits page is written.
+
 ## Open issues
 
 Tracked across rounds; details in CHANGELOG.
@@ -522,6 +615,7 @@ Tracked across rounds; details in CHANGELOG.
 |---|---|---|---|
 | Ships and cranes look unusual (Stephen, Oct. 23): **partly fixed in the scene, not yet drawn** | Navy Yard basin, Packer Ave terminal | LiDAR structures (see `data/README.md`) now extrude ships and container stacks that have no footprint (Navy Yard atlas spot: the carrier and two moored ships). Their walls take their own color, darkened, and the water repaint keeps them, since they're scene buildings. Highways are masked by the City centerlines, and structures the 2024 photo doesn't show are dropped (a ship gone since 2022, moved containers). Cranes are partial: lattice booms give rough, sparse returns. Not yet rendered or drawn | Geometry, color and drawing |
 | Construction sites drawn with invented water or lawns | Penn's Landing and elsewhere | Drawing-model behavior on featureless ground | Model (training) |
+| Teal invented water not caught by the scan | Cobbs Creek construction site (found by eye and redrawn Nov. 4) | The scan's water hue band is 185–215°; the model sometimes draws water at hue ~165°. Widening the band also catches real pools and basins, so each hit would need review | Scan rule |
 | Stadium outer walls drawn with windows | The Linc, CBP, Franklin Field | Drawing-model behavior: tall walls read as façades | Model (training) |
 | Franklin Field's lower deck missing | Franklin Field | Hidden under the upper deck; aerial LiDAR can't see it. Showing it would mean inferred geometry and raised parts in the renderer | Geometry (inferred) |
 | CBP's tallest element capped at 50.5 m (was 71 m) | Citizens Bank Park | The base is now street level, not the sunken field, and the 99.5th-percentile cap clips it | Geometry |

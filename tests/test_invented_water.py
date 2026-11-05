@@ -263,3 +263,36 @@ def test_courtyard_open_to_the_street_leaves_parks_alone():
     r = np.zeros_like(d); r[:] = _hsv_rgb(30, 0.08, 0.35)
     blobs = courtyard_lawn(d, r, b, holes)
     assert len(blobs) == 1 and blobs[0]["bbox"][2] <= 250
+
+
+def test_repair_covers_the_whole_pond_including_its_drawn_shore():
+    # Roxborough's field pond (Nov. 4): the center was refilled but the dark
+    # navy shore outline, interior dark-blue patches and big ripple dashes
+    # stayed. The repair must take the blob's full extent.
+    import colorsys
+
+    import numpy as np
+
+    from pixelphilly import invented_water as iw
+
+    def rgb(h, s, v):
+        return [round(c * 255) for c in colorsys.hsv_to_rgb(h / 360, s, v)]
+
+    lawn, fill, navy, darkp, dash = rgb(100, 0.45, 0.6), rgb(205, 0.4, 0.65), rgb(212, 0.55, 0.26), rgb(208, 0.45, 0.40), [235, 240, 245]
+    d = np.zeros((160, 160, 3), np.uint8); d[:] = lawn
+    yy, xx = np.mgrid[:160, :160]
+    r = np.hypot(yy - 80, xx - 80)
+    d[r < 50] = navy  # 7 px shore outline
+    d[r < 43] = fill
+    d[(r < 20) & (xx < 80)] = darkp  # a darker patch inside, outside WATER_BAND
+    d[60:63, 70:100] = dash  # a 90 px ripple dash (bigger than HOLE_FILL_PX)
+    render = np.zeros_like(d); render[:] = lawn
+    mask = iw.water_like(d) & (r < 50)
+    ys, xs = np.nonzero(mask)
+    blob = {"area_px": int(mask.sum()), "bbox": [int(xs.min()), int(ys.min()), int(xs.max()) + 1, int(ys.max()) + 1],
+            "mask_bbox": mask[ys.min():ys.max() + 1, xs.min():xs.max() + 1], "exempt": None, "kind": "invented water"}
+    out = iw.repair(d, render, [blob])
+    h, s, v = iw._hsv(out)
+    blue = (h >= 180) & (h <= 222) & (s >= 0.08)
+    assert not blue[r < 52].any(), int(blue[r < 52].sum())
+    assert np.array_equal(out[r > 64], d[r > 64])  # lawn beyond the reach untouched

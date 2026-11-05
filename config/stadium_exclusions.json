@@ -32,6 +32,54 @@
       "source": "City 2024 3-inch aerial, output/review/east_riverfront_stadium_9075.jpg",
       "reviewed": "2026-11-02",
       "approved_by": "Stephen (rule: exclude candidates that aren't real stadiums)"
+    },
+    {
+      "id": 322345,
+      "address": "8700 RIDGE AVE",
+      "reason": "A care-home campus of linked wings around courtyards (roxborough). Not a stadium.",
+      "source": "City 2024 3-inch aerial, output/review/roxborough_stadium_322345_8700_ridge.jpg",
+      "reviewed": "2026-11-03",
+      "approved_by": "Stephen (rule: exclude stadium candidates that aren't real stadiums)"
+    },
+    {
+      "id": 53213,
+      "address": "8201 TORRESDALE AVE",
+      "reason": "Holmesburg Prison: radial cell blocks around a hub read as seating rows (lower_northeast). Not a stadium.",
+      "source": "City 2024 3-inch aerial, output/review/lower_northeast_stadium_53213_8201_torresdale.jpg",
+      "reviewed": "2026-11-03",
+      "approved_by": "Stephen (rule: exclude stadium candidates that aren't real stadiums)"
+    },
+    {
+      "id": 322343,
+      "address": "8700 RIDGE AVE",
+      "reason": "Another footprint of the care-home campus at 8700 Ridge Ave (northwest; see 322345). Not a stadium.",
+      "source": "City 2024 3-inch aerial, output/review/roxborough_stadium_322345_8700_ridge.jpg",
+      "reviewed": "2026-11-04",
+      "approved_by": "Stephen (rule: exclude stadium candidates that aren't real stadiums)"
+    },
+    {
+      "id": 183733,
+      "address": "7701R BURHOLME AVE",
+      "reason": "Fox Chase Cancer Center (upper_northeast): hospital wings and a garage around a courtyard garden. Not a stadium.",
+      "source": "City 2024 3-inch aerial, output/review/upper_northeast_stadium_183733_fox_chase.jpg",
+      "reviewed": "2026-11-04",
+      "approved_by": "Stephen (rule: exclude stadium candidates that aren't real stadiums)"
+    },
+    {
+      "id": 261411,
+      "address": "10800 KNIGHTS RD",
+      "reason": "Jefferson Torresdale Hospital (upper_northeast): stepped hospital wings around light wells. Not a stadium.",
+      "source": "City 2024 3-inch aerial, output/review/upper_northeast_stadium_261411_knights_rd.jpg",
+      "reviewed": "2026-11-04",
+      "approved_by": "Stephen (rule: exclude stadium candidates that aren't real stadiums)"
+    },
+    {
+      "id": 437536,
+      "address": "4301 BYBERRY RD",
+      "reason": "Philadelphia Mills (formerly Franklin Mills) shopping mall (upper_northeast): angled store wings with skylight rows read as seating. Not a stadium.",
+      "source": "City 2024 3-inch aerial, output/review/upper_northeast_stadium_437536_byberry_rd.jpg",
+      "reviewed": "2026-11-04",
+      "approved_by": "Stephen (rule: exclude stadium candidates that aren't real stadiums)"
     }
   ]
 }

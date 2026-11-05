@@ -40,5 +40,7 @@
   "facades": "opa",
   "lawn_correct": true,
   "clip_to_city": true,
-  "lawn_skip_woods": true
+  "lawn_skip_woods": true,
+  "woods_trees": true,
+  "golf_correct": true
 }

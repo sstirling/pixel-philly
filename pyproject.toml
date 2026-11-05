@@ -17,6 +17,7 @@ dependencies = [
     "laspy>=2.7.0",
     "rasterio>=1.5.2",
     "pyshp>=3.1.6",
+    "imageio-ffmpeg>=0.8.1",
 ]
 
 [dependency-groups]

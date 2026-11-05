@@ -1,0 +1,16 @@
+{
+  "about": "Reviewed golf course decisions for the golf lawn correction (src/pixelphilly/golf.py). construction: OSM course ids drawn as the 2024 construction site; no lawn correction (PPR or golf) inside them. Stephen, Nov. 3, 2026. A PPR golf property lying mostly over these courses (PPR 'Cobbs Creek Golf Course', which also covers the meadow between Olde and Karakung) is construction as a whole (Nov. 4).",
+  "construction": [
+    {
+      "id": "way/59515616",
+      "name": "Cobbs Creek Golf Course Olde",
+      "reason": "The 2024 aerial shows the course being rebuilt (graded earth); keep the drawing's graded-earth look."
+    },
+    {
+      "id": "way/59515699",
+      "name": "Karakung Golf Course",
+      "reason": "disused:leisure=golf_course; graded earth in the 2024 aerial, part of the Cobbs Creek rebuild."
+    }
+  ],
+  "note": "OSM names the Torresdale course (way/485880727) 'Union League Golf Club'. Unverified: don't use it in captions without a source."
+}

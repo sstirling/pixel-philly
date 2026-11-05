@@ -1,0 +1,17 @@
+{
+  "about": "LiDAR structures (objects with no footprint, ids s<region>-<part>) that the 2022 LiDAR saw but the 2024 aerial shows gone, and that the photo check kept. Each entry is a reviewed lon/lat point; the structure region within 5 m of it is dropped in scripts/05_build_scene.py (pixelphilly.reviewed).",
+  "entries": [
+    {
+      "id": "manayunk_canal_rubble",
+      "area": "roxborough",
+      "lonlat": [
+        -75.23824,
+        40.03373
+      ],
+      "reason": "Roxborough structure s858 (42,345 m\u00b2, 21 m) on the strip between the Schuylkill and the Manayunk Canal. The 2024 aerial shows a demolition and rubble field, with no 21 m structure; the 2022 LiDAR object is gone.",
+      "source": "City 2024 3-inch aerial, output/review/roxborough_structure_s858.jpg",
+      "reviewed": "2026-11-03",
+      "approved_by": "Stephen (rule: review structures against the 2024 aerial using reviewed lists)"
+    }
+  ]
+}

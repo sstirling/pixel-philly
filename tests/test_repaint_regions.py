@@ -137,3 +137,18 @@ def test_band_context_with_two_known_areas_first_listed_owns_cells_beyond(tmp_pa
     assert by_xy[(3, 2)] == tmp_path / "south" / "k" and by_xy[(3, 1)] == tmp_path / "north" / "k"
     assert by_xy[(2, 2)].parent.name == "south", "a cell South and North share beyond the lattice is South's"
     assert by_xy[(1, 1)].parent.name == "north" and by_xy[(4, 1)].parent.name == "west"
+
+
+def test_existing_only_drops_frames_a_known_area_never_drew(tmp_path):
+    # A known area's halo can include a cell that area didn't draw (its own
+    # band, drawn by a third area): lower_northeast's band repaint read
+    # upper_north_lidar frame_22_04, drawn by north_lidar, and crashed (Nov. 4).
+    # Such cells read as empty context instead.
+    rp = _script()
+    a = tmp_path / "a.png"
+    Image.new("RGB", (SIZE, SIZE), (10, 20, 30)).save(a)
+    frames = [Frame(col=0, row=0, x0=0, y0=0, size=SIZE), Frame(col=1, row=0, x0=SIZE, y0=0, size=SIZE)]
+    paths = {frames[0].name: a, frames[1].name: tmp_path / "missing.png"}
+    reader = rp.FrameReader(None, frames, SIZE, paths=rp.existing_only(paths))
+    got = reader.region(0, 0, 2 * SIZE, SIZE)
+    assert (got[:, :SIZE] == (10, 20, 30)).all() and (got[:, SIZE:] == 0).all()

@@ -309,7 +309,7 @@
       "h": 47.91
     }
   ],
-  "trees_in_scene": 7542,
+  "trees_in_scene": 13313,
   "height_overrides": [
     {
       "id": 478499,
@@ -377,8 +377,8 @@
   "facade_osm_items": 0,
   "facade_street_fronts": 12155,
   "facade_unmatched": "plain walls (no facade)",
-  "lawn_corrected_px": 45973823,
-  "lawn_park_px": 56108247,
-  "lawn_woods_px": 47880,
-  "lawn_forest_px": 13082914
+  "lawn_corrected_px": 41530169,
+  "lawn_park_px": 43994768,
+  "lawn_woods_px": 65640,
+  "golf_turf_px": 12209495
 }

@@ -30,6 +30,7 @@ across the join. The known area comes from the run's result.json, or from
 
 import argparse
 import json
+from pathlib import Path
 
 import numpy as np
 from PIL import Image, ImageFilter
@@ -50,6 +51,11 @@ def load_mosaic(frames, size, folder, cols, rows, mode="RGB"):
 
 
 HALO = 32  # px of neighboring frames read around each frame in the tiled path
+
+
+def existing_only(paths: dict) -> dict:
+    """{frame name: path} without the paths that don't exist."""
+    return {n: p for n, p in paths.items() if Path(p).exists()}
 
 
 class FrameReader:
@@ -195,7 +201,9 @@ def repaint_band(cfg, args, frame, cam, frames, known, sources, ripple, x_origin
                               lambda a, n: root(a) / "redraws" / kmap[a]["prompt"] / f"{n}.png")
     renders = FrameReader(None, rctx.frames, size, paths=rctx.paths)
     masks = FrameReader(None, mctx.frames, size, "L", paths=mctx.paths)
-    redraws = FrameReader(None, dctx.frames, size, paths=dctx.paths)
+    # A known area's halo can reach a cell it never drew (its own band, owned
+    # by a third area); read those as empty context (lower_northeast, Nov. 4)
+    redraws = FrameReader(None, dctx.frames, size, paths=existing_only(dctx.paths))
     cfgs = [cfg] + [k["cfg"] for k in known]
     nhd_geom = unary_union([waterpaint.nhd_geometry(c, frame, cam, x_origin, y_origin) for c in cfgs])
     nd_geom = unary_union([nodata.nodata_geometry(c, frame, cam, x_origin, y_origin) for c in cfgs])
@@ -272,6 +280,31 @@ def ripple_reference(cfg, args, known):
     return root, ripple_offset(frames, area_setup(load_config(root))[2])
 
 
+def scene_canopies(cfg, cam, x_origin, y_origin, size):
+    """canopies(gx, gy, w, h) -> bool mask of the rendered tree canopies
+    (scene trees, incl. woods_trees) in a mosaic view; discs bucketed by
+    lattice cell so a view only checks its neighborhood."""
+    from pixelphilly.scenes import scene_paths
+
+    seen, trees = set(), []
+    for rel in scene_paths(cfg):
+        for t in json.loads((REPO_ROOT / rel).read_text())["trees"]:
+            k = tuple(t)
+            if k not in seen:
+                seen.add(k)
+                trees.append(t)
+    buckets = {}
+    for d in waterpaint.tree_discs(trees, cam, x_origin, y_origin):
+        buckets.setdefault((int(d[0] // size), int(d[1] // size)), []).append(d)
+
+    def canopies(gx, gy, w, h):
+        near = [d for cx in range(int(gx // size) - 1, int((gx + w) // size) + 2)
+                for cy in range(int(gy // size) - 1, int((gy + h) // size) + 2) for d in buckets.get((cx, cy), [])]
+        return waterpaint.tree_mask(near, gx, gy, w, h)
+
+    return canopies
+
+
 def main_tiled(cfg, args, frame, cam, frames):
     """Frame-by-frame repaint for large areas. Each frame is processed with a
     HALO of its neighbors so shore bands and ripples continue across frame
@@ -322,6 +355,24 @@ def main_tiled(cfg, args, frame, cam, frames):
     median = np.median(sample, axis=0)
     typical = np.median(np.abs(sample - median).max(axis=1))
     threshold = max(30.0, 4.0 * float(typical))
+    # Mapped water outside NHD (City PWD polygons, e.g. the Manayunk Canal),
+    # each with its own color model (pixelphilly.waterpaint.body_models)
+    pwd = waterpaint.water_geometry(cfg, frame, cam, x_origin, y_origin, "water")
+    # Golf water hazards (OSM) count as water bodies too: the body model's
+    # uniform-surface test keeps only those the 2024 aerial shows as water
+    hz = waterpaint.golf_hazard_geometry(cfg, frame, cam, x_origin, y_origin)
+    pwd = unary_union([pwd, hz]) if not hz.is_empty else pwd
+    pwd_polys = [] if pwd.is_empty else list(getattr(pwd, "geoms", [pwd]))
+    canopies = scene_canopies(cfg, cam, x_origin, y_origin, size) if pwd_polys else None
+
+    def no_water(gx, gy, w, h):
+        """Buildings (grown) and rendered tree canopies: never body water."""
+        return waterpaint.grow(masks.region(gx, gy, w, h) > 127) | canopies(gx, gy, w, h)
+
+    bodies = waterpaint.body_models(
+        pwd_polys, nhd_geom,
+        ((f.col * size, f.row * size, renders.frame(f.col, f.row), no_water(f.col * size, f.row * size, size, size))
+         for f in frames)) if pwd_polys else []
 
     repainted = cleared = 0
     for f in todo:
@@ -331,6 +382,8 @@ def main_tiled(cfg, args, frame, cam, frames):
         bmask = waterpaint.grow(masks.region(gx, gy, span, span) > 127)
         nhd = waterpaint.rasterize_view(nhd_geom, gx, gy, 1.0, span, span)
         water = waterpaint.water_mask(render, nhd, bmask, median, threshold)
+        if bodies:
+            water |= waterpaint.body_water(bodies, render, bmask | canopies(gx, gy, span, span), gx, gy)
         out = waterpaint.apply(redraws.region(gx, gy, span, span).copy(), water, gx + ox, gy + oy, 1.0)
         if not nd_geom.is_empty:
             # Mask over the haloed region, so growth reaches in from neighbors
@@ -349,7 +402,9 @@ def main_tiled(cfg, args, frame, cam, frames):
         mosaic.save(out_dir / "mosaic.png")
     report = {"render_water_median_rgb": [round(v, 1) for v in median.tolist()],
               "color_threshold": round(float(threshold), 1), "water_px_repainted": repainted,
-              "nodata_px_cleared": cleared, "mode": "per-frame with halo", "halo_px": HALO}
+              "nodata_px_cleared": cleared, "mode": "per-frame with halo", "halo_px": HALO,
+              "water_bodies": [{"median_rgb": [round(v, 1) for v in m.tolist()], "threshold": round(float(t), 1),
+                                "area_px": round(g.area)} for g, m, t in bodies]}
     if known:
         band_report = repaint_band(cfg, args, frame, cam, frames, known, sources, (ox, oy), x_origin, y_origin)
         report["known_band_repaint"] = {k: v for k, v in band_report.items() if k != "frames"}
@@ -375,7 +430,8 @@ def invented_water_context(cfg, frame, cam, x_origin, y_origin):
     from shapely.geometry import shape
 
     water = unary_union([waterpaint.water_geometry(cfg, frame, cam, x_origin, y_origin, s)
-                         for s in ("water_nhd", "water")]).buffer(WATER_MARGIN_PX)
+                         for s in ("water_nhd", "water")]
+                        + [waterpaint.golf_hazard_geometry(cfg, frame, cam, x_origin, y_origin)]).buffer(WATER_MARGIN_PX)
     pools = []
     path = REPO_ROOT / "data" / "raw" / f"{cfg['name']}_pools.geojson"
     if path.exists():

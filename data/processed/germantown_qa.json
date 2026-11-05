@@ -675,7 +675,7 @@
       "h": 49.73
     }
   ],
-  "trees_in_scene": 16825,
+  "trees_in_scene": 40172,
   "render_tiles": 27,
   "max_ground_texture_px": 12544,
   "uv_fit_max_residual_m": 0.0004990545765476976,
@@ -731,8 +731,8 @@
   "facade_osm_items": 310,
   "facade_street_fronts": 23187,
   "facade_unmatched": "plain walls (no facade)",
-  "lawn_corrected_px": 187861176,
-  "lawn_park_px": 247860306,
-  "lawn_woods_px": 43676856,
-  "lawn_forest_px": 60330126
+  "lawn_corrected_px": 135036944,
+  "lawn_park_px": 241956058,
+  "lawn_woods_px": 43890531,
+  "golf_turf_px": 9356258
 }

@@ -45,6 +45,21 @@
       "h_m": 46.2,
       "reviewed": "2026-10-28",
       "note": "Truss portal on the elevated Walt Whitman Bridge approach over the Packer Ave terminal: a LiDAR structure (7 m\u00b2, 46 m) at the green steel portal frame visible in the 2024 aerial. Real structure; the deck itself is masked as highway."
+    },
+    {
+      "id": "21880-1",
+      "areas": [
+        "lower_northeast",
+        "upper_northeast"
+      ],
+      "address": "5245 BLEIGH AVE",
+      "lonlat": [
+        -75.02494,
+        40.025434
+      ],
+      "h_m": 40.61,
+      "reviewed": "2026-11-03",
+      "note": "Elevated water tower, a green tank on legs with a long shadow in the 2024 aerial. It's a real tall object, and its 40.6 m matches the City record of 137 ft (output/review/lower_northeast_needle_21880.jpg)."
     }
   ],
   "alignment": []

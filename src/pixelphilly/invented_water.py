@@ -238,6 +238,14 @@ def repair(drawing, render, blobs):
         full = np.zeros((h, w), bool)
         full[y0:y1, x0:x1] = b["mask_bbox"]
         full |= _grow(full, FRINGE_PX) & bluish
+        if b.get("fill") != "non_green":
+            # The blob's whole extent: the model's dark shore outline and
+            # darker patches connected to it (SHORE_BAND, up to SHORE_REACH_PX),
+            # then every hole inside (big ripple dashes, patches). Roxborough's
+            # field pond kept a blue ring and dashes without this (Nov. 4)
+            _, ss, vv = _hsv(drawing)
+            shore = _band(drawing, SHORE_BAND)
+            full = _extent(full, shore, shore | ((ss < 0.15) & (vv > 0.75)))
         ring = _grow(full, RING_PX) & ~full & ~bluish
         src = drawing[ring]
         if not len(src):
@@ -262,6 +270,53 @@ def repair(drawing, render, blobs):
         med = np.median(src.astype(float), axis=0)
         out[full] = src[np.argmin(((src.astype(float) - med) ** 2).sum(axis=1))]
     return out
+
+
+SHORE_BAND = {"h": (180.0, 225.0), "s": (0.08, 0.80), "v": (0.10, 0.95)}  # fringe plus the dark navy shore line
+SHORE_REACH_PX = 12
+
+
+def _fill_holes(mask, fillable=None):
+    """mask with its enclosed holes filled. With `fillable` (bool array),
+    a hole of HOLE_FILL_PX or more is filled only if most of it is fillable
+    (water colors, ripple dashes); bigger holes with other content are
+    objects drawn in the water (a building, a dock) and stay."""
+    from PIL import Image, ImageDraw
+    from rasterio.features import rasterize, shapes
+    from rasterio.transform import Affine
+    from shapely.geometry import shape
+
+    ys, xs = np.nonzero(mask)
+    if not len(ys):
+        return mask
+    y0, y1, x0, x1 = ys.min(), ys.max() + 1, xs.min(), xs.max() + 1
+    sub = np.pad(mask[y0:y1, x0:x1], 1)
+    img = Image.fromarray(np.where(sub, 255, 0).astype(np.uint8))
+    ImageDraw.floodfill(img, (0, 0), 128)
+    holes = (np.asarray(img) == 0)[1:-1, 1:-1]
+    out = mask.copy()
+    if fillable is None:
+        out[y0:y1, x0:x1] |= holes
+        return out
+    fsub = fillable[y0:y1, x0:x1]
+    for geom, _ in shapes(holes.astype(np.uint8), mask=holes, connectivity=4):
+        comp = rasterize([(shape(geom), 1)], out_shape=holes.shape, transform=Affine.identity(), fill=0,
+                         dtype="uint8").astype(bool)
+        if comp.sum() < HOLE_FILL_PX or fsub[comp].mean() >= 0.5:
+            out[y0:y1, x0:x1] |= comp
+    return out
+
+
+def _extent(full, shore, fillable):
+    """Grow `full` through connected `shore` pixels up to SHORE_REACH_PX,
+    then fill its holes (fillable: water colors and ripple dashes)."""
+    full = _fill_holes(full, fillable)
+    for _ in range(SHORE_REACH_PX):
+        grown = full | (_grow(full, 1) & shore)
+        if (grown == full).all():
+            break
+        full = grown
+    return _fill_holes(full, fillable)
 
 
 def apply_holds(blobs, gx, gy, holds):

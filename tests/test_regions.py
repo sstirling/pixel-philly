@@ -331,3 +331,33 @@ def test_redraw_plan_refuses_unknown_frames():
     frames = [Frame(col=0, row=0, x0=0, y0=0, size=1024)]
     with pytest.raises(ValueError):
         redraw_plan(frames, {}, ["frame_09_09"], context=1)
+
+
+def test_stale_known_flags_frames_redrawn_after_their_repaint(tmp_path):
+    # Nov. 4: tree redraws ran in parallel, and roxborough's redraw read
+    # germantown's band frames while germantown's own redraw was merged but
+    # not yet repainted, so the known pixels weren't the final ones (a seam).
+    # A known frame whose drawing is newer than its postprocessed PNG, or an
+    # area with a GPU run still in flight, must stop a run.
+    import os
+    from pixelphilly.regions import in_flight_runs, stale_known
+
+    def touch(p, t):
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_bytes(b"x")
+        os.utime(p, (t, t))
+
+    post = lambda a, f: tmp_path / "output" / a / "postprocessed" / "run" / "water" / f"{f}.png"  # noqa: E731
+    drawn = lambda a, f: tmp_path / "output" / a / "redraws" / "run" / f"{f}.png"  # noqa: E731
+    touch(drawn("a", "f1"), 100); touch(post("a", "f1"), 200)  # repainted after drawing: fresh
+    touch(drawn("b", "f2"), 300); touch(post("b", "f2"), 200)  # merged at 300, repaint pending: stale
+    sources = {"x1": ("a", "f1", post("a", "f1")), "x2": ("b", "f2", post("b", "f2"))}
+    assert stale_known(sources, "run", tmp_path) == ["x2"]
+
+    joint = tmp_path / "output" / "b" / "joint"
+    (joint / "run_trees").mkdir(parents=True)
+    (joint / "run_trees" / "call.json").write_text("{}")
+    (joint / "run_old").mkdir()
+    (joint / "run_old" / "call.json").write_text("{}")
+    (joint / "run_old" / "result.json").write_text("{}")
+    assert in_flight_runs(["a", "b"], tmp_path) == ["b/run_trees"]

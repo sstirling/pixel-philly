@@ -429,3 +429,20 @@ def test_scene_rebuilds_when_reviewed_corrections_change(tmp_path):
     by = {s.name: s for s in rr.plan(CFG, tmp_path, FRAMES, _opts())}
     names = {p.name for p in by["05"].inputs}
     assert {"height_overrides.json", "stadium_exclusions.json"} <= names
+
+
+def test_golf_fetch_and_review_list_feed_the_scene():
+    by = {s.name: s for s in rr.plan({**CFG, "golf_correct": True}, tmp_path_factory_dir(), FRAMES, _opts())}
+    assert by["04n"].cmd == ["scripts/04n_fetch_golf.py"]
+    assert {p.name for p in by["04n"].outputs} == {"testarea_golf.json"}
+    assert "golf.json" in {p.name for p in by["05"].inputs}
+    assert "testarea_golf.json" in {p.name for p in by["05"].inputs}
+    # Without the option there's no golf fetch
+    assert "04n" not in {s.name for s in rr.plan(CFG, tmp_path_factory_dir(), FRAMES, _opts())}
+
+
+def tmp_path_factory_dir():
+    import tempfile
+    from pathlib import Path
+
+    return Path(tempfile.mkdtemp())

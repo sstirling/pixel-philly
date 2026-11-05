@@ -1,0 +1,1954 @@
+{
+  "buildings_downloaded": 75761,
+  "buildings_in_scene": 183007,
+  "buildings_dropped": [],
+  "height_source_counts": {
+    "approx_hgt": 75139,
+    "max_hgt": 472,
+    "default": 150
+  },
+  "height_outliers_max_gt_ratio_x_approx": [
+    {
+      "objectid": 344,
+      "address": "12460 ACADEMY RD",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 50.34993575
+    },
+    {
+      "objectid": 7445,
+      "address": "10156-58 BUSTLETON AVE",
+      "approx_hgt_ft": 8,
+      "max_hgt_ft": 26.659890920000002
+    },
+    {
+      "objectid": 8047,
+      "address": "98 LEVICK ST",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 49.84008308000001
+    },
+    {
+      "objectid": 8160,
+      "address": "660 WELSH RD",
+      "approx_hgt_ft": 7,
+      "max_hgt_ft": 60.85002525
+    },
+    {
+      "objectid": 8666,
+      "address": "3108 MAUREEN DR",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 42.409939
+    },
+    {
+      "objectid": 8750,
+      "address": "10895 CRESTMONT AVE",
+      "approx_hgt_ft": 18,
+      "max_hgt_ft": 73.16013233
+    },
+    {
+      "objectid": 11461,
+      "address": "13036 WORTHINGTON RD",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 39.789927170000006
+    },
+    {
+      "objectid": 12100,
+      "address": "801 LONGSHORE AVE",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 28.36005033
+    },
+    {
+      "objectid": 12139,
+      "address": "6228 SHELBOURNE ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 45.97001908
+    },
+    {
+      "objectid": 14652,
+      "address": "518 LONGSHORE AVE",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 48.51004125
+    },
+    {
+      "objectid": 17277,
+      "address": "7 LONGFORD ST",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 81.15013941999999
+    },
+    {
+      "objectid": 19325,
+      "address": "627 KERPER ST",
+      "approx_hgt_ft": 16,
+      "max_hgt_ft": 60.79994408
+    },
+    {
+      "objectid": 22116,
+      "address": "1224 GRANT AVE",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 75.38991275
+    },
+    {
+      "objectid": 22703,
+      "address": "9800 BUSTLETON AVE",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 32.56011317
+    },
+    {
+      "objectid": 27396,
+      "address": "8724 CRISPIN ST",
+      "approx_hgt_ft": 19,
+      "max_hgt_ft": 68.52990467
+    },
+    {
+      "objectid": 34226,
+      "address": "1242 BRIGHTON ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 34.48013783
+    },
+    {
+      "objectid": 34635,
+      "address": "7454 ROCKWELL AVE",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 39.35011083
+    },
+    {
+      "objectid": 36289,
+      "address": "8091 ROWLAND AVE",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 40.169892420000004
+    },
+    {
+      "objectid": 38330,
+      "address": "6347 LAWNDALE ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 36.3898395
+    },
+    {
+      "objectid": 39804,
+      "address": "6313 OAKLEY ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 40.48991833
+    },
+    {
+      "objectid": 41124,
+      "address": "6916 OAKLEY ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 39.260124170000005
+    },
+    {
+      "objectid": 41336,
+      "address": "6431 PALMETTO ST",
+      "approx_hgt_ft": 8,
+      "max_hgt_ft": 49.51985733
+    },
+    {
+      "objectid": 43869,
+      "address": "1417 PRINCETON AVE",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 40.960123749999994
+    },
+    {
+      "objectid": 70282,
+      "address": "8600 VERREE RD",
+      "approx_hgt_ft": 17,
+      "max_hgt_ft": 56.36989325
+    },
+    {
+      "objectid": 85109,
+      "address": "150 GREYCOURT RD",
+      "approx_hgt_ft": 16,
+      "max_hgt_ft": 50.31002825
+    },
+    {
+      "objectid": 142506,
+      "address": "317 SIMMS ST",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 58.57996267
+    },
+    {
+      "objectid": 146920,
+      "address": "11610 KELVIN AVE",
+      "approx_hgt_ft": 18,
+      "max_hgt_ft": 59.78986575
+    },
+    {
+      "objectid": 153526,
+      "address": "1251 BYBERRY RD",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 30.68003683
+    },
+    {
+      "objectid": 158929,
+      "address": "13200 TREVOSE RD",
+      "approx_hgt_ft": 37,
+      "max_hgt_ft": 115.730067
+    },
+    {
+      "objectid": 160381,
+      "address": "13014 DEPUE AVE",
+      "approx_hgt_ft": 24,
+      "max_hgt_ft": 79.64005292
+    },
+    {
+      "objectid": 166675,
+      "address": "1044 BLOOMFIELD AVE",
+      "approx_hgt_ft": 19,
+      "max_hgt_ft": 63.309853000000004
+    },
+    {
+      "objectid": 176217,
+      "address": "8716 VERREE RD",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 59.93995125
+    },
+    {
+      "objectid": 224140,
+      "address": "9114 BICKLEY ST",
+      "approx_hgt_ft": 17,
+      "max_hgt_ft": 59.94996317
+    },
+    {
+      "objectid": 246897,
+      "address": "7910 LORETTO AVE",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 27.4000545
+    },
+    {
+      "objectid": 252736,
+      "address": "7343 BINGHAM ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 42.63005033
+    },
+    {
+      "objectid": 275667,
+      "address": "8310 BUSTLETON AVE",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 42.189988750000005
+    },
+    {
+      "objectid": 287036,
+      "address": "1912 MURRAY ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 43.579857579999995
+    },
+    {
+      "objectid": 314395,
+      "address": "2199 STRAHLE ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 54.16993525
+    },
+    {
+      "objectid": 332047,
+      "address": "327 PASSMORE ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 32.73986242
+    },
+    {
+      "objectid": 343958,
+      "address": "3166 STAMFORD ST",
+      "approx_hgt_ft": 15,
+      "max_hgt_ft": 47.729879669999995
+    },
+    {
+      "objectid": 359184,
+      "address": "8027 ALBION ST",
+      "approx_hgt_ft": 19,
+      "max_hgt_ft": 62.93993783
+    },
+    {
+      "objectid": 384169,
+      "address": "7345 TABOR AVE",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 42.86999408
+    },
+    {
+      "objectid": 392277,
+      "address": "1 LONGFORD ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 52.49004733
+    },
+    {
+      "objectid": 401687,
+      "address": "10176 VERREE RD",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 60.35009825
+    },
+    {
+      "objectid": 404102,
+      "address": "3642 SALINA RD",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 51.98014142
+    },
+    {
+      "objectid": 407613,
+      "address": "1140 SOLLY AVE",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 84.17992142
+    },
+    {
+      "objectid": 407616,
+      "address": "3100 RHAWN ST",
+      "approx_hgt_ft": 15,
+      "max_hgt_ft": 94.88004941999999
+    },
+    {
+      "objectid": 411307,
+      "address": "7319 TABOR AVE",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 74.26999950000001
+    },
+    {
+      "objectid": 413719,
+      "address": "2614 TAUNTON ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 38.13991
+    },
+    {
+      "objectid": 415448,
+      "address": "8724 CRISPIN ST",
+      "approx_hgt_ft": 21,
+      "max_hgt_ft": 74.34010767000001
+    },
+    {
+      "objectid": 415511,
+      "address": "8724 CRISPIN ST",
+      "approx_hgt_ft": 20,
+      "max_hgt_ft": 61.19986183
+    },
+    {
+      "objectid": 415630,
+      "address": "8724 CRISPIN ST",
+      "approx_hgt_ft": 19,
+      "max_hgt_ft": 76.61014025
+    },
+    {
+      "objectid": 415684,
+      "address": "8724 CRISPIN ST",
+      "approx_hgt_ft": 19,
+      "max_hgt_ft": 57.120034749999995
+    },
+    {
+      "objectid": 416000,
+      "address": "9312 ANDOVER RD",
+      "approx_hgt_ft": 7,
+      "max_hgt_ft": 21.54985633
+    },
+    {
+      "objectid": 417671,
+      "address": "8636 FERNDALE ST",
+      "approx_hgt_ft": 8,
+      "max_hgt_ft": 54.460139579999996
+    },
+    {
+      "objectid": 417923,
+      "address": "8646 FERNDALE ST",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 44.69991608
+    },
+    {
+      "objectid": 418117,
+      "address": "8658 FERNDALE ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 40.87001108
+    },
+    {
+      "objectid": 424663,
+      "address": "1918 MURRAY ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 71.32987050000001
+    },
+    {
+      "objectid": 424701,
+      "address": "716 DUNMORE RD",
+      "approx_hgt_ft": 8,
+      "max_hgt_ft": 62.84999542
+    },
+    {
+      "objectid": 424867,
+      "address": "2850 TREMONT ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 57.66004392
+    },
+    {
+      "objectid": 425943,
+      "address": "121 OVERHILL AVE",
+      "approx_hgt_ft": 20,
+      "max_hgt_ft": 66.29015283
+    },
+    {
+      "objectid": 425953,
+      "address": "305 SIMMS ST",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 77.66009883
+    },
+    {
+      "objectid": 426020,
+      "address": "517 SMITHFIELD AVE",
+      "approx_hgt_ft": 30,
+      "max_hgt_ft": 90.65986817000001
+    },
+    {
+      "objectid": 426086,
+      "address": "15008 BARCALOW ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 59.45994117
+    },
+    {
+      "objectid": 426089,
+      "address": "307 SIMMS ST",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 65.42003325
+    },
+    {
+      "objectid": 426641,
+      "address": "627-29 POQUESSING AVE",
+      "approx_hgt_ft": 18,
+      "max_hgt_ft": 61.53008275
+    },
+    {
+      "objectid": 426674,
+      "address": "14042 ERWIN ST",
+      "approx_hgt_ft": 18,
+      "max_hgt_ft": 54.12008367
+    },
+    {
+      "objectid": 426771,
+      "address": "507 FOREST HILLS AVE",
+      "approx_hgt_ft": 20,
+      "max_hgt_ft": 76.78996500000001
+    },
+    {
+      "objectid": 426870,
+      "address": "13047 RICHWOOD RD",
+      "approx_hgt_ft": 8,
+      "max_hgt_ft": 24.40987583
+    },
+    {
+      "objectid": 426908,
+      "address": "14209-17 BARCALOW ST",
+      "approx_hgt_ft": 15,
+      "max_hgt_ft": 45.77998183
+    },
+    {
+      "objectid": 426943,
+      "address": "13491 TREVOSE RD",
+      "approx_hgt_ft": 21,
+      "max_hgt_ft": 86.4101165
+    },
+    {
+      "objectid": 427939,
+      "address": "2010 TOMLINSON RD",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 59.39007058
+    },
+    {
+      "objectid": 427985,
+      "address": "1164 MOREFIELD RD",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 59.49003458
+    },
+    {
+      "objectid": 428275,
+      "address": "9569 WALLEY AVE",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 42.27006808
+    },
+    {
+      "objectid": 429037,
+      "address": "10815 STEVENS RD",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 57.609972250000006
+    },
+    {
+      "objectid": 429341,
+      "address": "304 MAPLE AVE",
+      "approx_hgt_ft": 15,
+      "max_hgt_ft": 66.27991767
+    },
+    {
+      "objectid": 429596,
+      "address": "13480 PROCTOR RD",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 48.370009499999995
+    },
+    {
+      "objectid": 430022,
+      "address": "15018 MILFORD ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 50.50993983
+    },
+    {
+      "objectid": 430050,
+      "address": "15020 MILFORD ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 39.84992158
+    },
+    {
+      "objectid": 430208,
+      "address": "10123 PROCTOR RD",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 36.33003533
+    },
+    {
+      "objectid": 430223,
+      "address": "7524 TABOR AVE",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 48.11008367
+    },
+    {
+      "objectid": 430968,
+      "address": "8619 FERNDALE ST",
+      "approx_hgt_ft": 18,
+      "max_hgt_ft": 63.1999645
+    },
+    {
+      "objectid": 431148,
+      "address": "9707 LOCHWOOD RD",
+      "approx_hgt_ft": 19,
+      "max_hgt_ft": 75.69988407999999
+    },
+    {
+      "objectid": 431258,
+      "address": "11610 GIFFORD AVE",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 56.260064
+    },
+    {
+      "objectid": 431339,
+      "address": "9000 CARGILL LN",
+      "approx_hgt_ft": 8,
+      "max_hgt_ft": 58.07005708
+    },
+    {
+      "objectid": 431361,
+      "address": "1084 WELSH RD",
+      "approx_hgt_ft": 22,
+      "max_hgt_ft": 72.379878
+    },
+    {
+      "objectid": 431388,
+      "address": "9995 GANTRY RD",
+      "approx_hgt_ft": 16,
+      "max_hgt_ft": 52.95986175
+    },
+    {
+      "objectid": 431520,
+      "address": "2821 NIGHTINGALE RD",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 37.62989008
+    },
+    {
+      "objectid": 431815,
+      "address": "1864 MERLIN PL",
+      "approx_hgt_ft": 7,
+      "max_hgt_ft": 25.10012933
+    },
+    {
+      "objectid": 431832,
+      "address": "3008 BYBERRY RD",
+      "approx_hgt_ft": 15,
+      "max_hgt_ft": 82.18995575
+    },
+    {
+      "objectid": 432317,
+      "address": "15156 WAYSIDE RD",
+      "approx_hgt_ft": 8,
+      "max_hgt_ft": 40.910017249999996
+    },
+    {
+      "objectid": 432395,
+      "address": "9705 LOCHWOOD RD",
+      "approx_hgt_ft": 19,
+      "max_hgt_ft": 65.53993425
+    },
+    {
+      "objectid": 432612,
+      "address": "510 SOMERTON AVE",
+      "approx_hgt_ft": 27,
+      "max_hgt_ft": 82.30005817
+    },
+    {
+      "objectid": 432638,
+      "address": "1299 SOUTHAMPTON RD",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 59.20016017
+    },
+    {
+      "objectid": 432646,
+      "address": "574 REMSEN RD",
+      "approx_hgt_ft": 19,
+      "max_hgt_ft": 57.67008533
+    },
+    {
+      "objectid": 432725,
+      "address": "9349 RISING SUN AVE",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 52.220099
+    },
+    {
+      "objectid": 432909,
+      "address": "9347 RISING SUN AVE",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 50.48991633
+    },
+    {
+      "objectid": 433080,
+      "address": "14000 NAPIER ST",
+      "approx_hgt_ft": 20,
+      "max_hgt_ft": 76.33008117
+    },
+    {
+      "objectid": 433794,
+      "address": "10230 MURTY LN",
+      "approx_hgt_ft": 7,
+      "max_hgt_ft": 64.19986208
+    },
+    {
+      "objectid": 433836,
+      "address": "9716 BEACON RD",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 33.369842829999996
+    },
+    {
+      "objectid": 433845,
+      "address": "707 STRATFORD DR",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 64.93014
+    },
+    {
+      "objectid": 433971,
+      "address": "8582 BLOOMFIELD AVE",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 37.38013983
+    },
+    {
+      "objectid": 434134,
+      "address": "248 GEIGER RD",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 76.61002008
+    },
+    {
+      "objectid": 434239,
+      "address": "8622 BLOOMFIELD AVE",
+      "approx_hgt_ft": 8,
+      "max_hgt_ft": 53.33009475
+    },
+    {
+      "objectid": 434265,
+      "address": "940 COUNTY LINE RD",
+      "approx_hgt_ft": 15,
+      "max_hgt_ft": 56.71991958
+    },
+    {
+      "objectid": 434450,
+      "address": "1115 CRESWOOD RD",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 49.399930080000004
+    },
+    {
+      "objectid": 434517,
+      "address": "2831 NIGHTINGALE RD",
+      "approx_hgt_ft": 7,
+      "max_hgt_ft": 21.48011883
+    },
+    {
+      "objectid": 434551,
+      "address": "11950 ACADEMY RD",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 35.50008708
+    },
+    {
+      "objectid": 434660,
+      "address": "1101 BLOOMDALE RD",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 50.260112580000005
+    },
+    {
+      "objectid": 435093,
+      "address": "9714 GLENHOPE RD",
+      "approx_hgt_ft": 15,
+      "max_hgt_ft": 67.79000617000001
+    },
+    {
+      "objectid": 435161,
+      "address": "849 EDISON AVE",
+      "approx_hgt_ft": 23,
+      "max_hgt_ft": 91.77007333
+    },
+    {
+      "objectid": 435350,
+      "address": "719 STRATFORD DR",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 51.54995083
+    },
+    {
+      "objectid": 435674,
+      "address": "623 MAPLE AVE",
+      "approx_hgt_ft": 5,
+      "max_hgt_ft": 16.49011958
+    },
+    {
+      "objectid": 435702,
+      "address": "743 BYBERRY RD",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 74.57003875
+    },
+    {
+      "objectid": 435736,
+      "address": "8023 NARVON ST",
+      "approx_hgt_ft": 21,
+      "max_hgt_ft": 80.1000285
+    },
+    {
+      "objectid": 435843,
+      "address": "11025 STEVENS RD",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 40.090133
+    },
+    {
+      "objectid": 435988,
+      "address": "2624 HEMLOCK ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 73.19997992
+    },
+    {
+      "objectid": 436079,
+      "address": "1101 SOUTHAMPTON RD",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 60.45999617
+    },
+    {
+      "objectid": 436156,
+      "address": "12130 RAMBLER RD",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 39.40988358
+    },
+    {
+      "objectid": 436254,
+      "address": "15157 WAYSIDE RD",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 43.13986083
+    },
+    {
+      "objectid": 436290,
+      "address": "9909 BUSTLETON AVE # B",
+      "approx_hgt_ft": 18,
+      "max_hgt_ft": 65.77999683
+    },
+    {
+      "objectid": 436363,
+      "address": "13475 PROCTOR RD",
+      "approx_hgt_ft": 21,
+      "max_hgt_ft": 63.049921
+    },
+    {
+      "objectid": 436396,
+      "address": "14041 TREVOSE RD",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 58.720024
+    },
+    {
+      "objectid": 436549,
+      "address": "900 EDISON AVE",
+      "approx_hgt_ft": 26,
+      "max_hgt_ft": 78.86005058
+    },
+    {
+      "objectid": 436675,
+      "address": "13460 LINDSAY ST",
+      "approx_hgt_ft": 25,
+      "max_hgt_ft": 79.949884
+    },
+    {
+      "objectid": 436810,
+      "address": "9610 HAYDEN ST",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 42.21999858
+    },
+    {
+      "objectid": 436870,
+      "address": "811 CHARETTE RD",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 62.009923830000005
+    },
+    {
+      "objectid": 437283,
+      "address": "1086 SOUTHAMPTON RD",
+      "approx_hgt_ft": 15,
+      "max_hgt_ft": 76.61996742
+    },
+    {
+      "objectid": 437337,
+      "address": "814 BURGESS ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 64.01989858
+    },
+    {
+      "objectid": 438133,
+      "address": "9777 VERREE RD",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 41.3299025
+    },
+    {
+      "objectid": 438348,
+      "address": "1094 SOUTHAMPTON RD",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 74.00015358
+    },
+    {
+      "objectid": 438539,
+      "address": "3356 GURLEY RD",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 33.78012842
+    },
+    {
+      "objectid": 438610,
+      "address": "674 WELSH RD",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 45.87004633
+    },
+    {
+      "objectid": 439094,
+      "address": "10200 MURTY LN",
+      "approx_hgt_ft": 8,
+      "max_hgt_ft": 63.10997725
+    },
+    {
+      "objectid": 439119,
+      "address": "515 LAWLER ST",
+      "approx_hgt_ft": 19,
+      "max_hgt_ft": 60.75995917
+    },
+    {
+      "objectid": 439128,
+      "address": "1055 WELSH RD",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 49.59990067
+    },
+    {
+      "objectid": 439215,
+      "address": "2814 NIGHTINGALE RD",
+      "approx_hgt_ft": 18,
+      "max_hgt_ft": 62.56993367
+    },
+    {
+      "objectid": 439298,
+      "address": "1106-10 NAPFLE AVE",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 42.43004533
+    },
+    {
+      "objectid": 439583,
+      "address": "830 LARKSPUR ST",
+      "approx_hgt_ft": 19,
+      "max_hgt_ft": 66.66000817
+    },
+    {
+      "objectid": 440022,
+      "address": "821 DELRAY ST",
+      "approx_hgt_ft": 20,
+      "max_hgt_ft": 64.37988342
+    },
+    {
+      "objectid": 440028,
+      "address": "1115 WELSH RD",
+      "approx_hgt_ft": 15,
+      "max_hgt_ft": 62.849847170000004
+    },
+    {
+      "objectid": 440093,
+      "address": "12137 RAMBLER RD",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 61.130052920000004
+    },
+    {
+      "objectid": 440122,
+      "address": "1009 TWIST RD",
+      "approx_hgt_ft": 20,
+      "max_hgt_ft": 80.79011799999999
+    },
+    {
+      "objectid": 440468,
+      "address": "11200 E ROOSEVELT BLVD",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 38.94992758
+    },
+    {
+      "objectid": 440496,
+      "address": "816 DELRAY ST",
+      "approx_hgt_ft": 18,
+      "max_hgt_ft": 59.449903
+    },
+    {
+      "objectid": 440719,
+      "address": "15018 ENDICOTT ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 58.330127170000004
+    },
+    {
+      "objectid": 440746,
+      "address": "9241 PINE RD",
+      "approx_hgt_ft": 25,
+      "max_hgt_ft": 77.13015041999999
+    },
+    {
+      "objectid": 440747,
+      "address": "2810 NIGHTINGALE RD",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 49.45014283
+    },
+    {
+      "objectid": 440867,
+      "address": "15037 LONDON RD",
+      "approx_hgt_ft": 7,
+      "max_hgt_ft": 21.86989025
+    },
+    {
+      "objectid": 441460,
+      "address": "3001 BYBERRY RD",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 38.55985908
+    },
+    {
+      "objectid": 441465,
+      "address": "3519-25 WOODHAVEN RD",
+      "approx_hgt_ft": 17,
+      "max_hgt_ft": 54.550014579999996
+    },
+    {
+      "objectid": 441486,
+      "address": "818 DELRAY ST",
+      "approx_hgt_ft": 17,
+      "max_hgt_ft": 74.0699555
+    },
+    {
+      "objectid": 441487,
+      "address": "9979 HALDEMAN AVE",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 44.62994892
+    },
+    {
+      "objectid": 441538,
+      "address": "15014 ENDICOTT ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 54.249947999999996
+    },
+    {
+      "objectid": 442051,
+      "address": "1225 FENWICK RD",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 33.58997175
+    },
+    {
+      "objectid": 442113,
+      "address": "817 PIERMONT ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 59.99012442
+    },
+    {
+      "objectid": 442176,
+      "address": "13425 WORTHINGTON RD",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 43.719992420000004
+    },
+    {
+      "objectid": 442181,
+      "address": "3263 MORNING GLORY RD",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 59.39998208
+    },
+    {
+      "objectid": 442468,
+      "address": "1090 WELSH RD",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 45.639977249999994
+    },
+    {
+      "objectid": 442496,
+      "address": "816 DELRAY ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 54.469992500000004
+    },
+    {
+      "objectid": 442550,
+      "address": "803 TOMLINSON RD",
+      "approx_hgt_ft": 18,
+      "max_hgt_ft": 62.97993383
+    },
+    {
+      "objectid": 442713,
+      "address": "1235 HERSCHEL RD",
+      "approx_hgt_ft": 21,
+      "max_hgt_ft": 78.61994742
+    },
+    {
+      "objectid": 442950,
+      "address": "1700 NATHANIEL PL",
+      "approx_hgt_ft": 18,
+      "max_hgt_ft": 60.590021580000005
+    },
+    {
+      "objectid": 443027,
+      "address": "118 KINGFIELD RD",
+      "approx_hgt_ft": 17,
+      "max_hgt_ft": 52.98010167
+    },
+    {
+      "objectid": 443488,
+      "address": "1001 DELRAY ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 44.82994192
+    },
+    {
+      "objectid": 443505,
+      "address": "2028 LOTT AVE",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 43.20990742
+    },
+    {
+      "objectid": 444535,
+      "address": "3242 RHETT RD",
+      "approx_hgt_ft": 19,
+      "max_hgt_ft": 72.850113
+    },
+    {
+      "objectid": 444613,
+      "address": "1039 WELSH RD",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 30.53003592
+    },
+    {
+      "objectid": 445111,
+      "address": "1109 BYBERRY RD",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 46.499934919999994
+    },
+    {
+      "objectid": 445492,
+      "address": "631 ARTWOOD DR",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 39.78988817
+    },
+    {
+      "objectid": 445540,
+      "address": "9882-90 BUSTLETON AVE",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 49.88988233
+    },
+    {
+      "objectid": 445744,
+      "address": "2634 HEMLOCK ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 34.109838
+    },
+    {
+      "objectid": 445952,
+      "address": "11016 KELVIN AVE",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 78.13013158
+    },
+    {
+      "objectid": 446791,
+      "address": "2010 TOMLINSON RD",
+      "approx_hgt_ft": 19,
+      "max_hgt_ft": 58.86001975
+    },
+    {
+      "objectid": 446995,
+      "address": "721 DUNMORE RD",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 59.239985669999996
+    },
+    {
+      "objectid": 447229,
+      "address": "8805 VERREE RD",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 56.62987108
+    },
+    {
+      "objectid": 447474,
+      "address": "817 BENSON ST",
+      "approx_hgt_ft": 19,
+      "max_hgt_ft": 77.72995275
+    },
+    {
+      "objectid": 447627,
+      "address": "12003 ELMORE RD",
+      "approx_hgt_ft": 18,
+      "max_hgt_ft": 105.95011183000001
+    },
+    {
+      "objectid": 447842,
+      "address": "8400 PINE RD",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 60.13011417
+    },
+    {
+      "objectid": 448242,
+      "address": "9567 WALLEY AVE",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 46.23010033
+    },
+    {
+      "objectid": 448469,
+      "address": "8885 OLD FARM RD",
+      "approx_hgt_ft": 18,
+      "max_hgt_ft": 77.45013283
+    },
+    {
+      "objectid": 449704,
+      "address": "9516 CLARK ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 58.719969170000006
+    },
+    {
+      "objectid": 450191,
+      "address": "8012 BRIDLE RD",
+      "approx_hgt_ft": 22,
+      "max_hgt_ft": 82.88004508
+    },
+    {
+      "objectid": 450400,
+      "address": "2000 KUBACH RD",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 34.34002667
+    },
+    {
+      "objectid": 450509,
+      "address": "8200 FERNDALE ST",
+      "approx_hgt_ft": 20,
+      "max_hgt_ft": 72.15992974999999
+    },
+    {
+      "objectid": 450993,
+      "address": "11633 KELVIN AVE",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 41.169880670000005
+    },
+    {
+      "objectid": 452090,
+      "address": "3814 ANDREA RD",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 75.76989883
+    },
+    {
+      "objectid": 452964,
+      "address": "12002 KNIGHTS RD",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 70.56008575
+    },
+    {
+      "objectid": 453118,
+      "address": "426 BENSON ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 47.019879579999994
+    },
+    {
+      "objectid": 453183,
+      "address": "1937 WELSH RD",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 38.27004908
+    },
+    {
+      "objectid": 453267,
+      "address": "9534 E ROOSEVELT BLVD",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 65.21995217
+    },
+    {
+      "objectid": 453686,
+      "address": "8411 RIDGEWAY ST",
+      "approx_hgt_ft": 22,
+      "max_hgt_ft": 80.12011125
+    },
+    {
+      "objectid": 454431,
+      "address": "8049 PINE RD",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 42.1400005
+    },
+    {
+      "objectid": 454793,
+      "address": "218 PARKDALE RD",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 3.0401054199999997
+    },
+    {
+      "objectid": 455324,
+      "address": "2204 BERWYN PL",
+      "approx_hgt_ft": 22,
+      "max_hgt_ft": 73.62993992000001
+    },
+    {
+      "objectid": 455576,
+      "address": "521 STANWOOD ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 45.70983883
+    },
+    {
+      "objectid": 455933,
+      "address": "1224 GRANT AVE",
+      "approx_hgt_ft": 20,
+      "max_hgt_ft": 74.52993891999999
+    },
+    {
+      "objectid": 456359,
+      "address": "8505 RISING SUN AVE",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 50.299862669999996
+    },
+    {
+      "objectid": 456551,
+      "address": "134 DIMARCO DR",
+      "approx_hgt_ft": 18,
+      "max_hgt_ft": 68.04984192
+    },
+    {
+      "objectid": 456603,
+      "address": "2206 BERWYN PL",
+      "approx_hgt_ft": 21,
+      "max_hgt_ft": 69.9401175
+    },
+    {
+      "objectid": 456709,
+      "address": "824 BENSON ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 43.62012983
+    },
+    {
+      "objectid": 457197,
+      "address": "936 BENSON ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 37.540046079999996
+    },
+    {
+      "objectid": 457203,
+      "address": "327 LONEY ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 32.960122999999996
+    },
+    {
+      "objectid": 458394,
+      "address": "8515-25 RISING SUN AVE",
+      "approx_hgt_ft": 19,
+      "max_hgt_ft": 67.30991542
+    },
+    {
+      "objectid": 459272,
+      "address": "1101 RIPLEY ST",
+      "approx_hgt_ft": 19,
+      "max_hgt_ft": 58.999965499999995
+    },
+    {
+      "objectid": 459525,
+      "address": "8400 PINE RD",
+      "approx_hgt_ft": 15,
+      "max_hgt_ft": 48.2101555
+    },
+    {
+      "objectid": 460322,
+      "address": "8515-25 RISING SUN AVE",
+      "approx_hgt_ft": 22,
+      "max_hgt_ft": 86.02011942
+    },
+    {
+      "objectid": 461014,
+      "address": "1115 STANWOOD ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 65.35004242
+    },
+    {
+      "objectid": 461292,
+      "address": "2748 GRANT AVE",
+      "approx_hgt_ft": 1,
+      "max_hgt_ft": 3.80995558
+    },
+    {
+      "objectid": 461654,
+      "address": "11037 KIPLING LN",
+      "approx_hgt_ft": 8,
+      "max_hgt_ft": 24.72996467
+    },
+    {
+      "objectid": 462334,
+      "address": "8112 HENNIG ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 49.22015667
+    },
+    {
+      "objectid": 462527,
+      "address": "279 DIMARCO DR",
+      "approx_hgt_ft": 18,
+      "max_hgt_ft": 71.66998982999999
+    },
+    {
+      "objectid": 463055,
+      "address": "10850 MEADOW LN",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 70.45014242
+    },
+    {
+      "objectid": 463385,
+      "address": "9229 OLD BUSTLETON AVE",
+      "approx_hgt_ft": 22,
+      "max_hgt_ft": 70.28993575
+    },
+    {
+      "objectid": 464687,
+      "address": "1037 STANWOOD ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 58.799845669999996
+    },
+    {
+      "objectid": 464914,
+      "address": "8004 LAWNDALE ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 31.50014533
+    },
+    {
+      "objectid": 465956,
+      "address": "8014 BRIDLE RD",
+      "approx_hgt_ft": 23,
+      "max_hgt_ft": 87.79001342000001
+    },
+    {
+      "objectid": 465957,
+      "address": "10850 MEADOW LN",
+      "approx_hgt_ft": 22,
+      "max_hgt_ft": 82.84986975
+    },
+    {
+      "objectid": 466342,
+      "address": "1017 RIPLEY ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 55.70987142
+    },
+    {
+      "objectid": 466613,
+      "address": "1002 STANWOOD ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 31.35012083
+    },
+    {
+      "objectid": 467390,
+      "address": "10730 MEADOW LN",
+      "approx_hgt_ft": 8,
+      "max_hgt_ft": 38.43989458
+    },
+    {
+      "objectid": 467633,
+      "address": "7440 ROCKWELL AVE",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 47.04990258
+    },
+    {
+      "objectid": 467869,
+      "address": "825-27 HARTEL AVE",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 49.02011142
+    },
+    {
+      "objectid": 468115,
+      "address": "1033 RHAWN ST",
+      "approx_hgt_ft": 16,
+      "max_hgt_ft": 52.70009633
+    },
+    {
+      "objectid": 468933,
+      "address": "441 HOFFNAGLE ST",
+      "approx_hgt_ft": 15,
+      "max_hgt_ft": 63.28007508
+    },
+    {
+      "objectid": 469200,
+      "address": "8032 RYERS AVE",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 35.64002708
+    },
+    {
+      "objectid": 469364,
+      "address": "1019 RIPLEY ST",
+      "approx_hgt_ft": 8,
+      "max_hgt_ft": 40.829915500000006
+    },
+    {
+      "objectid": 470581,
+      "address": "8212 ROSE PETAL DR",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 48.979842579999996
+    },
+    {
+      "objectid": 472829,
+      "address": "8515-25 RISING SUN AVE",
+      "approx_hgt_ft": 19,
+      "max_hgt_ft": 60.060007330000005
+    },
+    {
+      "objectid": 473746,
+      "address": "1333 RHAWN ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 44.92988008
+    },
+    {
+      "objectid": 475292,
+      "address": "1717 LONEY ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 37.159873499999996
+    },
+    {
+      "objectid": 475844,
+      "address": "1024 NAPFLE AVE",
+      "approx_hgt_ft": 18,
+      "max_hgt_ft": 55.719983580000005
+    },
+    {
+      "objectid": 476022,
+      "address": "7947 ANITA DR",
+      "approx_hgt_ft": 19,
+      "max_hgt_ft": 59.78011025
+    },
+    {
+      "objectid": 476963,
+      "address": "7538 WATSON ST",
+      "approx_hgt_ft": 17,
+      "max_hgt_ft": 59.529993329999996
+    },
+    {
+      "objectid": 477742,
+      "address": "9850 E ROOSEVELT BLVD",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 40.14986917
+    },
+    {
+      "objectid": 494177,
+      "address": "3801 WOODHAVEN RD",
+      "approx_hgt_ft": 32,
+      "max_hgt_ft": 100.56009417
+    },
+    {
+      "objectid": 500999,
+      "address": "1926 FULLER ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 41.16986283
+    },
+    {
+      "objectid": 501165,
+      "address": "7722 HASBROOK AVE",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 45.98003925
+    },
+    {
+      "objectid": 501548,
+      "address": "18 LONGFORD ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 84.68010783
+    },
+    {
+      "objectid": 502202,
+      "address": "3183 WESTON ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 48.850114
+    },
+    {
+      "objectid": 503595,
+      "address": "7935-47 FRONTENAC ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 39.620079
+    },
+    {
+      "objectid": 503698,
+      "address": "2824 WALNUT HILL ST",
+      "approx_hgt_ft": 8,
+      "max_hgt_ft": 37.96013275
+    },
+    {
+      "objectid": 504046,
+      "address": "607 STANWOOD ST",
+      "approx_hgt_ft": 25,
+      "max_hgt_ft": 85.96010442
+    },
+    {
+      "objectid": 504512,
+      "address": "1908 LONEY ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 43.21014467
+    },
+    {
+      "objectid": 505487,
+      "address": "9240 ACADEMY RD",
+      "approx_hgt_ft": 7,
+      "max_hgt_ft": 21.14000742
+    },
+    {
+      "objectid": 505981,
+      "address": "1206-08 SHELMIRE AVE",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 45.19014
+    },
+    {
+      "objectid": 507317,
+      "address": "7349 TABOR AVE",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 47.69000217
+    },
+    {
+      "objectid": 507500,
+      "address": "7200 BINGHAM ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 62.9999585
+    },
+    {
+      "objectid": 510103,
+      "address": "7200 BINGHAM ST",
+      "approx_hgt_ft": 19,
+      "max_hgt_ft": 60.78985833
+    },
+    {
+      "objectid": 510596,
+      "address": "7508 BINGHAM ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 39.40989242
+    },
+    {
+      "objectid": 510890,
+      "address": "1118 COTTMAN AVE",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 42.520067000000004
+    },
+    {
+      "objectid": 511180,
+      "address": "7208-10 BINGHAM ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 53.55988492
+    },
+    {
+      "objectid": 511666,
+      "address": "7800 DUNGAN RD",
+      "approx_hgt_ft": 19,
+      "max_hgt_ft": 67.43014517
+    },
+    {
+      "objectid": 511695,
+      "address": "2207 GRIFFITH ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 30.90989258
+    },
+    {
+      "objectid": 512036,
+      "address": "7415 BINGHAM ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 39.66010317
+    },
+    {
+      "objectid": 512228,
+      "address": "7421 DUNGAN RD",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 42.549992
+    },
+    {
+      "objectid": 513032,
+      "address": "9624 EDEN HALL LN",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 33.1199415
+    },
+    {
+      "objectid": 513636,
+      "address": "11 LONGFORD ST",
+      "approx_hgt_ft": 17,
+      "max_hgt_ft": 98.24996917
+    },
+    {
+      "objectid": 515174,
+      "address": "1100 COTTMAN AVE",
+      "approx_hgt_ft": 22,
+      "max_hgt_ft": 75.91995458
+    },
+    {
+      "objectid": 515449,
+      "address": "1420 OAKMONT ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 66.70985842
+    },
+    {
+      "objectid": 516687,
+      "address": "7827 LORETTO AVE",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 32.409845579999995
+    },
+    {
+      "objectid": 516994,
+      "address": "1412 VISTA ST",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 45.890142999999995
+    },
+    {
+      "objectid": 517242,
+      "address": "7352 DUNGAN RD",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 37.45012183
+    },
+    {
+      "objectid": 517887,
+      "address": "7204-06 BINGHAM ST",
+      "approx_hgt_ft": 18,
+      "max_hgt_ft": 55.31992116999999
+    },
+    {
+      "objectid": 518320,
+      "address": "3124 WELSH RD",
+      "approx_hgt_ft": 17,
+      "max_hgt_ft": 74.41011725
+    },
+    {
+      "objectid": 518717,
+      "address": "7039 RISING SUN AVE",
+      "approx_hgt_ft": 17,
+      "max_hgt_ft": 53.15003742
+    },
+    {
+      "objectid": 519381,
+      "address": "13 LONGFORD ST",
+      "approx_hgt_ft": 17,
+      "max_hgt_ft": 75.02015258
+    },
+    {
+      "objectid": 519422,
+      "address": "705 LONGSHORE AVE",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 36.84990617
+    },
+    {
+      "objectid": 520077,
+      "address": "19 LONGFORD ST",
+      "approx_hgt_ft": 8,
+      "max_hgt_ft": 69.94995017
+    },
+    {
+      "objectid": 520245,
+      "address": "9622 EDEN HALL LN",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 31.009968169999997
+    },
+    {
+      "objectid": 520525,
+      "address": "7 LONGFORD ST",
+      "approx_hgt_ft": 17,
+      "max_hgt_ft": 79.92999950000001
+    },
+    {
+      "objectid": 520668,
+      "address": "7326 LAWNDALE ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 31.980073830000002
+    },
+    {
+      "objectid": 521455,
+      "address": "342 KERPER ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 50.72985008
+    },
+    {
+      "objectid": 522635,
+      "address": "2990 HOLME AVE",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 40.72003317
+    },
+    {
+      "objectid": 523364,
+      "address": "3120 WELSH RD",
+      "approx_hgt_ft": 18,
+      "max_hgt_ft": 66.47010308
+    },
+    {
+      "objectid": 524136,
+      "address": "7149 MONTOUR ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 51.62985608
+    },
+    {
+      "objectid": 524194,
+      "address": "8724 CRISPIN ST",
+      "approx_hgt_ft": 20,
+      "max_hgt_ft": 61.000144500000005
+    },
+    {
+      "objectid": 524383,
+      "address": "1125 FRIENDSHIP ST",
+      "approx_hgt_ft": 8,
+      "max_hgt_ft": 27.889917920000002
+    },
+    {
+      "objectid": 526541,
+      "address": "7324 LAWNDALE ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 48.739883830000004
+    },
+    {
+      "objectid": 527455,
+      "address": "6925 BINGHAM ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 68.41990017
+    },
+    {
+      "objectid": 527547,
+      "address": "647 KERPER ST",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 48.270112499999996
+    },
+    {
+      "objectid": 527729,
+      "address": "618 BRIGHTON ST",
+      "approx_hgt_ft": 8,
+      "max_hgt_ft": 26.38994333
+    },
+    {
+      "objectid": 528376,
+      "address": "4425 ABERDALE RD",
+      "approx_hgt_ft": 20,
+      "max_hgt_ft": 67.41014325
+    },
+    {
+      "objectid": 529137,
+      "address": "2042 BLEIGH AVE",
+      "approx_hgt_ft": 8,
+      "max_hgt_ft": 26.01985892
+    },
+    {
+      "objectid": 529812,
+      "address": "6322 NEWTOWN AVE",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 41.72999992
+    },
+    {
+      "objectid": 530724,
+      "address": "615 DISSTON ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 27.440129080000002
+    },
+    {
+      "objectid": 530735,
+      "address": "632 UNRUH AVE",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 33.35014142
+    },
+    {
+      "objectid": 531265,
+      "address": "526 UNRUH AVE",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 35.21992375
+    },
+    {
+      "objectid": 531339,
+      "address": "12083 LEGION ST",
+      "approx_hgt_ft": 8,
+      "max_hgt_ft": 24.21998233
+    },
+    {
+      "objectid": 531638,
+      "address": "300 LEVICK ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 27.610152669999998
+    },
+    {
+      "objectid": 532132,
+      "address": "1236 TYSON AVE",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 51.97984217
+    },
+    {
+      "objectid": 532614,
+      "address": "6828 OXFORD AVE",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 49.36006075
+    },
+    {
+      "objectid": 533886,
+      "address": "4419 ABERDALE RD",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 65.31008183
+    },
+    {
+      "objectid": 534813,
+      "address": "1312 WELLINGTON ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 46.519867330000004
+    },
+    {
+      "objectid": 536214,
+      "address": "7213-15 CLARIDGE ST",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 59.39984167
+    },
+    {
+      "objectid": 536492,
+      "address": "3 LONGFORD ST",
+      "approx_hgt_ft": 15,
+      "max_hgt_ft": 103.26997967000001
+    },
+    {
+      "objectid": 537587,
+      "address": "6755 MARTINS MILL RD",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 35.620090999999995
+    },
+    {
+      "objectid": 537947,
+      "address": "7420 CASTOR AVE",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 46.199858250000005
+    },
+    {
+      "objectid": 539232,
+      "address": "6327 SHELBOURNE ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 37.00993442
+    },
+    {
+      "objectid": 539528,
+      "address": "627 GILHAM ST",
+      "approx_hgt_ft": 18,
+      "max_hgt_ft": 72.74992458
+    },
+    {
+      "objectid": 539772,
+      "address": "310 LEVICK ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 73.93991025
+    },
+    {
+      "objectid": 540212,
+      "address": "521 LEVICK ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 49.60010492
+    },
+    {
+      "objectid": 540579,
+      "address": "6218 OAKLEY ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 31.20993942
+    },
+    {
+      "objectid": 541153,
+      "address": "8648 JACKSON ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 27.159854250000002
+    },
+    {
+      "objectid": 541383,
+      "address": "619 DISSTON ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 45.19002817
+    },
+    {
+      "objectid": 542722,
+      "address": "6321 HASBROOK AVE",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 48.67992400000001
+    }
+  ],
+  "tallest_buildings_m": [
+    {
+      "id": "262721-4",
+      "h": 54.97
+    },
+    {
+      "id": "262721-3",
+      "h": 52.42
+    },
+    {
+      "id": "262721-2",
+      "h": 49.96
+    },
+    {
+      "id": "262721-1",
+      "h": 46.24
+    },
+    {
+      "id": "262721-0",
+      "h": 46.18
+    },
+    {
+      "id": "320382-13",
+      "h": 40.04
+    },
+    {
+      "id": "320382-12",
+      "h": 37.46
+    },
+    {
+      "id": "203078-1",
+      "h": 37.17
+    },
+    {
+      "id": "296497-10",
+      "h": 36.17
+    },
+    {
+      "id": "46604-77",
+      "h": 34.79
+    }
+  ],
+  "trees_in_scene": 78726,
+  "render_tiles": 56,
+  "max_ground_texture_px": 12544,
+  "uv_fit_max_residual_m": 0.0005990508302089596,
+  "ground_median_filter_px": 5,
+  "frames": 697,
+  "lidar_buildings_shaped": 72145,
+  "lidar_fallback_single_height": 1105,
+  "lidar_parts": 162236,
+  "lidar_terrace_parts": 0,
+  "lidar_stadiums": [],
+  "lidar_stadiums_excluded": [
+    183733,
+    261411,
+    437536
+  ],
+  "lidar_structures": 5274,
+  "lidar_structure_parts": 17155,
+  "lidar_structure_area_m2": 986069.8,
+  "lidar_structures_dropped_photo": 3942,
+  "lidar_highway_mask": true,
+  "lidar_highway_masked_m2": 1051481.7,
+  "lidar_rail_mask": true,
+  "lidar_margin_m": 100.0,
+  "facade_join": {
+    "parcel": 74843,
+    "unmatched": 249,
+    "address": 288,
+    "point": 381
+  },
+  "facade_match_rate": 0.997,
+  "facade_styles": {
+    "twin": 32492,
+    "detached": 19481,
+    "row_postwar": 15129,
+    "apartment_low": 4226,
+    "other": 1607,
+    "row_porch": 632,
+    "warehouse": 486,
+    "mixed_storefront": 460,
+    "institutional": 406,
+    "row_typical": 396,
+    "row_modern": 192,
+    "office_tower": 4,
+    "river_row": 1
+  },
+  "facade_materials": {
+    "brick": 64688,
+    "frame": 10263,
+    "stone": 555,
+    "metal": 6
+  },
+  "facade_colour_source": {
+    "palette": 75490,
+    "aerial": 22
+  },
+  "facade_osm_footprints": 0,
+  "facade_osm_items": 3,
+  "facade_street_fronts": 999,
+  "facade_unmatched": "plain walls (no facade)",
+  "lawn_corrected_px": 517099129,
+  "lawn_park_px": 687560339,
+  "lawn_woods_px": 178950993,
+  "golf_turf_px": 111374711
+}

@@ -16,8 +16,13 @@
 import { inBounds, lonLatToPx } from "./projection.js";
 
 const params = new URLSearchParams(location.search);
-const area = params.get("area") || "downtown";
-const version = params.get("v") || "v3";
+// Default: the frozen talk map (output/philly/FROZEN_v14.json). Older maps
+// stay reachable with ?area=...&v=...
+const area = params.get("area") || "philly";
+const version = params.get("v") || "v14";
+// The offline copy (scripts/27_offline_copy.py) sets <html data-offline="1">:
+// no request ever leaves the machine, so address search (City AIS API) is off
+const offline = document.documentElement.dataset.offline === "1";
 const base = `../output/${area}/tiles/${version}/`;
 const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const status = document.getElementById("status");
@@ -119,6 +124,10 @@ document.getElementById("search").addEventListener("submit", async (ev) => {
   ev.preventDefault();
   const q = document.getElementById("q").value.trim();
   if (!q) return;
+  if (offline) {
+    status.textContent = "Address search needs the internet (City of Philadelphia AIS); it is off in this offline copy.";
+    return;
+  }
   status.textContent = "Searching…";
   try {
     const r = await fetch(`https://api.phila.gov/ais/v1/search/${encodeURIComponent(q)}`);

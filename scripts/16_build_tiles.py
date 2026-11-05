@@ -244,6 +244,16 @@ def build_union(args):
     fit = fit_lonlat_to_px_union(cfgs, u["x0"], u["y0"])
 
     sources, overrides = cell_sources(u, names, args.prompt, args.stage, REPO_ROOT)
+    # A cell's PNG older than its owner's drawing (a redraw merged, its
+    # repaint or a later area's water_band re-repaint not rerun) would put a
+    # superseded drawing in the map (Nov. 4: 15 stale band overrides)
+    from pixelphilly.regions import stale_known
+
+    stale = stale_known({c: (a, f.name, sources[c]) for c, (a, f) in u["cells"].items()}, args.prompt, REPO_ROOT)
+    if stale:
+        raise SystemExit(f"{len(stale)} cells are older than their drawings, e.g. "
+                         f"{[(u['cells'][c][0], u['cells'][c][1].name, str(sources[c])) for c in stale[:3]]}; "
+                         "repaint those areas (and the later areas whose water_band/ covers them) first")
     by_frame = {(a, f.name): sources[cell] for cell, (a, f) in u["cells"].items()}
 
     def illustration(area, f):

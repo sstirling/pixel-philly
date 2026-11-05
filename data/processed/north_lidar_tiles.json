@@ -11,7 +11,7 @@
       "frame_03_11"
     ],
     "buildings": 5040,
-    "trees": 1081,
+    "trees": 2056,
     "texture_px": [
       10240,
       7936
@@ -39,7 +39,7 @@
       "frame_03_15"
     ],
     "buildings": 4619,
-    "trees": 2407,
+    "trees": 14005,
     "texture_px": [
       12288,
       12032
@@ -53,7 +53,7 @@
       "frame_03_16"
     ],
     "buildings": 173,
-    "trees": 469,
+    "trees": 7012,
     "texture_px": [
       6400,
       6656
@@ -68,7 +68,7 @@
       "frame_07_07"
     ],
     "buildings": 7166,
-    "trees": 677,
+    "trees": 681,
     "texture_px": [
       7936,
       6656
@@ -96,7 +96,7 @@
       "frame_07_11"
     ],
     "buildings": 22553,
-    "trees": 2550,
+    "trees": 2668,
     "texture_px": [
       12544,
       12032
@@ -124,7 +124,7 @@
       "frame_07_15"
     ],
     "buildings": 16440,
-    "trees": 4181,
+    "trees": 14424,
     "texture_px": [
       12288,
       12032
@@ -146,7 +146,7 @@
       "frame_07_18"
     ],
     "buildings": 449,
-    "trees": 2894,
+    "trees": 9126,
     "texture_px": [
       9472,
       10752
@@ -188,7 +188,7 @@
       "frame_11_07"
     ],
     "buildings": 25002,
-    "trees": 2278,
+    "trees": 2282,
     "texture_px": [
       12544,
       11008
@@ -216,7 +216,7 @@
       "frame_11_11"
     ],
     "buildings": 39584,
-    "trees": 3414,
+    "trees": 3415,
     "texture_px": [
       12544,
       12032
@@ -244,7 +244,7 @@
       "frame_11_15"
     ],
     "buildings": 29991,
-    "trees": 5897,
+    "trees": 7777,
     "texture_px": [
       12288,
       12032
@@ -269,7 +269,7 @@
       "frame_09_19"
     ],
     "buildings": 7179,
-    "trees": 3630,
+    "trees": 5413,
     "texture_px": [
       12544,
       9984
@@ -376,7 +376,7 @@
       "frame_13_15"
     ],
     "buildings": 26444,
-    "trees": 4181,
+    "trees": 4356,
     "texture_px": [
       12288,
       9728
@@ -389,7 +389,7 @@
       "frame_12_16"
     ],
     "buildings": 3955,
-    "trees": 1133,
+    "trees": 1548,
     "texture_px": [
       5632,
       5632

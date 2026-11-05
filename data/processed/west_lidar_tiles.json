@@ -11,7 +11,7 @@
       "frame_03_07"
     ],
     "buildings": 17103,
-    "trees": 1612,
+    "trees": 1658,
     "texture_px": [
       10240,
       7936
@@ -35,7 +35,7 @@
       "frame_03_11"
     ],
     "buildings": 16643,
-    "trees": 2440,
+    "trees": 4776,
     "texture_px": [
       9984,
       12032
@@ -53,7 +53,7 @@
       "frame_07_03"
     ],
     "buildings": 9565,
-    "trees": 1762,
+    "trees": 1795,
     "texture_px": [
       9984,
       7680
@@ -109,7 +109,7 @@
       "frame_07_11"
     ],
     "buildings": 31058,
-    "trees": 3505,
+    "trees": 6752,
     "texture_px": [
       12288,
       12032
@@ -125,7 +125,7 @@
       "frame_07_13"
     ],
     "buildings": 4143,
-    "trees": 887,
+    "trees": 3093,
     "texture_px": [
       7168,
       8704
@@ -152,7 +152,7 @@
       "frame_11_03"
     ],
     "buildings": 15633,
-    "trees": 3253,
+    "trees": 3576,
     "texture_px": [
       11520,
       12032
@@ -180,7 +180,7 @@
       "frame_11_07"
     ],
     "buildings": 42838,
-    "trees": 5393,
+    "trees": 5458,
     "texture_px": [
       12544,
       12032
@@ -208,7 +208,7 @@
       "frame_11_11"
     ],
     "buildings": 38711,
-    "trees": 4023,
+    "trees": 7222,
     "texture_px": [
       12288,
       12032
@@ -227,7 +227,7 @@
       "frame_10_13"
     ],
     "buildings": 10113,
-    "trees": 1170,
+    "trees": 3370,
     "texture_px": [
       9472,
       8704
@@ -247,7 +247,7 @@
       "frame_15_03"
     ],
     "buildings": 13734,
-    "trees": 3046,
+    "trees": 3097,
     "texture_px": [
       8704,
       10752
@@ -275,7 +275,7 @@
       "frame_15_07"
     ],
     "buildings": 33166,
-    "trees": 6941,
+    "trees": 7249,
     "texture_px": [
       12544,
       12032
@@ -297,7 +297,7 @@
       "frame_12_11"
     ],
     "buildings": 29445,
-    "trees": 3722,
+    "trees": 4319,
     "texture_px": [
       12288,
       8960
@@ -310,7 +310,7 @@
       "frame_16_03"
     ],
     "buildings": 1657,
-    "trees": 1005,
+    "trees": 1091,
     "texture_px": [
       5632,
       5376
@@ -331,7 +331,7 @@
       "frame_16_07"
     ],
     "buildings": 14516,
-    "trees": 4383,
+    "trees": 4691,
     "texture_px": [
       11776,
       8960

@@ -71,6 +71,27 @@ def water_geometry(cfg, frame, cam, x_origin: float, y_origin: float, suffix: st
     return unary_union(polys)
 
 
+def golf_hazard_geometry(cfg, frame, cam, x_origin: float, y_origin: float):
+    """OSM golf water hazards (data/raw/<area>_golf.json, golf.water_hazards)
+    in mosaic pixel coordinates; empty without the file or "golf_correct"."""
+    from .golf import parse, water_hazards
+
+    path = RAW / f"{cfg['name']}_golf.json"
+    if not cfg.get("golf_correct") or not path.exists():
+        return Polygon()
+    polys = []
+    for g in water_hazards(parse(json.loads(path.read_text())["elements"])):
+        for p in [g] if g.geom_type == "Polygon" else list(g.geoms):
+            rings = []
+            for ring in [p.exterior, *p.interiors]:
+                lon, lat = np.asarray(ring.coords).T[:2]
+                e, n = frame.to_local(lon, lat)
+                sx, sy = cam.world_to_screen(e, n, 0.0)
+                rings.append(list(zip(sx - x_origin, sy - y_origin)))
+            polys.append(Polygon(rings[0], rings[1:]).buffer(0))
+    return unary_union(polys) if polys else Polygon()
+
+
 def rasterize_view(geom, gx0: float, gy0: float, scale: float, width: int, height: int) -> np.ndarray:
     """Boolean mask of `geom` (mosaic coords) for a width x height view."""
     view = box(gx0, gy0, gx0 + width * scale, gy0 + height * scale)
@@ -137,3 +158,98 @@ def apply(redraw: np.ndarray, water: np.ndarray, gx0=0, gy0=0, scale=1.0, style=
     out[ripples] = style["ripple"]
     out[shore] = style["shore"]
     return out
+
+
+# ---------------------------------------------------------- water bodies
+# Mapped water the river model misses: City (PWD) water polygons outside NHD,
+# such as the Manayunk Canal (olive-green water, drawn as grass; Nov. 4).
+# Each gets its own color model from its eroded interior, used only when it
+# reads as one surface (BODY_MIN_MATCH of its pixels within its threshold),
+# so a dry basin or a polygon over lawn and paving is skipped. Pixels off
+# that color (boats, bridges, overhanging trees) stay as drawn.
+BODY_ERODE_PX = 5
+BODY_MIN_SAMPLES = 200
+BODY_MIN_MATCH = 0.6
+BODY_MAX_THRESHOLD = 40.0
+
+
+def body_models(polys, nhd_geom, views) -> list:
+    """[(polygon, median rgb, threshold)] for water polygons (mosaic coords)
+    outside nhd_geom. views: iterable of (gx, gy, render RGB array, grown
+    building mask) covering the area, e.g. one per frame; samples from each
+    body's eroded interior are pooled across views."""
+    from PIL import ImageFilter
+
+    bodies = []
+    for poly in polys:
+        g = poly.difference(nhd_geom) if not nhd_geom.is_empty else poly
+        if not g.is_empty and g.area >= BODY_MIN_SAMPLES:
+            bodies.append(g)
+    if not bodies:
+        return []
+    samples = [[] for _ in bodies]
+    for gx, gy, render, bld in views:
+        h, w = render.shape[:2]
+        view = box(gx, gy, gx + w, gy + h)
+        for i, g in enumerate(bodies):
+            if not g.intersects(view):
+                continue
+            inside = rasterize_view(g, gx, gy, 1.0, w, h)
+            core = np.asarray(Image.fromarray(inside.astype(np.uint8) * 255)
+                              .filter(ImageFilter.MinFilter(2 * BODY_ERODE_PX + 1))) > 127
+            if bld is not None:
+                core &= ~bld
+            samples[i].append(render[core][::3].astype(int))
+    out = []
+    for g, ss in zip(bodies, samples):
+        sample = np.concatenate(ss) if ss else np.zeros((0, 3), int)
+        if len(sample) < BODY_MIN_SAMPLES // 3:
+            continue
+        median = np.median(sample, axis=0)
+        typical = np.median(np.abs(sample - median).max(axis=1))
+        # Capped: a water surface is uniform, so a wide spread means it isn't one
+        threshold = min(BODY_MAX_THRESHOLD, max(20.0, 4.0 * float(typical)))
+        match = (np.abs(sample - median).max(axis=1) < threshold).mean()
+        if match < BODY_MIN_MATCH:
+            continue
+        out.append((g, median, threshold))
+    return out
+
+
+def body_water(models, render: np.ndarray, buildings: np.ndarray, gx: float, gy: float) -> np.ndarray:
+    """Pixels of a view (render at mosaic gx, gy) that belong to a modeled
+    water body and match its color."""
+    h, w = render.shape[:2]
+    water = np.zeros((h, w), bool)
+    view = box(gx, gy, gx + w, gy + h)
+    for g, median, threshold in models:
+        if not g.intersects(view):
+            continue
+        inside = rasterize_view(g, gx, gy, 1.0, w, h)
+        dist = np.abs(render.astype(int) - np.asarray(median)).max(axis=2)
+        water |= inside & (dist < threshold) & ~buildings
+    return water
+
+
+def tree_discs(trees, cam, x_origin: float, y_origin: float) -> list:
+    """[(sx, sy, radius px)] in mosaic coords for scene trees [e, n, r]. The
+    renderer draws each canopy as a ball of radius r centered 1.5 + 1.1 r m
+    up (render/render.js), which projects to a disc of radius r / mpp."""
+    if not trees:
+        return []
+    t = np.asarray(trees, float)
+    sx, sy = cam.world_to_screen(t[:, 0], t[:, 1], 1.5 + 1.1 * t[:, 2])
+    rad = t[:, 2] / cam.meters_per_pixel
+    return [(float(x - x_origin), float(y - y_origin), float(r)) for x, y, r in zip(sx, sy, rad)]
+
+
+def tree_mask(discs, gx: float, gy: float, width: int, height: int) -> np.ndarray:
+    """Boolean mask of the rendered canopies (tree_discs) in a view."""
+    img = Image.new("L", (width, height))
+    d = ImageDraw.Draw(img)
+    for x, y, r in discs:
+        x, y = x - gx, y - gy
+        if x + r < 0 or y + r < 0 or x - r > width or y - r > height:
+            continue
+        d.ellipse([x - r, y - r, x + r, y + r], fill=255)
+    return np.asarray(img) > 127

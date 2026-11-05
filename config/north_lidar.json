@@ -38,5 +38,8 @@
     39.9275
   ],
   "facades": "opa",
-  "lawn_correct": true
+  "lawn_correct": true,
+  "golf_correct": true,
+  "woods_trees": true,
+  "lawn_skip_woods": true
 }

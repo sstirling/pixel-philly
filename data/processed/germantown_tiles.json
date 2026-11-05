@@ -18,7 +18,7 @@
       "frame_03_15"
     ],
     "buildings": 10514,
-    "trees": 1878,
+    "trees": 2523,
     "texture_px": [
       12288,
       11008
@@ -32,7 +32,7 @@
       "frame_03_16"
     ],
     "buildings": 5139,
-    "trees": 1426,
+    "trees": 1538,
     "texture_px": [
       6400,
       6656
@@ -59,7 +59,7 @@
       "frame_07_11"
     ],
     "buildings": 13895,
-    "trees": 1248,
+    "trees": 1571,
     "texture_px": [
       12544,
       11008
@@ -87,7 +87,7 @@
       "frame_07_15"
     ],
     "buildings": 23473,
-    "trees": 3730,
+    "trees": 6026,
     "texture_px": [
       12288,
       12032
@@ -109,7 +109,7 @@
       "frame_07_18"
     ],
     "buildings": 12237,
-    "trees": 2547,
+    "trees": 9259,
     "texture_px": [
       9472,
       10752
@@ -125,7 +125,7 @@
       "frame_11_07"
     ],
     "buildings": 6072,
-    "trees": 448,
+    "trees": 1012,
     "texture_px": [
       7936,
       8704
@@ -153,7 +153,7 @@
       "frame_11_11"
     ],
     "buildings": 25505,
-    "trees": 2629,
+    "trees": 3187,
     "texture_px": [
       12544,
       12032
@@ -181,7 +181,7 @@
       "frame_11_15"
     ],
     "buildings": 29195,
-    "trees": 4580,
+    "trees": 5598,
     "texture_px": [
       12288,
       12032
@@ -209,7 +209,7 @@
       "frame_11_19"
     ],
     "buildings": 22579,
-    "trees": 3945,
+    "trees": 13310,
     "texture_px": [
       12544,
       12032
@@ -223,7 +223,7 @@
       "frame_11_20"
     ],
     "buildings": 2645,
-    "trees": 781,
+    "trees": 5614,
     "texture_px": [
       6656,
       6656
@@ -243,7 +243,7 @@
       "frame_15_07"
     ],
     "buildings": 10858,
-    "trees": 854,
+    "trees": 1090,
     "texture_px": [
       9472,
       9984
@@ -271,7 +271,7 @@
       "frame_15_11"
     ],
     "buildings": 31203,
-    "trees": 3126,
+    "trees": 3791,
     "texture_px": [
       12544,
       12032
@@ -299,7 +299,7 @@
       "frame_15_15"
     ],
     "buildings": 34474,
-    "trees": 4165,
+    "trees": 4858,
     "texture_px": [
       12288,
       12032
@@ -327,7 +327,7 @@
       "frame_15_19"
     ],
     "buildings": 29158,
-    "trees": 4216,
+    "trees": 15663,
     "texture_px": [
       12544,
       12032
@@ -347,7 +347,7 @@
       "frame_15_21"
     ],
     "buildings": 5668,
-    "trees": 1256,
+    "trees": 13807,
     "texture_px": [
       9472,
       9984
@@ -371,7 +371,7 @@
       "frame_19_07"
     ],
     "buildings": 15379,
-    "trees": 1224,
+    "trees": 1535,
     "texture_px": [
       11008,
       10752
@@ -399,7 +399,7 @@
       "frame_19_11"
     ],
     "buildings": 36569,
-    "trees": 3521,
+    "trees": 3704,
     "texture_px": [
       12544,
       12032
@@ -427,7 +427,7 @@
       "frame_19_15"
     ],
     "buildings": 32552,
-    "trees": 3312,
+    "trees": 4713,
     "texture_px": [
       12544,
       12288
@@ -452,7 +452,7 @@
       "frame_17_19"
     ],
     "buildings": 20302,
-    "trees": 2173,
+    "trees": 5223,
     "texture_px": [
       12544,
       9728
@@ -465,7 +465,7 @@
       "frame_16_20"
     ],
     "buildings": 1562,
-    "trees": 423,
+    "trees": 5754,
     "texture_px": [
       5888,
       5376
@@ -489,7 +489,7 @@
       "frame_23_07"
     ],
     "buildings": 15545,
-    "trees": 1679,
+    "trees": 1762,
     "texture_px": [
       11008,
       11008
@@ -517,7 +517,7 @@
       "frame_23_11"
     ],
     "buildings": 35180,
-    "trees": 3691,
+    "trees": 4190,
     "texture_px": [
       12544,
       12032
@@ -542,7 +542,7 @@
       "frame_21_15"
     ],
     "buildings": 19279,
-    "trees": 1782,
+    "trees": 2594,
     "texture_px": [
       12544,
       9984
@@ -555,7 +555,7 @@
       "frame_20_16"
     ],
     "buildings": 3284,
-    "trees": 422,
+    "trees": 489,
     "texture_px": [
       5632,
       5632
@@ -598,7 +598,7 @@
       "frame_25_11"
     ],
     "buildings": 19689,
-    "trees": 1842,
+    "trees": 1844,
     "texture_px": [
       12544,
       9728
@@ -611,7 +611,7 @@
       "frame_24_12"
     ],
     "buildings": 2588,
-    "trees": 377,
+    "trees": 468,
     "texture_px": [
       5888,
       5376

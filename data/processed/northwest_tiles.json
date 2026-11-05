@@ -1,0 +1,546 @@
+[
+  {
+    "tile": "t_01_02",
+    "scene": "data/processed/northwest/tiles/t_01_02.json",
+    "frames": [
+      "frame_07_09",
+      "frame_06_10",
+      "frame_07_10",
+      "frame_06_11",
+      "frame_07_11"
+    ],
+    "buildings": 2091,
+    "trees": 1111,
+    "texture_px": [
+      9472,
+      7936
+    ]
+  },
+  {
+    "tile": "t_01_03",
+    "scene": "data/processed/northwest/tiles/t_01_03.json",
+    "frames": [
+      "frame_07_12",
+      "frame_07_13",
+      "frame_07_14"
+    ],
+    "buildings": 994,
+    "trees": 8832,
+    "texture_px": [
+      8704,
+      7936
+    ]
+  },
+  {
+    "tile": "t_02_02",
+    "scene": "data/processed/northwest/tiles/t_02_02.json",
+    "frames": [
+      "frame_08_09",
+      "frame_09_09",
+      "frame_10_09",
+      "frame_11_09",
+      "frame_08_10",
+      "frame_09_10",
+      "frame_10_10",
+      "frame_11_10",
+      "frame_08_11",
+      "frame_09_11",
+      "frame_10_11",
+      "frame_11_11"
+    ],
+    "buildings": 6495,
+    "trees": 8580,
+    "texture_px": [
+      11008,
+      10752
+    ]
+  },
+  {
+    "tile": "t_02_03",
+    "scene": "data/processed/northwest/tiles/t_02_03.json",
+    "frames": [
+      "frame_08_12",
+      "frame_09_12",
+      "frame_10_12",
+      "frame_11_12",
+      "frame_08_13",
+      "frame_09_13",
+      "frame_10_13",
+      "frame_11_13",
+      "frame_08_14",
+      "frame_09_14",
+      "frame_10_14",
+      "frame_11_14",
+      "frame_08_15",
+      "frame_09_15",
+      "frame_10_15",
+      "frame_11_15"
+    ],
+    "buildings": 6815,
+    "trees": 25758,
+    "texture_px": [
+      12544,
+      12288
+    ]
+  },
+  {
+    "tile": "t_02_04",
+    "scene": "data/processed/northwest/tiles/t_02_04.json",
+    "frames": [
+      "frame_08_16",
+      "frame_09_16",
+      "frame_10_16",
+      "frame_11_16",
+      "frame_09_17",
+      "frame_10_17",
+      "frame_11_17",
+      "frame_09_18",
+      "frame_10_18",
+      "frame_11_18",
+      "frame_11_19"
+    ],
+    "buildings": 6555,
+    "trees": 8483,
+    "texture_px": [
+      10240,
+      12032
+    ]
+  },
+  {
+    "tile": "t_03_02",
+    "scene": "data/processed/northwest/tiles/t_03_02.json",
+    "frames": [
+      "frame_12_08",
+      "frame_13_08",
+      "frame_14_08",
+      "frame_15_08",
+      "frame_12_09",
+      "frame_13_09",
+      "frame_14_09",
+      "frame_15_09",
+      "frame_12_10",
+      "frame_13_10",
+      "frame_14_10",
+      "frame_15_10",
+      "frame_12_11",
+      "frame_13_11",
+      "frame_14_11",
+      "frame_15_11"
+    ],
+    "buildings": 14312,
+    "trees": 9527,
+    "texture_px": [
+      12288,
+      12032
+    ]
+  },
+  {
+    "tile": "t_03_03",
+    "scene": "data/processed/northwest/tiles/t_03_03.json",
+    "frames": [
+      "frame_12_12",
+      "frame_13_12",
+      "frame_14_12",
+      "frame_15_12",
+      "frame_12_13",
+      "frame_13_13",
+      "frame_14_13",
+      "frame_15_13",
+      "frame_12_14",
+      "frame_13_14",
+      "frame_14_14",
+      "frame_15_14",
+      "frame_12_15",
+      "frame_13_15",
+      "frame_14_15",
+      "frame_15_15"
+    ],
+    "buildings": 11922,
+    "trees": 33879,
+    "texture_px": [
+      12544,
+      12032
+    ]
+  },
+  {
+    "tile": "t_03_04",
+    "scene": "data/processed/northwest/tiles/t_03_04.json",
+    "frames": [
+      "frame_12_16",
+      "frame_13_16",
+      "frame_14_16",
+      "frame_15_16",
+      "frame_12_17",
+      "frame_13_17",
+      "frame_14_17",
+      "frame_15_17",
+      "frame_12_18",
+      "frame_13_18",
+      "frame_14_18",
+      "frame_15_18",
+      "frame_12_19",
+      "frame_13_19",
+      "frame_14_19",
+      "frame_15_19"
+    ],
+    "buildings": 9780,
+    "trees": 22916,
+    "texture_px": [
+      12544,
+      12032
+    ]
+  },
+  {
+    "tile": "t_03_05",
+    "scene": "data/processed/northwest/tiles/t_03_05.json",
+    "frames": [
+      "frame_13_20",
+      "frame_14_20",
+      "frame_15_20",
+      "frame_15_21"
+    ],
+    "buildings": 2025,
+    "trees": 4290,
+    "texture_px": [
+      7168,
+      8704
+    ]
+  },
+  {
+    "tile": "t_04_00",
+    "scene": "data/processed/northwest/tiles/t_04_00.json",
+    "frames": [
+      "frame_17_03",
+      "frame_18_03",
+      "frame_19_03"
+    ],
+    "buildings": 2281,
+    "trees": 587,
+    "texture_px": [
+      7168,
+      7936
+    ]
+  },
+  {
+    "tile": "t_04_01",
+    "scene": "data/processed/northwest/tiles/t_04_01.json",
+    "frames": [
+      "frame_17_04",
+      "frame_18_04",
+      "frame_19_04",
+      "frame_17_05",
+      "frame_18_05",
+      "frame_19_05",
+      "frame_17_06",
+      "frame_18_06",
+      "frame_19_06",
+      "frame_16_07",
+      "frame_17_07",
+      "frame_18_07",
+      "frame_19_07"
+    ],
+    "buildings": 12276,
+    "trees": 1799,
+    "texture_px": [
+      12544,
+      11008
+    ]
+  },
+  {
+    "tile": "t_04_02",
+    "scene": "data/processed/northwest/tiles/t_04_02.json",
+    "frames": [
+      "frame_16_08",
+      "frame_17_08",
+      "frame_18_08",
+      "frame_19_08",
+      "frame_16_09",
+      "frame_17_09",
+      "frame_18_09",
+      "frame_19_09",
+      "frame_16_10",
+      "frame_17_10",
+      "frame_18_10",
+      "frame_19_10",
+      "frame_16_11",
+      "frame_17_11",
+      "frame_18_11",
+      "frame_19_11"
+    ],
+    "buildings": 22263,
+    "trees": 6668,
+    "texture_px": [
+      12544,
+      12032
+    ]
+  },
+  {
+    "tile": "t_04_03",
+    "scene": "data/processed/northwest/tiles/t_04_03.json",
+    "frames": [
+      "frame_16_12",
+      "frame_17_12",
+      "frame_18_12",
+      "frame_19_12",
+      "frame_16_13",
+      "frame_17_13",
+      "frame_18_13",
+      "frame_19_13",
+      "frame_16_14",
+      "frame_17_14",
+      "frame_18_14",
+      "frame_19_14",
+      "frame_16_15",
+      "frame_17_15",
+      "frame_18_15",
+      "frame_19_15"
+    ],
+    "buildings": 11759,
+    "trees": 38495,
+    "texture_px": [
+      12544,
+      12032
+    ]
+  },
+  {
+    "tile": "t_04_04",
+    "scene": "data/processed/northwest/tiles/t_04_04.json",
+    "frames": [
+      "frame_16_16",
+      "frame_17_16",
+      "frame_18_16",
+      "frame_19_16",
+      "frame_16_17",
+      "frame_17_17",
+      "frame_18_17",
+      "frame_19_17",
+      "frame_16_18",
+      "frame_17_18",
+      "frame_18_18",
+      "frame_19_18",
+      "frame_16_19",
+      "frame_17_19",
+      "frame_18_19"
+    ],
+    "buildings": 7400,
+    "trees": 22701,
+    "texture_px": [
+      12544,
+      11008
+    ]
+  },
+  {
+    "tile": "t_04_05",
+    "scene": "data/processed/northwest/tiles/t_04_05.json",
+    "frames": [
+      "frame_16_20",
+      "frame_17_20",
+      "frame_16_21"
+    ],
+    "buildings": 2462,
+    "trees": 3133,
+    "texture_px": [
+      7936,
+      6656
+    ]
+  },
+  {
+    "tile": "t_05_00",
+    "scene": "data/processed/northwest/tiles/t_05_00.json",
+    "frames": [
+      "frame_20_03"
+    ],
+    "buildings": 1200,
+    "trees": 340,
+    "texture_px": [
+      5632,
+      5632
+    ]
+  },
+  {
+    "tile": "t_05_01",
+    "scene": "data/processed/northwest/tiles/t_05_01.json",
+    "frames": [
+      "frame_20_04",
+      "frame_21_04",
+      "frame_22_04",
+      "frame_20_05",
+      "frame_21_05",
+      "frame_22_05",
+      "frame_23_05",
+      "frame_20_06",
+      "frame_21_06",
+      "frame_22_06",
+      "frame_23_06",
+      "frame_20_07",
+      "frame_21_07",
+      "frame_22_07",
+      "frame_23_07"
+    ],
+    "buildings": 17869,
+    "trees": 2688,
+    "texture_px": [
+      11776,
+      12032
+    ]
+  },
+  {
+    "tile": "t_05_02",
+    "scene": "data/processed/northwest/tiles/t_05_02.json",
+    "frames": [
+      "frame_20_08",
+      "frame_21_08",
+      "frame_22_08",
+      "frame_23_08",
+      "frame_20_09",
+      "frame_21_09",
+      "frame_22_09",
+      "frame_23_09",
+      "frame_20_10",
+      "frame_21_10",
+      "frame_22_10",
+      "frame_23_10",
+      "frame_20_11",
+      "frame_21_11",
+      "frame_22_11",
+      "frame_23_11"
+    ],
+    "buildings": 29473,
+    "trees": 8706,
+    "texture_px": [
+      12544,
+      12032
+    ]
+  },
+  {
+    "tile": "t_05_03",
+    "scene": "data/processed/northwest/tiles/t_05_03.json",
+    "frames": [
+      "frame_20_12",
+      "frame_21_12",
+      "frame_22_12",
+      "frame_23_12",
+      "frame_20_13",
+      "frame_21_13",
+      "frame_22_13",
+      "frame_23_13",
+      "frame_20_14",
+      "frame_21_14",
+      "frame_22_14",
+      "frame_23_14",
+      "frame_20_15",
+      "frame_21_15",
+      "frame_22_15"
+    ],
+    "buildings": 11565,
+    "trees": 22201,
+    "texture_px": [
+      12544,
+      11008
+    ]
+  },
+  {
+    "tile": "t_05_04",
+    "scene": "data/processed/northwest/tiles/t_05_04.json",
+    "frames": [
+      "frame_20_16",
+      "frame_21_16",
+      "frame_20_17"
+    ],
+    "buildings": 1145,
+    "trees": 12784,
+    "texture_px": [
+      7936,
+      6656
+    ]
+  },
+  {
+    "tile": "t_06_01",
+    "scene": "data/processed/northwest/tiles/t_06_01.json",
+    "frames": [
+      "frame_24_05",
+      "frame_24_06",
+      "frame_25_06",
+      "frame_26_06",
+      "frame_24_07",
+      "frame_25_07",
+      "frame_26_07",
+      "frame_27_07"
+    ],
+    "buildings": 9857,
+    "trees": 2475,
+    "texture_px": [
+      8704,
+      11008
+    ]
+  },
+  {
+    "tile": "t_06_02",
+    "scene": "data/processed/northwest/tiles/t_06_02.json",
+    "frames": [
+      "frame_24_08",
+      "frame_25_08",
+      "frame_26_08",
+      "frame_27_08",
+      "frame_24_09",
+      "frame_25_09",
+      "frame_26_09",
+      "frame_27_09",
+      "frame_24_10",
+      "frame_25_10",
+      "frame_26_10",
+      "frame_27_10",
+      "frame_24_11",
+      "frame_25_11",
+      "frame_26_11"
+    ],
+    "buildings": 19765,
+    "trees": 4203,
+    "texture_px": [
+      12544,
+      11008
+    ]
+  },
+  {
+    "tile": "t_06_03",
+    "scene": "data/processed/northwest/tiles/t_06_03.json",
+    "frames": [
+      "frame_24_12",
+      "frame_25_12",
+      "frame_24_13"
+    ],
+    "buildings": 7349,
+    "trees": 2814,
+    "texture_px": [
+      7936,
+      6656
+    ]
+  },
+  {
+    "tile": "t_07_01",
+    "scene": "data/processed/northwest/tiles/t_07_01.json",
+    "frames": [
+      "frame_28_07"
+    ],
+    "buildings": 569,
+    "trees": 985,
+    "texture_px": [
+      5632,
+      5632
+    ]
+  },
+  {
+    "tile": "t_07_02",
+    "scene": "data/processed/northwest/tiles/t_07_02.json",
+    "frames": [
+      "frame_28_08",
+      "frame_28_09"
+    ],
+    "buildings": 3116,
+    "trees": 1423,
+    "texture_px": [
+      7168,
+      6656
+    ]
+  }
+]

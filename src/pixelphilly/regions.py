@@ -288,6 +288,37 @@ def known_sources(frames, known, prompt, stage, root, override_from=None):
     return out
 
 
+def stale_known(sources, prompt, root) -> list:
+    """Frames of known_sources() whose known pixels aren't final: the owning
+    area's drawing (output/<area>/redraws/<prompt>/<frame>.png) is newer than
+    the postprocessed PNG used as known, i.e. a redraw was merged and its
+    repaint hasn't run yet. Nov. 4: parallel tree redraws read a neighbor's
+    band in that state and left seams (germantown|roxborough)."""
+    from pathlib import Path
+
+    out = []
+    for name, (area, kf, png) in sources.items():
+        drawn = Path(root) / "output" / area / "redraws" / prompt / f"{kf}.png"
+        png = Path(png)
+        if drawn.exists() and png.exists() and png.stat().st_mtime < drawn.stat().st_mtime:
+            out.append(name)
+    return sorted(out)
+
+
+def in_flight_runs(areas, root) -> list:
+    """GPU runs started but not collected in these areas ("area/run": a
+    joint/<run>/call.json without result.json). Their frames will change,
+    so they can't serve as known pixels yet."""
+    from pathlib import Path
+
+    out = []
+    for a in areas:
+        for call in sorted((Path(root) / "output" / a / "joint").glob("*/call.json")):
+            if not (call.parent / "result.json").exists():
+                out.append(f"{a}/{call.parent.name}")
+    return out
+
+
 def ripple_root(area, known_of) -> str:
     """The area whose mosaic coordinates place water ripples for a chain of
     regions: follow known_of(area) (a list of known areas, first = the one

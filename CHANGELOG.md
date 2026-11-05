@@ -1,5 +1,247 @@
 # Changelog
 
+## 2026-11-05: preview flyover video
+
+Stephen asked for a short video panning over the map at high zoom, as a preview.
+
+- **New `scripts/29_flyover.py`.** It cuts each video frame straight from the frozen v14 Deep Zoom tiles, with no GPU and no browser. It pipes the frames to ffmpeg (the static binary from the new `imageio-ffmpeg` dependency, installed in the venv only). It renders the 30-second, 1080p cut in about 12 seconds.
+- **Camera path in `config/flyover/preview.json`:**
+  - Hold on City Hall's tower at 1:1.
+  - Pan down Broad St to Washington Ave over 14 s at 1:1.
+  - Pull back to the whole city over 10 s, then hold.
+- **Pixel-art choices:**
+  - Close-ups use nearest-neighbor at whole-number scales, and the pan keeps a constant scale, so pixels stay square and don't shimmer.
+  - The zoom-out uses the coarser pyramid levels with a box filter.
+  - Zooms interpolate scale geometrically and move the center in step with the zoom, so the pull-back stays anchored on Broad St.
+- **Waypoints take an optional height (`z`, meters).** The first test aimed at City Hall's ground point, and the frame showed only the towers south of it, because in the isometric view those towers hide City Hall's base. Aiming at 110 m centers the tower.
+- **A provisional credit line is burned in at the bottom right.** It will be replaced by the wording Stephen writes for the credits page.
+- **Output:** `output/flyover/preview.mp4` (885 frames, 104.7 MB, H.264, yuv420p, faststart) and `output/flyover/preview_10s.mp4` (the first test, from the ground-point start).
+
+## 2026-11-04 (night): fixes, then v14 frozen as the talk map; offline copy; hosting plan
+
+Stephen (Nov. 4) asked for three things before freezing the map: fix West Fairmount Park, bring the four tree-border seams back down, and stop the lawn correction on the Cobbs Creek park strip. The GPU cap for these fixes was $4. Then freeze v14, make an offline copy, and plan hosting. He is writing the credits page, so it isn't written here. No commits, no LiDAR prune.
+
+### Causes found, fixed test-first
+- **Stale known pixels (pipeline bug).**
+  - The tree redraws ran in parallel. Roxborough's redraw (launched 5:32) read germantown's band frames while germantown's own redraw was merged but not yet repainted (done 5:43). North and upper_north read each other mid-redraw the same way.
+  - Band overrides went stale too. A later area's `water_band/` re-repaint of an earlier area's frame isn't rerun when that frame is redrawn. West_lidar's overrides kept 5 cells of south and north drawings from before the trees, and v13 showed those old drawings.
+  - **New guards:**
+    - `regions.stale_known` refuses known pixels older than their drawing.
+    - `regions.in_flight_runs` refuses a known area that is still drawing.
+    - Both are in `15_joint_sample.py`. `16_build_tiles.py` also refuses to build when any cell is older than its drawing.
+    - Test: `test_stale_known_flags_frames_redrawn_after_their_repaint`.
+  - The guards caught three stale states during this work. Each was fixed by repainting the affected area first.
+- **West Fairmount box (not a pipeline bug).**
+  - The light-green box was one whole cell, west_north frame_16_04 from the tree redraw. The model drew it lighter than the north_lidar cells above and to its right, which were known. North's frames were final when it ran (03:31 < 03:48).
+  - It isn't a repair-strip artifact (that strip is 200 px; the box is the whole frame) or a water-repaint one (the repaint changed 0.1% of the frame). Fixed by redrawing the border frames.
+  - The gray-blue cricket field (Belmont Plateau) is in frames 16_04 and 16_05. The model drew the dark, mown turf gray-blue. Redrawing 16_05 alone left a seam through the field, so 16_04 and 16_05 were redrawn together. The field is green now.
+- **Cobbs Creek park strip:**
+  - PPR's "Cobbs Creek Golf Course" property counts as a course (PPR "Golf" names), and 26% of it lies outside OSM's construction outlines. That part, the meadow between Olde and Karakung, got the golf correction.
+  - New rule (`golf.ppr_construction`; test `test_ppr_golf_property_over_a_construction_course_is_construction`): a PPR golf property lying at least half over reviewed construction courses is construction as a whole.
+  - west_north and west_lidar were rebuilt and re-rendered. 15 + 2 frames changed by 5,000 px or more and were redrawn. In the render, the strip now matches the 2024 aerial (beige meadow and earth), with no pale edges.
+  - Two other approaches were tried and dropped. Closing the course outlines doesn't reach the meadow, which opens to the north. The courses' convex hull also swallowed the Samuel Rose Recreation Center.
+
+### Redraws ($2.90 of the $4 cap)
+| Run | Frames | Cost (est.) | Why |
+|---|---|---|---|
+| roxborough `_border` | 20 (81 with ring) | $1.26 | germantown and upper_north borders |
+| west_lidar `_cobbs2` | 2 | $0.13 | Cobbs strip render |
+| west_north `_fix14` | 25 (70 with ring) | $1.04 | north and upper_north borders, the West Fairmount box, the Cobbs strip |
+| west_north `_fix14b` | 1 | $0.08 | wasted: roxborough has no cell in west_north's canvas, so it couldn't be known |
+| roxborough `_fix14c` | 1 | $0.09 | the frame across from the redrawn west_north 12_02 (that seam had risen to 5.07) |
+| west_north `_fix14d`, `_fix14e` | 1, then 2 | $0.13 + $0.17 | the cricket field |
+
+- **Invented water** in the new drawings: roxborough 8 blobs (10,922 px), west_north 1 (2,491 px) and west_lidar 0.
+- **Four real pools held** in roxborough (`config/invented_water_holds.json`).
+- **Teal scan:** no teal lakes.
+
+### Map: philly v14 (frozen)
+- **Size:** 37,681 tiles per layer (illustration 4,656 MB, photo 883 MB).
+- **Seams** (`output/philly/join_seams_v14.json`), medians v13 → v14 (v12 or earlier in parentheses):
+
+| Pair | v13 | v14 |
+|---|---|---|
+| germantown\|roxborough | 4.03 | 2.77 (2.60) |
+| upper_north\|roxborough | 4.01 | 2.56 (2.51) |
+| north\|west_north | 4.80 | 2.48 (3.44) |
+| upper_north\|west_north | 3.81 | 2.89 (2.63); max 7.26, the redrawn rail yard across the Schuylkill |
+| west_north\|roxborough | 2.55 | 2.24 |
+
+- All other pairs are unchanged.
+- **Crops, before and after at 1:1** (`output/review/fix_v14/`): `seam_*.jpg`, `west_fairmount_box_1to1.jpg`, `cobbs_strip_map_v13_v14.jpg` and `cobbs_strip_photo_v13_v14.jpg`.
+- **Place checks:** `output/review/places_v14/`, the same 11 places plus a Cobbs construction crop.
+- **Freeze:**
+  - `output/philly/FROZEN_v14.json`: 75,367 files, 5.54 GB. Tree SHA-256 `43fe09fa806d5d092a64c955e0dae5e9a6808e7017e4e2043dc0bd64c35e42bd`. It also lists the regions, run, prompt, LoRA and merged redraw runs.
+  - Check it with `scripts/26_freeze_map.py --verify`.
+  - The viewer now opens `philly` v14 by default. Older versions are kept.
+
+### Offline copy
+- **Folder:** `output/philly_offline_v14/` (5.4 GB), built by `scripts/27_offline_copy.py`. It holds the viewer, vendored OpenSeadragon, both v14 layers, the manifest, start scripts (macOS, Linux, Windows; `python -m http.server` on 127.0.0.1) and a README.
+- **Search:** address search uses the City's online AIS API, so the offline copy turns it off and shows a message instead.
+- **Check** (`scripts/28_check_offline.py`, Playwright Chromium with every host but 127.0.0.1 unresolvable):
+  - It made 112 requests, 104 of them tiles.
+  - None went off the machine, and none failed.
+  - The request log is `output/review/fix_v14/offline_requests.json`; the screenshot is `offline_check.png`.
+
+### Hosting plan (research only; README "The talk map")
+- **Recommendation:** Cloudflare R2 behind a custom domain, likely $0/month at this size. Steps, rclone commands, CORS and caching headers are in the README.
+- **Ruled out:** GitHub Pages (1 GB site cap), Cloudflare Pages free (20,000 files), Vercel (15,000 files per deploy).
+- **License flags for public hosting:**
+  - The City's 2024 aerial ("retains all rights") is in the photo layer and under the illustration. Confirm with maps@phila.gov.
+  - OSM attribution should cover golf courses as well as façades.
+  - The Gemini-trained LoRA must be disclosed.
+
+### Other
+- `viewer/index.html`: the description and alt text now say Philadelphia, not downtown.
+- **Tests:** 398 pass. The Old City scene SHA is unchanged (`eaca1872…eaac4`).
+
+## 2026-11-04 (later): tree-canopy woods and golf everywhere, Batch C drawn, the whole city in one map (philly v13)
+
+Stephen (Nov. 3–4): tree-canopy woods everywhere (cap $25 for the redraws), the golf correction folded into the same redraws (cap $4 on top), Batch C (northwest, upper_northeast; cap $15), then a merged map of all 12 regions. The LiDAR prune is **not** approved: raw tiles kept, no `--apply`. No commits.
+
+### Repaint fixes (tests first; detail in `data/README.md`)
+- **Mapped water outside NHD** (`waterpaint.body_models`, `body_water`): each City (PWD) water polygon outside NHD, and each OSM golf water hazard, gets its own color model (median of its eroded interior; threshold capped at 40; at least 60% of the interior must match). The Manayunk Canal is now water. A "water" polygon over mixed lawn and paving (a dry basin) gets no model.
+- **Tree canopies left out** of those models and of the repaint (`waterpaint.tree_discs`, `tree_mask`), so a creek polygon under woods doesn't learn canopy green.
+- **Pond rings:** the invented-water repair grows each blob through its connected shore band (up to 12 px) and fills holes that are water-colored, ripple dashes or under 64 px, so a repaired pond no longer leaves a blue ring (roxborough's field pond).
+
+### Golf (Stephen, Nov. 3; tests in `tests/test_golf.py`)
+- `"golf_correct": true` in all 12 city region configs; off by default, so Old City is unchanged.
+- `scripts/04n_fetch_golf.py` (Overpass, full geometry) → `data/raw/<area>_golf.json`. Courses: OSM `leisure=golf_course` without driving ranges, courses under 5 ha or disused ones, plus PPR properties named "Golf" (Walnut Lane). Cobbs Creek "Olde" and Karakung are reviewed construction sites (`config/golf.json`) and get no lawn correction.
+- `lawns.correct_golf`: band hue 30–75, S 0.15–0.70, V 0.30–0.92. Fairways, greens and tees go to hue ~82 and 4% lighter; rough goes to the park target (hue 88). Bunkers and water hazards are left out, and wooded rough stays woods. No mow stripes.
+- **Union League:** OSM names the Torresdale course (way/485880727) "Union League Golf Club". That name is unverified, so don't use it in captions without a source.
+- **Before/after crops** (`output/review/golf/golf_before_after_<course>.jpg`; aerial, render, drawing; v12 vs v13): Byrne, Saint Martin's (bleached fairways now read as grass), Bala (the clubhouse pond survives as water), Juniata, Walnut Lane, Union League (new in v13), Cobbs Creek Olde and Karakung (left as graded earth).
+- **Invented water on course frames** (redrawn frames, raw drawings, blob centers within 100 px of a course): 4 blobs / 37,274 px before, 4 / 32,404 px after. No rise.
+
+### Tree-canopy woods everywhere
+- `"woods_trees": true` in all 12 city region configs. Treetops from the neighboring regions' LiDAR grids (same projection origin) fill the area past a region's own LiDAR box (`lawns.merge_canopy_trees`, `05_build_scene.woods_trees`), so the woods don't stop in a straight line at region borders. Aligning the 7 m blocks across grids was tried and reverted, to keep the frames already redrawn consistent.
+- **Redraws:** frames whose render changed by 5,000 px or more were redrawn with a 1-cell ring of finished frames held fixed (`--redraw ... --context 1`), run `qwen_joint_light8_fac_trees`, then merged into the main run (originals kept in `redraws/qwen_joint_light8_fac_pre_trees/`) and repainted with the holds.
+
+| Region | Frames redrawn | GPU cost (est.) |
+|---|---|---|
+| germantown (two passes: own grid, then neighbor-grid trees; 46 distinct frames) | 46 | $2.26 + $0.39 |
+| south_lidar | 47 | $3.04 |
+| north_lidar | 37 | $0.97 |
+| upper_north_lidar | 55 | $1.58 |
+| west_lidar | 24 | $0.96 |
+| west_north (+ 2 frames for the Cobbs lake, below) | 49 + 2 | $1.55 + $0.16 |
+| southwest | 57 | $2.14 |
+| east_riverfront | 10 | $0.83 |
+| roxborough | 15 | $0.63 |
+| lower_northeast | 85 | $3.20 |
+| **Total** | **427** | **$17.71** (cap $25; golf was folded in, with no separate spend) |
+
+- **Invented water in the redrawn frames** (raw drawings, before the repair): 54 blobs / 264,010 px before, 47 / 130,443 px after. Germantown's woods fell from 182,327 px to 35,668 px. Without germantown, 81,683 px before and 94,775 px after (+16%), mostly small blobs the repair fixes.
+- **Review on the 2024 aerial** (`output/review/trees_invented_water_review.jpg`, `trees_invented_water_review_drawings.png`). New holds in `config/invented_water_holds.json`: a creek in the woods near the city line and a covered backyard pool (west_north), a covered courtyard pool (north_lidar), and the south fill-area channel box extended south. The three areas were repainted.
+- **Missed by the scan, found by eye: a teal lake on the Cobbs Creek construction site** (west_north frames 14_17 and 14_18; `output/review/west_north_cobbs_lake_before_redraw.png`). The model drew the pale lawn-corrected park strip between the construction courses as a ~275,000 px lake at hue ~165°, outside the scan's water hue band (185–215°). Redrawn ($0.16); the redraw has no lake (`west_north_cobbs_lake_redraw.jpg`). A dry scan with the band widened to 160° found no other invented lakes: its other hits are real basins (the port and the wastewater plant) and pools, so the band was **not** widened (README open issues).
+
+### Batch C ($15 cap)
+| Region | Frames (new) | Gates | GPU | Cost (est.) | Invented water repaired / exempt (incl. holds) |
+|---|---|---|---|---|---|
+| northwest (trees) | 244 (35) | pass; 1 stadium excluded (8700 Ridge Ave, second footprint) | 41.9 min | $2.76 | 6 / 10 |
+| upper_northeast (trees) | 697 (544) | pass after review; 3 stadium candidates excluded | 115.4 min | $7.60 | 123 / 69 |
+
+- **Spend:** Batch C $10.36.
+- **Reviewed on the 2024 aerial** (crops in `output/review/`):
+  - **Stadium exclusions:** Fox Chase Cancer Center (7701R Burholme Ave), Jefferson Torresdale Hospital (10800 Knights Rd) and Philadelphia Mills (4301 Byberry Rd): not stadiums. The scene was rebuilt before drawing.
+  - **Kept as real:** upper_northeast's largest LiDAR structures s1789, s374 and s2860, warehouses missing from the footprint layer.
+  - **No needles.**
+- **Invented-water holds:**
+  - northwest: a garden pond and five backyard pools;
+  - upper_northeast: two stormwater basins, three ponds, a pond in a meadow, a dark detention basin (likely wet; unverified) and an L-shaped pool.
+  - Blobs under ~1,300 px were not reviewed one by one.
+
+### Map: philly v13 (`?area=philly&v=v13`)
+- **Coverage:** all 12 regions, 3,254 cells, 37,681 tiles (map 4,655 MB, photo 883 MB). Precedence (first listed owns shared cells): south, north, upper_north, west, west_north, southwest, germantown, east_riverfront, roxborough, lower_northeast, northwest, upper_northeast.
+- **Join seams** (`output/philly/join_seams_v13.json`, 22 pairs), medians: 1.68–2.76 for most pairs.
+- **Higher than before**, where redrawn woods meet a border:
+  - germantown|roxborough 4.03 (was 2.60; max 9.87, the same lawn-tone step through a city block as in v12);
+  - upper_north|roxborough 4.01 (was 2.51; the Schuylkill's color shifts at one edge);
+  - north|west_north 4.80 (was 3.44);
+  - upper_north|west_north 3.81 (was 2.63);
+  - new pairs: lower_northeast|upper_northeast 2.49, roxborough|northwest 3.14, germantown|northwest 2.06.
+- **Crops:** `output/review/join_seams_v13_worst_and_median.jpg`.
+- **Place checks** (`output/review/places_v13/`; aerial, render, drawing):
+  - **Read well:** Chestnut Hill's Germantown Ave, the Wissahickon at Valley Green (creek blue, woods as trees), Pennypack Park at Verree Rd and at Frankford Ave, Northeast Philadelphia Airport (runways, hangars), Philadelphia Mills (its stormwater pond blue), FDR Park (both lakes blue), Tacony Creek Park and Penn Treaty Park.
+  - **Cobbs Creek Park:** the crop box fell mostly outside the city; the golf crops cover the Cobbs Creek corridor.
+- **Defects found and not fixed:**
+  - **West Fairmount Park at the north|west_north join** (-75.2088, 39.9966; worst seam, 9.36): part of the woods is drawn as flat green inside a straight-edged box, though the render has trees there. Nearby, a turf field is drawn gray-blue (`output/review/join_north_west_north_v13_render_vs_drawing.jpg`). A redraw of the frames on both sides of the join would cost ~$0.20.
+  - **Cobbs Creek construction site:** with the construction courses excluded, the park strip between them is still lawn-corrected. Its pale green now ends in straight lines against the uncorrected graded earth (`output/review/golf/cobbs_construction_render_v12_v13.jpg`). This is the strip the model drew as a lake.
+
+### Other
+- **README:** the region-runner notes now cover trees everywhere, golf, and the invented-water review. The stale note that `s1762-0` was unreviewed is fixed (it has been in `config/qa_exceptions.json` since Oct. 28). New open issue: teal invented water.
+- **Tests:** all pass. Old City scene SHA-256 is unchanged: `eaca18728d36a5de80ccb29fdc1e6b776be4d522434faa787cdd9a89802eaac4`.
+
+## 2026-11-04: Batch B drawn: roxborough (woods as trees) and lower_northeast (philly v12)
+
+Stephen (Nov. 3): hold roxborough and draw its woods as LiDAR tree canopies; lower_northeast with woods as in v9. No commits, no LiDAR prune.
+
+### Tree canopies (tests first)
+- **Option:** `"woods_trees": true` (or `"lidar"`), with `lawns.canopy_trees` and `05_build_scene.woods_trees`. Woods get the street-tree canopy geometry at LiDAR treetops, one per 7 m block.
+- **Edge thinning:** density fades from 0 at the woods-mask edge to full ~15 m in (`TREE_EDGE_M`), deterministically, so the forest doesn't end in a wall.
+- **Unchanged without it:** the other configs don't set it, and Old City's SHA is unchanged.
+- **Test spot** (`test_wissahickon_trees`, ~$0.26 in all):
+  - with thinning, 5,375 canopies;
+  - invented water: 1 blob (2,731 px), against 4 blobs (8,990 px) unthinned and 0 in the current drawing;
+  - the blue patch is on golf-course rough with no water in the aerial, so the repair handles it;
+  - crops: `output/review/trees_test_thin_compare.jpg`, `trees_test_edge_1to1.png`.
+
+### Reviewed data (all checked on the 2024 aerial; crops in `output/review/`)
+- **New `config/structure_exclusions.json`** (`reviewed.drop_excluded_structures`, tested; a scene-build input in the runner): a 42,345 m², 21 m LiDAR "structure" on the Manayunk Canal strip is a rubble field in 2024. Dropped.
+- **Stadium exclusions:** 8700 Ridge Ave (a care-home campus) and 8201 Torresdale Ave (Holmesburg Prison).
+- **Needle exception:** 21880-1 at 5245 Bleigh Ave, a real elevated water tower (40.6 m, City record 137 ft).
+- **Kept as real:** roxborough s1299 (a 46 m office tower past City Line Ave), lower_northeast s1485 (a 100,000 m² warehouse missing from the footprint layer) and s1618 (a rail and bus depot building).
+
+### Bug fixed (test first)
+- `10_repaint_water.py`: the band repaint read a known area's halo cell that area never drew (its own band, owned by a third area). It crashed on lower_northeast (upper_north_lidar frame_22_04). Missing frames now read as empty context (`existing_only`).
+
+### Batch B ($15 cap)
+| Region | Frames (new) | Gates | GPU | Cost (est.) | Invented water repaired / held |
+|---|---|---|---|---|---|
+| roxborough (trees) | 319 (190) | pass; 1 stadium excluded, 1 structure dropped | 55.0 min | ~$3.62 ($3.51) | 25 / 11 |
+| lower_northeast | 539 (473) | needle gate stopped it; reviewed: water tower; prison excluded | 93.1 min | ~$6.13 ($5.93) | 17 / 8 |
+
+- **Spend:** Batch B about $9.75. A roxborough run was stopped during its scene build, before any GPU spend.
+- **Holds:**
+  - roxborough: the Wissahickon Creek outside the water polygons, plus nine swimming pools;
+  - lower_northeast: the Baxter Water Treatment Plant basins, a park pond, a dark basin, a creek in the woods, and four pools.
+- **Map:** `philly` v12 (`?area=philly&v=v12`): 2,675 cells, 31,650 tiles.
+- **Join seams** (`output/philly/join_seams_v12.json`), medians:
+
+| Pair | Median |
+|---|---|
+| upper_north\|lower_northeast | 2.12 |
+| germantown\|lower_northeast | 2.31 |
+| east_riverfront\|lower_northeast | 2.40 |
+| upper_north\|roxborough | 2.51 |
+| west_north\|roxborough | 2.55 |
+| germantown\|roxborough | 2.60 (max 9.87, a lawn-tone change in a city block) |
+
+### Seen in the place checks
+- **Wissahickon at roxborough|germantown:** roxborough's tree canopies stop in a straight line at the region boundary, and germantown's woods are v9-style brown blotches (`output/review/place_wissahickon_roxborough_germantown.png`). Trees on germantown's woods would fix it.
+- **Manayunk Canal:** drawn as a grass strip. Its olive-green water likely misses the water repaint's color match against the brown river (`place_manayunk_main_st_canal.png`, `place_manayunk_aerial.jpg`).
+- **Invented-water repair is partial on larger blobs:** the center is refilled but a blue ring stays (roxborough's field pond, frame_15_09).
+- **Read well:** Frankford Transportation Center (the El terminal and curve) and the Wissahickon inside roxborough.
+
+## 2026-11-03 (later): forest woods reverted (philly v11 = v9); tree-canopy test
+
+Stephen (Nov. 3): revert the forest woods, run Batch B, and test tree canopies.
+
+### Revert
+- **Why forest mode failed:** a smooth, near-uniform green ground is read by the model as water. Invented water rose 4.7 times in the redrawn frames.
+- **Drawings:** the pre-forest drawings were restored for west_north (53 frames), germantown (84) and southwest (83), all byte-identical to the saved originals. The three were re-repainted with the holds.
+- **Configs:** the eight region configs no longer set `lawn_woods_mode`.
+- **Code:** the woods feather now applies only in forest mode (`woods_grid(..., feather_m=0)` by default, tested). With that, the rebuilt scenes reproduce v9's render inputs bit for bit: west_north 210/210, germantown 294/294, southwest 404/404 and east_riverfront 227/227 frames identical.
+- **Kept:** forest mode code and tests, off by default.
+- **Map:** `philly` v11 (`?area=philly&v=v11`). All 16,872 deepest-level tiles are byte-identical to v9, and seams are identical (`output/philly/join_seams_v11.json`). v10 is kept for reference. The forest redraws cost ~$7.71 and are not used.
+
+### Tree-canopy test (report only, not applied; ~$0.13)
+- **`"woods_trees": "lidar"`** (`lawns.canopy_trees`, tested): woods get the street-tree canopy geometry at LiDAR treetops, one per 7 m block where the woods weight is over 0.5.
+- **Test spot:** `config/test_wissahickon_trees.json`, identical to `atlas_wissahickon_fac` except the option. 5,933 canopies added (646 street trees before).
+- **Drawn** in the original style. The woods read as dense trees, the creek stays blue, and there are no lakes in the woods.
+- **Invented water:** 4 small blobs (8,990 px) on open ground at the golf-course edge, against 0 in the baseline.
+- **Crops:** `output/review/trees_test_renders.jpg`, `trees_test_drawings.jpg`, `trees_test_drawings_1to1.png`.
+- **Limit:** no trees beyond the area's LiDAR box (bbox + 100 m).
+
 ## 2026-11-03: forest-green woods tried and redrawn (philly v10); it invents lakes, so Batch B was not started
 
 Stephen approved a forest-green woods fix with a redraw of the affected frames (cap $8), then Batch B. Batch B was **not** started: see the result below. No commits, no LiDAR prune.

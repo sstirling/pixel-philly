@@ -12,12 +12,12 @@
     },
     {
       "bbox": [
-        26300,
+        26200,
         23300,
         26800,
-        23700
+        23990
       ],
-      "reason": "channels in the fill area: aerial shows vegetated channels; unverified"
+      "reason": "channels in the fill area: aerial shows vegetated channels; unverified; box extended south Nov. 4, 2026 to the same channels as redrawn with trees"
     },
     {
       "bbox": [
@@ -38,6 +38,15 @@
         16160
       ],
       "reason": "sports court that is blue in the aerial"
+    },
+    {
+      "bbox": [
+        0,
+        15170,
+        110,
+        15240
+      ],
+      "reason": "outdoor pool (dark blue, covered or drained) in an apartment courtyard: 2024 aerial, output/review/trees_invented_water_review.jpg (reviewed Nov. 4, 2026)"
     }
   ],
   "upper_north_lidar": [
@@ -136,6 +145,358 @@
         7803
       ],
       "reason": "stormwater basin beside a warehouse: water in the 2024 aerial (reviewed Nov. 2, 2026, output/review/east_riverfront_iw_candidates_aerial.jpg)"
+    }
+  ],
+  "roxborough": [
+    {
+      "bbox": [
+        11255,
+        7815,
+        11398,
+        7891
+      ],
+      "reason": "Wissahickon Creek: real water in the 2024 aerial, outside the mapped water polygons (reviewed Nov. 3, 2026; output/review/roxborough_invented_water/contact_sheet.png, output/review/iw_rox_11_07_aerial.jpg)"
+    },
+    {
+      "bbox": [
+        8474,
+        9056,
+        8660,
+        9133
+      ],
+      "reason": "public swimming pool (drained in March), a real pool (reviewed Nov. 3, 2026; output/review/roxborough_invented_water/contact_sheet.png)"
+    },
+    {
+      "bbox": [
+        10619,
+        11707,
+        10701,
+        11770
+      ],
+      "reason": "apartment swimming pool, a real pool (reviewed Nov. 3, 2026; output/review/roxborough_invented_water/contact_sheet.png)"
+    },
+    {
+      "bbox": [
+        12749,
+        11111,
+        12853,
+        11167
+      ],
+      "reason": "covered swimming pool, a real pool (reviewed Nov. 3, 2026; output/review/roxborough_invented_water/contact_sheet.png)"
+    },
+    {
+      "bbox": [
+        9700,
+        6785,
+        9763,
+        6850
+      ],
+      "reason": "backyard swimming pool (reviewed Nov. 3, 2026; output/review/roxborough_invented_water/contact_sheet.png)"
+    },
+    {
+      "bbox": [
+        6409,
+        14058,
+        6480,
+        14108
+      ],
+      "reason": "backyard swimming pool (reviewed Nov. 3, 2026; output/review/roxborough_invented_water/contact_sheet.png)"
+    },
+    {
+      "bbox": [
+        21060,
+        9440,
+        21111,
+        9500
+      ],
+      "reason": "backyard swimming pool (reviewed Nov. 3, 2026; output/review/roxborough_invented_water/contact_sheet.png)"
+    },
+    {
+      "bbox": [
+        20686,
+        9497,
+        20759,
+        9542
+      ],
+      "reason": "backyard swimming pool (reviewed Nov. 3, 2026; output/review/roxborough_invented_water/contact_sheet.png)"
+    },
+    {
+      "bbox": [
+        7547,
+        8495,
+        7607,
+        8536
+      ],
+      "reason": "backyard swimming pool (reviewed Nov. 3, 2026; output/review/roxborough_invented_water/contact_sheet.png)"
+    },
+    {
+      "bbox": [
+        11928,
+        7030,
+        11979,
+        7081
+      ],
+      "reason": "backyard swimming pool (reviewed Nov. 3, 2026; output/review/roxborough_invented_water/contact_sheet.png)"
+    },
+    {
+      "bbox": [
+        12753,
+        5733,
+        12868,
+        5787
+      ],
+      "reason": "estate swimming pool: water in the 2024 aerial (render), output/review/fix14_iw_roxborough/contact_sheet.png (reviewed Nov. 4, 2026)"
+    },
+    {
+      "bbox": [
+        12397,
+        5757,
+        12454,
+        5828
+      ],
+      "reason": "backyard swimming pool: water in the 2024 aerial (render), output/review/fix14_iw_roxborough/contact_sheet.png (reviewed Nov. 4, 2026)"
+    },
+    {
+      "bbox": [
+        9284,
+        4850,
+        9328,
+        4900
+      ],
+      "reason": "backyard swimming pool: water in the 2024 aerial (render), output/review/fix14_iw_roxborough/contact_sheet.png (reviewed Nov. 4, 2026)"
+    },
+    {
+      "bbox": [
+        19997,
+        9402,
+        20063,
+        9435
+      ],
+      "reason": "backyard swimming pool: water in the 2024 aerial (render), output/review/fix14_iw_roxborough/contact_sheet.png (reviewed Nov. 4, 2026)"
+    }
+  ],
+  "lower_northeast": [
+    {
+      "bbox": [
+        27099,
+        7518,
+        27507,
+        7771
+      ],
+      "reason": "Baxter Water Treatment Plant basins: open water in the 2024 aerial (reviewed Nov. 4, 2026; output/review/lower_northeast_invented_water/contact_sheet.png)"
+    },
+    {
+      "bbox": [
+        21232,
+        9324,
+        21497,
+        9597
+      ],
+      "reason": "park pond: open water in the 2024 aerial (reviewed Nov. 4, 2026; output/review/lower_northeast_invented_water/contact_sheet.png)"
+    },
+    {
+      "bbox": [
+        24686,
+        21417,
+        24814,
+        21495
+      ],
+      "reason": "dark basin beside a building: water in the 2024 aerial (reviewed Nov. 4, 2026; output/review/lower_northeast_invented_water/contact_sheet.png)"
+    },
+    {
+      "bbox": [
+        17676,
+        15246,
+        17744,
+        15405
+      ],
+      "reason": "creek in the woods: water in the 2024 aerial, outside the mapped water polygons (reviewed Nov. 4, 2026; output/review/lower_northeast_invented_water/contact_sheet.png)"
+    },
+    {
+      "bbox": [
+        24283,
+        2213,
+        24373,
+        2315
+      ],
+      "reason": "swimming pool (reviewed Nov. 4, 2026; output/review/lower_northeast_invented_water/contact_sheet.png)"
+    },
+    {
+      "bbox": [
+        18066,
+        8060,
+        18121,
+        8113
+      ],
+      "reason": "backyard swimming pool (reviewed Nov. 4, 2026; output/review/lower_northeast_invented_water/contact_sheet.png)"
+    },
+    {
+      "bbox": [
+        23534,
+        14595,
+        23589,
+        14641
+      ],
+      "reason": "round above-ground pool (reviewed Nov. 4, 2026; output/review/lower_northeast_invented_water/contact_sheet.png)"
+    },
+    {
+      "bbox": [
+        25297,
+        4716,
+        25358,
+        4756
+      ],
+      "reason": "swimming pool (reviewed Nov. 4, 2026; output/review/lower_northeast_invented_water/contact_sheet.png)"
+    }
+  ],
+  "west_north": [
+    {
+      "bbox": [
+        15450,
+        19330,
+        16200,
+        19470
+      ],
+      "reason": "creek through the woods near the city line: running water in the 2024 aerial, output/review/trees_invented_water_review.jpg (reviewed Nov. 4, 2026)"
+    },
+    {
+      "bbox": [
+        18160,
+        5370,
+        18300,
+        5455
+      ],
+      "reason": "backyard pool under a blue cover at a house in the woods: 2024 aerial, output/review/trees_invented_water_review.jpg (reviewed Nov. 4, 2026); pool, unverified"
+    }
+  ],
+  "northwest": [
+    {
+      "bbox": [
+        10281,
+        11818,
+        10405,
+        11903
+      ],
+      "reason": "garden pond with a fountain at an estate: real water in the 2024 aerial, output/review/northwest_invented_water/ (reviewed Nov. 4, 2026)"
+    },
+    {
+      "bbox": [
+        12707,
+        9329,
+        12788,
+        9367
+      ],
+      "reason": "backyard swimming pool: real water in the 2024 aerial, output/review/northwest_invented_water/ (reviewed Nov. 4, 2026)"
+    },
+    {
+      "bbox": [
+        10896,
+        11507,
+        10968,
+        11549
+      ],
+      "reason": "swimming pool (dark water, drained or covered): real water in the 2024 aerial, output/review/northwest_invented_water/ (reviewed Nov. 4, 2026)"
+    },
+    {
+      "bbox": [
+        10825,
+        11430,
+        10869,
+        11485
+      ],
+      "reason": "kidney-shaped backyard swimming pool: real water in the 2024 aerial, output/review/northwest_invented_water/ (reviewed Nov. 4, 2026)"
+    },
+    {
+      "bbox": [
+        12781,
+        10306,
+        12828,
+        10356
+      ],
+      "reason": "backyard swimming pool (green water): real water in the 2024 aerial, output/review/northwest_invented_water/ (reviewed Nov. 4, 2026)"
+    },
+    {
+      "bbox": [
+        12579,
+        10690,
+        12636,
+        10726
+      ],
+      "reason": "backyard swimming pool: real water in the 2024 aerial, output/review/northwest_invented_water/ (reviewed Nov. 4, 2026)"
+    }
+  ],
+  "upper_northeast": [
+    {
+      "bbox": [
+        20750,
+        18736,
+        21188,
+        18895
+      ],
+      "reason": "stormwater basin with open water: water in the 2024 aerial (render), output/review/upper_northeast_invented_water/contact_sheet_reviewed.png (reviewed Nov. 4, 2026)"
+    },
+    {
+      "bbox": [
+        20961,
+        19001,
+        21263,
+        19149
+      ],
+      "reason": "stormwater basin with shallow green water: water in the 2024 aerial (render), output/review/upper_northeast_invented_water/contact_sheet_reviewed.png (reviewed Nov. 4, 2026)"
+    },
+    {
+      "bbox": [
+        17528,
+        19516,
+        17821,
+        19724
+      ],
+      "reason": "pond: water in the 2024 aerial (render), output/review/upper_northeast_invented_water/contact_sheet_reviewed.png (reviewed Nov. 4, 2026)"
+    },
+    {
+      "bbox": [
+        17961,
+        10704,
+        18116,
+        10827
+      ],
+      "reason": "pond: water in the 2024 aerial (render), output/review/upper_northeast_invented_water/contact_sheet_reviewed.png (reviewed Nov. 4, 2026)"
+    },
+    {
+      "bbox": [
+        18814,
+        19616,
+        18917,
+        19776
+      ],
+      "reason": "dark detention basin, likely wet; unverified: water in the 2024 aerial (render), output/review/upper_northeast_invented_water/contact_sheet_reviewed.png (reviewed Nov. 4, 2026)"
+    },
+    {
+      "bbox": [
+        19397,
+        19631,
+        19544,
+        19721
+      ],
+      "reason": "pond in a meadow: water in the 2024 aerial (render), output/review/upper_northeast_invented_water/contact_sheet_reviewed.png (reviewed Nov. 4, 2026)"
+    },
+    {
+      "bbox": [
+        28546,
+        9929,
+        28638,
+        10031
+      ],
+      "reason": "pond in a park: water in the 2024 aerial (render), output/review/upper_northeast_invented_water/contact_sheet_reviewed.png (reviewed Nov. 4, 2026)"
+    },
+    {
+      "bbox": [
+        32009,
+        28176,
+        32097,
+        28234
+      ],
+      "reason": "L-shaped swimming pool: water in the 2024 aerial (render), output/review/upper_northeast_invented_water/contact_sheet_reviewed.png (reviewed Nov. 4, 2026)"
     }
   ]
 }

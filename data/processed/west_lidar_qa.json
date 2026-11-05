@@ -789,7 +789,7 @@
       "h": 69.49
     }
   ],
-  "trees_in_scene": 14924,
+  "trees_in_scene": 20315,
   "render_tiles": 15,
   "max_ground_texture_px": 12544,
   "uv_fit_max_residual_m": 9.009350389307983e-05,
@@ -846,6 +846,7 @@
   "facade_osm_items": 22,
   "facade_street_fronts": 35457,
   "facade_unmatched": "plain walls (no facade)",
-  "lawn_corrected_px": 86719938,
-  "lawn_park_px": 171923996
+  "lawn_corrected_px": 96642609,
+  "lawn_park_px": 151597931,
+  "lawn_woods_px": 14171174
 }

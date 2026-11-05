@@ -34,5 +34,8 @@
   "camera_distance_m": 20000.0,
   "building_shapes": "lidar",
   "facades": "opa",
-  "lawn_correct": true
+  "lawn_correct": true,
+  "golf_correct": true,
+  "woods_trees": true,
+  "lawn_skip_woods": true
 }

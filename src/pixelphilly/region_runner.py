@@ -155,6 +155,8 @@ def fetch_steps(cfg: dict, root: Path) -> list[Step]:
     add("04i", "04i_fetch_pools", _raw(root, f"{a}_pools.geojson"))
     add("04j", "04j_fetch_parks", _raw(root, f"{a}_parks.geojson", f"{a}_nps_parks.geojson"))
     add("04k", "04k_fetch_wetlands", _raw(root, f"{a}_wetlands.geojson"))
+    if cfg.get("golf_correct"):
+        add("04n", "04n_fetch_golf", _raw(root, f"{a}_golf.json"))
     return s
 
 
@@ -186,7 +188,9 @@ def plan(cfg: dict, root: Path, frames: list[str], opts: Options) -> list[Step]:
                       inputs=[config_path, *raw_inputs, *grid,
                               # reviewed corrections (pixelphilly.reviewed)
                               root / "config" / "height_overrides.json",
-                              root / "config" / "stadium_exclusions.json"]))
+                              root / "config" / "stadium_exclusions.json",
+                              root / "config" / "structure_exclusions.json",
+                              root / "config" / "golf.json"]))
     renders = [out / "renders" / f"{f}.png" for f in frames]
     masks = [out / "masks" / f"{f}.png" for f in frames]
     steps.append(Step(name="06_color", cmd=["scripts/06_render.py"], outputs=renders + [out / "renders" / "mosaic.png"],
