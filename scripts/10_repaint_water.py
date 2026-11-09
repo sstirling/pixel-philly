@@ -37,7 +37,7 @@ from PIL import Image, ImageFilter
 
 from shapely.ops import unary_union
 
-from pixelphilly import nodata, waterpaint
+from pixelphilly import bridges, nodata, waterpaint
 from pixelphilly.projection import REPO_ROOT, area_dir, area_setup, load_config
 from pixelphilly.qa import seam_ratio
 from pixelphilly.regions import PlacedFrame, known_sources, place_frames, ripple_offset, ripple_root
@@ -169,7 +169,7 @@ def band_context(frames, kframes, shared, own_dir, known_dir, known_only_dir=Non
     return ctx
 
 
-def repaint_band(cfg, args, frame, cam, frames, known, sources, ripple, x_origin, y_origin):
+def repaint_band(cfg, args, frame, cam, frames, known, sources, ripple, x_origin, y_origin, bank=None):
     """Repaint the known band (frames this area shares with known areas) from
     each owning area's PRE-repaint redraws, with context from all areas.
 
@@ -207,31 +207,65 @@ def repaint_band(cfg, args, frame, cam, frames, known, sources, ripple, x_origin
     cfgs = [cfg] + [k["cfg"] for k in known]
     nhd_geom = unary_union([waterpaint.nhd_geometry(c, frame, cam, x_origin, y_origin) for c in cfgs])
     nd_geom = unary_union([nodata.nodata_geometry(c, frame, cam, x_origin, y_origin) for c in cfgs])
+    protect_geom = unary_union([protect_for(c, frame, cam, x_origin, y_origin) for c in cfgs])
+    bridge_geom = unary_union([bridges_for(c, frame, cam, x_origin, y_origin) for c in cfgs])
+    deck_geom = unary_union([decks_for(c, frame, cam, x_origin, y_origin) for c in cfgs])
     ox, oy = ripple
     out_dir = area_dir(cfg, "postprocessed", args.prompt, "water_band")
     band = [f for f in frames if f.name in owners]
     repainted = 0
-    for f in band:
+    # Frames whose river lies wholly inside bridge bands: repainted last,
+    # with colors from the nearest frames (main_tiled's bank plus this pass)
+    bank = bank if bank is not None else bridges.SampleBank()
+    deferred, no_sample = [], []
+
+    def repaint_frame(f, defer_ok):
+        nonlocal repainted
         owner, kname = owners[f.name]
         median, threshold = models[owner]
         gx, gy = f.col * size - HALO, f.row * size - HALO
         span = size + 2 * HALO
         render = renders.region(gx, gy, span, span)
-        bmask = waterpaint.grow(masks.region(gx, gy, span, span) > 127)
+        bmask = waterpaint.grow(masks.region(gx, gy, span, span) > 127) | protected(protect_geom, gx, gy, span)
         nhd = waterpaint.rasterize_view(nhd_geom, gx, gy, 1.0, span, span)
         water = waterpaint.water_mask(render, nhd, bmask, median, threshold)
-        out = waterpaint.apply(redraws.region(gx, gy, span, span).copy(), water, gx + ox, gy + oy, 1.0)
+        raw = redraws.region(gx, gy, span, span)
+        bband = protected(bridge_geom, gx, gy, span)
+        sample = None
+        if bband.any() and water.any():
+            ring = bridges.ring_sample(water, raw, bband)
+            if ring is None:
+                if defer_ok:
+                    return False
+                sample = bank.near((f.col, f.row))
+                if sample is None:
+                    no_sample.append(f.name)
+            else:
+                bank.add((f.col, f.row), ring)
+                sample = ring
+        elif water.sum() >= 200:  # as ring_sample: too few px make a poor palette
+            bank.add((f.col, f.row), raw[water][::7])  # no bridge here: all its water is drawn river
+        water = bridges.refine(water, raw, bband, protected(deck_geom, gx, gy, span), sample=sample)
+        out = waterpaint.apply(raw.copy(), water, gx + ox, gy + oy, 1.0)
         if not nd_geom.is_empty:
             out[nodata.nodata_mask(nd_geom, gx, gy, span, span)] = nodata.BACKGROUND
         (out_dir / owner).mkdir(parents=True, exist_ok=True)
         Image.fromarray(out[HALO:HALO + size, HALO:HALO + size]).save(out_dir / owner / f"{kname}.png")
         repainted += int(water[HALO:HALO + size, HALO:HALO + size].sum())
+        return True
+
+    for f in band:
+        if not repaint_frame(f, defer_ok=True):
+            deferred.append(f)
+    for f in deferred:
+        repaint_frame(f, defer_ok=False)
     used = sorted({owners[f.name][0] for f in band}, key=list(kmap).index)
     report = {"owners": used,
               "frames_written": {a: sum(1 for f in band if owners[f.name][0] == a) for a in used},
               "color_models": {a: {"render_water_median_rgb": models[a][0].tolist(), "color_threshold": models[a][1]}
                                for a in used},
               "ripple_offset_px": [ox, oy], "water_px_repainted": repainted,
+              "bridge_fallback": {"frames": [f.name for f in deferred], "no_nearby_sample": no_sample},
               "frames": {a: {owners[f.name][1]: f.name for f in band if owners[f.name][0] == a} for a in used}}
     (out_dir / "report.json").write_text(json.dumps(report, indent=2) + "\n")
     return report
@@ -305,6 +339,47 @@ def scene_canopies(cfg, cam, x_origin, y_origin, size):
     return canopies
 
 
+def protect_for(cfg, frame, cam, x_origin, y_origin):
+    """Vessels (config/vessels.json) and OSM piers (data/raw/<area>_piers.json)
+    in mosaic px: never repainted as water (pixelphilly.vessels; Nov. 5, the
+    color test had repainted hull sides, decks and a brick pier)."""
+    from shapely.geometry import Polygon
+
+    from pixelphilly import vessels
+
+    if not cfg.get("vessels"):
+        return Polygon()  # opt-in per area config ("vessels": true)
+    return vessels.protect_geometry(cfg, frame, cam, x_origin, y_origin)
+
+
+def bridges_for(cfg, frame, cam, x_origin, y_origin):
+    """Bridge bands in mosaic px (pixelphilly.bridges): inside them the
+    repaint only takes pixels the raw drawing drew as water (Nov. 5). Off
+    with "bridge_bands": false."""
+    from shapely.geometry import Polygon
+
+    if cfg.get("bridge_bands") is False:
+        return Polygon()
+    return bridges.band_geometry(cfg, frame, cam, x_origin, y_origin)
+
+
+def decks_for(cfg, frame, cam, x_origin, y_origin):
+    """Bridge decks at water level (pixelphilly.bridges.deck_screen): never repainted."""
+    from shapely.geometry import Polygon
+
+    if cfg.get("bridge_bands") is False:
+        return Polygon()
+    return bridges.deck_screen(cfg, frame, cam, x_origin, y_origin)
+
+
+def protected(geom, gx, gy, w, h=None):
+    """Protection mask for a view (empty geometry: all False)."""
+    h = w if h is None else h
+    if geom is None or geom.is_empty:
+        return np.zeros((h, w), bool)
+    return waterpaint.rasterize_view(geom, gx, gy, 1.0, w, h)
+
+
 def main_tiled(cfg, args, frame, cam, frames):
     """Frame-by-frame repaint for large areas. Each frame is processed with a
     HALO of its neighbors so shore bands and ripples continue across frame
@@ -340,6 +415,9 @@ def main_tiled(cfg, args, frame, cam, frames):
         todo = frames
     nhd_geom = waterpaint.nhd_geometry(cfg, frame, cam, x_origin, y_origin)
     nd_geom = nodata.nodata_geometry(cfg, frame, cam, x_origin, y_origin)
+    protect_geom = protect_for(cfg, frame, cam, x_origin, y_origin)
+    bridge_geom = bridges_for(cfg, frame, cam, x_origin, y_origin)
+    deck_geom = decks_for(cfg, frame, cam, x_origin, y_origin)
 
     # Color model of open water from the render, sampled across all frames
     samples = []
@@ -375,16 +453,42 @@ def main_tiled(cfg, args, frame, cam, frames):
          for f in frames)) if pwd_polys else []
 
     repainted = cleared = 0
-    for f in todo:
+    # Drawn-river samples by frame, for frames whose river lies wholly inside
+    # bridge bands (pixelphilly.bridges.SampleBank; Nov. 8): those are set
+    # aside and repainted last, with colors from the nearest frames
+    bank = bridges.SampleBank()
+    deferred, no_sample = [], []
+
+    def repaint_frame(f, defer_ok):
+        """Repaint one frame and write it; returns False (nothing written)
+        when defer_ok and its bridge bands have no drawn river nearby."""
+        nonlocal repainted, cleared
         gx, gy = f.col * size - HALO, f.row * size - HALO
         span = size + 2 * HALO
         render = renders.region(gx, gy, span, span)
-        bmask = waterpaint.grow(masks.region(gx, gy, span, span) > 127)
+        bmask = waterpaint.grow(masks.region(gx, gy, span, span) > 127) | protected(protect_geom, gx, gy, span)
         nhd = waterpaint.rasterize_view(nhd_geom, gx, gy, 1.0, span, span)
         water = waterpaint.water_mask(render, nhd, bmask, median, threshold)
         if bodies:
             water |= waterpaint.body_water(bodies, render, bmask | canopies(gx, gy, span, span), gx, gy)
-        out = waterpaint.apply(redraws.region(gx, gy, span, span).copy(), water, gx + ox, gy + oy, 1.0)
+        raw = redraws.region(gx, gy, span, span)
+        band = protected(bridge_geom, gx, gy, span)
+        sample = None
+        if band.any() and water.any():
+            ring = bridges.ring_sample(water, raw, band)
+            if ring is None:
+                if defer_ok:
+                    return False
+                sample = bank.near((f.col, f.row))
+                if sample is None:
+                    no_sample.append(f.name)
+            else:
+                bank.add((f.col, f.row), ring)
+                sample = ring  # the same sample refine() would take itself
+        elif water.sum() >= 200:  # as ring_sample: too few px make a poor palette
+            bank.add((f.col, f.row), raw[water][::7])  # no bridge here: all its water is drawn river
+        water = bridges.refine(water, raw, band, protected(deck_geom, gx, gy, span), sample=sample)
+        out = waterpaint.apply(raw.copy(), water, gx + ox, gy + oy, 1.0)
         if not nd_geom.is_empty:
             # Mask over the haloed region, so growth reaches in from neighbors
             nd = nodata.nodata_mask(nd_geom, gx, gy, span, span)
@@ -392,6 +496,16 @@ def main_tiled(cfg, args, frame, cam, frames):
             cleared += int(nd[HALO:HALO + size, HALO:HALO + size].sum())
         Image.fromarray(out[HALO:HALO + size, HALO:HALO + size]).save(out_dir / f"{f.name}.png")
         repainted += int(water[HALO:HALO + size, HALO:HALO + size].sum())
+        return True
+
+    for f in todo:
+        if not repaint_frame(f, defer_ok=True):
+            deferred.append(f)
+    for f in deferred:
+        repaint_frame(f, defer_ok=False)
+    if deferred:
+        print(f"bridge bands: {len(deferred)} frames repainted with nearby river colors: "
+              f"{[f.name for f in deferred]}; no nearby sample: {no_sample}")
 
     if not known:
         cols = max(f.col for f in frames) + 1
@@ -405,8 +519,9 @@ def main_tiled(cfg, args, frame, cam, frames):
               "nodata_px_cleared": cleared, "mode": "per-frame with halo", "halo_px": HALO,
               "water_bodies": [{"median_rgb": [round(v, 1) for v in m.tolist()], "threshold": round(float(t), 1),
                                 "area_px": round(g.area)} for g, m, t in bodies]}
+    report["bridge_fallback"] = {"frames": [f.name for f in deferred], "no_nearby_sample": no_sample}
     if known:
-        band_report = repaint_band(cfg, args, frame, cam, frames, known, sources, (ox, oy), x_origin, y_origin)
+        band_report = repaint_band(cfg, args, frame, cam, frames, known, sources, (ox, oy), x_origin, y_origin, bank)
         report["known_band_repaint"] = {k: v for k, v in band_report.items() if k != "frames"}
     if known:
         report["region"] = {"known_areas": names, "known_band_frames": per_area, "frames_written": len(todo),
@@ -469,7 +584,7 @@ def courtyard_geometry(cfg, frame, cam, x_origin, y_origin):
 
 
 def scan_invented_water(cfg, frames, size, drawing, renders, masks, water_geom, pools, wetlands_geom=None,
-                        holds=(), courtyards_geom=None):
+                        holds=(), courtyards_geom=None, protect_geom=None):
     """Look for invented water frame by frame, each with INVENTED_HALO of
     context. Returns (blobs, repaired): blobs as logged in report.json
     (frame, area_px, bbox in mosaic px, exempt), merged across frames;
@@ -483,7 +598,7 @@ def scan_invented_water(cfg, frames, size, drawing, renders, masks, water_geom, 
         span = size + 2 * INVENTED_HALO
         d = drawing.region(gx, gy, span, span)
         r = renders.region(gx, gy, span, span)
-        bmask = waterpaint.grow(masks.region(gx, gy, span, span) > 127, 9)
+        bmask = waterpaint.grow(masks.region(gx, gy, span, span) > 127, 9) | protected(protect_geom, gx, gy, span)
         ok = waterpaint.rasterize_view(water_geom, gx, gy, 1.0, span, span) if not water_geom.is_empty else \
             np.zeros((span, span), bool)
         local_pools = [(x - gx, y - gy) for x, y in pools if -500 < x - gx < span + 500 and -500 < y - gy < span + 500]
@@ -540,7 +655,9 @@ def fix_invented_water(cfg, frame, cam, frames, args, out_dir):
     blobs, repaired = scan_invented_water(
         cfg, done, size, FrameReader(out_dir, done, size), FrameReader(area_dir(cfg, "renders"), frames, size),
         FrameReader(area_dir(cfg, "masks"), frames, size, "L"), water_geom, pools, wetlands,
-        holds=load_holds(cfg), courtyards_geom=courtyard_geometry(cfg, frame, cam, x_origin, y_origin))
+        holds=load_holds(cfg), courtyards_geom=courtyard_geometry(cfg, frame, cam, x_origin, y_origin),
+        protect_geom=unary_union([protect_for(cfg, frame, cam, x_origin, y_origin),
+                                  bridges_for(cfg, frame, cam, x_origin, y_origin)]))
     for name, img in repaired.items():
         Image.fromarray(img).save(out_dir / f"{name}.png")
     print(f"invented water: {sum(not b['exempt'] for b in blobs)} blobs repaired in {len(repaired)} frames, "
@@ -586,6 +703,7 @@ def main():
     buildings = waterpaint.grow(np.asarray(load_mosaic(frames, size, area_dir(cfg, "masks"), cols, rows, "L")) > 127)
 
     nhd_geom = waterpaint.nhd_geometry(cfg, frame, cam, x_origin, y_origin)
+    buildings |= protected(protect_for(cfg, frame, cam, x_origin, y_origin), 0, 0, W, H)
     nhd = waterpaint.rasterize_view(nhd_geom, 0, 0, 1.0, W, H)
     median, threshold = waterpaint.color_model(render, nhd, buildings)
     water = waterpaint.water_mask(render, nhd, buildings, median, threshold)

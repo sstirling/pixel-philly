@@ -1,0 +1,40 @@
+{
+  "name": "test_ships_pier82",
+  "label": "Experiment: SS United States at Pier 82 with reviewed vessel hulls and repaint protection",
+  "bbox_wgs84": [
+    -75.1402,
+    39.9168,
+    -75.1335,
+    39.92
+  ],
+  "camera": {
+    "view_bearing_deg": 54,
+    "elevation_deg": 45,
+    "meters_per_pixel": 0.293,
+    "frame_px": 1024
+  },
+  "max_height_m": 120,
+  "imagery_zoom": 19,
+  "default_building_height_m": 10.0,
+  "ground_filter": {
+    "median_px": 5
+  },
+  "wall_tint": {
+    "max_height_m": 20,
+    "color": [
+      150,
+      82,
+      62
+    ],
+    "mix": 0.55
+  },
+  "height_outlier_ratio": 3.0,
+  "clip_frames_to_area": true,
+  "building_shapes": "lidar",
+  "facades": "opa",
+  "lawn_correct": true,
+  "golf_correct": true,
+  "woods_trees": true,
+  "lawn_skip_woods": true,
+  "vessels": true
+}

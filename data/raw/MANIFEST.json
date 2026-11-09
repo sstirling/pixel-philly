@@ -2438,27 +2438,14 @@
     "url": "https://www.pasda.psu.edu/download/phillyLiDAR/2022/LAS/Classified_LAS/Philadelphia_417.las",
     "crs": "EPSG:6565 (PA State Plane South, US ft; NAVD88 ft) - not stored in the file",
     "bytes": 267771417,
-    "fetched_at": "2026-10-23T15:26:00+00:00",
-    "path": "data/raw/lidar/Philadelphia_417.las",
-    "deleted_at": "2026-10-28T21:56:09+00:00",
-    "deleted_reason": "raw LAS pruned after gridding (scripts/04m_prune_lidar.py); re-download from url",
-    "grids": [
-      "south_lidar"
-    ]
+    "fetched_at": "2026-11-05T23:05:46+00:00"
   },
   "lidar/Philadelphia_418.las": {
     "description": "City of Philadelphia 2022 classified LiDAR (LAS 1.4), PASDA dataset 7154",
     "url": "https://www.pasda.psu.edu/download/phillyLiDAR/2022/LAS/Classified_LAS/Philadelphia_418.las",
     "crs": "EPSG:6565 (PA State Plane South, US ft; NAVD88 ft) - not stored in the file",
     "bytes": 402203695,
-    "fetched_at": "2026-10-23T15:26:10+00:00",
-    "path": "data/raw/lidar/Philadelphia_418.las",
-    "deleted_at": "2026-10-28T21:56:09+00:00",
-    "deleted_reason": "raw LAS pruned after gridding (scripts/04m_prune_lidar.py); re-download from url",
-    "grids": [
-      "atlas_navyyard_lidar",
-      "south_lidar"
-    ]
+    "fetched_at": "2026-11-05T23:05:56+00:00"
   },
   "lidar/Philadelphia_419.las": {
     "description": "City of Philadelphia 2022 classified LiDAR (LAS 1.4), PASDA dataset 7154",
@@ -2530,27 +2517,14 @@
     "url": "https://www.pasda.psu.edu/download/phillyLiDAR/2022/LAS/Classified_LAS/Philadelphia_447.las",
     "crs": "EPSG:6565 (PA State Plane South, US ft; NAVD88 ft) - not stored in the file",
     "bytes": 218896625,
-    "fetched_at": "2026-10-23T15:27:57+00:00",
-    "path": "data/raw/lidar/Philadelphia_447.las",
-    "deleted_at": "2026-10-28T21:56:09+00:00",
-    "deleted_reason": "raw LAS pruned after gridding (scripts/04m_prune_lidar.py); re-download from url",
-    "grids": [
-      "south_lidar"
-    ]
+    "fetched_at": "2026-11-05T23:06:02+00:00"
   },
   "lidar/Philadelphia_448.las": {
     "description": "City of Philadelphia 2022 classified LiDAR (LAS 1.4), PASDA dataset 7154",
     "url": "https://www.pasda.psu.edu/download/phillyLiDAR/2022/LAS/Classified_LAS/Philadelphia_448.las",
     "crs": "EPSG:6565 (PA State Plane South, US ft; NAVD88 ft) - not stored in the file",
     "bytes": 360341931,
-    "fetched_at": "2026-10-23T15:28:06+00:00",
-    "path": "data/raw/lidar/Philadelphia_448.las",
-    "deleted_at": "2026-10-28T21:56:09+00:00",
-    "deleted_reason": "raw LAS pruned after gridding (scripts/04m_prune_lidar.py); re-download from url",
-    "grids": [
-      "atlas_navyyard_lidar",
-      "south_lidar"
-    ]
+    "fetched_at": "2026-11-05T23:06:12+00:00"
   },
   "lidar/Philadelphia_452.las": {
     "description": "City of Philadelphia 2022 classified LiDAR (LAS 1.4), PASDA dataset 7154",
@@ -2797,13 +2771,7 @@
     "url": "https://www.pasda.psu.edu/download/phillyLiDAR/2022/LAS/Classified_LAS/Philadelphia_536.las",
     "crs": "EPSG:6565 (PA State Plane South, US ft; NAVD88 ft) - not stored in the file",
     "bytes": 308686629,
-    "fetched_at": "2026-10-23T15:32:50+00:00",
-    "path": "data/raw/lidar/Philadelphia_536.las",
-    "deleted_at": "2026-10-28T21:56:09+00:00",
-    "deleted_reason": "raw LAS pruned after gridding (scripts/04m_prune_lidar.py); re-download from url",
-    "grids": [
-      "south_lidar"
-    ]
+    "fetched_at": "2026-11-05T23:08:52+00:00"
   },
   "lidar/Philadelphia_537.las": {
     "description": "City of Philadelphia 2022 classified LiDAR (LAS 1.4), PASDA dataset 7154",
@@ -11571,5 +11539,712 @@
     ],
     "feature_count": 331,
     "fetched_at": "2026-11-04T06:37:36+00:00"
+  },
+  "south_lidar_piers.json": {
+    "description": "OpenStreetMap piers (man_made=pier) and ships (building=ship, historic=ship) via Overpass",
+    "query_url": "https://overpass-api.de/api/interpreter",
+    "query": "[out:json][timeout:180];(nwr[\"man_made\"=\"pier\"](39.87592191615771,-75.21157451970149,39.98131021637861,-75.11515254078567);nwr[\"building\"=\"ship\"](39.87592191615771,-75.21157451970149,39.98131021637861,-75.11515254078567);nwr[\"historic\"=\"ship\"](39.87592191615771,-75.21157451970149,39.98131021637861,-75.11515254078567););out tags geom;",
+    "bbox_wgs84": [
+      -75.21157451970149,
+      39.87592191615771,
+      -75.11515254078567,
+      39.98131021637861
+    ],
+    "feature_count": 273,
+    "license": "Open Database License (ODbL) 1.0, https://opendatacommons.org/licenses/odbl/",
+    "credit": "\u00a9 OpenStreetMap contributors",
+    "fetched_at": "2026-11-05T22:47:36+00:00"
+  },
+  "east_riverfront_piers.json": {
+    "description": "OpenStreetMap piers (man_made=pier) and ships (building=ship, historic=ship) via Overpass",
+    "query_url": "https://overpass-api.de/api/interpreter",
+    "query": "[out:json][timeout:180];(nwr[\"man_made\"=\"pier\"](39.9583102397486,-75.13039688102633,40.016761577239365,-75.04000067402418);nwr[\"building\"=\"ship\"](39.9583102397486,-75.13039688102633,40.016761577239365,-75.04000067402418);nwr[\"historic\"=\"ship\"](39.9583102397486,-75.13039688102633,40.016761577239365,-75.04000067402418););out tags geom;",
+    "bbox_wgs84": [
+      -75.13039688102633,
+      39.9583102397486,
+      -75.04000067402418,
+      40.016761577239365
+    ],
+    "feature_count": 67,
+    "license": "Open Database License (ODbL) 1.0, https://opendatacommons.org/licenses/odbl/",
+    "credit": "\u00a9 OpenStreetMap contributors",
+    "fetched_at": "2026-11-05T22:48:08+00:00"
+  },
+  "southwest_piers.json": {
+    "description": "OpenStreetMap piers (man_made=pier) and ships (building=ship, historic=ship) via Overpass",
+    "query_url": "https://overpass-api.de/api/interpreter",
+    "query": "[out:json][timeout:180];(nwr[\"man_made\"=\"pier\"](39.86480815125875,-75.270142722549,39.951747243323226,-75.17991710926526);nwr[\"building\"=\"ship\"](39.86480815125875,-75.270142722549,39.951747243323226,-75.17991710926526);nwr[\"historic\"=\"ship\"](39.86480815125875,-75.270142722549,39.951747243323226,-75.17991710926526););out tags geom;",
+    "bbox_wgs84": [
+      -75.270142722549,
+      39.86480815125875,
+      -75.17991710926526,
+      39.951747243323226
+    ],
+    "feature_count": 140,
+    "license": "Open Database License (ODbL) 1.0, https://opendatacommons.org/licenses/odbl/",
+    "credit": "\u00a9 OpenStreetMap contributors",
+    "fetched_at": "2026-11-05T22:48:45+00:00"
+  },
+  "test_ships_navyyard_buildings.geojson": {
+    "description": "City of Philadelphia L&I building footprints with LiDAR-derived heights (feet)",
+    "query_url": "https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/LI_BUILDING_FOOTPRINTS/FeatureServer/0/query?where=1%3D1&geometryType=esriGeometryPolygon&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=%2A&outSR=4326&f=geojson&orderByFields=objectid",
+    "query_geometry": "{\"rings\": [[[-75.19141052691806, 39.88217852356247], [-75.19151501560671, 39.882513650368985], [-75.19132600081616, 39.88277983944292], [-75.1877413638132, 39.88478933156852], [-75.1894911399862, 39.88664800933475], [-75.18945296437649, 39.88714751174215], [-75.18104041534983, 39.891814537697805], [-75.1805233246669, 39.891667590893206], [-75.17876910833535, 39.88981132848821], [-75.17518042957555, 39.891816921326075], [-75.17453198540542, 39.891787430811334], [-75.1681211941003, 39.884931177851875], [-75.16835671572139, 39.88450518853728], [-75.18065962373136, 39.87768545335818], [-75.1811766096802, 39.877832399910744], [-75.18293058567271, 39.87968862975268], [-75.18651840637675, 39.877682792947965], [-75.18706902459428, 39.87766609664969], [-75.19141052691806, 39.88217852356247]]], \"spatialReference\": {\"wkid\": 4326}}",
+    "bbox_wgs84": [
+      -75.19152174773191,
+      39.877621313103916,
+      -75.168116140286,
+      39.891878373727366
+    ],
+    "feature_count": 121,
+    "fetched_at": "2026-11-05T23:05:28+00:00"
+  },
+  "test_ships_navyyard_trees.geojson": {
+    "description": "Philadelphia Parks & Recreation tree inventory, 2025 (street and park trees)",
+    "query_url": "https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/ppr_tree_inventory_2025/FeatureServer/0/query?where=1%3D1&geometryType=esriGeometryPolygon&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=%2A&outSR=4326&f=geojson&orderByFields=objectid",
+    "query_geometry": "{\"rings\": [[[-75.19141052691806, 39.88217852356247], [-75.19151501560671, 39.882513650368985], [-75.19132600081616, 39.88277983944292], [-75.1877413638132, 39.88478933156852], [-75.1894911399862, 39.88664800933475], [-75.18945296437649, 39.88714751174215], [-75.18104041534983, 39.891814537697805], [-75.1805233246669, 39.891667590893206], [-75.17876910833535, 39.88981132848821], [-75.17518042957555, 39.891816921326075], [-75.17453198540542, 39.891787430811334], [-75.1681211941003, 39.884931177851875], [-75.16835671572139, 39.88450518853728], [-75.18065962373136, 39.87768545335818], [-75.1811766096802, 39.877832399910744], [-75.18293058567271, 39.87968862975268], [-75.18651840637675, 39.877682792947965], [-75.18706902459428, 39.87766609664969], [-75.19141052691806, 39.88217852356247]]], \"spatialReference\": {\"wkid\": 4326}}",
+    "bbox_wgs84": [
+      -75.19152174773191,
+      39.877621313103916,
+      -75.168116140286,
+      39.891878373727366
+    ],
+    "feature_count": 0,
+    "fetched_at": "2026-11-05T23:05:29+00:00"
+  },
+  "imagery/test_ships_navyyard/CityImagery_2024_3in/19": {
+    "description": "City of Philadelphia 2024 3-inch aerial imagery, Web Mercator tiles",
+    "tile_url_template": "https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2024_3in/MapServer/tile/{z}/{y}/{x}",
+    "zoom": 19,
+    "tile_x_range": [
+      152638,
+      152672
+    ],
+    "tile_y_range": [
+      198689,
+      198716
+    ],
+    "tile_count": 636,
+    "tiles_without_coverage": 0,
+    "fetched_at": "2026-11-05T23:05:29+00:00"
+  },
+  "test_ships_navyyard_water.geojson": {
+    "description": "Philadelphia Water Department hydrographic features (polygons)",
+    "query_url": "https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Hydrographic_Features_Poly/FeatureServer/1/query?where=1%3D1&geometryType=esriGeometryPolygon&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=%2A&outSR=4326&f=geojson&orderByFields=objectid",
+    "query_geometry": "{\"rings\": [[[-75.19141052691806, 39.88217852356247], [-75.19151501560671, 39.882513650368985], [-75.19132600081616, 39.88277983944292], [-75.1877413638132, 39.88478933156852], [-75.1894911399862, 39.88664800933475], [-75.18945296437649, 39.88714751174215], [-75.18104041534983, 39.891814537697805], [-75.1805233246669, 39.891667590893206], [-75.17876910833535, 39.88981132848821], [-75.17518042957555, 39.891816921326075], [-75.17453198540542, 39.891787430811334], [-75.1681211941003, 39.884931177851875], [-75.16835671572139, 39.88450518853728], [-75.18065962373136, 39.87768545335818], [-75.1811766096802, 39.877832399910744], [-75.18293058567271, 39.87968862975268], [-75.18651840637675, 39.877682792947965], [-75.18706902459428, 39.87766609664969], [-75.19141052691806, 39.88217852356247]]], \"spatialReference\": {\"wkid\": 4326}}",
+    "bbox_wgs84": [
+      -75.19152174773191,
+      39.877621313103916,
+      -75.168116140286,
+      39.891878373727366
+    ],
+    "feature_count": 2,
+    "fetched_at": "2026-11-05T23:05:30+00:00"
+  },
+  "test_ships_navyyard_water_nhd.geojson": {
+    "description": "USGS National Hydrography Dataset, Area - Large Scale (both banks of the Delaware)",
+    "query_url": "https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/9/query?where=1%3D1&geometryType=esriGeometryPolygon&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=%2A&outSR=4326&f=geojson",
+    "query_geometry": "{\"rings\": [[[-75.19141052691806, 39.88217852356247], [-75.19151501560671, 39.882513650368985], [-75.19132600081616, 39.88277983944292], [-75.1877413638132, 39.88478933156852], [-75.1894911399862, 39.88664800933475], [-75.18945296437649, 39.88714751174215], [-75.18104041534983, 39.891814537697805], [-75.1805233246669, 39.891667590893206], [-75.17876910833535, 39.88981132848821], [-75.17518042957555, 39.891816921326075], [-75.17453198540542, 39.891787430811334], [-75.1681211941003, 39.884931177851875], [-75.16835671572139, 39.88450518853728], [-75.18065962373136, 39.87768545335818], [-75.1811766096802, 39.877832399910744], [-75.18293058567271, 39.87968862975268], [-75.18651840637675, 39.877682792947965], [-75.18706902459428, 39.87766609664969], [-75.19141052691806, 39.88217852356247]]], \"spatialReference\": {\"wkid\": 4326}}",
+    "bbox_wgs84": [
+      -75.19152174773191,
+      39.877621313103916,
+      -75.168116140286,
+      39.891878373727366
+    ],
+    "feature_count": 2,
+    "fetched_at": "2026-11-05T23:05:38+00:00"
+  },
+  "test_ships_navyyard_highways.geojson": {
+    "description": "City of Philadelphia street centerlines, expressways (class 1) and ramps (class 9, 10)",
+    "query_url": "https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Street_Centerline/FeatureServer/0/query?where=class+IN+%281%2C9%2C10%29&geometryType=esriGeometryPolygon&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=%2A&outSR=4326&f=geojson&orderByFields=objectid",
+    "query_geometry": "{\"rings\": [[[-75.19141052691806, 39.88217852356247], [-75.19151501560671, 39.882513650368985], [-75.19132600081616, 39.88277983944292], [-75.1877413638132, 39.88478933156852], [-75.1894911399862, 39.88664800933475], [-75.18945296437649, 39.88714751174215], [-75.18104041534983, 39.891814537697805], [-75.1805233246669, 39.891667590893206], [-75.17876910833535, 39.88981132848821], [-75.17518042957555, 39.891816921326075], [-75.17453198540542, 39.891787430811334], [-75.1681211941003, 39.884931177851875], [-75.16835671572139, 39.88450518853728], [-75.18065962373136, 39.87768545335818], [-75.1811766096802, 39.877832399910744], [-75.18293058567271, 39.87968862975268], [-75.18651840637675, 39.877682792947965], [-75.18706902459428, 39.87766609664969], [-75.19141052691806, 39.88217852356247]]], \"spatialReference\": {\"wkid\": 4326}}",
+    "bbox_wgs84": [
+      -75.19152174773191,
+      39.877621313103916,
+      -75.168116140286,
+      39.891878373727366
+    ],
+    "feature_count": 0,
+    "fetched_at": "2026-11-05T23:06:12+00:00"
+  },
+  "test_ships_navyyard_rail_el.geojson": {
+    "description": "SEPTA Highspeed Lines, route L (Market-Frankford Line)",
+    "query_url": "https://services2.arcgis.com/9U43PSoL47wawX5S/arcgis/rest/services/SEPTA_-_Highspeed_Lines/FeatureServer/0/query?where=Route%3D%27L%27&geometryType=esriGeometryPolygon&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=%2A&outSR=4326&f=geojson&orderByFields=FID",
+    "query_geometry": "{\"rings\": [[[-75.19141052691806, 39.88217852356247], [-75.19151501560671, 39.882513650368985], [-75.19132600081616, 39.88277983944292], [-75.1877413638132, 39.88478933156852], [-75.1894911399862, 39.88664800933475], [-75.18945296437649, 39.88714751174215], [-75.18104041534983, 39.891814537697805], [-75.1805233246669, 39.891667590893206], [-75.17876910833535, 39.88981132848821], [-75.17518042957555, 39.891816921326075], [-75.17453198540542, 39.891787430811334], [-75.1681211941003, 39.884931177851875], [-75.16835671572139, 39.88450518853728], [-75.18065962373136, 39.87768545335818], [-75.1811766096802, 39.877832399910744], [-75.18293058567271, 39.87968862975268], [-75.18651840637675, 39.877682792947965], [-75.18706902459428, 39.87766609664969], [-75.19141052691806, 39.88217852356247]]], \"spatialReference\": {\"wkid\": 4326}}",
+    "bbox_wgs84": [
+      -75.19152174773191,
+      39.877621313103916,
+      -75.168116140286,
+      39.891878373727366
+    ],
+    "feature_count": 0,
+    "fetched_at": "2026-11-05T23:06:13+00:00"
+  },
+  "test_ships_navyyard_rail.geojson": {
+    "description": "City of Philadelphia Railroad Lines, fcode 1700 (surface track)",
+    "query_url": "https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Rail/FeatureServer/0/query?where=fcode%3D1700&geometryType=esriGeometryPolygon&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=%2A&outSR=4326&f=geojson&orderByFields=objectid",
+    "query_geometry": "{\"rings\": [[[-75.19141052691806, 39.88217852356247], [-75.19151501560671, 39.882513650368985], [-75.19132600081616, 39.88277983944292], [-75.1877413638132, 39.88478933156852], [-75.1894911399862, 39.88664800933475], [-75.18945296437649, 39.88714751174215], [-75.18104041534983, 39.891814537697805], [-75.1805233246669, 39.891667590893206], [-75.17876910833535, 39.88981132848821], [-75.17518042957555, 39.891816921326075], [-75.17453198540542, 39.891787430811334], [-75.1681211941003, 39.884931177851875], [-75.16835671572139, 39.88450518853728], [-75.18065962373136, 39.87768545335818], [-75.1811766096802, 39.877832399910744], [-75.18293058567271, 39.87968862975268], [-75.18651840637675, 39.877682792947965], [-75.18706902459428, 39.87766609664969], [-75.19141052691806, 39.88217852356247]]], \"spatialReference\": {\"wkid\": 4326}}",
+    "bbox_wgs84": [
+      -75.19152174773191,
+      39.877621313103916,
+      -75.168116140286,
+      39.891878373727366
+    ],
+    "feature_count": 75,
+    "fetched_at": "2026-11-05T23:06:14+00:00"
+  },
+  "test_ships_navyyard_opa.geojson": {
+    "description": "OPA opa_properties_public: property points with building code, stories, construction, year (explicit columns; no owner, mailing, sale, tax or condition fields)",
+    "query_url": "https://phl.carto.com/api/v2/sql?q=SELECT+the_geom%2C+parcel_number%2C+location%2C+category_code_description%2C+building_code_description%2C+building_code_new%2C+building_code_description_new%2C+general_construction%2C+number_stories%2C+year_built%2C+year_built_estimate%2C+quality_grade+FROM+opa_properties_public+WHERE+the_geom+%26%26+ST_MakeEnvelope%28-75.19152174773191%2C+39.877621313103916%2C+-75.168116140286%2C+39.891878373727366%2C+4326%29+ORDER+BY+cartodb_id",
+    "bbox_wgs84": [
+      -75.19152174773191,
+      39.877621313103916,
+      -75.168116140286,
+      39.891878373727366
+    ],
+    "feature_count": 43,
+    "fetched_at": "2026-11-05T23:06:14+00:00"
+  },
+  "test_ships_navyyard_pwd_parcels.json": {
+    "description": "Water Department pwd_parcels: parcelid and brt_id (OPA parcel_number) only",
+    "query_url": "https://phl.carto.com/api/v2/sql?q=SELECT+parcelid%2C+brt_id+FROM+pwd_parcels+WHERE+the_geom+%26%26+ST_MakeEnvelope%28-75.19152174773191%2C+39.877621313103916%2C+-75.168116140286%2C+39.891878373727366%2C+4326%29+ORDER+BY+parcelid",
+    "bbox_wgs84": [
+      -75.19152174773191,
+      39.877621313103916,
+      -75.168116140286,
+      39.891878373727366
+    ],
+    "feature_count": 53,
+    "fetched_at": "2026-11-05T23:06:14+00:00"
+  },
+  "test_ships_navyyard_osm.json": {
+    "description": "OpenStreetMap buildings and building:part shapes (tags and geometry) via Overpass",
+    "query_url": "https://overpass-api.de/api/interpreter",
+    "query": "[out:json][timeout:180];(way[\"building\"][\"building:colour\"](39.877621313103916,-75.19152174773191,39.891878373727366,-75.168116140286);way[\"building\"][\"building:material\"](39.877621313103916,-75.19152174773191,39.891878373727366,-75.168116140286);way[\"building:part\"][\"building:colour\"](39.877621313103916,-75.19152174773191,39.891878373727366,-75.168116140286);way[\"building:part\"][\"building:material\"](39.877621313103916,-75.19152174773191,39.891878373727366,-75.168116140286);relation[\"building\"][\"building:colour\"](39.877621313103916,-75.19152174773191,39.891878373727366,-75.168116140286);relation[\"building\"][\"building:material\"](39.877621313103916,-75.19152174773191,39.891878373727366,-75.168116140286);relation[\"building:part\"][\"building:colour\"](39.877621313103916,-75.19152174773191,39.891878373727366,-75.168116140286);relation[\"building:part\"][\"building:material\"](39.877621313103916,-75.19152174773191,39.891878373727366,-75.168116140286););out tags geom;",
+    "bbox_wgs84": [
+      -75.19152174773191,
+      39.877621313103916,
+      -75.168116140286,
+      39.891878373727366
+    ],
+    "feature_count": 3,
+    "license": "Open Database License (ODbL) 1.0, https://opendatacommons.org/licenses/odbl/",
+    "credit": "\u00a9 OpenStreetMap contributors",
+    "fetched_at": "2026-11-05T23:06:56+00:00"
+  },
+  "test_ships_navyyard_streets.geojson": {
+    "description": "City of Philadelphia street centerlines, all classes",
+    "query_url": "https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Street_Centerline/FeatureServer/0/query?where=1%3D1&geometryType=esriGeometryPolygon&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=%2A&outSR=4326&f=geojson&orderByFields=objectid",
+    "query_geometry": "{\"rings\": [[[-75.19141052691806, 39.88217852356247], [-75.19151501560671, 39.882513650368985], [-75.19132600081616, 39.88277983944292], [-75.1877413638132, 39.88478933156852], [-75.1894911399862, 39.88664800933475], [-75.18945296437649, 39.88714751174215], [-75.18104041534983, 39.891814537697805], [-75.1805233246669, 39.891667590893206], [-75.17876910833535, 39.88981132848821], [-75.17518042957555, 39.891816921326075], [-75.17453198540542, 39.891787430811334], [-75.1681211941003, 39.884931177851875], [-75.16835671572139, 39.88450518853728], [-75.18065962373136, 39.87768545335818], [-75.1811766096802, 39.877832399910744], [-75.18293058567271, 39.87968862975268], [-75.18651840637675, 39.877682792947965], [-75.18706902459428, 39.87766609664969], [-75.19141052691806, 39.88217852356247]]], \"spatialReference\": {\"wkid\": 4326}}",
+    "bbox_wgs84": [
+      -75.19152174773191,
+      39.877621313103916,
+      -75.168116140286,
+      39.891878373727366
+    ],
+    "feature_count": 36,
+    "fetched_at": "2026-11-05T23:06:57+00:00"
+  },
+  "test_ships_navyyard_pools.geojson": {
+    "description": "Philadelphia Parks & Recreation swimming pools (points)",
+    "query_url": "https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/PPR_Swimming_Pools/FeatureServer/0/query?where=1%3D1&geometryType=esriGeometryPolygon&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=%2A&outSR=4326&f=geojson&orderByFields=objectid",
+    "query_geometry": "{\"rings\": [[[-75.19141052691806, 39.88217852356247], [-75.19151501560671, 39.882513650368985], [-75.19132600081616, 39.88277983944292], [-75.1877413638132, 39.88478933156852], [-75.1894911399862, 39.88664800933475], [-75.18945296437649, 39.88714751174215], [-75.18104041534983, 39.891814537697805], [-75.1805233246669, 39.891667590893206], [-75.17876910833535, 39.88981132848821], [-75.17518042957555, 39.891816921326075], [-75.17453198540542, 39.891787430811334], [-75.1681211941003, 39.884931177851875], [-75.16835671572139, 39.88450518853728], [-75.18065962373136, 39.87768545335818], [-75.1811766096802, 39.877832399910744], [-75.18293058567271, 39.87968862975268], [-75.18651840637675, 39.877682792947965], [-75.18706902459428, 39.87766609664969], [-75.19141052691806, 39.88217852356247]]], \"spatialReference\": {\"wkid\": 4326}}",
+    "bbox_wgs84": [
+      -75.19152174773191,
+      39.877621313103916,
+      -75.168116140286,
+      39.891878373727366
+    ],
+    "feature_count": 0,
+    "fetched_at": "2026-11-05T23:06:58+00:00"
+  },
+  "test_ships_navyyard_parks.geojson": {
+    "description": "Philadelphia Parks & Recreation properties (polygons)",
+    "query_url": "https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/PPR_Properties/FeatureServer/0/query?where=1%3D1&geometryType=esriGeometryPolygon&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=%2A&outSR=4326&f=geojson&orderByFields=objectid",
+    "query_geometry": "{\"rings\": [[[-75.19141052691806, 39.88217852356247], [-75.19151501560671, 39.882513650368985], [-75.19132600081616, 39.88277983944292], [-75.1877413638132, 39.88478933156852], [-75.1894911399862, 39.88664800933475], [-75.18945296437649, 39.88714751174215], [-75.18104041534983, 39.891814537697805], [-75.1805233246669, 39.891667590893206], [-75.17876910833535, 39.88981132848821], [-75.17518042957555, 39.891816921326075], [-75.17453198540542, 39.891787430811334], [-75.1681211941003, 39.884931177851875], [-75.16835671572139, 39.88450518853728], [-75.18065962373136, 39.87768545335818], [-75.1811766096802, 39.877832399910744], [-75.18293058567271, 39.87968862975268], [-75.18651840637675, 39.877682792947965], [-75.18706902459428, 39.87766609664969], [-75.19141052691806, 39.88217852356247]]], \"spatialReference\": {\"wkid\": 4326}}",
+    "bbox_wgs84": [
+      -75.19152174773191,
+      39.877621313103916,
+      -75.168116140286,
+      39.891878373727366
+    ],
+    "feature_count": 0,
+    "fetched_at": "2026-11-05T23:06:58+00:00"
+  },
+  "test_ships_navyyard_nps_parks.geojson": {
+    "description": "National Park Service unit boundaries (Land Resources Division)",
+    "query_url": "https://services1.arcgis.com/fBc8EJBxQRMcHlei/arcgis/rest/services/NPS_Land_Resources_Division_Boundary_and_Tract_Data_Service/FeatureServer/2/query?where=1%3D1&geometryType=esriGeometryPolygon&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=%2A&outSR=4326&f=geojson&orderByFields=OBJECTID",
+    "query_geometry": "{\"rings\": [[[-75.19141052691806, 39.88217852356247], [-75.19151501560671, 39.882513650368985], [-75.19132600081616, 39.88277983944292], [-75.1877413638132, 39.88478933156852], [-75.1894911399862, 39.88664800933475], [-75.18945296437649, 39.88714751174215], [-75.18104041534983, 39.891814537697805], [-75.1805233246669, 39.891667590893206], [-75.17876910833535, 39.88981132848821], [-75.17518042957555, 39.891816921326075], [-75.17453198540542, 39.891787430811334], [-75.1681211941003, 39.884931177851875], [-75.16835671572139, 39.88450518853728], [-75.18065962373136, 39.87768545335818], [-75.1811766096802, 39.877832399910744], [-75.18293058567271, 39.87968862975268], [-75.18651840637675, 39.877682792947965], [-75.18706902459428, 39.87766609664969], [-75.19141052691806, 39.88217852356247]]], \"spatialReference\": {\"wkid\": 4326}}",
+    "bbox_wgs84": [
+      -75.19152174773191,
+      39.877621313103916,
+      -75.168116140286,
+      39.891878373727366
+    ],
+    "feature_count": 0,
+    "fetched_at": "2026-11-05T23:06:59+00:00"
+  },
+  "test_ships_navyyard_wetlands.geojson": {
+    "description": "USFWS National Wetlands Inventory polygons",
+    "query_url": "https://fwspublicservices.wim.usgs.gov/wetlandsmapservice/rest/services/Wetlands/MapServer/0/query?where=1%3D1&geometryType=esriGeometryPolygon&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=%2A&outSR=4326&f=geojson&orderByFields=OBJECTID",
+    "query_geometry": "{\"rings\": [[[-75.19141052691806, 39.88217852356247], [-75.19151501560671, 39.882513650368985], [-75.19132600081616, 39.88277983944292], [-75.1877413638132, 39.88478933156852], [-75.1894911399862, 39.88664800933475], [-75.18945296437649, 39.88714751174215], [-75.18104041534983, 39.891814537697805], [-75.1805233246669, 39.891667590893206], [-75.17876910833535, 39.88981132848821], [-75.17518042957555, 39.891816921326075], [-75.17453198540542, 39.891787430811334], [-75.1681211941003, 39.884931177851875], [-75.16835671572139, 39.88450518853728], [-75.18065962373136, 39.87768545335818], [-75.1811766096802, 39.877832399910744], [-75.18293058567271, 39.87968862975268], [-75.18651840637675, 39.877682792947965], [-75.18706902459428, 39.87766609664969], [-75.19141052691806, 39.88217852356247]]], \"spatialReference\": {\"wkid\": 4326}}",
+    "bbox_wgs84": [
+      -75.19152174773191,
+      39.877621313103916,
+      -75.168116140286,
+      39.891878373727366
+    ],
+    "feature_count": 3,
+    "fetched_at": "2026-11-05T23:07:00+00:00"
+  },
+  "test_ships_navyyard_golf.json": {
+    "description": "OpenStreetMap golf courses and golf features (fairway, green, tee, bunker, rough, water hazards) via Overpass",
+    "query_url": "https://overpass-api.de/api/interpreter",
+    "query": "[out:json][timeout:180];(nwr[\"leisure\"=\"golf_course\"](39.877621313103916,-75.19152174773191,39.891878373727366,-75.168116140286);nwr[\"disused:leisure\"=\"golf_course\"](39.877621313103916,-75.19152174773191,39.891878373727366,-75.168116140286);nwr[\"was:leisure\"=\"golf_course\"](39.877621313103916,-75.19152174773191,39.891878373727366,-75.168116140286);nwr[\"golf\"=\"fairway\"](39.877621313103916,-75.19152174773191,39.891878373727366,-75.168116140286);nwr[\"golf\"=\"green\"](39.877621313103916,-75.19152174773191,39.891878373727366,-75.168116140286);nwr[\"golf\"=\"tee\"](39.877621313103916,-75.19152174773191,39.891878373727366,-75.168116140286);nwr[\"golf\"=\"bunker\"](39.877621313103916,-75.19152174773191,39.891878373727366,-75.168116140286);nwr[\"golf\"=\"rough\"](39.877621313103916,-75.19152174773191,39.891878373727366,-75.168116140286);nwr[\"golf\"=\"water_hazard\"](39.877621313103916,-75.19152174773191,39.891878373727366,-75.168116140286);nwr[\"golf\"=\"lateral_water_hazard\"](39.877621313103916,-75.19152174773191,39.891878373727366,-75.168116140286););out tags geom;",
+    "bbox_wgs84": [
+      -75.19152174773191,
+      39.877621313103916,
+      -75.168116140286,
+      39.891878373727366
+    ],
+    "feature_count": 0,
+    "license": "Open Database License (ODbL) 1.0, https://opendatacommons.org/licenses/odbl/",
+    "credit": "\u00a9 OpenStreetMap contributors",
+    "fetched_at": "2026-11-05T23:07:34+00:00"
+  },
+  "test_ships_pier82_buildings.geojson": {
+    "description": "City of Philadelphia L&I building footprints with LiDAR-derived heights (feet)",
+    "query_url": "https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/LI_BUILDING_FOOTPRINTS/FeatureServer/0/query?where=1%3D1&geometryType=esriGeometryPolygon&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=%2A&outSR=4326&f=geojson&orderByFields=objectid",
+    "query_geometry": "{\"rings\": [[[-75.13900464081405, 39.913545178004554], [-75.1454639472459, 39.920261016730805], [-75.14553954704732, 39.920681562382065], [-75.13720524018237, 39.92542737838936], [-75.13652316479568, 39.925317550629245], [-75.13270533501769, 39.92127513068315], [-75.12916299061642, 39.92325646199554], [-75.12878477219358, 39.92334165797343], [-75.12834605802625, 39.92315678078571], [-75.12618800440397, 39.92081092441849], [-75.12636827339473, 39.920369201573145], [-75.1299552723827, 39.91836025895325], [-75.12820510929488, 39.916501356947116], [-75.12821107067575, 39.916038361832044], [-75.13247999059725, 39.913618735105224], [-75.13316194346937, 39.91372858686683], [-75.13491672642355, 39.91558486592152], [-75.13850653639933, 39.91357916571405], [-75.13900464081405, 39.913545178004554]]], \"spatialReference\": {\"wkid\": 4326}}",
+    "bbox_wgs84": [
+      -75.14557522268156,
+      39.91351769567812,
+      -75.1261723095077,
+      39.925468396256214
+    ],
+    "feature_count": 47,
+    "fetched_at": "2026-11-05T23:08:38+00:00"
+  },
+  "test_ships_pier82_trees.geojson": {
+    "description": "Philadelphia Parks & Recreation tree inventory, 2025 (street and park trees)",
+    "query_url": "https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/ppr_tree_inventory_2025/FeatureServer/0/query?where=1%3D1&geometryType=esriGeometryPolygon&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=%2A&outSR=4326&f=geojson&orderByFields=objectid",
+    "query_geometry": "{\"rings\": [[[-75.13900464081405, 39.913545178004554], [-75.1454639472459, 39.920261016730805], [-75.14553954704732, 39.920681562382065], [-75.13720524018237, 39.92542737838936], [-75.13652316479568, 39.925317550629245], [-75.13270533501769, 39.92127513068315], [-75.12916299061642, 39.92325646199554], [-75.12878477219358, 39.92334165797343], [-75.12834605802625, 39.92315678078571], [-75.12618800440397, 39.92081092441849], [-75.12636827339473, 39.920369201573145], [-75.1299552723827, 39.91836025895325], [-75.12820510929488, 39.916501356947116], [-75.12821107067575, 39.916038361832044], [-75.13247999059725, 39.913618735105224], [-75.13316194346937, 39.91372858686683], [-75.13491672642355, 39.91558486592152], [-75.13850653639933, 39.91357916571405], [-75.13900464081405, 39.913545178004554]]], \"spatialReference\": {\"wkid\": 4326}}",
+    "bbox_wgs84": [
+      -75.14557522268156,
+      39.91351769567812,
+      -75.1261723095077,
+      39.925468396256214
+    ],
+    "feature_count": 0,
+    "fetched_at": "2026-11-05T23:08:38+00:00"
+  },
+  "imagery/test_ships_pier82/CityImagery_2024_3in/19": {
+    "description": "City of Philadelphia 2024 3-inch aerial imagery, Web Mercator tiles",
+    "tile_url_template": "https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2024_3in/MapServer/tile/{z}/{y}/{x}",
+    "zoom": 19,
+    "tile_x_range": [
+      152705,
+      152733
+    ],
+    "tile_y_range": [
+      198626,
+      198648
+    ],
+    "tile_count": 429,
+    "tiles_without_coverage": 0,
+    "fetched_at": "2026-11-05T23:08:39+00:00"
+  },
+  "test_ships_pier82_water.geojson": {
+    "description": "Philadelphia Water Department hydrographic features (polygons)",
+    "query_url": "https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Hydrographic_Features_Poly/FeatureServer/1/query?where=1%3D1&geometryType=esriGeometryPolygon&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=%2A&outSR=4326&f=geojson&orderByFields=objectid",
+    "query_geometry": "{\"rings\": [[[-75.13900464081405, 39.913545178004554], [-75.1454639472459, 39.920261016730805], [-75.14553954704732, 39.920681562382065], [-75.13720524018237, 39.92542737838936], [-75.13652316479568, 39.925317550629245], [-75.13270533501769, 39.92127513068315], [-75.12916299061642, 39.92325646199554], [-75.12878477219358, 39.92334165797343], [-75.12834605802625, 39.92315678078571], [-75.12618800440397, 39.92081092441849], [-75.12636827339473, 39.920369201573145], [-75.1299552723827, 39.91836025895325], [-75.12820510929488, 39.916501356947116], [-75.12821107067575, 39.916038361832044], [-75.13247999059725, 39.913618735105224], [-75.13316194346937, 39.91372858686683], [-75.13491672642355, 39.91558486592152], [-75.13850653639933, 39.91357916571405], [-75.13900464081405, 39.913545178004554]]], \"spatialReference\": {\"wkid\": 4326}}",
+    "bbox_wgs84": [
+      -75.14557522268156,
+      39.91351769567812,
+      -75.1261723095077,
+      39.925468396256214
+    ],
+    "feature_count": 1,
+    "fetched_at": "2026-11-05T23:08:39+00:00"
+  },
+  "test_ships_pier82_water_nhd.geojson": {
+    "description": "USGS National Hydrography Dataset, Area - Large Scale (both banks of the Delaware)",
+    "query_url": "https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/9/query?where=1%3D1&geometryType=esriGeometryPolygon&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=%2A&outSR=4326&f=geojson",
+    "query_geometry": "{\"rings\": [[[-75.13900464081405, 39.913545178004554], [-75.1454639472459, 39.920261016730805], [-75.14553954704732, 39.920681562382065], [-75.13720524018237, 39.92542737838936], [-75.13652316479568, 39.925317550629245], [-75.13270533501769, 39.92127513068315], [-75.12916299061642, 39.92325646199554], [-75.12878477219358, 39.92334165797343], [-75.12834605802625, 39.92315678078571], [-75.12618800440397, 39.92081092441849], [-75.12636827339473, 39.920369201573145], [-75.1299552723827, 39.91836025895325], [-75.12820510929488, 39.916501356947116], [-75.12821107067575, 39.916038361832044], [-75.13247999059725, 39.913618735105224], [-75.13316194346937, 39.91372858686683], [-75.13491672642355, 39.91558486592152], [-75.13850653639933, 39.91357916571405], [-75.13900464081405, 39.913545178004554]]], \"spatialReference\": {\"wkid\": 4326}}",
+    "bbox_wgs84": [
+      -75.14557522268156,
+      39.91351769567812,
+      -75.1261723095077,
+      39.925468396256214
+    ],
+    "feature_count": 1,
+    "fetched_at": "2026-11-05T23:08:42+00:00"
+  },
+  "test_ships_pier82_highways.geojson": {
+    "description": "City of Philadelphia street centerlines, expressways (class 1) and ramps (class 9, 10)",
+    "query_url": "https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Street_Centerline/FeatureServer/0/query?where=class+IN+%281%2C9%2C10%29&geometryType=esriGeometryPolygon&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=%2A&outSR=4326&f=geojson&orderByFields=objectid",
+    "query_geometry": "{\"rings\": [[[-75.13900464081405, 39.913545178004554], [-75.1454639472459, 39.920261016730805], [-75.14553954704732, 39.920681562382065], [-75.13720524018237, 39.92542737838936], [-75.13652316479568, 39.925317550629245], [-75.13270533501769, 39.92127513068315], [-75.12916299061642, 39.92325646199554], [-75.12878477219358, 39.92334165797343], [-75.12834605802625, 39.92315678078571], [-75.12618800440397, 39.92081092441849], [-75.12636827339473, 39.920369201573145], [-75.1299552723827, 39.91836025895325], [-75.12820510929488, 39.916501356947116], [-75.12821107067575, 39.916038361832044], [-75.13247999059725, 39.913618735105224], [-75.13316194346937, 39.91372858686683], [-75.13491672642355, 39.91558486592152], [-75.13850653639933, 39.91357916571405], [-75.13900464081405, 39.913545178004554]]], \"spatialReference\": {\"wkid\": 4326}}",
+    "bbox_wgs84": [
+      -75.14557522268156,
+      39.91351769567812,
+      -75.1261723095077,
+      39.925468396256214
+    ],
+    "feature_count": 0,
+    "fetched_at": "2026-11-05T23:08:53+00:00"
+  },
+  "test_ships_pier82_rail_el.geojson": {
+    "description": "SEPTA Highspeed Lines, route L (Market-Frankford Line)",
+    "query_url": "https://services2.arcgis.com/9U43PSoL47wawX5S/arcgis/rest/services/SEPTA_-_Highspeed_Lines/FeatureServer/0/query?where=Route%3D%27L%27&geometryType=esriGeometryPolygon&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=%2A&outSR=4326&f=geojson&orderByFields=FID",
+    "query_geometry": "{\"rings\": [[[-75.13900464081405, 39.913545178004554], [-75.1454639472459, 39.920261016730805], [-75.14553954704732, 39.920681562382065], [-75.13720524018237, 39.92542737838936], [-75.13652316479568, 39.925317550629245], [-75.13270533501769, 39.92127513068315], [-75.12916299061642, 39.92325646199554], [-75.12878477219358, 39.92334165797343], [-75.12834605802625, 39.92315678078571], [-75.12618800440397, 39.92081092441849], [-75.12636827339473, 39.920369201573145], [-75.1299552723827, 39.91836025895325], [-75.12820510929488, 39.916501356947116], [-75.12821107067575, 39.916038361832044], [-75.13247999059725, 39.913618735105224], [-75.13316194346937, 39.91372858686683], [-75.13491672642355, 39.91558486592152], [-75.13850653639933, 39.91357916571405], [-75.13900464081405, 39.913545178004554]]], \"spatialReference\": {\"wkid\": 4326}}",
+    "bbox_wgs84": [
+      -75.14557522268156,
+      39.91351769567812,
+      -75.1261723095077,
+      39.925468396256214
+    ],
+    "feature_count": 0,
+    "fetched_at": "2026-11-05T23:08:53+00:00"
+  },
+  "test_ships_pier82_rail.geojson": {
+    "description": "City of Philadelphia Railroad Lines, fcode 1700 (surface track)",
+    "query_url": "https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Rail/FeatureServer/0/query?where=fcode%3D1700&geometryType=esriGeometryPolygon&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=%2A&outSR=4326&f=geojson&orderByFields=objectid",
+    "query_geometry": "{\"rings\": [[[-75.13900464081405, 39.913545178004554], [-75.1454639472459, 39.920261016730805], [-75.14553954704732, 39.920681562382065], [-75.13720524018237, 39.92542737838936], [-75.13652316479568, 39.925317550629245], [-75.13270533501769, 39.92127513068315], [-75.12916299061642, 39.92325646199554], [-75.12878477219358, 39.92334165797343], [-75.12834605802625, 39.92315678078571], [-75.12618800440397, 39.92081092441849], [-75.12636827339473, 39.920369201573145], [-75.1299552723827, 39.91836025895325], [-75.12820510929488, 39.916501356947116], [-75.12821107067575, 39.916038361832044], [-75.13247999059725, 39.913618735105224], [-75.13316194346937, 39.91372858686683], [-75.13491672642355, 39.91558486592152], [-75.13850653639933, 39.91357916571405], [-75.13900464081405, 39.913545178004554]]], \"spatialReference\": {\"wkid\": 4326}}",
+    "bbox_wgs84": [
+      -75.14557522268156,
+      39.91351769567812,
+      -75.1261723095077,
+      39.925468396256214
+    ],
+    "feature_count": 17,
+    "fetched_at": "2026-11-05T23:08:54+00:00"
+  },
+  "test_ships_pier82_opa.geojson": {
+    "description": "OPA opa_properties_public: property points with building code, stories, construction, year (explicit columns; no owner, mailing, sale, tax or condition fields)",
+    "query_url": "https://phl.carto.com/api/v2/sql?q=SELECT+the_geom%2C+parcel_number%2C+location%2C+category_code_description%2C+building_code_description%2C+building_code_new%2C+building_code_description_new%2C+general_construction%2C+number_stories%2C+year_built%2C+year_built_estimate%2C+quality_grade+FROM+opa_properties_public+WHERE+the_geom+%26%26+ST_MakeEnvelope%28-75.14557522268156%2C+39.91351769567812%2C+-75.1261723095077%2C+39.925468396256214%2C+4326%29+ORDER+BY+cartodb_id",
+    "bbox_wgs84": [
+      -75.14557522268156,
+      39.91351769567812,
+      -75.1261723095077,
+      39.925468396256214
+    ],
+    "feature_count": 40,
+    "fetched_at": "2026-11-05T23:08:54+00:00"
+  },
+  "test_ships_pier82_pwd_parcels.json": {
+    "description": "Water Department pwd_parcels: parcelid and brt_id (OPA parcel_number) only",
+    "query_url": "https://phl.carto.com/api/v2/sql?q=SELECT+parcelid%2C+brt_id+FROM+pwd_parcels+WHERE+the_geom+%26%26+ST_MakeEnvelope%28-75.14557522268156%2C+39.91351769567812%2C+-75.1261723095077%2C+39.925468396256214%2C+4326%29+ORDER+BY+parcelid",
+    "bbox_wgs84": [
+      -75.14557522268156,
+      39.91351769567812,
+      -75.1261723095077,
+      39.925468396256214
+    ],
+    "feature_count": 51,
+    "fetched_at": "2026-11-05T23:08:54+00:00"
+  },
+  "test_ships_pier82_osm.json": {
+    "description": "OpenStreetMap buildings and building:part shapes (tags and geometry) via Overpass",
+    "query_url": "https://overpass-api.de/api/interpreter",
+    "query": "[out:json][timeout:180];(way[\"building\"][\"building:colour\"](39.91351769567812,-75.14557522268156,39.925468396256214,-75.1261723095077);way[\"building\"][\"building:material\"](39.91351769567812,-75.14557522268156,39.925468396256214,-75.1261723095077);way[\"building:part\"][\"building:colour\"](39.91351769567812,-75.14557522268156,39.925468396256214,-75.1261723095077);way[\"building:part\"][\"building:material\"](39.91351769567812,-75.14557522268156,39.925468396256214,-75.1261723095077);relation[\"building\"][\"building:colour\"](39.91351769567812,-75.14557522268156,39.925468396256214,-75.1261723095077);relation[\"building\"][\"building:material\"](39.91351769567812,-75.14557522268156,39.925468396256214,-75.1261723095077);relation[\"building:part\"][\"building:colour\"](39.91351769567812,-75.14557522268156,39.925468396256214,-75.1261723095077);relation[\"building:part\"][\"building:material\"](39.91351769567812,-75.14557522268156,39.925468396256214,-75.1261723095077););out tags geom;",
+    "bbox_wgs84": [
+      -75.14557522268156,
+      39.91351769567812,
+      -75.1261723095077,
+      39.925468396256214
+    ],
+    "feature_count": 0,
+    "license": "Open Database License (ODbL) 1.0, https://opendatacommons.org/licenses/odbl/",
+    "credit": "\u00a9 OpenStreetMap contributors",
+    "fetched_at": "2026-11-05T23:09:20+00:00"
+  },
+  "test_ships_pier82_streets.geojson": {
+    "description": "City of Philadelphia street centerlines, all classes",
+    "query_url": "https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Street_Centerline/FeatureServer/0/query?where=1%3D1&geometryType=esriGeometryPolygon&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=%2A&outSR=4326&f=geojson&orderByFields=objectid",
+    "query_geometry": "{\"rings\": [[[-75.13900464081405, 39.913545178004554], [-75.1454639472459, 39.920261016730805], [-75.14553954704732, 39.920681562382065], [-75.13720524018237, 39.92542737838936], [-75.13652316479568, 39.925317550629245], [-75.13270533501769, 39.92127513068315], [-75.12916299061642, 39.92325646199554], [-75.12878477219358, 39.92334165797343], [-75.12834605802625, 39.92315678078571], [-75.12618800440397, 39.92081092441849], [-75.12636827339473, 39.920369201573145], [-75.1299552723827, 39.91836025895325], [-75.12820510929488, 39.916501356947116], [-75.12821107067575, 39.916038361832044], [-75.13247999059725, 39.913618735105224], [-75.13316194346937, 39.91372858686683], [-75.13491672642355, 39.91558486592152], [-75.13850653639933, 39.91357916571405], [-75.13900464081405, 39.913545178004554]]], \"spatialReference\": {\"wkid\": 4326}}",
+    "bbox_wgs84": [
+      -75.14557522268156,
+      39.91351769567812,
+      -75.1261723095077,
+      39.925468396256214
+    ],
+    "feature_count": 10,
+    "fetched_at": "2026-11-05T23:09:21+00:00"
+  },
+  "test_ships_pier82_pools.geojson": {
+    "description": "Philadelphia Parks & Recreation swimming pools (points)",
+    "query_url": "https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/PPR_Swimming_Pools/FeatureServer/0/query?where=1%3D1&geometryType=esriGeometryPolygon&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=%2A&outSR=4326&f=geojson&orderByFields=objectid",
+    "query_geometry": "{\"rings\": [[[-75.13900464081405, 39.913545178004554], [-75.1454639472459, 39.920261016730805], [-75.14553954704732, 39.920681562382065], [-75.13720524018237, 39.92542737838936], [-75.13652316479568, 39.925317550629245], [-75.13270533501769, 39.92127513068315], [-75.12916299061642, 39.92325646199554], [-75.12878477219358, 39.92334165797343], [-75.12834605802625, 39.92315678078571], [-75.12618800440397, 39.92081092441849], [-75.12636827339473, 39.920369201573145], [-75.1299552723827, 39.91836025895325], [-75.12820510929488, 39.916501356947116], [-75.12821107067575, 39.916038361832044], [-75.13247999059725, 39.913618735105224], [-75.13316194346937, 39.91372858686683], [-75.13491672642355, 39.91558486592152], [-75.13850653639933, 39.91357916571405], [-75.13900464081405, 39.913545178004554]]], \"spatialReference\": {\"wkid\": 4326}}",
+    "bbox_wgs84": [
+      -75.14557522268156,
+      39.91351769567812,
+      -75.1261723095077,
+      39.925468396256214
+    ],
+    "feature_count": 0,
+    "fetched_at": "2026-11-05T23:09:21+00:00"
+  },
+  "test_ships_pier82_parks.geojson": {
+    "description": "Philadelphia Parks & Recreation properties (polygons)",
+    "query_url": "https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/PPR_Properties/FeatureServer/0/query?where=1%3D1&geometryType=esriGeometryPolygon&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=%2A&outSR=4326&f=geojson&orderByFields=objectid",
+    "query_geometry": "{\"rings\": [[[-75.13900464081405, 39.913545178004554], [-75.1454639472459, 39.920261016730805], [-75.14553954704732, 39.920681562382065], [-75.13720524018237, 39.92542737838936], [-75.13652316479568, 39.925317550629245], [-75.13270533501769, 39.92127513068315], [-75.12916299061642, 39.92325646199554], [-75.12878477219358, 39.92334165797343], [-75.12834605802625, 39.92315678078571], [-75.12618800440397, 39.92081092441849], [-75.12636827339473, 39.920369201573145], [-75.1299552723827, 39.91836025895325], [-75.12820510929488, 39.916501356947116], [-75.12821107067575, 39.916038361832044], [-75.13247999059725, 39.913618735105224], [-75.13316194346937, 39.91372858686683], [-75.13491672642355, 39.91558486592152], [-75.13850653639933, 39.91357916571405], [-75.13900464081405, 39.913545178004554]]], \"spatialReference\": {\"wkid\": 4326}}",
+    "bbox_wgs84": [
+      -75.14557522268156,
+      39.91351769567812,
+      -75.1261723095077,
+      39.925468396256214
+    ],
+    "feature_count": 0,
+    "fetched_at": "2026-11-05T23:09:22+00:00"
+  },
+  "test_ships_pier82_nps_parks.geojson": {
+    "description": "National Park Service unit boundaries (Land Resources Division)",
+    "query_url": "https://services1.arcgis.com/fBc8EJBxQRMcHlei/arcgis/rest/services/NPS_Land_Resources_Division_Boundary_and_Tract_Data_Service/FeatureServer/2/query?where=1%3D1&geometryType=esriGeometryPolygon&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=%2A&outSR=4326&f=geojson&orderByFields=OBJECTID",
+    "query_geometry": "{\"rings\": [[[-75.13900464081405, 39.913545178004554], [-75.1454639472459, 39.920261016730805], [-75.14553954704732, 39.920681562382065], [-75.13720524018237, 39.92542737838936], [-75.13652316479568, 39.925317550629245], [-75.13270533501769, 39.92127513068315], [-75.12916299061642, 39.92325646199554], [-75.12878477219358, 39.92334165797343], [-75.12834605802625, 39.92315678078571], [-75.12618800440397, 39.92081092441849], [-75.12636827339473, 39.920369201573145], [-75.1299552723827, 39.91836025895325], [-75.12820510929488, 39.916501356947116], [-75.12821107067575, 39.916038361832044], [-75.13247999059725, 39.913618735105224], [-75.13316194346937, 39.91372858686683], [-75.13491672642355, 39.91558486592152], [-75.13850653639933, 39.91357916571405], [-75.13900464081405, 39.913545178004554]]], \"spatialReference\": {\"wkid\": 4326}}",
+    "bbox_wgs84": [
+      -75.14557522268156,
+      39.91351769567812,
+      -75.1261723095077,
+      39.925468396256214
+    ],
+    "feature_count": 0,
+    "fetched_at": "2026-11-05T23:09:23+00:00"
+  },
+  "test_ships_pier82_wetlands.geojson": {
+    "description": "USFWS National Wetlands Inventory polygons",
+    "query_url": "https://fwspublicservices.wim.usgs.gov/wetlandsmapservice/rest/services/Wetlands/MapServer/0/query?where=1%3D1&geometryType=esriGeometryPolygon&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=%2A&outSR=4326&f=geojson&orderByFields=OBJECTID",
+    "query_geometry": "{\"rings\": [[[-75.13900464081405, 39.913545178004554], [-75.1454639472459, 39.920261016730805], [-75.14553954704732, 39.920681562382065], [-75.13720524018237, 39.92542737838936], [-75.13652316479568, 39.925317550629245], [-75.13270533501769, 39.92127513068315], [-75.12916299061642, 39.92325646199554], [-75.12878477219358, 39.92334165797343], [-75.12834605802625, 39.92315678078571], [-75.12618800440397, 39.92081092441849], [-75.12636827339473, 39.920369201573145], [-75.1299552723827, 39.91836025895325], [-75.12820510929488, 39.916501356947116], [-75.12821107067575, 39.916038361832044], [-75.13247999059725, 39.913618735105224], [-75.13316194346937, 39.91372858686683], [-75.13491672642355, 39.91558486592152], [-75.13850653639933, 39.91357916571405], [-75.13900464081405, 39.913545178004554]]], \"spatialReference\": {\"wkid\": 4326}}",
+    "bbox_wgs84": [
+      -75.14557522268156,
+      39.91351769567812,
+      -75.1261723095077,
+      39.925468396256214
+    ],
+    "feature_count": 1,
+    "fetched_at": "2026-11-05T23:09:24+00:00"
+  },
+  "test_ships_pier82_golf.json": {
+    "description": "OpenStreetMap golf courses and golf features (fairway, green, tee, bunker, rough, water hazards) via Overpass",
+    "query_url": "https://overpass-api.de/api/interpreter",
+    "query": "[out:json][timeout:180];(nwr[\"leisure\"=\"golf_course\"](39.91351769567812,-75.14557522268156,39.925468396256214,-75.1261723095077);nwr[\"disused:leisure\"=\"golf_course\"](39.91351769567812,-75.14557522268156,39.925468396256214,-75.1261723095077);nwr[\"was:leisure\"=\"golf_course\"](39.91351769567812,-75.14557522268156,39.925468396256214,-75.1261723095077);nwr[\"golf\"=\"fairway\"](39.91351769567812,-75.14557522268156,39.925468396256214,-75.1261723095077);nwr[\"golf\"=\"green\"](39.91351769567812,-75.14557522268156,39.925468396256214,-75.1261723095077);nwr[\"golf\"=\"tee\"](39.91351769567812,-75.14557522268156,39.925468396256214,-75.1261723095077);nwr[\"golf\"=\"bunker\"](39.91351769567812,-75.14557522268156,39.925468396256214,-75.1261723095077);nwr[\"golf\"=\"rough\"](39.91351769567812,-75.14557522268156,39.925468396256214,-75.1261723095077);nwr[\"golf\"=\"water_hazard\"](39.91351769567812,-75.14557522268156,39.925468396256214,-75.1261723095077);nwr[\"golf\"=\"lateral_water_hazard\"](39.91351769567812,-75.14557522268156,39.925468396256214,-75.1261723095077););out tags geom;",
+    "bbox_wgs84": [
+      -75.14557522268156,
+      39.91351769567812,
+      -75.1261723095077,
+      39.925468396256214
+    ],
+    "feature_count": 0,
+    "license": "Open Database License (ODbL) 1.0, https://opendatacommons.org/licenses/odbl/",
+    "credit": "\u00a9 OpenStreetMap contributors",
+    "fetched_at": "2026-11-05T23:10:00+00:00"
+  },
+  "test_ships_pier82_piers.json": {
+    "description": "OpenStreetMap piers (man_made=pier) and ships (building=ship, historic=ship) via Overpass",
+    "query_url": "https://overpass-api.de/api/interpreter",
+    "query": "[out:json][timeout:180];(nwr[\"man_made\"=\"pier\"](39.91351769567812,-75.14557522268156,39.925468396256214,-75.1261723095077);nwr[\"building\"=\"ship\"](39.91351769567812,-75.14557522268156,39.925468396256214,-75.1261723095077);nwr[\"historic\"=\"ship\"](39.91351769567812,-75.14557522268156,39.925468396256214,-75.1261723095077););out tags geom;",
+    "bbox_wgs84": [
+      -75.14557522268156,
+      39.91351769567812,
+      -75.1261723095077,
+      39.925468396256214
+    ],
+    "feature_count": 10,
+    "license": "Open Database License (ODbL) 1.0, https://opendatacommons.org/licenses/odbl/",
+    "credit": "\u00a9 OpenStreetMap contributors",
+    "fetched_at": "2026-11-05T23:10:47+00:00"
+  },
+  "test_ships_navyyard_piers.json": {
+    "description": "OpenStreetMap piers (man_made=pier) and ships (building=ship, historic=ship) via Overpass",
+    "query_url": "https://overpass-api.de/api/interpreter",
+    "query": "[out:json][timeout:180];(nwr[\"man_made\"=\"pier\"](39.877621313103916,-75.19152174773191,39.891878373727366,-75.168116140286);nwr[\"building\"=\"ship\"](39.877621313103916,-75.19152174773191,39.891878373727366,-75.168116140286);nwr[\"historic\"=\"ship\"](39.877621313103916,-75.19152174773191,39.891878373727366,-75.168116140286););out tags geom;",
+    "bbox_wgs84": [
+      -75.19152174773191,
+      39.877621313103916,
+      -75.168116140286,
+      39.891878373727366
+    ],
+    "feature_count": 24,
+    "license": "Open Database License (ODbL) 1.0, https://opendatacommons.org/licenses/odbl/",
+    "credit": "\u00a9 OpenStreetMap contributors",
+    "fetched_at": "2026-11-05T23:16:58+00:00"
+  },
+  "south_lidar_bridges.json": {
+    "description": "OpenStreetMap bridges (ways with bridge=* carrying a highway or railway) via Overpass",
+    "query_url": "https://overpass-api.de/api/interpreter",
+    "query": "[out:json][timeout:180];(way[\"bridge\"][\"bridge\"!=\"no\"][\"highway\"](39.87592191615771,-75.21157451970149,39.98131021637861,-75.11515254078567);way[\"bridge\"][\"bridge\"!=\"no\"][\"railway\"](39.87592191615771,-75.21157451970149,39.98131021637861,-75.11515254078567););out tags geom;",
+    "bbox_wgs84": [
+      -75.21157451970149,
+      39.87592191615771,
+      -75.11515254078567,
+      39.98131021637861
+    ],
+    "feature_count": 1105,
+    "license": "Open Database License (ODbL) 1.0, https://opendatacommons.org/licenses/odbl/",
+    "credit": "\u00a9 OpenStreetMap contributors",
+    "fetched_at": "2026-11-06T03:27:22+00:00"
+  },
+  "north_lidar_bridges.json": {
+    "description": "OpenStreetMap bridges (ways with bridge=* carrying a highway or railway) via Overpass",
+    "query_url": "https://overpass-api.de/api/interpreter",
+    "query": "[out:json][timeout:180];(way[\"bridge\"][\"bridge\"!=\"no\"][\"highway\"](39.970764750077954,-75.21146255009202,40.011742500281215,-75.11499126231898);way[\"bridge\"][\"bridge\"!=\"no\"][\"railway\"](39.970764750077954,-75.21146255009202,40.011742500281215,-75.11499126231898););out tags geom;",
+    "bbox_wgs84": [
+      -75.21146255009202,
+      39.970764750077954,
+      -75.11499126231898,
+      40.011742500281215
+    ],
+    "feature_count": 574,
+    "license": "Open Database License (ODbL) 1.0, https://opendatacommons.org/licenses/odbl/",
+    "credit": "\u00a9 OpenStreetMap contributors",
+    "fetched_at": "2026-11-06T03:27:58+00:00"
+  },
+  "upper_north_lidar_bridges.json": {
+    "description": "OpenStreetMap bridges (ways with bridge=* carrying a highway or railway) via Overpass",
+    "query_url": "https://overpass-api.de/api/interpreter",
+    "query": "[out:json][timeout:180];(way[\"bridge\"][\"bridge\"!=\"no\"][\"highway\"](40.00014896463083,-75.21157754006998,40.04087548845446,-75.11509694606819);way[\"bridge\"][\"bridge\"!=\"no\"][\"railway\"](40.00014896463083,-75.21157754006998,40.04087548845446,-75.11509694606819););out tags geom;",
+    "bbox_wgs84": [
+      -75.21157754006998,
+      40.00014896463083,
+      -75.11509694606819,
+      40.04087548845446
+    ],
+    "feature_count": 479,
+    "license": "Open Database License (ODbL) 1.0, https://opendatacommons.org/licenses/odbl/",
+    "credit": "\u00a9 OpenStreetMap contributors",
+    "fetched_at": "2026-11-06T03:28:40+00:00"
+  },
+  "west_lidar_bridges.json": {
+    "description": "OpenStreetMap bridges (ways with bridge=* carrying a highway or railway) via Overpass",
+    "query_url": "https://overpass-api.de/api/interpreter",
+    "query": "[out:json][timeout:180];(way[\"bridge\"][\"bridge\"!=\"no\"][\"highway\"](39.94159881369132,-75.26161311115837,39.980530534031224,-75.19514850290497);way[\"bridge\"][\"bridge\"!=\"no\"][\"railway\"](39.94159881369132,-75.26161311115837,39.980530534031224,-75.19514850290497););out tags geom;",
+    "bbox_wgs84": [
+      -75.26161311115837,
+      39.94159881369132,
+      -75.19514850290497,
+      39.980530534031224
+    ],
+    "feature_count": 194,
+    "license": "Open Database License (ODbL) 1.0, https://opendatacommons.org/licenses/odbl/",
+    "credit": "\u00a9 OpenStreetMap contributors",
+    "fetched_at": "2026-11-06T03:29:11+00:00"
+  },
+  "west_north_bridges.json": {
+    "description": "OpenStreetMap bridges (ways with bridge=* carrying a highway or railway) via Overpass",
+    "query_url": "https://overpass-api.de/api/interpreter",
+    "query": "[out:json][timeout:180];(way[\"bridge\"][\"bridge\"!=\"no\"][\"highway\"](39.959333596558864,-75.28399636541867,40.01586946859045,-75.19548853645566);way[\"bridge\"][\"bridge\"!=\"no\"][\"railway\"](39.959333596558864,-75.28399636541867,40.01586946859045,-75.19548853645566););out tags geom;",
+    "bbox_wgs84": [
+      -75.28399636541867,
+      39.959333596558864,
+      -75.19548853645566,
+      40.01586946859045
+    ],
+    "feature_count": 292,
+    "license": "Open Database License (ODbL) 1.0, https://opendatacommons.org/licenses/odbl/",
+    "credit": "\u00a9 OpenStreetMap contributors",
+    "fetched_at": "2026-11-06T03:29:56+00:00"
+  },
+  "southwest_bridges.json": {
+    "description": "OpenStreetMap bridges (ways with bridge=* carrying a highway or railway) via Overpass",
+    "query_url": "https://overpass-api.de/api/interpreter",
+    "query": "[out:json][timeout:180];(way[\"bridge\"][\"bridge\"!=\"no\"][\"highway\"](39.86480815125875,-75.270142722549,39.951747243323226,-75.17991710926526);way[\"bridge\"][\"bridge\"!=\"no\"][\"railway\"](39.86480815125875,-75.270142722549,39.951747243323226,-75.17991710926526););out tags geom;",
+    "bbox_wgs84": [
+      -75.270142722549,
+      39.86480815125875,
+      -75.17991710926526,
+      39.951747243323226
+    ],
+    "feature_count": 697,
+    "license": "Open Database License (ODbL) 1.0, https://opendatacommons.org/licenses/odbl/",
+    "credit": "\u00a9 OpenStreetMap contributors",
+    "fetched_at": "2026-11-06T03:30:40+00:00"
+  },
+  "germantown_bridges.json": {
+    "description": "OpenStreetMap bridges (ways with bridge=* carrying a highway or railway) via Overpass",
+    "query_url": "https://overpass-api.de/api/interpreter",
+    "query": "[out:json][timeout:180];(way[\"bridge\"][\"bridge\"!=\"no\"][\"highway\"](40.0303915654528,-75.21077481754841,40.08678984853328,-75.11551988077363);way[\"bridge\"][\"bridge\"!=\"no\"][\"railway\"](40.0303915654528,-75.21077481754841,40.08678984853328,-75.11551988077363););out tags geom;",
+    "bbox_wgs84": [
+      -75.21077481754841,
+      40.0303915654528,
+      -75.11551988077363,
+      40.08678984853328
+    ],
+    "feature_count": 245,
+    "license": "Open Database License (ODbL) 1.0, https://opendatacommons.org/licenses/odbl/",
+    "credit": "\u00a9 OpenStreetMap contributors",
+    "fetched_at": "2026-11-06T03:32:17+00:00"
+  },
+  "east_riverfront_bridges.json": {
+    "description": "OpenStreetMap bridges (ways with bridge=* carrying a highway or railway) via Overpass",
+    "query_url": "https://overpass-api.de/api/interpreter",
+    "query": "[out:json][timeout:180];(way[\"bridge\"][\"bridge\"!=\"no\"][\"highway\"](39.9583102397486,-75.13039688102633,40.016761577239365,-75.04000067402418);way[\"bridge\"][\"bridge\"!=\"no\"][\"railway\"](39.9583102397486,-75.13039688102633,40.016761577239365,-75.04000067402418););out tags geom;",
+    "bbox_wgs84": [
+      -75.13039688102633,
+      39.9583102397486,
+      -75.04000067402418,
+      40.016761577239365
+    ],
+    "feature_count": 418,
+    "license": "Open Database License (ODbL) 1.0, https://opendatacommons.org/licenses/odbl/",
+    "credit": "\u00a9 OpenStreetMap contributors",
+    "fetched_at": "2026-11-06T03:33:02+00:00"
+  },
+  "roxborough_bridges.json": {
+    "description": "OpenStreetMap bridges (ways with bridge=* carrying a highway or railway) via Overpass",
+    "query_url": "https://overpass-api.de/api/interpreter",
+    "query": "[out:json][timeout:180];(way[\"bridge\"][\"bridge\"!=\"no\"][\"highway\"](40.00604162820686,-75.26719186320753,40.081738314151885,-75.18009008906297);way[\"bridge\"][\"bridge\"!=\"no\"][\"railway\"](40.00604162820686,-75.26719186320753,40.081738314151885,-75.18009008906297););out tags geom;",
+    "bbox_wgs84": [
+      -75.26719186320753,
+      40.00604162820686,
+      -75.18009008906297,
+      40.081738314151885
+    ],
+    "feature_count": 405,
+    "license": "Open Database License (ODbL) 1.0, https://opendatacommons.org/licenses/odbl/",
+    "credit": "\u00a9 OpenStreetMap contributors",
+    "fetched_at": "2026-11-06T03:33:44+00:00"
+  },
+  "lower_northeast_bridges.json": {
+    "description": "OpenStreetMap bridges (ways with bridge=* carrying a highway or railway) via Overpass",
+    "query_url": "https://overpass-api.de/api/interpreter",
+    "query": "[out:json][timeout:180];(way[\"bridge\"][\"bridge\"!=\"no\"][\"highway\"](40.00514926147266,-75.13114752644778,40.06645863544548,-74.96751556970611);way[\"bridge\"][\"bridge\"!=\"no\"][\"railway\"](40.00514926147266,-75.13114752644778,40.06645863544548,-74.96751556970611););out tags geom;",
+    "bbox_wgs84": [
+      -75.13114752644778,
+      40.00514926147266,
+      -74.96751556970611,
+      40.06645863544548
+    ],
+    "feature_count": 449,
+    "license": "Open Database License (ODbL) 1.0, https://opendatacommons.org/licenses/odbl/",
+    "credit": "\u00a9 OpenStreetMap contributors",
+    "fetched_at": "2026-11-06T03:34:20+00:00"
+  },
+  "northwest_bridges.json": {
+    "description": "OpenStreetMap bridges (ways with bridge=* carrying a highway or railway) via Overpass",
+    "query_url": "https://overpass-api.de/api/interpreter",
+    "query": "[out:json][timeout:180];(way[\"bridge\"][\"bridge\"!=\"no\"][\"highway\"](40.045370910042486,-75.25122979392151,40.09734901818891,-75.16042564279837);way[\"bridge\"][\"bridge\"!=\"no\"][\"railway\"](40.045370910042486,-75.25122979392151,40.09734901818891,-75.16042564279837););out tags geom;",
+    "bbox_wgs84": [
+      -75.25122979392151,
+      40.045370910042486,
+      -75.16042564279837,
+      40.09734901818891
+    ],
+    "feature_count": 187,
+    "license": "Open Database License (ODbL) 1.0, https://opendatacommons.org/licenses/odbl/",
+    "credit": "\u00a9 OpenStreetMap contributors",
+    "fetched_at": "2026-11-06T03:34:58+00:00"
+  },
+  "upper_northeast_bridges.json": {
+    "description": "OpenStreetMap bridges (ways with bridge=* carrying a highway or railway) via Overpass",
+    "query_url": "https://overpass-api.de/api/interpreter",
+    "query": "[out:json][timeout:180];(way[\"bridge\"][\"bridge\"!=\"no\"][\"highway\"](40.045185598524114,-75.10472311787125,40.141246179090835,-74.94781362117637);way[\"bridge\"][\"bridge\"!=\"no\"][\"railway\"](40.045185598524114,-75.10472311787125,40.141246179090835,-74.94781362117637););out tags geom;",
+    "bbox_wgs84": [
+      -75.10472311787125,
+      40.045185598524114,
+      -74.94781362117637,
+      40.141246179090835
+    ],
+    "feature_count": 348,
+    "license": "Open Database License (ODbL) 1.0, https://opendatacommons.org/licenses/odbl/",
+    "credit": "\u00a9 OpenStreetMap contributors",
+    "fetched_at": "2026-11-06T03:35:42+00:00"
   }
 }

@@ -936,6 +936,40 @@ def texture_local(ground, xs, ys):
     return T @ ce, T @ cn
 
 
+def vessel_hulls(cfg, frame, region, struct, ground, origin):
+    """(parts, report) for the reviewed vessels inside this area's LiDAR
+    region: parts {"id": "v<vessel id>-<k>", "h", "polys"} in local m;
+    report one entry per vessel (id, kind, poly, h_top, h_source, measured,
+    parts). base "ground" (a hull in a dry dock) stands on the surrounding
+    ground; others on the water level."""
+    import shapely
+
+    from pixelphilly import lidar, vessels
+
+    if not cfg.get("vessels"):
+        return [], []  # opt-in per area config: Old City and other scenes stay byte-identical
+    data = json.loads(vessels.VESSELS.read_text()) if vessels.VESSELS.exists() else {}
+    defaults = data.get("kind_defaults_m", {})
+    parts, report = [], []
+    for v in vessels.hulls():
+        poly = shapely.transform(v["polygon"], lambda c: np.column_stack(frame.to_local(c[:, 0], c[:, 1])))
+        if poly.is_empty or not region.contains(poly.centroid):
+            continue
+        base = WATER_LEVEL_M
+        if v.get("base") == "ground":
+            b = lidar.footprint_base(poly, ground, origin, lidar.RES_M)
+            base = WATER_LEVEL_M if b is None else b
+        default_h = float(defaults.get(v["kind"], v["h"]))
+        vp, measured = vessels.vessel_parts(poly, struct, origin, lidar.RES_M, water_level=base, default_h=default_h)
+        vid = v["id"].replace("-", "")
+        for k, part in enumerate(vp):
+            parts.append({"id": f"v{vid}-{k}", "h": round(float(part["h"]), 2), "polys": part["polys"]})
+        report.append({"id": v["id"], "kind": v["kind"], "poly": poly, "measured": measured,
+                       "h_top": round(max(float(p["h"]) for p in vp), 1),
+                       "h_source": "lidar (2022)" if measured else "default (assumed by kind)", "parts": len(vp)})
+    return parts, report
+
+
 def lidar_shaped(cfg, frame, buildings):
     """Replace buildings inside the LiDAR region with stepped parts
     (pixelphilly.lidar). Each part keeps the building id with a suffix and is
@@ -1018,6 +1052,17 @@ def lidar_shaped(cfg, frame, buildings):
         lambda lon, lat: tuple(float(v) for v in frame.to_local(lon, lat)))
     for k in dropped_reviewed:
         print(f"  structure dropped (reviewed exclusion {k})", flush=True)
+    # Reviewed vessels (config/vessels.json, traced from the 2024 aerial):
+    # one whole hull each at the water level, LiDAR-shaped where the 2022
+    # LiDAR saw the same hull, else a flat hull at its kind's default
+    # height; the LiDAR fragments under a hull give way (pixelphilly.vessels)
+    from pixelphilly import vessels
+
+    v_parts, v_report = vessel_hulls(cfg, frame, region, struct, ground, origin)
+    if v_parts:
+        s_parts, dropped_frag = vessels.drop_fragments(s_parts, [v["poly"] for v in v_report])
+        print(f"  vessels: {len(v_report)} hulls ({sum(v['measured'] for v in v_report)} LiDAR-shaped), "
+              f"{dropped_frag} LiDAR structure regions replaced", flush=True)
     # Renumber the kept regions so ids stay s0, s1, ...
     renum = {k: i for i, k in enumerate(sorted({p["region"] for p in s_parts}))}
     s_parts = [{**p, "region": renum[p["region"]]} for p in s_parts]
@@ -1029,6 +1074,8 @@ def lidar_shaped(cfg, frame, buildings):
         out.append({"id": f"s{k}-{per_region[k]}", "h": part["h"], "polys": part["polys"], "structure": True})
         per_region[k] += 1
         s_area += sum(Polygon(p[0], p[1:]).area for p in part["polys"])
+    for part in v_parts:
+        out.append({"id": part["id"], "h": part["h"], "polys": part["polys"], "structure": True})
     print(f"  lidar structures: {found:,} found, {dropped_photo:,} dropped (2024 photo shows nothing), "
           f"{n_regions:,} kept as {len(s_parts):,} parts in {time.monotonic() - t0:.0f} s", flush=True)
     return out, {"lidar_buildings_shaped": shaped, "lidar_fallback_single_height": fallback,
@@ -1039,6 +1086,8 @@ def lidar_shaped(cfg, frame, buildings):
                  **({"lidar_structures_dropped_reviewed": dropped_reviewed} if dropped_reviewed else {}),
                  "lidar_highway_mask": highways is not None, "lidar_highway_masked_m2": round(masked_m2, 1),
                  "lidar_rail_mask": rails is not None,
+                 **({"vessels": [{k: v[k] for k in ("id", "kind", "h_top", "h_source", "parts")} for v in v_report]}
+                    if v_report else {}),
                  "lidar_margin_m": lidar.LIDAR_MARGIN_M}
 
 

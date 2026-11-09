@@ -1,6 +1,6 @@
 {
   "buildings_downloaded": 115885,
-  "buildings_in_scene": 251540,
+  "buildings_in_scene": 251910,
   "buildings_dropped": [],
   "height_source_counts": {
     "approx_hgt": 115358,
@@ -1848,13 +1848,323 @@
     17579,
     106422
   ],
-  "lidar_structures": 2362,
-  "lidar_structure_parts": 7648,
-  "lidar_structure_area_m2": 934614.8,
+  "lidar_structures": 2329,
+  "lidar_structure_parts": 7479,
+  "lidar_structure_area_m2": 904724.8,
   "lidar_structures_dropped_photo": 1066,
   "lidar_highway_mask": true,
   "lidar_highway_masked_m2": 1619320.3,
   "lidar_rail_mask": true,
+  "vessels": [
+    {
+      "id": "N1-h1",
+      "kind": "naval_small",
+      "h_top": 10.0,
+      "h_source": "default (assumed by kind)",
+      "parts": 1
+    },
+    {
+      "id": "N1-h2",
+      "kind": "naval_small",
+      "h_top": 24.1,
+      "h_source": "lidar (2022)",
+      "parts": 33
+    },
+    {
+      "id": "N1-h3",
+      "kind": "naval_small",
+      "h_top": 10.0,
+      "h_source": "default (assumed by kind)",
+      "parts": 1
+    },
+    {
+      "id": "N1-h4",
+      "kind": "naval_small",
+      "h_top": 10.0,
+      "h_source": "default (assumed by kind)",
+      "parts": 1
+    },
+    {
+      "id": "N1-h5",
+      "kind": "naval_small",
+      "h_top": 10.0,
+      "h_source": "default (assumed by kind)",
+      "parts": 1
+    },
+    {
+      "id": "N1-h6",
+      "kind": "naval_small",
+      "h_top": 10.0,
+      "h_source": "default (assumed by kind)",
+      "parts": 1
+    },
+    {
+      "id": "N2-h1",
+      "kind": "naval",
+      "h_top": 28.6,
+      "h_source": "lidar (2022)",
+      "parts": 41
+    },
+    {
+      "id": "N2-h2",
+      "kind": "naval",
+      "h_top": 12.0,
+      "h_source": "default (assumed by kind)",
+      "parts": 1
+    },
+    {
+      "id": "N3-h1",
+      "kind": "naval_small",
+      "h_top": 10.0,
+      "h_source": "default (assumed by kind)",
+      "parts": 1
+    },
+    {
+      "id": "N3-h2",
+      "kind": "naval_small",
+      "h_top": 10.0,
+      "h_source": "default (assumed by kind)",
+      "parts": 1
+    },
+    {
+      "id": "N3-h3",
+      "kind": "naval_small",
+      "h_top": 10.0,
+      "h_source": "default (assumed by kind)",
+      "parts": 1
+    },
+    {
+      "id": "N3-h4",
+      "kind": "barge",
+      "h_top": 3.0,
+      "h_source": "default (assumed by kind)",
+      "parts": 1
+    },
+    {
+      "id": "N4-h1",
+      "kind": "naval_small",
+      "h_top": 10.0,
+      "h_source": "default (assumed by kind)",
+      "parts": 1
+    },
+    {
+      "id": "N4-h2",
+      "kind": "naval_small",
+      "h_top": 5.0,
+      "h_source": "lidar (2022)",
+      "parts": 2
+    },
+    {
+      "id": "N4-h3",
+      "kind": "naval_small",
+      "h_top": 9.9,
+      "h_source": "lidar (2022)",
+      "parts": 15
+    },
+    {
+      "id": "N5-h1",
+      "kind": "naval",
+      "h_top": 12.0,
+      "h_source": "default (assumed by kind)",
+      "parts": 1
+    },
+    {
+      "id": "N6-h1",
+      "kind": "naval",
+      "h_top": 12.0,
+      "h_source": "default (assumed by kind)",
+      "parts": 1
+    },
+    {
+      "id": "N7-h1",
+      "kind": "barge",
+      "h_top": 3.0,
+      "h_source": "default (assumed by kind)",
+      "parts": 1
+    },
+    {
+      "id": "N7-h2",
+      "kind": "tug",
+      "h_top": 5.0,
+      "h_source": "default (assumed by kind)",
+      "parts": 1
+    },
+    {
+      "id": "N7-h3",
+      "kind": "barge",
+      "h_top": 3.0,
+      "h_source": "default (assumed by kind)",
+      "parts": 1
+    },
+    {
+      "id": "N7-h4",
+      "kind": "naval",
+      "h_top": 22.7,
+      "h_source": "lidar (2022)",
+      "parts": 20
+    },
+    {
+      "id": "N7-h5",
+      "kind": "naval",
+      "h_top": 12.0,
+      "h_source": "default (assumed by kind)",
+      "parts": 1
+    },
+    {
+      "id": "N8-h1",
+      "kind": "carrier",
+      "h_top": 39.0,
+      "h_source": "lidar (2022)",
+      "parts": 51
+    },
+    {
+      "id": "N9-h1",
+      "kind": "naval",
+      "h_top": 11.4,
+      "h_source": "lidar (2022)",
+      "parts": 15
+    },
+    {
+      "id": "N9-h2",
+      "kind": "tug",
+      "h_top": 3.3,
+      "h_source": "lidar (2022)",
+      "parts": 2
+    },
+    {
+      "id": "N10-h1",
+      "kind": "naval",
+      "h_top": 12.0,
+      "h_source": "default (assumed by kind)",
+      "parts": 1
+    },
+    {
+      "id": "N10-h2",
+      "kind": "naval",
+      "h_top": 24.3,
+      "h_source": "lidar (2022)",
+      "parts": 89
+    },
+    {
+      "id": "P1-h1",
+      "kind": "liner",
+      "h_top": 45.5,
+      "h_source": "lidar (2022)",
+      "parts": 78
+    },
+    {
+      "id": "P2-h1",
+      "kind": "container",
+      "h_top": 24.0,
+      "h_source": "default (assumed by kind)",
+      "parts": 1
+    },
+    {
+      "id": "P2-h2",
+      "kind": "barge",
+      "h_top": 3.0,
+      "h_source": "default (assumed by kind)",
+      "parts": 1
+    },
+    {
+      "id": "P2-h3",
+      "kind": "tug",
+      "h_top": 5.0,
+      "h_source": "default (assumed by kind)",
+      "parts": 1
+    },
+    {
+      "id": "P2-h4",
+      "kind": "container",
+      "h_top": 24.0,
+      "h_source": "default (assumed by kind)",
+      "parts": 1
+    },
+    {
+      "id": "P3-h1",
+      "kind": "roro",
+      "h_top": 22.0,
+      "h_source": "default (assumed by kind)",
+      "parts": 1
+    },
+    {
+      "id": "L1-h1",
+      "kind": "sailing_ship",
+      "h_top": 5.6,
+      "h_source": "lidar (2022)",
+      "parts": 3
+    },
+    {
+      "id": "L1-h2",
+      "kind": "cruiser_historic",
+      "h_top": 33.7,
+      "h_source": "lidar (2022)",
+      "parts": 41
+    },
+    {
+      "id": "L1-h3",
+      "kind": "excursion_boat",
+      "h_top": 6.0,
+      "h_source": "default (assumed by kind)",
+      "parts": 1
+    },
+    {
+      "id": "L1-h4",
+      "kind": "excursion_boat",
+      "h_top": 12.8,
+      "h_source": "lidar (2022)",
+      "parts": 6
+    },
+    {
+      "id": "L2-h1",
+      "kind": "sailing_ship",
+      "h_top": 46.8,
+      "h_source": "lidar (2022)",
+      "parts": 37
+    },
+    {
+      "id": "L3-h1",
+      "kind": "battleship",
+      "h_top": 41.0,
+      "h_source": "lidar (2022)",
+      "parts": 48
+    },
+    {
+      "id": "S2-h4",
+      "kind": "tug",
+      "h_top": 7.1,
+      "h_source": "lidar (2022)",
+      "parts": 5
+    },
+    {
+      "id": "S2-h5",
+      "kind": "barge",
+      "h_top": 3.0,
+      "h_source": "default (assumed by kind)",
+      "parts": 1
+    },
+    {
+      "id": "S2-h6",
+      "kind": "barge",
+      "h_top": 7.8,
+      "h_source": "lidar (2022)",
+      "parts": 15
+    },
+    {
+      "id": "S2-h7",
+      "kind": "barge",
+      "h_top": 8.7,
+      "h_source": "lidar (2022)",
+      "parts": 12
+    },
+    {
+      "id": "S2-h8",
+      "kind": "barge",
+      "h_top": 3.0,
+      "h_source": "default (assumed by kind)",
+      "parts": 1
+    }
+  ],
   "lidar_margin_m": 100.0,
   "facade_join": {
     "parcel": 114589,

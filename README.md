@@ -518,12 +518,20 @@ uv run python scripts/24_style_compare.py
 
 **GPU:** about $13.56 for Phase 1. That's $12.00 logged in `output/gpu_runs.jsonl`, plus an estimated $1.56 of container start and weight loading, which joint runs don't log.
 
+## The current map: v17, frozen (Nov. 9)
+
+`philly` v17 is the accepted map and the viewer default (`?area=philly&v=v17`). It is v14 plus the ship fixes (v15) and the bridge fixes (v16, v17); see the CHANGELOG. It has the same 12 regions and tile counts as v14 (75,367 files). Don't rebuild or edit `output/philly/tiles/v17/`; build v18 instead.
+- **Manifest:** `output/philly/FROZEN_v17.json`.
+- **Check it:** `uv run python scripts/26_freeze_map.py --name philly --version v17 --verify`.
+- **Known flaws Stephen accepted:** raw shadow strips along some bridge decks (W Roosevelt Blvd), plus dark rectangles and a three-box outline on the water at the Platt Bridge.
+- **Not yet made for v17:** an offline copy. The one below is v14. Build one with `27_offline_copy.py --version v17`.
+
 ## The talk map: v14, frozen (Nov. 4)
 
 `philly` v14 is the map for Stephen's talk: all 12 regions, 37,681 tiles per layer. It is frozen. Don't rebuild or edit `output/philly/tiles/v14/`; build v15 instead.
 - **Manifest:** `output/philly/FROZEN_v14.json` lists the file count, bytes, tiles per layer, regions, drawing run, prompt, LoRA and date. It also holds a SHA-256 over every file (`scripts/26_freeze_map.py`).
 - **Check it:** `uv run python scripts/26_freeze_map.py --name philly --version v14 --verify`.
-- **Viewer:** it now opens `?area=philly&v=v14` by default. Older versions stay available with `?area=...&v=...`.
+- **Viewer:** v14 was the default until Nov. 9; it stays available at `?area=philly&v=v14`.
 
 **Offline copy** (`scripts/27_offline_copy.py`): `output/philly_offline_v14/` holds the viewer, the vendored OpenSeadragon, the v14 tiles (both layers), the manifest, start scripts (`start.command`/`start.sh`/`start.bat`, Python's built-in server on 127.0.0.1:8137) and a README with the steps. The copy sets `data-offline="1"`, which turns off address search, the only feature that calls a remote API (the City's AIS). With networking off, a Playwright check logged no request off 127.0.0.1 (CHANGELOG, Nov. 4).
 
@@ -613,7 +621,7 @@ Tracked across rounds; details in CHANGELOG.
 
 | Issue | Where | Likely cause | Kind |
 |---|---|---|---|
-| Ships and cranes look unusual (Stephen, Oct. 23): **partly fixed in the scene, not yet drawn** | Navy Yard basin, Packer Ave terminal | LiDAR structures (see `data/README.md`) now extrude ships and container stacks that have no footprint (Navy Yard atlas spot: the carrier and two moored ships). Their walls take their own color, darkened, and the water repaint keeps them, since they're scene buildings. Highways are masked by the City centerlines, and structures the 2024 photo doesn't show are dropped (a ship gone since 2022, moved containers). Cranes are partial: lattice booms give rough, sparse returns. Not yet rendered or drawn | Geometry, color and drawing |
+| Ships (Stephen, Oct. 23 and Nov. 5): **mostly fixed in v15, pending review** | Navy Yard, Packer Ave, Pier 82, Penn's Landing, Tioga, Schuylkill | Reviewed vessel outlines from the 2024 aerial (`config/vessels.json`) and OSM piers now protect hulls and piers from the water repaint. Each accepted hull is one structure at water level, shaped by the 2022 LiDAR where it saw the same hull or flat at an assumed height by kind. Still open: the carrier's and SS United States's hull sides carry window-like lines; the Moshulu keeps its flat v14-style drawing (LiDAR masts drew as towers); cranes stay partial | Geometry and drawing |
 | Construction sites drawn with invented water or lawns | Penn's Landing and elsewhere | Drawing-model behavior on featureless ground | Model (training) |
 | Teal invented water not caught by the scan | Cobbs Creek construction site (found by eye and redrawn Nov. 4) | The scan's water hue band is 185–215°; the model sometimes draws water at hue ~165°. Widening the band also catches real pools and basins, so each hit would need review | Scan rule |
 | Stadium outer walls drawn with windows | The Linc, CBP, Franklin Field | Drawing-model behavior: tall walls read as façades | Model (training) |

@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About Pixel Philly</title>
+<meta name="description" content="How Pixel Philly, an AI-drawn isometric map of Philadelphia, was made, and the public data behind it.">
+<!-- Own stylesheet, not viewer.css: the map page locks scrolling for the
+     zoomable viewer, and inheriting that cut this page off (Nov. 5). -->
+<link rel="stylesheet" href="about.css">
+<!--
+  About and credits page for the map (v17, frozen Nov. 9, 2026; the talk map was v14).
+  Opening two paragraphs: Stephen's own words (the first with three accuracy
+  and style edits he approved Nov. 5). Everything below them is the technical
+  sourcing, drawn from data/README.md and README.md; keep the two in step when
+  sources change. Hero image: a 1:1 crop of v14 around City Hall's tower,
+  cut by scripts/29_flyover.py's Pyramid.window.
+-->
+</head>
+<body>
+<nav class="topbar" aria-label="Site">
+  <div class="inner">
+    <a href="./">&larr; Back to the map</a>
+    <span class="name">Pixel Philly</span>
+  </div>
+</nav>
+
+<figure class="hero">
+  <img src="about-hero.webp" width="1360" height="640"
+       alt="A detail of the pixel-art map: City Hall's tower among the office towers of Center City, drawn in an isometric view.">
+</figure>
+
+<main class="page">
+  <header>
+    <span class="kicker">AI-generated illustration</span>
+    <h1>About Pixel Philly</h1>
+  </header>
+
+  <p class="lede">This page was built as an experiment for a talk I gave on "Storytelling With Maps" at Rowan University on Nov. 12, 2026. It's built from data on every building, street tree and piece of land cover in the city of Philadelphia. It is imperfect. It is incomplete. It should only be used for entertainment purposes. The goal was to see how far I could get ahead of my talk using public data. <a href="https://sstirling.github.io/prezis/presentations/worldplanningday/">This slideshow</a> has more details on how and why I put it together. I ran out of time, so Google Gemini was ultimately used for one piece of this: creating the example images that taught the AI model its illustration style. If I can address that in the future to make this a true public data project, I will. The rest of the sourcing is listed below.</p>
+
+  <p class="lede">This is a largely vibe-coded project, using Claude Code, designed to show attendees how I am experimenting with LLMs to extend my skills and knowledge. I have 15 years of foundational knowledge on GIS and data. It was emphasized to attendees that AI is not a replacement for foundational knowledge. The code for this project is here: <a href="https://www.github.com/sstirling/pixel-philly">https://www.github.com/sstirling/pixel-philly</a>.</p>
+
+  <h2>How the map was made</h2>
+  <ol>
+    <li>Building footprints, heights, trees, water and parks from the public sources below were assembled into a 3D model of the city.</li>
+    <li>The model was draped with the City's 2024 aerial photos and rendered from a fixed isometric camera, in about 3,300 square tiles.</li>
+    <li>An open-source AI image model redrew each render as pixel art. Neighboring tiles were drawn together so streets and buildings line up across their edges.</li>
+    <li>Automated checks, plus review against the aerial photos, removed water the AI invented, corrected winter-brown lawns and fixed buildings drawn from bad height records.</li>
+  </ol>
+
+  <h2>What to keep in mind</h2>
+  <ul>
+    <li><strong>It's an illustration, not a survey.</strong> The AI can invent, simplify or misplace details. Errors caught in review were fixed; others remain.</li>
+    <li><strong>Data dates differ.</strong> The aerial photos were taken in March 2024 and the 3D heights come from 2022 LiDAR. Building outlines, trees and other City layers were downloaded in October and November 2026.</li>
+    <li><strong>Woods and trees are stylized.</strong> Street trees come from the City's tree inventory. Woods are drawn as tree shapes placed using LiDAR, not as individual surveyed trees.</li>
+    <li><strong>No personal information.</strong> Building styles use only property-record fields that describe the building (its type, size and age). No owner names, sale records, mailing addresses, tax data or property-condition ratings were used.</li>
+    <li><strong>Address search</strong> uses the City's address service and drops a pin at street level.</li>
+  </ul>
+
+  <h2>Data sources</h2>
+  <h3>City of Philadelphia</h3>
+  <ul class="sources">
+    <li><a href="https://opendataphilly.org/datasets/building-footprints">Building footprints</a><span class="what">With the City's height estimates. Department of Licenses and Inspections.</span></li>
+    <li><a href="https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7001">2024 aerial imagery, 3-inch resolution</a><span class="what">Via PASDA. The photo layer, and the colors of roofs and ground.</span></li>
+    <li><a href="https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154">2022 LiDAR point cloud</a><span class="what">Via PASDA. Building shapes and heights, woods and other structures.</span></li>
+    <li>Property records<span class="what">Office of Property Assessment, building-description fields only, matched to buildings through Water Department parcels.</span></li>
+    <li>Street centerlines and railroad lines<span class="what">Streets Department; street-facing walls, highways and rail.</span></li>
+    <li><a href="https://metadata.phila.gov/#home/datasetdetails/5543868820583086178c4f89/">City limits</a><span class="what">Where the map stops.</span></li>
+    <li>Tree inventory, park properties and swimming pools<span class="what">Philadelphia Parks &amp; Recreation.</span></li>
+    <li>Hydrographic features<span class="what">Philadelphia Water Department.</span></li>
+  </ul>
+  <h3>Federal</h3>
+  <ul class="sources">
+    <li>National Hydrography Dataset<span class="what">U.S. Geological Survey. Rivers and creeks.</span></li>
+    <li>National Wetlands Inventory<span class="what">U.S. Fish and Wildlife Service.</span></li>
+    <li>Park unit boundaries<span class="what">National Park Service. Independence National Historical Park.</span></li>
+  </ul>
+  <h3>Other</h3>
+  <ul class="sources">
+    <li>Market-Frankford Line route<span class="what">SEPTA.</span></li>
+    <li>Building colors and materials, golf course features<span class="what">&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>, available under the Open Database License.</span></li>
+  </ul>
+
+  <h2>AI models and software</h2>
+  <ul class="sources">
+    <li>Drawing model<span class="what"><a href="https://huggingface.co/Qwen/Qwen-Image-Edit-2511">Qwen-Image-Edit-2511</a> (Qwen team, Alibaba; Apache 2.0), sped up with <a href="https://huggingface.co/lightx2v/Qwen-Image-Edit-2511-Lightning">Qwen-Image-Edit-2511-Lightning</a> (lightx2v; Apache 2.0).</span></li>
+    <li>Illustration style<span class="what">A custom style add-on (a LoRA) trained for this project on Philadelphia images generated with Google Gemini 3 Pro Image. Every tile on the map was drawn with it.</span></li>
+    <li>Software<span class="what">three.js (3D rendering), OpenSeadragon (map viewer), Modal (GPUs). Code written with Claude Code (Anthropic).</span></li>
+  </ul>
+
+  <h2>Inspiration</h2>
+  <p><a href="https://tiny.london">tiny.london</a> and <a href="https://isometric.nyc">isometric.nyc</a>.</p>
+
+  <p class="fine">Map version v17, frozen Nov. 9, 2026.</p>
+</main>
+</body>
+</html>

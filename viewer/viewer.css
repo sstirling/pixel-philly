@@ -78,3 +78,5 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
   .bar { top: 8px; left: 8px; right: 8px; padding: 8px; }
   .credits { left: 8px; right: 56px; bottom: 8px; }
 }
+
+.credits a { color: var(--accent); }

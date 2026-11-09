@@ -1,0 +1,110 @@
+{
+  "buildings_downloaded": 47,
+  "buildings_in_scene": 460,
+  "buildings_dropped": [],
+  "height_source_counts": {
+    "approx_hgt": 45,
+    "max_hgt": 1,
+    "default": 1
+  },
+  "height_outliers_max_gt_ratio_x_approx": [],
+  "tallest_buildings_m": [
+    {
+      "id": "vP1h1-82",
+      "h": 45.53
+    },
+    {
+      "id": "vP1h1-80",
+      "h": 43.73
+    },
+    {
+      "id": "vP1h1-81",
+      "h": 43.05
+    },
+    {
+      "id": "vP1h1-77",
+      "h": 41.81
+    },
+    {
+      "id": "vP1h1-79",
+      "h": 41.06
+    },
+    {
+      "id": "vP1h1-76",
+      "h": 40.61
+    },
+    {
+      "id": "vP1h1-78",
+      "h": 40.37
+    },
+    {
+      "id": "vP1h1-75",
+      "h": 39.25
+    },
+    {
+      "id": "vP1h1-74",
+      "h": 29.96
+    },
+    {
+      "id": "vP1h1-72",
+      "h": 29.9
+    }
+  ],
+  "trees_in_scene": 0,
+  "ground_texture_px": [
+    7424,
+    5888
+  ],
+  "ground_texture_source_px": [
+    7424,
+    5888
+  ],
+  "uv_fit_max_residual_m": 7.545721635968866e-06,
+  "ground_median_filter_px": 5,
+  "frames": 8,
+  "lidar_buildings_shaped": 13,
+  "lidar_fallback_single_height": 0,
+  "lidar_parts": 322,
+  "lidar_terrace_parts": 0,
+  "lidar_stadiums": [],
+  "lidar_structures": 10,
+  "lidar_structure_parts": 21,
+  "lidar_structure_area_m2": 1625.8,
+  "lidar_structures_dropped_photo": 8,
+  "lidar_highway_mask": true,
+  "lidar_highway_masked_m2": 0.0,
+  "lidar_rail_mask": true,
+  "vessels": [
+    {
+      "id": "P1-h1",
+      "kind": "liner",
+      "h_top": 45.5,
+      "h_source": "lidar (2022)",
+      "parts": 83
+    }
+  ],
+  "lidar_margin_m": 100.0,
+  "facade_join": {
+    "parcel": 36,
+    "unmatched": 6,
+    "address": 5
+  },
+  "facade_match_rate": 0.872,
+  "facade_styles": {
+    "warehouse": 26,
+    "other": 13,
+    "detached": 2
+  },
+  "facade_materials": {
+    "brick": 41
+  },
+  "facade_colour_source": {
+    "palette": 38,
+    "aerial": 3
+  },
+  "facade_osm_footprints": 0,
+  "facade_osm_items": 0,
+  "facade_street_fronts": 0,
+  "facade_unmatched": "plain walls (no facade)",
+  "lawn_corrected_px": 0
+}

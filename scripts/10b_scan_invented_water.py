@@ -14,6 +14,8 @@ Usage: uv run python scripts/10b_scan_invented_water.py --areas south_lidar,atla
 import argparse
 import importlib.util
 import json
+
+from shapely.ops import unary_union
 from pathlib import Path
 
 import numpy as np
@@ -104,7 +106,9 @@ def main():
         blobs, _ = rp.scan_invented_water(
             cfg, done, size, rp.FrameReader(src, done, size), rp.FrameReader(renders_dir(cfg, args.renders), frames, size),
             rp.FrameReader(area_dir(cfg, "masks"), frames, size, "L"), water_geom, pools, wetlands,
-            holds=rp.load_holds(cfg), courtyards_geom=rp.courtyard_geometry(cfg, frame, cam, x_origin, y_origin))
+            holds=rp.load_holds(cfg), courtyards_geom=rp.courtyard_geometry(cfg, frame, cam, x_origin, y_origin),
+        protect_geom=unary_union([rp.protect_for(cfg, frame, cam, x_origin, y_origin),
+                                  rp.bridges_for(cfg, frame, cam, x_origin, y_origin)]))
         flagged = [b for b in blobs if not b["exempt"]]
         reasons = {}
         for b in blobs:

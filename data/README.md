@@ -37,6 +37,38 @@ The fetch extent is the ground seen by the whole frame lattice, which is larger 
 
 **Reviewed corrections (Nov. 2).** City footprint heights and our stadium rule are both occasionally wrong. Corrections are reviewed lists in `config/`, applied in `scripts/05_build_scene.py` (`src/pixelphilly/reviewed.py`); each entry records the reason, the aerial checked and the date. `config/height_overrides.json`: footprint 478499 (5458 Tacony St) is recorded at 138 ft (42 m), but the 2024 aerial shows a small round tank in a scrapyard with almost no shadow; it is drawn at the median height of the footprints within 25 m (10.67 m). `config/stadium_exclusions.json`: footprints that pass the seating-row rule but aren't stadiums (8500 Essington Ave, the airport terminal and garages; 4101 N Delaware Ave, Richmond Generating Station; 3622-40 G St, a sawtooth-roof plant; 3001 E Allegheny Ave, a pier warehouse). `config/structure_exclusions.json` (Nov. 3): a 42,345 m², 21 m LiDAR "structure" on the strip between the Schuylkill and the Manayunk Canal is a demolition and rubble field in the 2024 aerial; it is dropped. More reviewed entries: 8700 Ridge Ave (a care-home campus) and 8201 Torresdale Ave (Holmesburg Prison) are not stadiums, and the 40.6 m part at 5245 Bleigh Ave is a real elevated water tower (`config/qa_exceptions.json`). Raw data stays unchanged.
 
+**Bridges (Nov. 5).** These are bands for the water repaint (`pixelphilly.bridges`), built from public line data where it crosses mapped water (NHD and PWD polygons) for at least 8 m.
+- **City lines:**
+  - Street centerlines: `raw/<area>_streets.geojson`.
+  - Expressways and ramps: `raw/<area>_highways.geojson`.
+  - Rail and El lines: `raw/<area>_rail.geojson`, `_rail_el.geojson`.
+  - Half widths by street class (expressway 18 m, then 12, 10, 8 and 7 m; ramps 9 m; rail 6 m).
+- **`raw/<area>_bridges.json`:** OpenStreetMap ways tagged `bridge=*` that carry a highway or railway (`scripts/04p_fetch_bridges.py`, Overpass, `out geom`). The width comes from the `width` tag, else lanes × 3.6 m + 4 m, else the highway type.
+  - **Why it's needed:** the City layers stop at the city line, so the New Jersey halves of the Delaware bridges come only from OSM.
+  - **License:** ODbL 1.0, credit "© OpenStreetMap contributors".
+- **Decks:** each over-water stretch, extended 6 m past the shore, is buffered by its half width. On screen it is swept from 25 m below to 12 m above the water, because the drawn deck and truss sit off the render's flat deck. Inside that band the repaint only takes pixels the raw drawing drew in the river's own colors.
+- **Hard deck mask:** the deck itself where the render has it (80% of the half width, no sweep) is never repainted.
+- **Nearby colors (Nov. 8):** some frames have no drawn river outside the bands to learn its colors from, such as the Schuylkill at Walnut St, or a road along the shore. Those frames use drawn-river colors sampled from the nearest frames, up to 4 frames away (`bridges.SampleBank`). `report.json` `"bridge_fallback"` lists them.
+- **Opt-out:** `"bridge_bands": false` in an area config.
+
+**Vessels and piers (Nov. 5).**
+- **`config/vessels.json`** holds reviewed vessel outlines.
+  - **Source:** traced from the City of Philadelphia 2024 3-inch aerial (cached z19 tiles, about 0.23 m/px) by `scripts/29_trace_vessels.py`. Within NHD and PWD water polygons, minus OSM piers, a deck is a pixel at least 38 color levels from the river's median and 1.15× brighter than it. Shadows and dark hull sides are left out, because both pick up blue skylight and can't be told apart by color. Traces are closed over gaps of about 1 m, and notches are closed per hull.
+  - **Review:** a person read each group's trace sheet (`output/review/vessels/trace_<group>.jpg`) and wrote the decisions into `"review"`. Those decisions: which traces form one hull; nests to split; shape fixes (open, convex hull, rectangle); traces to reject (quay edges, dock walls, cranes); hulls to keep flat (under way).
+  - **Build:** `scripts/30_build_vessels.py` turns the decisions into `"vessels"`, with review sheets in `output/review/vessels/hulls_<group>.jpg`.
+  - **Statuses:**
+    - `accepted`: a hull, 3D unless `"flat"`.
+    - `protect`: a vessel-like trace, kept out of the water repaint only.
+    - `rejected`: not a vessel.
+  - **Heights:** a hull's height comes from the 2022 LiDAR when at least 30% of its cells are 2 m or more above the water. The scene build records these as `"lidar (2022)"` in `data/processed/<area>_qa.json` `"vessels"`. A ship at the same berth in 2022 may not be the same ship.
+  - **Assumed heights:** where the LiDAR didn't see the hull, the height is `kind_defaults_m`, an assumption by vessel kind, labelled `"default (assumed by kind)"`. Shadow-length estimates were not made.
+  - **Base:** the water level, 0 m NAVD88. A hull in a dry dock (`"base": "ground"`) stands on the surrounding ground instead.
+- **`raw/<area>_piers.json`**: OpenStreetMap piers (`man_made=pier`) and ships (`scripts/04o_fetch_piers.py`, Overpass, `out geom`). Pier lines are buffered to their `width` tag, or 3 m without one. License: ODbL 1.0, credit "© OpenStreetMap contributors".
+- **Use:**
+  - **Opt-in:** `"vessels": true` in an area config. Set in south_lidar, east_riverfront and southwest; Old City is unchanged.
+  - **Repaint:** vessels and piers, swept from the water up to 4 m, are never repainted as water (`vessels.protect_geometry`).
+  - **Scene:** accepted hulls become scene structures (`vessels.vessel_parts`). Wall color is the deck color × 0.85. LiDAR structure regions lying at least half inside a hull give way to it (`vessels.drop_fragments`).
+
 **Golf courses (Nov. 4).** `raw/<area>_golf.json`: OpenStreetMap courses and golf features (`scripts/04n_fetch_golf.py`, Overpass, `out geom`). License: ODbL 1.0, credit "© OpenStreetMap contributors".
 - **What's fetched:** leisure=golf_course (plus disused:/was: courses, so they can be excluded) and golf=fairway, green, tee, bunker, rough, water_hazard, lateral_water_hazard.
 - **Not courses:** driving ranges (by name, or under 5 ha) and disused courses.

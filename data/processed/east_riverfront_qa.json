@@ -1,6 +1,6 @@
 {
   "buildings_downloaded": 45039,
-  "buildings_in_scene": 79966,
+  "buildings_in_scene": 79989,
   "buildings_dropped": [],
   "height_source_counts": {
     "approx_hgt": 44561,
@@ -334,13 +334,43 @@
     7097,
     9075
   ],
-  "lidar_structures": 834,
-  "lidar_structure_parts": 1908,
-  "lidar_structure_area_m2": 115879.1,
+  "lidar_structures": 833,
+  "lidar_structure_parts": 1903,
+  "lidar_structure_area_m2": 115498.5,
   "lidar_structures_dropped_photo": 1376,
   "lidar_highway_mask": true,
   "lidar_highway_masked_m2": 598124.9,
   "lidar_rail_mask": true,
+  "vessels": [
+    {
+      "id": "T1-h1",
+      "kind": "bulk",
+      "h_top": 14.0,
+      "h_source": "default (assumed by kind)",
+      "parts": 1
+    },
+    {
+      "id": "T1-h2",
+      "kind": "tug",
+      "h_top": 20.9,
+      "h_source": "lidar (2022)",
+      "parts": 7
+    },
+    {
+      "id": "T1-h3",
+      "kind": "barge",
+      "h_top": 22.2,
+      "h_source": "lidar (2022)",
+      "parts": 15
+    },
+    {
+      "id": "T2-h1",
+      "kind": "barge",
+      "h_top": 5.5,
+      "h_source": "lidar (2022)",
+      "parts": 5
+    }
+  ],
   "lidar_margin_m": 100.0,
   "facade_join": {
     "address": 284,

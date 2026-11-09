@@ -157,6 +157,8 @@ def fetch_steps(cfg: dict, root: Path) -> list[Step]:
     add("04k", "04k_fetch_wetlands", _raw(root, f"{a}_wetlands.geojson"))
     if cfg.get("golf_correct"):
         add("04n", "04n_fetch_golf", _raw(root, f"{a}_golf.json"))
+    if cfg.get("vessels"):
+        add("04o", "04o_fetch_piers", _raw(root, f"{a}_piers.json"))
     return s
 
 
@@ -190,7 +192,8 @@ def plan(cfg: dict, root: Path, frames: list[str], opts: Options) -> list[Step]:
                               root / "config" / "height_overrides.json",
                               root / "config" / "stadium_exclusions.json",
                               root / "config" / "structure_exclusions.json",
-                              root / "config" / "golf.json"]))
+                              root / "config" / "golf.json",
+                              *([root / "config" / "vessels.json"] if cfg.get("vessels") else [])]))
     renders = [out / "renders" / f"{f}.png" for f in frames]
     masks = [out / "masks" / f"{f}.png" for f in frames]
     steps.append(Step(name="06_color", cmd=["scripts/06_render.py"], outputs=renders + [out / "renders" / "mosaic.png"],

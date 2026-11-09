@@ -441,6 +441,14 @@ def test_golf_fetch_and_review_list_feed_the_scene():
     assert "04n" not in {s.name for s in rr.plan(CFG, tmp_path_factory_dir(), FRAMES, _opts())}
 
 
+def test_vessel_piers_fetch_and_review_list_feed_the_scene():
+    by = {s.name: s for s in rr.plan({**CFG, "vessels": True}, tmp_path_factory_dir(), FRAMES, _opts())}
+    assert by["04o"].cmd == ["scripts/04o_fetch_piers.py"]
+    assert {p.name for p in by["04o"].outputs} == {"testarea_piers.json"}
+    assert "vessels.json" in {p.name for p in by["05"].inputs}
+    assert "04o" not in {s.name for s in rr.plan(CFG, tmp_path_factory_dir(), FRAMES, _opts())}
+
+
 def tmp_path_factory_dir():
     import tempfile
     from pathlib import Path

@@ -37,5 +37,6 @@
   "lawn_correct": true,
   "golf_correct": true,
   "woods_trees": true,
-  "lawn_skip_woods": true
+  "lawn_skip_woods": true,
+  "vessels": true
 }

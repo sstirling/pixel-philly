@@ -7,19 +7,23 @@
 // links can be shared. Address search uses the City of Philadelphia's AIS
 // API and the lon/lat -> pixel fit in map.json (see projection.js).
 //
-// When map.json lists a "photo" layer (16_build_tiles.py --with-photo), a
-// toggle switches between the illustration and the render it was drawn from:
-// the 2024 aerial photos on 3D buildings, from the same camera, so the two
-// line up pixel for pixel. The label and credits switch with it so the photo
-// is never mistaken for AI output, or the illustration for a photo.
+// The photo layer (the renders the illustration was drawn from) is built by
+// 16_build_tiles.py --with-photo but no longer shown: Stephen dropped the
+// "Show photo" toggle and the AI badge from the bar on Nov. 5 (the AI note is
+// in the credits footer and on about.html). Only the illustration is loaded.
+//
+// With no #x/y/z link, the map opens close in on Center City (START_VIEW), so
+// the screen is filled with map detail rather than the edges of the data; the
+// home button still shows the whole city.
 
 import { inBounds, lonLatToPx } from "./projection.js";
 
 const params = new URLSearchParams(location.search);
-// Default: the frozen talk map (output/philly/FROZEN_v14.json). Older maps
+// Default: the accepted map (output/philly/FROZEN_v17.json; v14, the frozen
+// talk map, stays at ?v=v14). Older maps
 // stay reachable with ?area=...&v=...
 const area = params.get("area") || "philly";
-const version = params.get("v") || "v14";
+const version = params.get("v") || "v17";
 // The offline copy (scripts/27_offline_copy.py) sets <html data-offline="1">:
 // no request ever leaves the machine, so address search (City AIS API) is off
 const offline = document.documentElement.dataset.offline === "1";
@@ -31,11 +35,13 @@ const meta = await (await fetch(base + "map.json")).json();
 document.getElementById("credits").textContent = meta.credits;
 document.title = `Pixel Philly: ${meta.label}`;
 
+// City Hall, at 4 map px per screen px: about 2 km of Center City across a
+// laptop screen. y is nudged up so the tower, not its hidden base, is centered.
+const START_VIEW = { lon: -75.16355, lat: 39.9524, dy: -300, z: 0.25 };
+
 const viewer = OpenSeadragon({
   element: document.getElementById("map"),
-  tileSources: meta.layers?.photo
-    ? [{ tileSource: base + meta.layers.illustration }, { tileSource: base + meta.layers.photo, opacity: 0 }]
-    : base + meta.dzi,
+  tileSources: base + (meta.layers?.illustration || meta.dzi),
   showNavigationControl: false, // our own accessible buttons below
   imageLoaderLimit: 16,
   maxZoomPixelRatio: 4, // up to 4 screen px per map px: pixel art stays readable
@@ -50,9 +56,7 @@ document.getElementById("map").style.background = meta.background;
 
 // Crisp pixels at 1:1 and closer; smooth when zoomed out so the shrunken
 // pixel art doesn't shimmer.
-// Image <-> viewport conversions go through the illustration layer: with two
-// layers loaded, OpenSeadragon's viewport-wide conversions are ambiguous.
-// (Both layers are the same size at the same place, so either would do.)
+// Image <-> viewport conversions go through the (only) image layer.
 const base0 = () => viewer.world.getItemAt(0);
 
 function updateSmoothing() {
@@ -67,7 +71,7 @@ viewer.addHandler("animation-finish", updateSmoothing);
 function readHash() {
   const h = new URLSearchParams(location.hash.slice(1));
   const x = parseFloat(h.get("x")), y = parseFloat(h.get("y")), z = parseFloat(h.get("z"));
-  return Number.isFinite(x) && Number.isFinite(y) && Number.isFinite(z) ? { x, y, z, layer: h.get("layer") } : null;
+  return Number.isFinite(x) && Number.isFinite(y) && Number.isFinite(z) ? { x, y, z } : null;
 }
 function goTo({ x, y, z }, immediately = false) {
   const vp = viewer.viewport;
@@ -77,7 +81,10 @@ function goTo({ x, y, z }, immediately = false) {
 viewer.addHandler("open", () => {
   const start = readHash();
   if (start) goTo(start, true);
-  if (start?.layer === "photo") showPhoto(true);
+  else if (inBounds(meta.fit, START_VIEW.lon, START_VIEW.lat)) {
+    const [x, y] = lonLatToPx(meta.fit, START_VIEW.lon, START_VIEW.lat);
+    goTo({ x, y: y + START_VIEW.dy, z: START_VIEW.z }, true);
+  }
   updateSmoothing();
 });
 viewer.addHandler("animation-finish", () => {
@@ -85,33 +92,8 @@ viewer.addHandler("animation-finish", () => {
   if (!base0()) return;
   const c = base0().viewportToImageCoordinates(vp.getCenter());
   const z = base0().viewportToImageZoom(vp.getZoom());
-  const layer = photoShown ? "&layer=photo" : "";
-  history.replaceState(null, "", `#x=${Math.round(c.x)}&y=${Math.round(c.y)}&z=${z.toFixed(3)}${layer}`);
+  history.replaceState(null, "", `#x=${Math.round(c.x)}&y=${Math.round(c.y)}&z=${z.toFixed(3)}`);
 });
-
-// --- illustration / photo toggle ---------------------------------------------
-const toggle = document.getElementById("layer-toggle");
-const badge = document.querySelector(".badge");
-const credits = document.getElementById("credits");
-let photoShown = false;
-function showPhoto(on) {
-  const photo = viewer.world.getItemAt(1);
-  if (!photo) return;
-  photoShown = on;
-  photo.setOpacity(on ? 1 : 0);
-  toggle.setAttribute("aria-pressed", String(on));
-  toggle.textContent = on ? "Show illustration" : "Show photo";
-  badge.textContent = on ? "2024 aerial photo on 3D model" : "AI-generated illustration";
-  badge.classList.toggle("photo", on);
-  credits.textContent = on ? meta.photo_credits : meta.credits;
-  document.getElementById("credits-summary").textContent =
-    on ? "Photo layer (source for the AI) · credits" : "AI-generated prototype · credits";
-  viewer.raiseEvent("animation-finish"); // refresh the shareable link
-}
-if (meta.layers?.photo) {
-  toggle.hidden = false;
-  toggle.onclick = () => showPhoto(!photoShown);
-}
 
 // --- controls ---------------------------------------------------------------
 document.getElementById("zoom-in").onclick = () => viewer.viewport.zoomBy(1.6);

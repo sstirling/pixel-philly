@@ -1,5 +1,167 @@
 # Changelog
 
+## 2026-11-09: v17 accepted, frozen and made the viewer default
+
+Stephen (Nov. 9): "Accept v17." The known flaws were accepted: shadow strips along some decks (W Roosevelt Blvd), plus the Platt Bridge rectangles and outline.
+- **Frozen:** `output/philly/FROZEN_v17.json` (75,367 files, 5.54 GB, tree SHA-256 `047eec68…a5b5c0`). `--verify` passed. A re-verify of v14 also passed, so v14 is untouched.
+- **Manifest purpose:** `26_freeze_map.py` hard-codes "talk map". It was edited by hand to describe v17 as the accepted map. The manifest sits outside the version folder, so the hash isn't affected.
+- **Viewer:** the default is now `v17` (`viewer/viewer.js`). v14 stays available at `?v=v14`. The about page footer now reads "Map version v17, frozen Nov. 9, 2026." The hero image is still the v14 City Hall crop.
+- **Not done:** no offline copy of v17 (`output/philly_offline_v14/` is still v14) and no commit.
+
+## 2026-11-05 to 11-08: bridges (philly v16 and v17; v17 accepted Nov. 9)
+
+Stephen (Nov. 5): "several of the bridges don't look correct... water is bleeding onto the roads." This entry was written Nov. 8, after the session that built v16 was cut off before it was logged. Times below come from file timestamps.
+
+### Cause
+A bridge deck in the render is flat aerial texture. Its asphalt and shadows often pass the river color test (South Philly: within 68 levels of [108, 101, 64]), and the drawing puts the deck and truss a few pixels off the render's deck. The repaint then painted deck, truss and railing pixels blue: the Ben Franklin's truss and the Platt and Walt Whitman decks, among others.
+
+### Fix (`pixelphilly.bridges`, `tests/test_bridges.py`)
+- **Bands:** where a City street centerline, expressway or rail line, or an OSM bridge way, crosses NHD or PWD water for at least 8 m. The over-water stretch is extended 6 m past the shore and buffered by a half width by street class. On screen it is swept from 25 m below to 12 m above the water. Method and sources are in `data/README.md`.
+- **Inside a band**, the repaint only takes pixels the raw drawing drew in the river's own colors (`refine`). These are sampled from water at least 48 px away from any band.
+- **Hard deck mask:** the deck where the render has it (80% of the half width, no sweep) is never repainted.
+- **OSM bridges** (`scripts/04p_fetch_bridges.py`, `raw/<area>_bridges.json`, ODbL) add the New Jersey halves of the Delaware bridges, which the City layers don't cover.
+- **Opt-out:** `"bridge_bands": false` in an area config.
+- **Review tools:** `scripts/32_stage_crops.py` (render, raw drawing and finished drawing for one spot) and `scripts/33_bridge_crops.py` (v15 vs v16 for every bridge, `output/review/bridges/crops_v16/`, five contact sheets).
+
+### Repaints and v16
+- **All 12 areas** were repainted with bridge bands, Nov. 5 at 11:03 p.m. through Nov. 6 at 1:05 a.m. (`output/<area>/repaint_bridges.log`). philly v16 was built at 1:17 a.m. (`output/philly/join_seams_v16.json`).
+- **Code check (Nov. 8):** `bridges.py` was last edited at 12:39 a.m., after eight areas had been repainted. To test whether those areas were stale, the current code was rerun on south_lidar's 63 deck frames and compared pixel by pixel:
+  - 0 of 1,270,484 deck pixels differ.
+  - The only differences, 5,124 px in two frames, are the two invented-water repairs the rerun skipped.
+  - Result: the earlier repaints match the current code, so no repaint was needed for that reason.
+- **Tests:** 412 pass.
+
+### Found in review (Nov. 8): river inside the bands is left unpainted
+Bridge decks no longer bleed. But inside the bands, river the raw drawing drew in other tones keeps those raw colors (teal, olive, brown) instead of the repaint blue. Visible at Walnut St (a teal block with straight frame edges), W Roosevelt Blvd (darker strips along both bridges) and the Platt Bridge (dark rectangles under the deck, plus a drawn outline left on the water). Logged with the current code on south_lidar's bridge frames:
+- **Fallback, 6 frames** (`frame_09_13`, `10_12`, `10_14`, `11_13`, `12_16`, `12_17`, the Schuylkill crossings near Center City). The only water in view is inside bands, so the ring has 0 px. `refine` then returns `water & ~band`, and the whole band keeps the raw drawing.
+- **Fallback census, all areas** (an estimate from mapped water rather than the full water mask; it matches the logged south_lidar run exactly): 12 frames.
+  - south_lidar: 6.
+  - southwest: 2 (`frame_17_01`, `17_02`, the same Schuylkill strip from its side).
+  - north_lidar: 1 (`frame_05_13`).
+  - lower_northeast: 1 (`frame_25_13`).
+  - upper_northeast: 1 (`frame_27_26`).
+  - germantown: 1 (`frame_20_06`).
+- **Shadow strips, other frames:** thin strips of drawn shadow along the deck edges stay raw, plus drawn river where the hard deck mask sits off the drawn deck (up to about 20 px in `frame_10_13`). Counts outside the deck mask:
+  - `frame_10_13`: 16,475 px;
+  - `frame_18_05`: 4,254;
+  - `frame_01_12`: 2,532;
+  - `frame_19_05`: 1,062.
+- **No safe color rule for the shadows:** Lab rules were tested on four frames (chroma within 8 to 16 of the palette, lightness down to 50 below it). The ones that caught most leftover shadow also matched 20% to 55% of the drawn deck, truss and pier pixels in the bands, which is the original bug. Not changed.
+- **Status:** v16 should not replace v14 or v15 until the fallback is fixed. v14 stays frozen and the viewer default.
+
+### Fallback fix and philly v17 (Nov. 8; not frozen; viewer default stays v14)
+- **Fix:** tests first. Three new tests in `tests/test_bridges.py` failed, then passed after the change; 415 pass in all.
+  - `bridges.ring_sample` returns the drawn-river sample.
+  - `refine(..., sample=)` can use a sample from elsewhere.
+  - `bridges.SampleBank` keeps up to about 4,000 drawn-river pixels per frame and returns the samples from the nearest frames, up to 4 frames away.
+  - In `10_repaint_water.py`, frames with no drawn river outside their bands are set aside and repainted after the main pass with nearby colors, in both the main loop and region runs' `repaint_band`. Frames with no band also add to the bank, so a fallback frame next to bridge-free frames still finds colors.
+  - `report.json` records `"bridge_fallback"`.
+- **Why nearby colors and not one palette per area:** south_lidar's palette would be dominated by the brown Delaware and lose the teal Schuylkill.
+- **Unchanged elsewhere:** a scratch rerun on south_lidar's 63 deck frames changed only the 6 fallback frames; every other frame was identical.
+- **Repaints:** all 12 areas, Nov. 8, 8:47 to 11:05 p.m. (`output/<area>/repaint_bridges2.log`).
+  - 19 frames used nearby colors, and none lacked a nearby sample.
+  - Against a copy-on-write snapshot of the v16 water outputs, 16 frame files changed across 9 areas. All are fallback frames or their overlap copies. The rest are byte-identical.
+  - The snapshot is in the session scratchpad, not the repo.
+- **v17:** `16_build_tiles.py --areas <12 areas> --name philly --prompt qwen_joint_light8_fac --version v17 --with-photo`.
+  - 15 of 28,188 full-resolution tiles differ from v16.
+  - Seams are identical to v16 on all 22 pairs.
+  - Bridge crops: `output/review/bridges/crops_v17/` (v16 vs v17).
+- **Fixed:** Walnut St. The straight-edged teal block is gone.
+- **Still not right (unchanged from v16):**
+  - **Shadow strips** stay raw along deck edges: W Roosevelt Blvd, and a small sliver under Walnut St.
+  - **Platt Bridge** has dark rectangles under the deck, plus a three-box outline on the water at the band's lower edge. The raw drawing has a frame seam there, with stray blue pixels that don't match the brown palette, and the repaint outlines those holes like shoreline. Neither is in v15.
+
+## 2026-11-05: ships (philly v15, for review; v14 stays frozen and the viewer default)
+
+Stephen (Nov. 5): fix ships, building v15. GPU cap $5. No commits, no LiDAR prune. A read-only diagnosis by another agent found four problems: the water repaint ate hulls and piers; most 2024 vessels had no 3D geometry; same-berth ships were fragmented, with moored hulls standing on pier ground; and the carrier read as a building.
+
+### Repaint protection (tests first; `pixelphilly.vessels`, `tests/test_vessels.py`)
+- **Choice:** option (i), reviewed outlines (`config/vessels.json`) plus OSM piers (`raw/<area>_piers.json`, `scripts/04o_fetch_piers.py`). Both are swept from the water up to 4 m, grown 3 px, and added to the mask the repaint and the invented-water fix never touch.
+- **Why not option (ii)** (a drawing-aware "clearly not water" rule): in the raw drawings the model paints the river brown, olive and teal, the same colors as decks and piers. A color rule would either keep patches of drawn river or eat hulls again. Raised hulls are scene geometry and were already protected by the building masks, so the outlines only need to cover the deck level.
+- **Opt-in:** `"vessels": true` in south_lidar, east_riverfront and southwest. The region runner fetches piers and treats vessels.json as a scene input. Old City is unchanged.
+- **Result:** the USS New Jersey's deck and brick pier, the reserve fleet nests, the Olympia and Moshulu are no longer punched through. Open river still repaints blue: the repaint shows no brown or green patches on open water in the full Delaware and Schuylkill vessel frames.
+- **Crops:** before/after (v14 vs the step-1 repaint) for every vessel group in `output/review/vessels/crops_step1/`, with a contact sheet.
+
+### Vessel outlines (`config/vessels.json`; provenance in `data/README.md`)
+- **Tracing:** `scripts/29_trace_vessels.py` finds decks in the 2024 aerial: brighter than the river, not a pier. Shadows and dark hull sides can't be told apart by color, since both pick up blue skylight, so decks are traced and grown back over the edge.
+- **Review:** every group's trace sheet was reviewed (`output/review/vessels/trace_*.jpg`). The decisions (merge, split nests, shape fixes, rejects, flat) are recorded in `"review"`. `scripts/30_build_vessels.py` builds the outlines (`output/review/vessels/hulls_*.jpg`).
+- **Counts:** 59 accepted hulls (53 with 3D, 6 flat), 20 protect-only traces, 23 rejected (quay edges, dock walls, cranes, the shipyard's gantry).
+- **Nests:** nested hulls are split along the dark lines between them (N1, N4, S2).
+- **Flat:** N11 (under way) and P2's tug are protected but get no 3D. So are the two N3 inner nests, whose trace also covered the pier edge.
+
+### Whole hulls (`vessels.vessel_parts`, `drop_fragments`)
+- **Shape:** each accepted hull is one structure at the water level (0 m NAVD88). A dry-dock hull (N10) uses its ground instead.
+- **Heights from the LiDAR:** where the 2022 LiDAR saw the same hull (30% of its cells 2 m or more above the water), its class-1 heights shape the hull after gaps are filled. This keeps photo_agrees's job of dropping moved ships, because the 2024 outline decides where a hull is.
+- **Assumed heights:** where the LiDAR didn't see the hull, the hull is flat at an assumed height by vessel kind (`kind_defaults_m`, labelled "default (assumed by kind)"). Shadow-length estimates were not attempted.
+- **Fragments:** LiDAR structure regions at least half inside a hull give way to it. Cranes and piers that only touch a hull stay (tested).
+- **Counts:**
+  - south_lidar: 44 hulls (18 LiDAR-shaped), 33 fragment regions replaced;
+  - southwest: 18 hulls (8), 6 replaced;
+  - east_riverfront: 4 hulls (3), 1 replaced.
+- **Walls:** structure walls already used deck color × 0.85.
+
+### Atlas test and redraws (GPU $2.13 of $5)
+- **Atlas test** ($0.28): `test_ships_navyyard` and `test_ships_pier82`. The new hulls drew as ships: the carrier with its deck and island, the amphibious ships, and the SS United States with its funnels.
+- **south_lidar:** 20 changed frames (96 with the ring), $1.44.
+- **Per-frame review:**
+  - **Kept, 19 frames:** the reserve fleet, carrier, amphibious ships, SS United States, New Jersey, the Packer Ave container ships and the barges read better.
+  - **Reverted, frame_20_08** (Moshulu and Olympia): the LiDAR-shaped Moshulu's masts came out as tall towers. The frame keeps its step-1 (protected, flat) drawing.
+- **east_riverfront:** 3 frames, $0.25, kept (T1's bulk carrier).
+- **southwest:** 2 frames, $0.16, not used. They had no vessel, and the changes were small render differences.
+- **Repaints:** each area was repainted with protection after its merge, one at a time, so the stale-known guards stayed satisfied.
+
+### Invented water on the 75 vessel frames (repaired blobs, before → after)
+- south_lidar: 5 blobs / 6,322 px → 2 / 918 px.
+- east_riverfront: 0 → 0.
+- southwest: 0 → 0.
+
+### Map: philly v15 (`?area=philly&v=v15`; not frozen; viewer default stays v14)
+- **Size:** 37,681 tiles per layer.
+- **Seams:** identical to v14 except south_lidar|east_riverfront p90 3.16 → 3.15 and south_lidar|southwest max 8.85 → 8.84.
+- **Crops at 2×:** v14 vs v15 for every vessel group in `output/review/vessels/crops_v15/`, with `contact_sheet.jpg`.
+- **Place checks:** `output/review/places_v15/` (the Navy Yard, Penn's Landing, FDR Park, Penn Treaty, Chestnut Hill, the airport).
+- **Still not right:**
+  - The carrier's hull side and the SS United States's midships still carry window-like vertical lines (the model reads tall walls as façades).
+  - The N10 dry dock is drawn with teal water.
+- **Checks:** v14's freeze still verifies (`43fe09fa…`). 406 tests pass. Old City's SHA is unchanged.
+
+## 2026-11-05 (evening): map bar and opening view
+
+Stephen asked for three changes to the map page:
+
+- **The "AI-generated illustration" badge is gone from the top bar.** The AI note stays in the credits footer and on the about page.
+- **The "Show photo" toggle is gone, and the photo layer no longer loads.** That saves the second set of tile requests. The photo tiles stay in v14, which is unchanged and frozen. The about page's pointer to the toggle is removed.
+- **The map opens close in.** With no `#x/y/z` link, it starts on City Hall at 4 map px per screen px, about 2 km of Center City across a laptop screen (`START_VIEW` in `viewer/viewer.js`). Shared links still open where they point, and the home button still shows the whole city.
+- **Checked with Playwright** at 1440×900 and on a 390 px phone: no console errors, and the screen is filled with map.
+- **The offline copy** gets the same files, keeping its `data-offline` flag.
+
+## 2026-11-05 (later): about page fixes
+
+- **The page couldn't scroll** (Stephen): it loaded `viewer.css`, whose `html, body { overflow: hidden }` lets the map own the mouse wheel. The page was cut off at the bottom.
+  - **Fix:** the about page has its own `viewer/about.css`, and the about rules are removed from `viewer.css`.
+  - **Checked with Playwright:** desktop, 360 px phone and dark mode all scroll to the bottom, with no horizontal scroll.
+- **Restyled:** a sticky "Back to the map" bar, and a 1:1 pixel-art hero of City Hall's tower from v14 (`viewer/about-hero.webp`, with alt text). Serif body text, and sources as a two-line list (name, then what it's used for). Light and dark themes.
+- **Text changes:**
+  - the slideshow link (https://sstirling.github.io/prezis/presentations/worldplanningday/);
+  - "foundational knowledge on GIS and data" (Stephen dropped "the").
+- **The offline copy** gets the new files.
+
+## 2026-11-05: about and credits page
+
+- **New `viewer/about.html`, linked from the map's credits footer.** It opens with Stephen's two paragraphs. In the first, he approved three edits: the talk title in AP title case, "every building, street tree and piece of land cover", and Gemini described as making the style's training examples, not base images. The second paragraph is about vibe coding, with the repo link. The technical sections below it come from `data/README.md` and `README.md`:
+  - how the map was made;
+  - what to keep in mind;
+  - every data source, with links where the docs record them;
+  - the AI models and software, including the Gemini-trained style;
+  - inspiration (tiny.london, isometric.nyc);
+  - the frozen version.
+- **Styles** are added to `viewer/viewer.css`. Checked at 1,280 px and 360 px wide, with no horizontal scroll.
+- **Open before publishing:**
+  - the slideshow link is a placeholder (`#slides-link`);
+  - wording points are raised with Stephen (the talk title's capitalization, "every tree", "building base images");
+  - the offline copy needs the new viewer files.
+- **Not changed:** the footer's short credit (`map.json` `credits`) sits inside the frozen v14 folder, so it is left as is.
+
 ## 2026-11-05: preview flyover video
 
 Stephen asked for a short video panning over the map at high zoom, as a preview.

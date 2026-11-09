@@ -42,5 +42,6 @@
   "clip_to_city": true,
   "lawn_skip_woods": true,
   "golf_correct": true,
-  "woods_trees": true
+  "woods_trees": true,
+  "vessels": true
 }

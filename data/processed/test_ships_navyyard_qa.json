@@ -1,0 +1,181 @@
+{
+  "buildings_downloaded": 121,
+  "buildings_in_scene": 764,
+  "buildings_dropped": [],
+  "height_source_counts": {
+    "approx_hgt": 116,
+    "max_hgt": 4,
+    "default": 1
+  },
+  "height_outliers_max_gt_ratio_x_approx": [
+    {
+      "objectid": 545883,
+      "address": "1400 KITTY HAWK AVE",
+      "approx_hgt_ft": 4,
+      "max_hgt_ft": 99.23014724999999
+    },
+    {
+      "objectid": 545885,
+      "address": "1400 KITTY HAWK AVE",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 38.179941080000006
+    }
+  ],
+  "tallest_buildings_m": [
+    {
+      "id": "vN7h4-19",
+      "h": 43.86
+    },
+    {
+      "id": "vN7h4-20",
+      "h": 43.86
+    },
+    {
+      "id": "413257-27",
+      "h": 42.73
+    },
+    {
+      "id": "413257-26",
+      "h": 41.14
+    },
+    {
+      "id": "vN8h1-49",
+      "h": 39.37
+    },
+    {
+      "id": "vN8h1-50",
+      "h": 39.37
+    },
+    {
+      "id": "413257-24",
+      "h": 38.81
+    },
+    {
+      "id": "413257-25",
+      "h": 38.39
+    },
+    {
+      "id": "vN8h1-48",
+      "h": 37.35
+    },
+    {
+      "id": "413257-19",
+      "h": 37.27
+    }
+  ],
+  "trees_in_scene": 0,
+  "ground_texture_px": [
+    8960,
+    7168
+  ],
+  "ground_texture_source_px": [
+    8960,
+    7168
+  ],
+  "uv_fit_max_residual_m": 1.3431100177519814e-05,
+  "ground_median_filter_px": 5,
+  "frames": 13,
+  "lidar_buildings_shaped": 45,
+  "lidar_fallback_single_height": 6,
+  "lidar_parts": 558,
+  "lidar_terrace_parts": 0,
+  "lidar_stadiums": [],
+  "lidar_structures": 17,
+  "lidar_structure_parts": 34,
+  "lidar_structure_area_m2": 4492.6,
+  "lidar_structures_dropped_photo": 7,
+  "lidar_highway_mask": true,
+  "lidar_highway_masked_m2": 0.0,
+  "lidar_rail_mask": true,
+  "vessels": [
+    {
+      "id": "N6-h1",
+      "kind": "naval",
+      "h_top": 12.0,
+      "h_source": "default (assumed by kind)",
+      "parts": 1
+    },
+    {
+      "id": "N7-h1",
+      "kind": "barge",
+      "h_top": 3.0,
+      "h_source": "default (assumed by kind)",
+      "parts": 1
+    },
+    {
+      "id": "N7-h2",
+      "kind": "tug",
+      "h_top": 5.0,
+      "h_source": "default (assumed by kind)",
+      "parts": 1
+    },
+    {
+      "id": "N7-h3",
+      "kind": "barge",
+      "h_top": 3.0,
+      "h_source": "default (assumed by kind)",
+      "parts": 1
+    },
+    {
+      "id": "N7-h4",
+      "kind": "naval",
+      "h_top": 43.9,
+      "h_source": "lidar (2022)",
+      "parts": 21
+    },
+    {
+      "id": "N7-h5",
+      "kind": "naval",
+      "h_top": 12.0,
+      "h_source": "default (assumed by kind)",
+      "parts": 1
+    },
+    {
+      "id": "N8-h1",
+      "kind": "carrier",
+      "h_top": 39.4,
+      "h_source": "lidar (2022)",
+      "parts": 51
+    },
+    {
+      "id": "N9-h1",
+      "kind": "naval",
+      "h_top": 11.4,
+      "h_source": "lidar (2022)",
+      "parts": 17
+    },
+    {
+      "id": "N9-h2",
+      "kind": "tug",
+      "h_top": 3.3,
+      "h_source": "lidar (2022)",
+      "parts": 2
+    }
+  ],
+  "lidar_margin_m": 100.0,
+  "facade_join": {
+    "address": 5,
+    "unmatched": 16,
+    "parcel": 100
+  },
+  "facade_match_rate": 0.868,
+  "facade_styles": {
+    "warehouse": 78,
+    "institutional": 19,
+    "other": 8
+  },
+  "facade_materials": {
+    "brick": 100,
+    "metal": 5
+  },
+  "facade_colour_source": {
+    "palette": 87,
+    "aerial": 16,
+    "osm_material": 2
+  },
+  "facade_osm_footprints": 2,
+  "facade_osm_items": 3,
+  "facade_street_fronts": 0,
+  "facade_unmatched": "plain walls (no facade)",
+  "lawn_corrected_px": 0
+}

@@ -493,7 +493,7 @@
       "frame_18_07",
       "frame_19_07"
     ],
-    "buildings": 15772,
+    "buildings": 15837,
     "trees": 4149,
     "texture_px": [
       12544,
@@ -521,7 +521,7 @@
       "frame_18_11",
       "frame_19_11"
     ],
-    "buildings": 43362,
+    "buildings": 43433,
     "trees": 10617,
     "texture_px": [
       12544,
@@ -657,7 +657,7 @@
       "frame_22_07",
       "frame_23_07"
     ],
-    "buildings": 3864,
+    "buildings": 3965,
     "trees": 840,
     "texture_px": [
       11776,
@@ -685,7 +685,7 @@
       "frame_22_11",
       "frame_23_11"
     ],
-    "buildings": 36878,
+    "buildings": 36979,
     "trees": 7413,
     "texture_px": [
       12544,
@@ -789,7 +789,7 @@
       "frame_23_25",
       "frame_23_26"
     ],
-    "buildings": 857,
+    "buildings": 891,
     "trees": 76,
     "texture_px": [
       8704,
@@ -809,7 +809,7 @@
       "frame_26_07",
       "frame_27_07"
     ],
-    "buildings": 1137,
+    "buildings": 1167,
     "trees": 0,
     "texture_px": [
       8704,
@@ -837,7 +837,7 @@
       "frame_26_11",
       "frame_27_11"
     ],
-    "buildings": 14144,
+    "buildings": 14187,
     "trees": 2375,
     "texture_px": [
       12544,
@@ -865,7 +865,7 @@
       "frame_26_15",
       "frame_27_15"
     ],
-    "buildings": 34795,
+    "buildings": 34816,
     "trees": 3655,
     "texture_px": [
       12288,
@@ -921,7 +921,7 @@
       "frame_26_23",
       "frame_27_23"
     ],
-    "buildings": 6983,
+    "buildings": 7068,
     "trees": 3126,
     "texture_px": [
       12288,
@@ -949,7 +949,7 @@
       "frame_26_27",
       "frame_27_27"
     ],
-    "buildings": 1863,
+    "buildings": 2033,
     "trees": 1142,
     "texture_px": [
       12544,
@@ -1003,7 +1003,7 @@
       "frame_30_11",
       "frame_31_11"
     ],
-    "buildings": 2107,
+    "buildings": 2128,
     "trees": 3,
     "texture_px": [
       11776,
@@ -1031,7 +1031,7 @@
       "frame_30_15",
       "frame_31_15"
     ],
-    "buildings": 11532,
+    "buildings": 11557,
     "trees": 656,
     "texture_px": [
       12288,
@@ -1087,7 +1087,7 @@
       "frame_30_23",
       "frame_31_23"
     ],
-    "buildings": 3207,
+    "buildings": 3410,
     "trees": 2103,
     "texture_px": [
       12288,
@@ -1114,7 +1114,7 @@
       "frame_29_27",
       "frame_30_27"
     ],
-    "buildings": 2172,
+    "buildings": 2357,
     "trees": 0,
     "texture_px": [
       12544,
@@ -1148,7 +1148,7 @@
       "frame_34_11",
       "frame_35_11"
     ],
-    "buildings": 737,
+    "buildings": 741,
     "trees": 0,
     "texture_px": [
       8704,
@@ -1176,7 +1176,7 @@
       "frame_34_15",
       "frame_35_15"
     ],
-    "buildings": 3385,
+    "buildings": 3390,
     "trees": 175,
     "texture_px": [
       12288,
@@ -1204,7 +1204,7 @@
       "frame_34_19",
       "frame_35_19"
     ],
-    "buildings": 2279,
+    "buildings": 2283,
     "trees": 634,
     "texture_px": [
       12544,
@@ -1231,7 +1231,7 @@
       "frame_33_23",
       "frame_34_23"
     ],
-    "buildings": 1832,
+    "buildings": 1879,
     "trees": 251,
     "texture_px": [
       12288,
@@ -1246,7 +1246,7 @@
       "frame_33_24",
       "frame_32_25"
     ],
-    "buildings": 161,
+    "buildings": 215,
     "trees": 0,
     "texture_px": [
       7936,
@@ -1286,7 +1286,7 @@
       "frame_38_15",
       "frame_39_15"
     ],
-    "buildings": 2344,
+    "buildings": 2349,
     "trees": 344,
     "texture_px": [
       11520,
