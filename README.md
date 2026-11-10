@@ -518,21 +518,25 @@ uv run python scripts/24_style_compare.py
 
 **GPU:** about $13.56 for Phase 1. That's $12.00 logged in `output/gpu_runs.jsonl`, plus an estimated $1.56 of container start and weight loading, which joint runs don't log.
 
-## The current map: v17, frozen (Nov. 9)
+## Previous map: v17, frozen (Nov. 9)
 
-`philly` v17 is the accepted map and the viewer default (`?area=philly&v=v17`). It is v14 plus the ship fixes (v15) and the bridge fixes (v16, v17); see the CHANGELOG. It has the same 12 regions and tile counts as v14 (75,367 files). Don't rebuild or edit `output/philly/tiles/v17/`; build v18 instead.
+`philly` v17 was the accepted map and viewer default until v18 (Nov. 9); it stays at `?area=philly&v=v17`. It is v14 plus the ship fixes (v15) and the bridge fixes (v16, v17); see the CHANGELOG. It has the same 12 regions and tile counts as v14 (75,367 files). Don't rebuild or edit `output/philly/tiles/v17/`; build v18 instead.
 - **Manifest:** `output/philly/FROZEN_v17.json`.
 - **Check it:** `uv run python scripts/26_freeze_map.py --name philly --version v17 --verify`.
 - **Known flaws Stephen accepted:** raw shadow strips along some bridge decks (W Roosevelt Blvd), plus dark rectangles and a three-box outline on the water at the Platt Bridge.
 - **Not yet made for v17:** an offline copy. The one below is v14. Build one with `27_offline_copy.py --version v17`.
 - **Hosted:** v17's illustration layer is online at https://pixelphilly.sstirling.com/viewer/index.html (see "Hosting" below).
 
-## Next: v18, the 3D suspension bridges (Nov. 9; building, not the viewer default)
+## The current map: v18, frozen (Nov. 9)
+
+`philly` v18 is the accepted map, the viewer default (`?area=philly&v=v18`) and the version hosted at https://pixelphilly.sstirling.com. It is v17 plus the 3D-modeled Ben Franklin and Walt Whitman bridges. Manifest: `output/philly/FROZEN_v18.json`; check with `uv run python scripts/26_freeze_map.py --name philly --version v18 --verify`. Don't rebuild or edit `output/philly/tiles/v18/`; build v19 instead.
+
+## How v18 was built: the 3D suspension bridges (Nov. 9)
 
 v18 is v17 plus the Ben Franklin and Walt Whitman bridges modeled in 3D: raised decks from the 2022 LiDAR, both towers with crossbeams, main cables, hangers, the Ben Franklin's stiffening truss and the approach spans. Stephen asked for this Nov. 9, after the v17 bridges drew with buildings on the roadway, a shadow slab and missing towers. Method and sources: `data/README.md` ("Suspension bridges"); the iterations, LiDAR checks and costs: the CHANGELOG.
 - **Build:** `uv run python scripts/16_build_tiles.py --areas <12 areas> --name philly --prompt qwen_joint_light8_fac --version v18 --with-photo`, then `25_join_seams.py` and `33_bridge_crops.py --before v17 --after v18`.
 - **Results:** v18 built Nov. 9 at 10:54 p.m. (`output/philly/build_v18.log`): 37,681 tiles per layer. 326 of 28,188 full-resolution tiles differ from v17. Seams are identical to v17 on all 22 region pairs (`output/philly/join_seams_v18.log`). The tan band under the cables is gone after the members-zone repaint fix. Crops: `output/review/bridges/nj/final_v18/` (v17 vs v18) and `output/review/bridges/crops_None/` (bridge sheet, 105 crops). The build first stopped on the stale-cell guard: southwest's `water_band/south_lidar/` copies of 11 redrawn frames predated the redraw; southwest was re-repainted (`output/southwest/repaint_v18.log`) and the build rerun. Not the viewer default until Stephen accepts it.
-- **Status:** not the viewer default until Stephen accepts it. v14 and v17 stay frozen.
+- **Status:** accepted and frozen Nov. 9; the viewer default. v14 and v17 stay frozen.
 - **Rebuilding the bridges from scratch:** `PP_AREA=south_lidar uv run python scripts/04q_fetch_bridge_towers.py` (tower outlines; `04p_fetch_bridges.py` must already have run), then `05_build_scene.py`, the render, the redraw of the changed frames and `10_repaint_water.py` for south_lidar. The area flags are `"bridge_decks"`, `"bridge_shadows"`, `"bridge_towers"` and `"bridge_structures"` in `config/south_lidar.json`.
 - **Rolling back to v17's bridges:** the v17 drawings, renders, masks, scene and water outputs are kept under `*_pre_bridges` names (listed in the CHANGELOG).
 
@@ -626,6 +630,10 @@ curl -I https://map.example.org/philly/v14/map_files/12/0_0.webp     # Content-T
   - **OpenStreetMap (ODbL):** OSM data shaped the façade colors and the golf-course corrections. Credit "© OpenStreetMap contributors" on the page. The map's credits string mentions OSM only for façade colors; it should cover golf courses too.
   - **Gemini disclosure:** the style LoRA was trained on Gemini 3 Pro Image outputs, and the Gemini API terms restrict using outputs to develop models. Stephen decided (Nov. 2) to disclose it wherever the map is presented or published; see Licensing below.
   - **Other credits:** check the remaining sources for the credits page: USGS NHD water; LiDAR (2022, "City of Philadelphia via PASDA"); USFWS NWI wetlands; PPR parks and trees; the City water (PWD), limits and footprint layers; SEPTA rail.
+
+## Favicon and social preview (Nov. 10)
+
+`.venv/bin/python scripts/34_site_images.py --version v18` writes `viewer/og-image.jpg` (1,200 x 630 link preview, Center City skyline), `viewer/favicon.ico` (16/32/48 px) and `viewer/apple-touch-icon.png` (180 px), both of City Hall's tower. All three are crops of the finished tiles. Rerun it after a new version is accepted, then upload the three files to `r2:pixel-philly/viewer/` (and `favicon.ico` to the bucket root). The page tags are in the `<head>` of `viewer/index.html` and `viewer/about.html`; the social tags use absolute URLs on https://pixelphilly.sstirling.com/.
 
 ## Preview flyover video (Nov. 5)
 

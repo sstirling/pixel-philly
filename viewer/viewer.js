@@ -19,11 +19,12 @@
 import { inBounds, lonLatToPx } from "./projection.js";
 
 const params = new URLSearchParams(location.search);
-// Default: the accepted map (output/philly/FROZEN_v17.json; v14, the frozen
-// talk map, stays at ?v=v14). Older maps
+// Default: the accepted map (output/philly/FROZEN_v18.json, accepted Nov. 9,
+// 2026: v17 plus the 3D-modeled Ben Franklin and Walt Whitman bridges).
+// v17 stays at ?v=v17 and v14, the frozen talk map, at ?v=v14. Older maps
 // stay reachable with ?area=...&v=...
 const area = params.get("area") || "philly";
-const version = params.get("v") || "v17";
+const version = params.get("v") || "v18";
 // The offline copy (scripts/27_offline_copy.py) sets <html data-offline="1">:
 // no request ever leaves the machine, so address search (City AIS API) is off
 const offline = document.documentElement.dataset.offline === "1";

@@ -1,6 +1,23 @@
 # Changelog
 
-## 2026-11-09: Ben Franklin and Walt Whitman bridges modeled in 3D (philly v18, building; not the viewer default)
+## 2026-11-10: favicon and social preview
+
+Stephen asked for a favicon and a social preview showing the map. Both are crops of the frozen v18 tiles, not new drawings.
+- **Script:** `scripts/34_site_images.py` (`--version`, default v18) cuts them with `Pyramid.window` from `scripts/29_flyover.py`. Crops were picked by eye from contact sheets in `output/review/site_images/`.
+- **Social preview:** `viewer/og-image.jpg`, 1,200 x 630 px, the Center City skyline from Logan Square to the Comcast towers at 3 map px per image px.
+- **Icons:** `viewer/favicon.ico` (16, 32 and 48 px) and `viewer/apple-touch-icon.png` (180 px), both the top of City Hall's tower. A street scene turned to mush at 32 px; the white tower is the one shape that still reads. At 16 px it is only a light smudge.
+- **Pages:** `viewer/index.html` and `viewer/about.html` gained `<link rel="icon">`, `<link rel="apple-touch-icon">`, Open Graph tags (absolute URLs on pixelphilly.sstirling.com, with image size and alt text) and `twitter:card` `summary_large_image`. The map page's `og:url` is the short address, https://pixelphilly.sstirling.com/.
+- **Hosted:** the three images went to `r2:pixel-philly/viewer/` (Cache-Control one day), `favicon.ico` also to the bucket root (browsers ask for `/favicon.ico`), and both pages re-uploaded (five minutes). `rclone check` on `viewer/`: 0 differences. All four image URLs return 200 with the right types.
+- The offline copy (`scripts/27_offline_copy.py`) copies the whole `viewer/` folder, so it gets the icons too. Its social tags point at the hosted site, which is harmless offline.
+
+## 2026-11-09 (late): v18 accepted, frozen, made the viewer default and hosted
+
+Stephen accepted v18 and committed the work ("Talk map", 95a454f), then asked to make it the default on R2 and in general.
+- **Frozen:** `output/philly/FROZEN_v18.json` (`scripts/26_freeze_map.py --name philly --version v18`): 75,367 files, 5.54 GB, tree SHA-256 `18d3fdedb1cbb67ef6a526ed9b8925ebdbeb34c1f917b50d614834e19bc712b7`; `--verify` passed. Don't rebuild or edit `output/philly/tiles/v18/`; the next version is v19.
+- **Viewer default:** `viewer/viewer.js` now defaults to v18; `viewer/about.html` says "Map version v18, frozen Nov. 9, 2026." v17 stays at `?v=v17`, v14 at `?v=v14`.
+- **Hosted:** v18's illustration layer uploaded to R2 under `output/philly/tiles/v18/` next to v17, then the viewer re-uploaded (log `output/philly/r2_upload_v18.log`). v17 stays in the bucket.
+
+## 2026-11-09: Ben Franklin and Walt Whitman bridges modeled in 3D (philly v18)
 
 Stephen (Nov. 9) said the Ben Franklin Bridge and the bridge south of it, the Walt Whitman, "look awful," and that "the southern bridge has buildings on the roadway." After the first two fixes he said both still "look terrible" and asked for both towers, the suspension cables and clean roadways. GPU cap $5. v14 and v17 stay frozen, and v17 stays the viewer default until Stephen accepts v18.
 
