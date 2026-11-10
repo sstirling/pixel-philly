@@ -1,5 +1,99 @@
 # Changelog
 
+## 2026-11-09: Ben Franklin and Walt Whitman bridges modeled in 3D (philly v18, building; not the viewer default)
+
+Stephen (Nov. 9) said the Ben Franklin Bridge and the bridge south of it, the Walt Whitman, "look awful," and that "the southern bridge has buildings on the roadway." After the first two fixes he said both still "look terrible" and asked for both towers, the suspension cables and clean roadways. GPU cap $5. v14 and v17 stay frozen, and v17 stays the viewer default until Stephen accepts v18.
+
+**Results:** v18 built Nov. 9 at 10:54 p.m. (`output/philly/build_v18.log`): 37,681 tiles per layer. 326 of 28,188 full-resolution tiles differ from v17. Seams are identical to v17 on all 22 region pairs (`output/philly/join_seams_v18.log`). The tan band under the cables is gone after the members-zone repaint fix. Crops: `output/review/bridges/nj/final_v18/` (v17 vs v18) and `output/review/bridges/crops_None/` (bridge sheet, 105 crops). The build first stopped on the stale-cell guard: southwest's `water_band/south_lidar/` copies of 11 redrawn frames predated the redraw; southwest was re-repainted (`output/southwest/repaint_v18.log`) and the build rerun. Not the viewer default until Stephen accepts it.
+
+### Causes
+- **Buildings on the roadway:** the 2022 LiDAR sees each deck from above. Where a deck crosses a footprint (the Packer Ave Marine Terminal under the Walt Whitman's Pennsylvania approach), the LiDAR shaping turned the deck into roof parts 10 m to 40 m tall, and the model drew them as buildings on the road. Next to the Walt Whitman's PA tower, the LiDAR also caught two container gantry cranes and shaped them into a cluster of high-rises (footprints 14875 and 326703: 85 parts of 34 m to 57 m, plus eight slivers of 18.4 m to 19.1 m).
+- **Shadow slab:** in the 2024 aerial, each bridge's shadow lies on the river as a near-black band. The render passed it to the model as texture, and the model drew it as a dark slab beside the deck.
+- **Missing towers and invented spans:** the 2024 aerial sees each tower only from above, and the render had no raised deck, cables or towers. The model guessed the structure: it drew one tower on the Ben Franklin and none on the Walt Whitman, and later invented slabs, a truss and a yellow gantry across the span.
+
+### Iteration 1: drop the deck parts, fill the shadows, cap the cranes (run `qwen_joint_light8_fac_bridges`, 16 frames, ~$0.74)
+- **Deck parts** (`bridges.deck_corridors`, `drop_deck_parts`; `"bridge_decks": true`): OSM motorway and trunk bridge ways (`raw/<area>_bridges.json`) are buffered by their lane width plus 8 m (`DECK_PAD_M`), which reaches the full 39 m Ben Franklin deck with PATCO and the walkways. A LiDAR-shaped footprint part at least 10 m tall and at least half inside a corridor is the deck, not a building, and is dropped. The footprint's other parts stay. The corridors are also masked out of the LiDAR structure search, as highways and rail already were.
+- **Crane cap** (`config/part_caps.json`, `reviewed.drop_capped_parts`): entry `walt_whitman_pa_cranes`. Footprint parts within 45 m of the reviewed point and taller than 13 m are dropped. The warehouse roof is 10.9 m and the tallest real roof part in range is 12.1 m. A first cap of 25 m left the 18 m to 19 m slivers standing.
+- **Anchorage stub** (`config/structure_exclusions.json`, `ben_franklin_pa_anchorage_stub`): LiDAR structure s585 (48 m², 52 m to 53 m) was left over at the Ben Franklin's PA anchorage after the corridor removed the rest. Alone, it drew as a thin 52 m pole on the approach. Dropped.
+- **Shadow fill** (`bridges.clear_water_shadows`, `05_build_scene.py bridge_shadow_ground`; `"bridge_shadows": true`): in the ground texture, on mapped water within 300 m of a deck's over-water span, river pixels darker than 0.62 of the zone's median river brightness are shadow. Mid-dark pixels (under 0.95, `SHADOW_WEAK_RATIO`) connected to them go too, because the Ben Franklin's hanger shadows measured about 0.92. The mask is grown 4 px and closed over 40 px (`SHADOW_CLOSE_PX`), since hangers fall about 40 px apart and filling only the lines left a faint lattice. It is filled with a smooth field of the surrounding river color. An earlier version added the river's ripples back over the fill; that traced the tower, cable and hanger edges into the fill, so it was removed. Vessels and piers are never filled.
+- **Result:** the deck buildings and the shadow slab were gone. But the model drew one Ben Franklin tower and no Walt Whitman towers (`output/review/bridges/nj/gpu_test/final_bfb.jpg`, `final_wwb.jpg`).
+
+### Iteration 2: simple two-leg towers (run `qwen_joint_light8_fac_bridges2`, 17 frames, ~$0.75; three single-frame reseeds, ~$0.13 each)
+- **Towers** (`bridges.tower_legs`, `05_build_scene.py add_bridge_towers`; `"bridge_towers": true`; `config/bridge_towers.json`): each tower's outline is its OSM way (`scripts/04q_fetch_bridge_towers.py`, `raw/south_lidar_bridge_towers.json`, ODbL). The outline is a strip across the deck, drawn as two square legs, one at each end. Heights are published: Ben Franklin 116.4 m (382 ft, DRPA), Walt Whitman 115.2 m (378 ft, CBS Philadelphia and PhillyYIMBY). Leg size and paint colors are estimates; the Walt Whitman's 3.3 m strips are widened to 5 m (`min_leg_m`, an estimate). Legs carry a fixed paint color instead of the aerial, which sees only the tower top.
+- **Result:** the towers drew, but the model still invented the span. Across seeds 0 to 3 for `frame_33_12` it drew slabs, a truss and a yellow gantry between the towers.
+
+### Iteration 3: the full suspension structure in the render (run `qwen_joint_light8_fac_bridges3d`, 30 frames, ~$1.17)
+The render now shows the model what the bridge is, so it doesn't have to guess. All of it is in `bridges.suspension_structure` (`config/bridge_structures.json`, `"bridge_structures": true`). Every dimension there is either sourced (value, unit, source URL) or marked as an estimate with a reason.
+- **Raised deck** (`bridges.lidar_profile`): the deck runs along the line between the two towers' centers, from the back of one anchorage to the back of the other, in 10 m segments. Its height is the median 2022 LiDAR surface within 5 m of that line, in 20 m bins, minus mean high water. Where the LiDAR has no returns (the Walt Whitman's New Jersey end is outside the City's coverage), a symmetric vertical curve through the published channel clearance stands in. Over water, and over land inside the suspended spans, the deck floats on its thickness (an estimate: 5.3 m on the Ben Franklin, 6.1 m on the Walt Whitman). Dashed lane lines follow MUTCD spacing (10 ft dashes, 30 ft gaps), and PATCO's two track beds sit outside the Ben Franklin's trusses.
+- **Towers and crossbeams:** legs from iteration 2. Crossbeam heights are scaled from public-domain photos onto the LiDAR (estimates): four struts with X-bracing on the Ben Franklin (Tichnor Brothers postcard), one deep top strut and no bracing on the Walt Whitman (NARA 552709). The top strut's top surface is measured from the LiDAR on both.
+- **Cables** fit to the LiDAR: each runs from the anchorage to the tower top, then along a parabola with the given sag. Side spans use the main span's sag scaled by (side span / main span)². Hangers hang from the cables to the deck at 6.25 m spacing (published on the Ben Franklin, an estimate on the Walt Whitman). The Ben Franklin gets its 8.53 m Warren stiffening truss above the deck.
+- **Approaches** (`bridges.approach_decks`): past each anchorage the deck follows the OSM deck ways at the LiDAR deck height, on estimated piers every 50 m, until it is within 2 m of the ground, the OSM bridge ways end, or the carriageways spread more than 40 m apart.
+- **Renderer** (`render/render.js`): prisms take an optional `z0` (raised base) and `roof_rgb` (flat, unlit top color). A raised underside is painted like the walls, not with the aerial. A new scene key, `tubes`, draws cables (Catmull-Rom curves through their points), hangers and truss members, lit like walls, and white in the mask pass. Scenes without these keys render the same as before. `05_build_scene.py` writes `tubes` per render tile (`tubes_in_reach`), and `09_check_alignment.py` projects raised prisms from `z0`.
+- **Photo deck painted out** (`bridges.deck_plan`, `paint_out_decks`, `05_build_scene.py bridge_deck_ground`): the flat deck in the aerial is filled from the river over water and from the ground over land, 5 m past the modeled deck's plan. 2 m left the Walt Whitman's lit railing outside the fill, because the aerial isn't a true orthophoto: a deck 50 m up sits 3 m to 4 m off its plan position.
+- **Repaint protection** (`bridges.structure_corridor`, `structure_zones`, `refine_members`; `10_repaint_water.py never_repaint`, `bridge_water`, `paint_water`): the water-level bridge band and hard deck mask are wrong for a deck 30 m to 50 m up, so the modeled bridges' lines are clipped out of them (deck width plus 10 m). The modeled structure takes over in two zones:
+  - **Solid** (deck, approach, piers, anchorages, crossbeams, tower legs, each swept from `z0` to its top): never repainted. Render-mask pixels near it grow 8 px (`STRUCTURE_GROW_PX`) instead of 2, since the drawn deck sits a few pixels off the render's.
+  - **Thin members** (cables buffered 10 px, hangers and truss members 4 px, plus the quads between hangers): mostly open river seen between thin tubes. The repaint takes pixels the drawing drew in river colors and keeps strokes connected to something it keeps. The mask grows only 1 px here (`MEMBER_GROW_PX`): 8 px kept a tan band of raw river between each cable and the deck, and 2 px left a rim along each hanger. Kept strokes count as water for the shore band, so hangers don't get dark frames.
+  - The invented-water scan and the single-mosaic repaint treat the whole structure as one object (`structure_protect`).
+- **Result:** one GPU pass of 30 bridge frames drew both bridges correctly: two towers each, cables, hangers and clean roadways.
+
+### What the LiDAR showed
+Heights above mean high water. MHW is 0.972 m NAVD88 at NOAA station 8545240, Philadelphia (MHW 3.082 m minus NAVD88 2.110 m, epoch 1983-2001; https://api.tidesandcurrents.noaa.gov/mdapi/prod/webapi/stations/8545240/datums.json).
+- **Tower tops:** Ben Franklin 116.0 m to 116.1 m (published 116.4 m); Walt Whitman 114.4 m to 114.5 m (published 115.2 m). The scene uses the published heights.
+- **Cable sag** (parabola fit to the LiDAR returns along both cables): Ben Franklin 60.4 m, rms 0.3 m (design sag 61.0 m); Walt Whitman 60.5 m, rms 1.2 m (no published figure found, so the fit is used).
+- **Deck tops:** Ben Franklin 32.8 m to 46.4 m; Walt Whitman 40.1 m to 51.8 m.
+- **OSM vs. LiDAR:** the Ben Franklin's New Jersey tower in OSM sits about 9 m west of the LiDAR tower top. OSM was kept, so the towers, cables and deck all share one source.
+
+### Sources
+- No Historic American Engineering Record (HAER) exists for either bridge.
+- **Ben Franklin:** the Board of Engineers' design report to the Delaware River Bridge Joint Commission (https://archive.org/details/ReportToTheDelawareRiverBridgeJointCommission) for the cable sag and diameter, hanger panels, leg spacing and truss depth; DRPA (https://drpa.org/bridges/ben-franklin-bridge.asp) for spans, clearance, widths and lanes.
+- **Walt Whitman:** DRPA (https://www.drpa.org/bridges/walt-whitman-bridge.asp), Bridgemeister (https://w.bridgemeister.com/bridge.php?bid=211) and PhillyRoads figures (https://industrialscenery.blogspot.com/2022/01/195719982017-i-74-walt-whitman-bridge.html).
+- **Reference photos for the crossbeams** (public domain): Tichnor Brothers postcard (https://commons.wikimedia.org/wiki/File:Delaware_River_Bridge,_between_Philadelphia,_Pa._and_Camden,_N._J_(61748).jpg) and NARA 552709 (https://commons.wikimedia.org/wiki/File:WALT_WHITMAN_BRIDGE_CROSSES_THE_DELAWARE_RIVER_AT_SOUTH_PHILADELPHIA,_LEADS_TO_NEW_JERSEY_SUBURBS_-_NARA_-_552709.jpg).
+- **Stylized, thicker than life** so they read at 0.293 m/px: cables 0.75 m radius (real: 0.38 m on the Ben Franklin, 0.29 m on the Walt Whitman), hangers 0.3 m radius, lane lines 0.4 m wide (real: about 0.1 m to 0.15 m).
+
+### Known flaws, accepted
+- The Ben Franklin's Philadelphia anchorages render and draw as blue blocks. The real ones are stone. Stephen (Nov. 9): skip it.
+- A thin brown strip, about 8 px, runs along the deck's lower edge, from the solid zone's 8 px grow.
+- The Ben Franklin's PA approach ends about 8 m up near 5th St, where OSM's bridge way ends.
+- The New Jersey approaches use estimated fallback grades (3.1% and 2.1%) and end in the air, mostly in the area with no imagery.
+- The second Packer Ave crane cluster, about 330 m south of the Walt Whitman (39.899 to 39.902 N), still draws as a high-rise. Not addressed.
+
+### Tests
+Written before each change. New: 36 tests in `tests/test_bridges.py`, plus `tests/test_bridge_wiring.py` (scene builder and repaint wiring) and `tests/test_render_features.py` (`z0`, `roof_rgb` and tubes in the renderer). `tests/test_reviewed.py` covers the part caps. 470 pass.
+
+### GPU (estimates, from each run's own report in `output/gpu_runs.jsonl`)
+| Run | Frames | Cost |
+|---|---|---|
+| `qwen_joint_light8_fac_bridges` | 16 | ~$0.74 |
+| `qwen_joint_light8_fac_bridges2` | 17 | ~$0.75 |
+| `_bridges3`, `_bridges_s2`, `_bridges_s3` (single-frame reseeds) | 1 each | ~$0.13 each, ~$0.39 |
+| `qwen_joint_light8_fac_bridges3d` | 30 | ~$1.17 |
+| `qwen_joint_light8_fac_v18rest` (the other 17 changed frames) | 17 | ~$1.27 (19.3 min) |
+
+Total: ~$4.32 of the $5 cap (estimates from each run's own report).
+
+### Backups (v17 state, before the bridge work)
+- `output/south_lidar/redraws/qwen_joint_light8_fac_pre_bridges/`: the v17 drawings of all 47 redrawn frames.
+- `output/south_lidar/renders_pre_bridges/`, `output/south_lidar/masks_pre_bridges/`.
+- `data/processed/south_lidar_pre_bridges/`, `data/processed/south_lidar_qa_pre_bridges.json`, `data/processed/south_lidar_tiles_pre_bridges.json`.
+- The v17 water outputs: `output/south_lidar/postprocessed/<run>/water_pre_bridges_v18/`.
+
+### Review crops
+`output/review/bridges/nj/`: `render_v4/`, `render_v5/` and `final_3d/` show v17 and the new drawing side by side. The aerial checks for the crane cap and anchorage stub are `aerial_ww_block.jpg` and `aerial_bfb_anch.jpg`.
+
+### v18
+- **Build:** `16_build_tiles.py --areas <12 areas> --name philly --prompt qwen_joint_light8_fac --version v18 --with-photo`, then `25_join_seams.py`, then `33_bridge_crops.py --before v17 --after v18`. Log: `output/philly/v18_pipeline.log`.
+- **Results:** v18 built Nov. 9 at 10:54 p.m. (`output/philly/build_v18.log`): 37,681 tiles per layer. 326 of 28,188 full-resolution tiles differ from v17. Seams are identical to v17 on all 22 region pairs (`output/philly/join_seams_v18.log`). The tan band under the cables is gone after the members-zone repaint fix. Crops: `output/review/bridges/nj/final_v18/` (v17 vs v18) and `output/review/bridges/crops_None/` (bridge sheet, 105 crops). The build first stopped on the stale-cell guard: southwest's `water_band/south_lidar/` copies of 11 redrawn frames predated the redraw; southwest was re-repainted (`output/southwest/repaint_v18.log`) and the build rerun. Not the viewer default until Stephen accepts it.
+- v18 is not the viewer default until Stephen accepts it. v14 and v17 stay frozen.
+
+## 2026-11-09: v17 hosted on Cloudflare R2; visit counter
+
+- **Upload:** v17's illustration layer (37,682 tiles, 4.34 GiB) and `viewer/` went to the Cloudflare R2 bucket `pixel-philly` in about 7 minutes. The photo layer was not uploaded. `rclone check` found 0 differences. Log: `output/philly/r2_upload_v17.log`.
+- **URL:** https://pixelphilly.sstirling.com/viewer/index.html. A Cloudflare dashboard Redirect Rule sends `/` to `/viewer/index.html`.
+- **Credentials:** the rclone remote `r2` lives in `~/.config/rclone/rclone.conf`, outside the repo. Never commit or print it.
+- **Address search** works from the new origin: the City's AIS API sends `access-control-allow-origin: *`.
+- **Aerial imagery:** Stephen (Nov. 9): "We're good on the aerial imagery." The open item to confirm with maps@phila.gov is closed.
+- **Visit counter:** at Stephen's request, `viewer/index.html` and `viewer/about.html` load a GoatCounter counter (his account, no cookies). `scripts/27_offline_copy.py` strips it from the offline copy, which promises no remote requests, and fails if any is left.
+
 ## 2026-11-09: v17 accepted, frozen and made the viewer default
 
 Stephen (Nov. 9): "Accept v17." The known flaws were accepted: shadow strips along some decks (W Roosevelt Blvd), plus the Platt Bridge rectangles and outline.

@@ -1,0 +1,55 @@
+{
+  "about": "Suspension-bridge towers added to the scene as plain steel legs (pixelphilly.bridges.tower_legs, scripts/05_build_scene.py with \"bridge_towers\": true). The decks' LiDAR shapes are dropped (bridges.drop_deck_parts) and the 2024 aerial sees each tower only from above, so without these the model drew the Ben Franklin with one tower and the Walt Whitman with none (Nov. 9 redraw, output/review/bridges/nj/gpu_test/final_bfb.jpg, final_wwb.jpg). Each tower's outline is its OSM way (data/raw/<area>_bridge_towers.json, scripts/04q_fetch_bridge_towers.py, ODbL): a strip across the deck. It is drawn as two square legs, one at each end of the strip, each as wide as the strip; no source gives the leg dimensions, so the leg size is an estimate. Heights are published figures. Colors are approximate paint colors (estimates, not measured values). min_leg_m (Walt Whitman, 5.0 m, an estimate in line with the Ben Franklin strips' 5.2-6.1 m) widens legs on strips thinner than that, centered on the strip; the 3.3 m OSM strips would draw as needles.",
+  "entries": [
+    {
+      "id": "ben_franklin_pa",
+      "area": "south_lidar",
+      "osm_way": 754832342,
+      "height_m": 116.4,
+      "color": [
+        86,
+        120,
+        156
+      ],
+      "source": "Height 382 ft (116.4 m), Delaware River Port Authority (drpa.org, Ben Franklin Bridge facts); OSM way 754832342 height=117. Painted 'Ben Franklin blue' (DRPA)."
+    },
+    {
+      "id": "ben_franklin_nj",
+      "area": "south_lidar",
+      "osm_way": 754832343,
+      "height_m": 116.4,
+      "color": [
+        86,
+        120,
+        156
+      ],
+      "source": "Height 382 ft (116.4 m), Delaware River Port Authority (drpa.org, Ben Franklin Bridge facts); OSM way 754832343 height=117. Painted 'Ben Franklin blue' (DRPA)."
+    },
+    {
+      "id": "walt_whitman_pa",
+      "area": "south_lidar",
+      "osm_way": 755034376,
+      "height_m": 115.2,
+      "color": [
+        104,
+        132,
+        112
+      ],
+      "source": "Height 378 ft (115.2 m), CBS Philadelphia and PhillyYIMBY; OSM way 755034376 height=115. Painted green (same sources).",
+      "min_leg_m": 5.0
+    },
+    {
+      "id": "walt_whitman_nj",
+      "area": "south_lidar",
+      "osm_way": 755034375,
+      "height_m": 115.2,
+      "color": [
+        104,
+        132,
+        112
+      ],
+      "source": "Height 378 ft (115.2 m), CBS Philadelphia and PhillyYIMBY; OSM way 755034375 height=115. Painted green (same sources).",
+      "min_leg_m": 5.0
+    }
+  ]
+}

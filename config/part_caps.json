@@ -1,0 +1,19 @@
+{
+  "about": "LiDAR-shaped footprint parts (ids <footprint>-<k>) that the 2022 LiDAR shaped from objects the 2024 aerial shows aren't buildings. Each entry is a reviewed lon/lat point, a radius and a height: parts of any footprint within radius_m of the point and taller than max_m are dropped in scripts/05_build_scene.py (pixelphilly.reviewed.drop_capped_parts); the footprint's other parts stay.",
+  "entries": [
+    {
+      "id": "walt_whitman_pa_cranes",
+      "area": "south_lidar",
+      "lonlat": [
+        -75.13335,
+        39.90505
+      ],
+      "radius_m": 45.0,
+      "max_m": 13.0,
+      "reason": "Packer Ave Marine Terminal warehouse beside the Walt Whitman Bridge's PA tower. Footprints 14875 (the 20,650 m² warehouse) and 326703 (the terminal) had 85 LiDAR parts of 34-57 m here, plus eight slivers of 10-24 m² at 18.4-19.1 m, which drew as a cluster of high-rises next to the bridge deck. The 2024 aerial shows only the warehouse roof and two blue container gantry cranes, no tall building: the 2022 LiDAR caught the cranes. The warehouse roof is 10.9 m (part 326703-1088, 16,324 m²); the tallest real roof part in range is 12.1 m (326703-1298, 1,048 m²), so the cap is 13 m. The first cap, 25 m, left the 18-19 m slivers standing (output/review/bridges/nj/render_v2/ww_block.jpg). The terminal's other crane parts, about 330 m south (39.899-39.902), are out of range and untouched.",
+      "source": "City 2024 3-inch aerial, output/review/bridges/nj/aerial_ww_block.jpg; render output/review/bridges/nj/render_new/ww_block.jpg; render output/review/bridges/nj/render_v2/ww_block.jpg",
+      "reviewed": "2026-11-09",
+      "approved_by": "Stephen (Nov. 9: 'the southern bridge has buildings on the roadway')"
+    }
+  ]
+}

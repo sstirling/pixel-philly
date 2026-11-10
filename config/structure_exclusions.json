@@ -12,6 +12,18 @@
       "source": "City 2024 3-inch aerial, output/review/roxborough_structure_s858.jpg",
       "reviewed": "2026-11-03",
       "approved_by": "Stephen (rule: review structures against the 2024 aerial using reviewed lists)"
+    },
+    {
+      "id": "ben_franklin_pa_anchorage_stub",
+      "area": "south_lidar",
+      "lonlat": [
+        -75.140691,
+        39.953808
+      ],
+      "reason": "South_lidar structure s585 (two parts, 48 m\u00b2, 52-53 m) at the Ben Franklin Bridge's PA anchorage. It is a fragment of a real structure, the anchorage, left after the deck corridor removed the rest; on its own it renders and draws as a thin 52 m pole standing on the bridge approach. The 2024 aerial shows small anchorage houses beside the deck, not a pole.",
+      "source": "City 2024 3-inch aerial, output/review/bridges/nj/aerial_bfb_anch.jpg; render output/review/bridges/nj/render_new/cmp_bfb_pa.jpg",
+      "reviewed": "2026-11-09",
+      "approved_by": "Stephen (Nov. 9: 'the southern bridge has buildings on the roadway')"
     }
   ]
 }

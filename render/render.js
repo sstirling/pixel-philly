@@ -13,7 +13,8 @@
 //
 // The page exposes window.renderFrame(index, mode) -> PNG data URL, which
 // scripts/06_render.py calls once per frame. mode "mask" draws buildings
-// white on black for the alignment check in scripts/09_check_alignment.py.
+// (and bridge tubes) white on black for the alignment check in
+// scripts/09_check_alignment.py.
 
 import * as THREE from "./vendor/three.module.min.js";
 
@@ -100,39 +101,83 @@ function shapeFromRings(rings) {
   return shape;
 }
 
+// Flat-colored tops (building "roof_rgb"; bridge decks): unlit like the
+// aerial roofs, so the deck shows exactly the given color.
+const flatParts = [];
+const flatColors = [];
+
 for (const b of sceneData.buildings) {
   const shapes = b.polys.map(shapeFromRings);
-  const geom = new THREE.ExtrudeGeometry(shapes, { depth: b.h, bevelEnabled: false });
+  // "z0" lifts the prism's base off the ground (a bridge deck, a tower
+  // crossbeam); h stays the absolute top height, so the prism spans z0..h.
+  const z0 = b.z0 || 0;
+  const geom = new THREE.ExtrudeGeometry(shapes, { depth: b.h - z0, bevelEnabled: false });
   // Shapes are drawn in (east, north); extrusion runs along +z. Rotating -90°
   // about x maps north to -z and the extrusion to +y (up).
   geom.rotateX(-Math.PI / 2);
+  if (z0) geom.translate(0, z0, 0);
   const pos = geom.attributes.position.array;
   const nrm = geom.attributes.normal.array;
   const f = b.facade;
   const rgb = f ? f.w : b.color;
   const color = new THREE.Color().setRGB(rgb[0] / 255, rgb[1] / 255, rgb[2] / 255, THREE.SRGBColorSpace);
   const win = f ? new THREE.Color().setRGB(f.g[0] / 255, f.g[1] / 255, f.g[2] / 255, THREE.SRGBColorSpace) : null;
+  const flat = b.roof_rgb
+    ? new THREE.Color().setRGB(b.roof_rgb[0] / 255, b.roof_rgb[1] / 255, b.roof_rgb[2] / 255, THREE.SRGBColorSpace)
+    : null;
+  // count vertices of wall-lit triangles, with matching per-vertex attributes
+  const pushWall = (slicePos, sliceNrm, count) => {
+    wallParts.push([slicePos, sliceNrm]);
+    for (let i = 0; i < count; i++) wallColors.push(color.r, color.g, color.b);
+    if (facadeOn) {
+      for (let i = 0; i < count; i++) {
+        if (f) {
+          wallFacade.push(f.s, f.f, f.p, f.b);
+          wallWindow.push(win.r, win.g, win.b);
+          wallFront.push(...(f.d || [0, 0, 0, 0]));
+        } else {
+          wallFacade.push(0, 1, 1, 0);
+          wallWindow.push(0, 0, 0);
+          wallFront.push(0, 0, 0, 0);
+        }
+        wallTop.push(b.h);
+      }
+    }
+  };
   for (const g of geom.groups) {
     const slicePos = pos.slice(g.start * 3, (g.start + g.count) * 3);
     const sliceNrm = nrm.slice(g.start * 3, (g.start + g.count) * 3);
-    if (g.materialIndex === 0) {
+    if (g.materialIndex !== 0) {
+      pushWall(slicePos, sliceNrm, g.count);
+    } else if (!z0 && !flat) {
+      // Ordinary building: both caps take the aerial (the bottom one sits
+      // on the ground, facing down, and is never seen)
       roofParts.push([slicePos, sliceNrm]);
     } else {
-      wallParts.push([slicePos, sliceNrm]);
-      for (let i = 0; i < g.count; i++) wallColors.push(color.r, color.g, color.b);
-      if (facadeOn) {
-        for (let i = 0; i < g.count; i++) {
-          if (f) {
-            wallFacade.push(f.s, f.f, f.p, f.b);
-            wallWindow.push(win.r, win.g, win.b);
-            wallFront.push(...(f.d || [0, 0, 0, 0]));
-          } else {
-            wallFacade.push(0, 1, 1, 0);
-            wallWindow.push(0, 0, 0);
-            wallFront.push(0, 0, 0, 0);
-          }
-          wallTop.push(b.h);
+      // Group 0 holds the top and bottom caps together; ExtrudeGeometry is
+      // non-indexed with face normals, so each triangle's first normal tells
+      // them apart. A raised underside must not show the aerial of the
+      // ground below it, so it is painted like the walls.
+      const top = [], topN = [], under = [], underN = [];
+      for (let t = 0; t < slicePos.length; t += 9) {
+        const up = sliceNrm[t + 1] >= 0;
+        const [p, q] = up ? [top, topN] : [under, underN];
+        for (let k = 0; k < 9; k++) {
+          p.push(slicePos[t + k]);
+          q.push(sliceNrm[t + k]);
         }
+      }
+      if (flat) {
+        flatParts.push([Float32Array.from(top), Float32Array.from(topN)]);
+        for (let i = 0; i < top.length / 3; i++) flatColors.push(flat.r, flat.g, flat.b);
+      } else {
+        roofParts.push([Float32Array.from(top), Float32Array.from(topN)]);
+      }
+      if (z0) {
+        pushWall(Float32Array.from(under), Float32Array.from(underN), under.length / 3);
+      } else if (flat) {
+        // On the ground the underside is hidden, as for ordinary buildings
+        roofParts.push([Float32Array.from(under), Float32Array.from(underN)]);
       }
     }
   }
@@ -270,6 +315,41 @@ if (vFacade.x > 0.5) diffuseColor.rgb = facadeColor(vColor);`,
 const walls = new THREE.Mesh(wallGeom, wallMat);
 scene.add(roofs, walls);
 
+// Meshes are only added when a scene uses them, so older scenes draw the
+// same objects in the same order as before.
+if (flatParts.length) {
+  const flatGeom = merged(flatParts);
+  flatGeom.setAttribute("color", new THREE.BufferAttribute(new Float32Array(flatColors), 3));
+  scene.add(new THREE.Mesh(flatGeom, new THREE.MeshBasicMaterial({ vertexColors: true })));
+}
+
+// --- tubes --------------------------------------------------------------
+// Suspension-bridge main cables and hangers (scene "tubes", from
+// 05_build_scene.py): points in local (east, north, z) meters. More than two
+// points get a smooth Catmull-Rom curve through them (a cable's sag); two
+// points are a straight tube (a hanger). Lit like the walls; mask mode draws
+// them white with the buildings because the image model must see them too.
+const tubeParts = [];
+const tubeColors = [];
+for (const t of sceneData.tubes || []) {
+  const pts = t.pts.map(([e, n, z]) => new THREE.Vector3(e, z, -n));
+  const curve = pts.length > 2 ? new THREE.CatmullRomCurve3(pts) : new THREE.LineCurve3(pts[0], pts[1]);
+  // About one segment per 2 m of length bends a cable smoothly at 0.29 m/px;
+  // a straight tube needs only one
+  const segs = pts.length > 2 ? Math.min(512, Math.max(16, Math.ceil(curve.getLength() / 2))) : 1;
+  const geom = new THREE.TubeGeometry(curve, segs, t.r, 8, false).toNonIndexed();
+  const c = new THREE.Color().setRGB(t.color[0] / 255, t.color[1] / 255, t.color[2] / 255, THREE.SRGBColorSpace);
+  tubeParts.push([geom.attributes.position.array, geom.attributes.normal.array]);
+  for (let i = 0; i < geom.attributes.position.count; i++) tubeColors.push(c.r, c.g, c.b);
+  geom.dispose();
+}
+if (tubeParts.length) {
+  const tubeGeom = merged(tubeParts);
+  tubeGeom.setAttribute("color", new THREE.BufferAttribute(new Float32Array(tubeColors), 3));
+  // Same Lambert material and lights as the walls, without the façade paint
+  scene.add(new THREE.Mesh(tubeGeom, new THREE.MeshLambertMaterial({ vertexColors: true })));
+}
+
 // --- trees --------------------------------------------------------------
 // Stylized canopies (low-poly balls) at inventory points, sized from trunk
 // diameter in 05_build_scene.py. They give the image model volume to draw;
@@ -341,5 +421,6 @@ window.rendererInfo = {
   frames: sceneData.frames.length,
   buildings: sceneData.buildings.length,
   trees: sceneData.trees.length,
+  tubes: (sceneData.tubes || []).length,
 };
 window.sceneReady = true;

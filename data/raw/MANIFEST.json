@@ -12246,5 +12246,20 @@
     "license": "Open Database License (ODbL) 1.0, https://opendatacommons.org/licenses/odbl/",
     "credit": "\u00a9 OpenStreetMap contributors",
     "fetched_at": "2026-11-06T03:35:42+00:00"
+  },
+  "south_lidar_bridge_towers.json": {
+    "description": "OpenStreetMap suspension-bridge tower outlines (man_made=tower, bridge:support) via Overpass",
+    "query_url": "https://overpass-api.de/api/interpreter",
+    "query": "[out:json][timeout:180];(nwr[\"man_made\"=\"tower\"](around:200,39.9534928,-75.1376656);nwr[\"bridge:support\"](around:200,39.9534928,-75.1376656);nwr[\"bridge:structure\"](around:200,39.9534928,-75.1376656);way(754832342);way(755034376);nwr[\"man_made\"=\"tower\"](around:200,39.9524523,-75.1316924);nwr[\"bridge:support\"](around:200,39.9524523,-75.1316924);nwr[\"bridge:structure\"](around:200,39.9524523,-75.1316924);way(754832342);way(755034376);nwr[\"man_made\"=\"tower\"](around:200,39.9057984,-75.1327797);nwr[\"bridge:support\"](around:200,39.9057984,-75.1327797);nwr[\"bridge:structure\"](around:200,39.9057984,-75.1327797);way(754832342);way(755034376);nwr[\"man_made\"=\"tower\"](around:200,39.9045817,-75.1258158);nwr[\"bridge:support\"](around:200,39.9045817,-75.1258158);nwr[\"bridge:structure\"](around:200,39.9045817,-75.1258158);way(754832342);way(755034376););out tags geom;",
+    "bbox_wgs84": [
+      -75.1406656,
+      39.9015817,
+      -75.1228158,
+      39.9564928
+    ],
+    "feature_count": 10,
+    "license": "Open Database License (ODbL) 1.0, https://opendatacommons.org/licenses/odbl/",
+    "credit": "\u00a9 OpenStreetMap contributors",
+    "fetched_at": "2026-11-09T19:55:41+00:00"
   }
 }

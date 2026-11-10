@@ -1,6 +1,6 @@
 {
   "buildings_downloaded": 115885,
-  "buildings_in_scene": 251910,
+  "buildings_in_scene": 257206,
   "buildings_dropped": [],
   "height_source_counts": {
     "approx_hgt": 115358,
@@ -1848,13 +1848,128 @@
     17579,
     106422
   ],
-  "lidar_structures": 2329,
-  "lidar_structure_parts": 7479,
-  "lidar_structure_area_m2": 904724.8,
-  "lidar_structures_dropped_photo": 1066,
+  "lidar_structures": 2314,
+  "lidar_structure_parts": 7434,
+  "lidar_structure_area_m2": 897418.0,
+  "lidar_structures_dropped_photo": 1065,
+  "lidar_structures_dropped_reviewed": [
+    "ben_franklin_pa_anchorage_stub"
+  ],
+  "lidar_parts_capped_reviewed": {
+    "walt_whitman_pa_cranes": [
+      "14875-31",
+      "14875-32",
+      "14875-33",
+      "14875-34",
+      "14875-36",
+      "14875-37",
+      "14875-38",
+      "14875-39",
+      "14875-40",
+      "14875-41",
+      "14875-42",
+      "14875-43",
+      "14875-44",
+      "14875-45",
+      "14875-46",
+      "14875-47",
+      "14875-48",
+      "14875-49",
+      "14875-50",
+      "14875-51",
+      "14875-52",
+      "14875-53",
+      "14875-54",
+      "14875-55",
+      "14875-56",
+      "14875-57",
+      "14875-58",
+      "14875-59",
+      "14875-60",
+      "14875-61",
+      "14875-62",
+      "14875-63",
+      "14875-64",
+      "14875-65",
+      "14875-66",
+      "326703-1394",
+      "326703-1395",
+      "326703-1396",
+      "326703-1397",
+      "326703-1403",
+      "326703-1405",
+      "326703-1408",
+      "326703-1409",
+      "326703-1410",
+      "326703-1411",
+      "326703-1412",
+      "326703-1413",
+      "326703-1414",
+      "326703-1415",
+      "326703-1417",
+      "326703-1418",
+      "326703-1419",
+      "326703-1420",
+      "326703-1421",
+      "326703-1422",
+      "326703-1423",
+      "326703-1424",
+      "326703-1425",
+      "326703-1426",
+      "326703-1427",
+      "326703-1428",
+      "326703-1429",
+      "326703-1430",
+      "326703-1431",
+      "326703-1432",
+      "326703-1433",
+      "326703-1434",
+      "326703-1435",
+      "326703-1436",
+      "326703-1437",
+      "326703-1441",
+      "326703-1442",
+      "326703-1443",
+      "326703-1444",
+      "326703-1445",
+      "326703-1446",
+      "326703-1447",
+      "326703-1448",
+      "326703-1449",
+      "326703-1473",
+      "326703-1474",
+      "326703-1475",
+      "326703-1476",
+      "326703-1511",
+      "326703-1512",
+      "326703-1513",
+      "326703-1514",
+      "326703-1523",
+      "326703-1524",
+      "326703-1525",
+      "326703-1526",
+      "326703-1538",
+      "326703-1539"
+    ]
+  },
   "lidar_highway_mask": true,
   "lidar_highway_masked_m2": 1619320.3,
   "lidar_rail_mask": true,
+  "bridge_deck_corridors": 220,
+  "bridge_deck_parts_dropped": [
+    "326703-1064",
+    "326703-1292",
+    "326703-1369",
+    "326703-1393",
+    "326703-1399",
+    "326703-1400",
+    "326703-1401",
+    "326703-1402",
+    "326703-1404",
+    "326703-1407",
+    "357918-3",
+    "357918-4"
+  ],
   "vessels": [
     {
       "id": "N1-h1",
@@ -2166,6 +2281,85 @@
     }
   ],
   "lidar_margin_m": 100.0,
+  "bridge_tower_legs": 8,
+  "bridge_structures": {
+    "ben_franklin": {
+      "buildings": 2423,
+      "tubes": 628,
+      "deck_top_m": [
+        32.82,
+        46.39
+      ],
+      "segments": 106,
+      "floating": 96,
+      "approach": {
+        "a": {
+          "segments": 49,
+          "end": "osm_end",
+          "length_m": 490.0,
+          "piers": 9,
+          "fallback_segments": 0,
+          "top_m": [
+            8.36,
+            32.02
+          ],
+          "end_top_m": 8.36,
+          "end_above_ground_m": 8.36
+        },
+        "b": {
+          "segments": 72,
+          "end": "osm_end",
+          "length_m": 720.0,
+          "piers": 14,
+          "fallback_segments": 30,
+          "top_m": [
+            8.11,
+            32.48
+          ],
+          "end_top_m": 8.11,
+          "end_above_ground_m": null
+        }
+      }
+    },
+    "walt_whitman": {
+      "buildings": 3015,
+      "tubes": 341,
+      "deck_top_m": [
+        40.14,
+        51.8
+      ],
+      "segments": 109,
+      "floating": 109,
+      "approach": {
+        "a": {
+          "segments": 150,
+          "end": "osm_end",
+          "length_m": 1500.0,
+          "piers": 29,
+          "fallback_segments": 0,
+          "top_m": [
+            4.18,
+            39.64
+          ],
+          "end_top_m": 4.18,
+          "end_above_ground_m": 4.18
+        },
+        "b": {
+          "segments": 66,
+          "end": "osm_end",
+          "length_m": 660.0,
+          "piers": 13,
+          "fallback_segments": 66,
+          "top_m": [
+            26.16,
+            39.81
+          ],
+          "end_top_m": 26.16,
+          "end_above_ground_m": null
+        }
+      }
+    }
+  },
   "facade_join": {
     "parcel": 114589,
     "unmatched": 491,
@@ -2205,7 +2399,9 @@
   "facade_osm_items": 867,
   "facade_street_fronts": 15626,
   "facade_unmatched": "plain walls (no facade)",
-  "lawn_corrected_px": 175706483,
-  "lawn_park_px": 324905580,
-  "lawn_woods_px": 13236245
+  "lawn_corrected_px": 175739283,
+  "lawn_park_px": 325006208,
+  "lawn_woods_px": 13234845,
+  "bridge_shadow_px": 26404294,
+  "bridge_deck_ground_px": 17694516
 }

@@ -14,6 +14,11 @@ source checked and the date; nothing here is inferred automatically.
 - config/stadium_exclusions.json: footprints that pass the stand-terrace
   rule (lidar.stand_terraces) but are not stadiums, e.g. the airport
   terminal and garage complex. Their parts keep ordinary walls.
+- config/part_caps.json: a reviewed point, radius and height. LiDAR-shaped
+  footprint parts ("<footprint>-<k>") within the radius and taller than
+  max_m are dropped; the footprint's other parts stay. For objects the 2022
+  LiDAR shaped into a roof that the 2024 aerial shows aren't buildings, e.g.
+  the container cranes beside the Walt Whitman Bridge's PA tower.
 
 A footprint not listed is untouched, so areas without entries build
 byte-identical scenes. Tested in tests/test_reviewed.py.
@@ -112,3 +117,40 @@ def drop_excluded_structures(parts: list[dict], exclusions: dict, to_local):
             drop.update(found)
             hit.append(key)
     return [p for p in parts if p["region"] not in drop], hit
+
+
+PART_CAPS = REPO_ROOT / "config" / "part_caps.json"
+
+
+def _is_footprint_part(pid) -> bool:
+    """LiDAR-shaped footprint part ids are "<footprint>-<k>" strings; single-
+    height footprints are ints and structures "s<region>-<k>"."""
+    a, sep, b = str(pid).partition("-")
+    return bool(sep) and a.isdigit() and b.isdigit()
+
+
+def drop_capped_parts(parts: list[dict], caps: dict, to_local):
+    """(kept parts, {cap id: [dropped part ids]}). A LiDAR-shaped footprint
+    part within a cap's radius_m of its reviewed point ("lonlat") and taller
+    than its max_m is dropped. to_local: (lon, lat) -> local (e, n)."""
+    if not caps or not parts:
+        return parts, {}
+    from shapely.geometry import Point, Polygon
+    from shapely.ops import unary_union
+
+    points = {k: (Point(*to_local(*e["lonlat"])), float(e["radius_m"]), float(e["max_m"])) for k, e in caps.items()}
+    kept, hit = [], {}
+    for b in parts:
+        key = None
+        if _is_footprint_part(b.get("id")):
+            for k, (pt, r, max_m) in points.items():
+                if b.get("h", 0) > max_m:
+                    g = unary_union([Polygon(p[0], p[1:]).buffer(0) for p in b["polys"]])
+                    if g.distance(pt) <= r:
+                        key = k
+                        break
+        if key is None:
+            kept.append(b)
+        else:
+            hit.setdefault(key, []).append(b["id"])
+    return kept, hit

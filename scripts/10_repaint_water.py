@@ -210,6 +210,9 @@ def repaint_band(cfg, args, frame, cam, frames, known, sources, ripple, x_origin
     protect_geom = unary_union([protect_for(c, frame, cam, x_origin, y_origin) for c in cfgs])
     bridge_geom = unary_union([bridges_for(c, frame, cam, x_origin, y_origin) for c in cfgs])
     deck_geom = unary_union([decks_for(c, frame, cam, x_origin, y_origin) for c in cfgs])
+    zones = [structure_zones_for(c, frame, cam, x_origin, y_origin) for c in cfgs]
+    struct_geom = unary_union([z[0] for z in zones])
+    members_geom = unary_union([z[1] for z in zones]).difference(struct_geom)
     ox, oy = ripple
     out_dir = area_dir(cfg, "postprocessed", args.prompt, "water_band")
     band = [f for f in frames if f.name in owners]
@@ -226,14 +229,16 @@ def repaint_band(cfg, args, frame, cam, frames, known, sources, ripple, x_origin
         gx, gy = f.col * size - HALO, f.row * size - HALO
         span = size + 2 * HALO
         render = renders.region(gx, gy, span, span)
-        bmask = waterpaint.grow(masks.region(gx, gy, span, span) > 127) | protected(protect_geom, gx, gy, span)
+        bmask = never_repaint(masks.region(gx, gy, span, span) > 127, protect_geom, struct_geom, gx, gy, span,
+                              members_geom)
         nhd = waterpaint.rasterize_view(nhd_geom, gx, gy, 1.0, span, span)
         water = waterpaint.water_mask(render, nhd, bmask, median, threshold)
         raw = redraws.region(gx, gy, span, span)
         bband = protected(bridge_geom, gx, gy, span)
+        members = protected(members_geom, gx, gy, span)
         sample = None
-        if bband.any() and water.any():
-            ring = bridges.ring_sample(water, raw, bband)
+        if (bband | members).any() and water.any():
+            ring = bridges.ring_sample(water, raw, bband | members)
             if ring is None:
                 if defer_ok:
                     return False
@@ -245,8 +250,8 @@ def repaint_band(cfg, args, frame, cam, frames, known, sources, ripple, x_origin
                 sample = ring
         elif water.sum() >= 200:  # as ring_sample: too few px make a poor palette
             bank.add((f.col, f.row), raw[water][::7])  # no bridge here: all its water is drawn river
-        water = bridges.refine(water, raw, bband, protected(deck_geom, gx, gy, span), sample=sample)
-        out = waterpaint.apply(raw.copy(), water, gx + ox, gy + oy, 1.0)
+        water = bridge_water(water, raw, bband, protected(deck_geom, gx, gy, span), members, sample)
+        out = paint_water(raw, water, members, gx + ox, gy + oy)
         if not nd_geom.is_empty:
             out[nodata.nodata_mask(nd_geom, gx, gy, span, span)] = nodata.BACKGROUND
         (out_dir / owner).mkdir(parents=True, exist_ok=True)
@@ -372,6 +377,88 @@ def decks_for(cfg, frame, cam, x_origin, y_origin):
     return bridges.deck_screen(cfg, frame, cam, x_origin, y_origin)
 
 
+def structures_for(cfg, frame, cam, x_origin, y_origin):
+    """Whole screen region of the bridges modeled in 3D (pixelphilly.bridges
+    .structure_protect_for; "bridge_structures": true), for the checks that
+    treat a bridge as one object (invented-water scan, single-mosaic run).
+    These bridges are clipped out of bridges_for and decks_for (Nov. 9)."""
+    return bridges.structure_protect_for(cfg, frame, cam, x_origin, y_origin)
+
+
+def structure_zones_for(cfg, frame, cam, x_origin, y_origin):
+    """(solid, members) of the bridges modeled in 3D (pixelphilly.bridges
+    .structure_zones_for), for the per-frame repaint: deck, approach, pier,
+    anchorage and tower prisms never repainted; cables and the hanger zone
+    repainted where the drawing drew river (bridge_water)."""
+    return bridges.structure_zones_for(cfg, frame, cam, x_origin, y_origin)
+
+
+# Render-mask growth near a modeled bridge's solid parts. The default grow (a
+# 5 px window, 2 px) is for buildings; the drawn deck edge, piers and towers
+# sit a few px off the render's, so mask pixels within this reach of the
+# solid region grow this much
+STRUCTURE_GROW_PX = 8
+# Render-mask growth inside a modeled bridge's members zone (cables and the
+# hanger zone). The drawn hangers sit on the render's tubes, and the WWB's
+# green-gray hangers are within COLOR_TOL of its drawn olive river, so the
+# color test alone painted them out (Nov. 9 scratch run, frame_33_12). Kept
+# small: hangers are about 15 px apart, and 8 px kept the whole zone's raw
+# river (the tan band)
+MEMBER_GROW_PX = 1  # 2 left a 1-2 px rim of raw river along each hanger
+
+
+def never_repaint(mask_view, protect_geom, struct_geom, gx, gy, span, members_geom=None):
+    """Pixels of a span x span view at (gx, gy) the repaint must leave as
+    drawn: the render mask grown (2 px; STRUCTURE_GROW_PX near a modeled
+    bridge's solid parts), vessels and piers, and the solid region.
+
+    members_geom: a modeled bridge's cables and hanger zone. The render mask
+    has the tubes in it, and grown STRUCTURE_GROW_PX around hangers about
+    15 px apart it kept the zone's raw river (Nov. 9 review: the tan band
+    between cable and deck). Inside it the mask grows only MEMBER_GROW_PX,
+    plus vessels and piers (and the solid region, where the rasters touch);
+    bridge_water keeps the drawn strokes that lie off the render's tubes."""
+    out = waterpaint.grow(mask_view) | protected(protect_geom, gx, gy, span)
+    sv = protected(struct_geom, gx, gy, span)
+    mv = protected(members_geom, gx, gy, span)
+    if sv.any():
+        k = 2 * STRUCTURE_GROW_PX + 1
+        near = np.asarray(Image.fromarray(sv.astype(np.uint8) * 255).filter(ImageFilter.MaxFilter(k))) > 127
+        # Cable and hanger tubes are left out: where a cable nears the deck,
+        # their 8 px grow reached past the members zone and kept a sliver of
+        # raw river above the cable (Nov. 9 scratch run, WWB mid-span)
+        out |= waterpaint.grow(mask_view & near & ~mv, k) | sv
+    if mv.any():
+        # Solid wins where the two zones' rasters touch at a shared edge
+        thin = waterpaint.grow(mask_view, 2 * MEMBER_GROW_PX + 1)
+        out[mv] = (thin | protected(protect_geom, gx, gy, span) | sv)[mv]
+    return out
+
+
+def bridge_water(water, raw, band, deck, members, sample):
+    """The water mask made drawing-aware on bridges: bridge bands through
+    bridges.refine (closing over ripple dashes; the water-level deck never
+    water), a modeled bridge's members zone through bridges.refine_members
+    (no closing, so hangers survive). Both compare with the same drawn-river
+    sample."""
+    water = bridges.refine(water, raw, band, deck, sample=sample)
+    return bridges.refine_members(water, raw, members, sample=sample)
+
+
+def paint_water(raw, water, members, gx, gy):
+    """waterpaint.apply, with the drawn strokes kept inside a modeled
+    bridge's members zone (the pixels there bridge_water left out of
+    `water`) counted as water for the shore band, then put back as drawn.
+    Otherwise every hanger gets a 4 px shore on each side, and the 12-15 px
+    bays between hangers read as dark-framed windows (Nov. 9 scratch run)."""
+    strokes = members & ~water
+    if not strokes.any():
+        return waterpaint.apply(raw.copy(), water, gx, gy, 1.0)
+    out = waterpaint.apply(raw.copy(), water | strokes, gx, gy, 1.0)
+    out[strokes] = raw[strokes]
+    return out
+
+
 def protected(geom, gx, gy, w, h=None):
     """Protection mask for a view (empty geometry: all False)."""
     h = w if h is None else h
@@ -418,6 +505,7 @@ def main_tiled(cfg, args, frame, cam, frames):
     protect_geom = protect_for(cfg, frame, cam, x_origin, y_origin)
     bridge_geom = bridges_for(cfg, frame, cam, x_origin, y_origin)
     deck_geom = decks_for(cfg, frame, cam, x_origin, y_origin)
+    struct_geom, members_geom = structure_zones_for(cfg, frame, cam, x_origin, y_origin)
 
     # Color model of open water from the render, sampled across all frames
     samples = []
@@ -466,16 +554,18 @@ def main_tiled(cfg, args, frame, cam, frames):
         gx, gy = f.col * size - HALO, f.row * size - HALO
         span = size + 2 * HALO
         render = renders.region(gx, gy, span, span)
-        bmask = waterpaint.grow(masks.region(gx, gy, span, span) > 127) | protected(protect_geom, gx, gy, span)
+        bmask = never_repaint(masks.region(gx, gy, span, span) > 127, protect_geom, struct_geom, gx, gy, span,
+                              members_geom)
         nhd = waterpaint.rasterize_view(nhd_geom, gx, gy, 1.0, span, span)
         water = waterpaint.water_mask(render, nhd, bmask, median, threshold)
         if bodies:
             water |= waterpaint.body_water(bodies, render, bmask | canopies(gx, gy, span, span), gx, gy)
         raw = redraws.region(gx, gy, span, span)
         band = protected(bridge_geom, gx, gy, span)
+        members = protected(members_geom, gx, gy, span)
         sample = None
-        if band.any() and water.any():
-            ring = bridges.ring_sample(water, raw, band)
+        if (band | members).any() and water.any():
+            ring = bridges.ring_sample(water, raw, band | members)
             if ring is None:
                 if defer_ok:
                     return False
@@ -487,8 +577,8 @@ def main_tiled(cfg, args, frame, cam, frames):
                 sample = ring  # the same sample refine() would take itself
         elif water.sum() >= 200:  # as ring_sample: too few px make a poor palette
             bank.add((f.col, f.row), raw[water][::7])  # no bridge here: all its water is drawn river
-        water = bridges.refine(water, raw, band, protected(deck_geom, gx, gy, span), sample=sample)
-        out = waterpaint.apply(raw.copy(), water, gx + ox, gy + oy, 1.0)
+        water = bridge_water(water, raw, band, protected(deck_geom, gx, gy, span), members, sample)
+        out = paint_water(raw, water, members, gx + ox, gy + oy)
         if not nd_geom.is_empty:
             # Mask over the haloed region, so growth reaches in from neighbors
             nd = nodata.nodata_mask(nd_geom, gx, gy, span, span)
@@ -657,7 +747,8 @@ def fix_invented_water(cfg, frame, cam, frames, args, out_dir):
         FrameReader(area_dir(cfg, "masks"), frames, size, "L"), water_geom, pools, wetlands,
         holds=load_holds(cfg), courtyards_geom=courtyard_geometry(cfg, frame, cam, x_origin, y_origin),
         protect_geom=unary_union([protect_for(cfg, frame, cam, x_origin, y_origin),
-                                  bridges_for(cfg, frame, cam, x_origin, y_origin)]))
+                                  bridges_for(cfg, frame, cam, x_origin, y_origin),
+                                  structures_for(cfg, frame, cam, x_origin, y_origin)]))
     for name, img in repaired.items():
         Image.fromarray(img).save(out_dir / f"{name}.png")
     print(f"invented water: {sum(not b['exempt'] for b in blobs)} blobs repaired in {len(repaired)} frames, "
@@ -704,6 +795,7 @@ def main():
 
     nhd_geom = waterpaint.nhd_geometry(cfg, frame, cam, x_origin, y_origin)
     buildings |= protected(protect_for(cfg, frame, cam, x_origin, y_origin), 0, 0, W, H)
+    buildings |= protected(structures_for(cfg, frame, cam, x_origin, y_origin), 0, 0, W, H)
     nhd = waterpaint.rasterize_view(nhd_geom, 0, 0, 1.0, W, H)
     median, threshold = waterpaint.color_model(render, nhd, buildings)
     water = waterpaint.water_mask(render, nhd, buildings, median, threshold)

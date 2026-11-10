@@ -35,9 +35,9 @@ MAX_SHIFT = 4
 def silhouettes(buildings, cam):
     """Screen-space polygons (global pixels) for every building prism.
 
-    A prism's outline is its footprint at ground level, its roof at full
-    height, and every wall quad between them, including walls around
-    courtyards: footprint and roof keep their holes, so an open courtyard is
+    A prism's outline is its footprint at its base (ground level, or z0 for
+    a raised prism), its roof at full height, and every wall quad between
+    them, including walls around courtyards: footprint and roof keep their holes, so an open courtyard is
     not filled in (except where its own inner walls hide it)."""
     out = []
     for b in buildings:
@@ -45,7 +45,8 @@ def silhouettes(buildings, cam):
             screen = []
             for ring in rings:
                 r = np.asarray(ring)
-                gx, gy = cam.world_to_screen(r[:, 0], r[:, 1], 0.0)
+                # Raised prisms (bridge decks, crossbeams) start at z0
+                gx, gy = cam.world_to_screen(r[:, 0], r[:, 1], b.get("z0", 0.0))
                 rx, ry = cam.world_to_screen(r[:, 0], r[:, 1], b["h"])
                 screen.append((gx, gy, rx, ry))
             ground = Polygon(list(zip(*screen[0][:2])), [list(zip(*s_[:2])) for s_ in screen[1:]]).buffer(0)

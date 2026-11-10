@@ -633,6 +633,210 @@ def lawn_correct_ground(cfg, frame, ground, buildings):
     return {"lawn_corrected_px": changed, "lawn_park_px": int(region.sum()), **qa}
 
 
+# Bridge shadows on the river (Nov. 9): within this far of a motorway or
+# trunk bridge's over-water span. The BFB's and WWB's towers (~100-117 m)
+# throw shadows ~150-250 m long in the 2024 aerial; the decks' ~40-80 m
+BRIDGE_SHADOW_REACH_M = 300.0
+BRIDGE_SPAN_MIN_M = 30.0  # over-water stretch of a way, to count as a span
+PROTECT_GROW_M = 1.5  # vessels and piers: their dark edges and shadows on the deck
+SHADOW_KEEP_PAD_M = 2.0
+SHADOW_KEEP_CLOSE_M = 10.0
+
+
+def _bridge_shadow_zones(cfg, frame):
+    """[(zone, protect)] local-m geometry, one per connected zone: mapped
+    water within BRIDGE_SHADOW_REACH_M of a deck's over-water span, minus
+    every deck corridor; protect = reviewed vessels and OSM piers there."""
+    from shapely.geometry import LineString
+    from shapely.ops import unary_union
+
+    from pixelphilly import bridges, vessels
+
+    path = RAW / f"{cfg['name']}_bridges.json"
+    if not path.exists():
+        return []
+    els = json.loads(path.read_text())["elements"]
+    water = bridges.water_local(cfg, frame)
+    # The deck itself stays: each carriageway at its OSM half width plus a
+    # little, the gaps between carriageways closed. Not the 8 m structure
+    # pad: that left a dark strip of shadow along the deck. Only dark
+    # pixels are ever filled, so the deck's light outer edge is safe
+    corr = unary_union(bridges.deck_corridors(els, frame.to_local, pad_m=SHADOW_KEEP_PAD_M))
+    corr = corr.buffer(SHADOW_KEEP_CLOSE_M).buffer(-SHADOW_KEEP_CLOSE_M)
+    spans = []
+    for ln, half in bridges.osm_bridge_lines([e for e in els
+                                              if e.get("tags", {}).get("highway") in bridges.DECK_HIGHWAYS]):
+        lon, lat = np.asarray(ln.coords).T[:2]
+        e, n = frame.to_local(lon, lat)
+        over = LineString(np.column_stack([e, n])).intersection(water)
+        if over.length >= BRIDGE_SPAN_MIN_M:
+            spans.append(over)
+    if not spans:
+        return []
+    zone = unary_union(spans).buffer(BRIDGE_SHADOW_REACH_M).intersection(water).difference(corr)
+    prot = [v["polygon"] for v in vessels.load()]
+    pp = RAW / f"{cfg['name']}_piers.json"
+    if pp.exists():
+        prot += vessels.pier_polygons(json.loads(pp.read_text())["elements"])
+    prot_local = []
+    for g in prot:
+        for rings in rings_local(g, frame):
+            from shapely.geometry import Polygon as _P
+
+            prot_local.append(_P(rings[0], rings[1:]).buffer(PROTECT_GROW_M))
+    protect = unary_union(prot_local) if prot_local else None
+    # One zone per bridge (the BFB's and WWB's are ~5 km apart), so each
+    # gets its own river median and a small raster; pieces split only by a
+    # deck stay together
+    merged = zone.buffer(50).buffer(-50)
+    out = []
+    for part in getattr(merged, "geoms", [merged]):
+        z = part.intersection(zone)
+        if z.area < 100:
+            continue
+        out.append((z, protect.intersection(part.buffer(10)) if protect is not None else None))
+    return out
+
+
+_SHADOW_ZONES = {}
+
+
+def bridge_shadow_ground(cfg, frame, ground):
+    """With "bridge_shadows": true, fill bridge shadows on the river in the
+    ground texture (pixelphilly.bridges.clear_water_shadows), zone by zone,
+    each on its own crop of the texture. mosaic_arr (wall colors) is left as
+    is. Returns QA."""
+    if not cfg.get("bridge_shadows"):
+        return {}
+    from pixelphilly import bridges
+
+    if cfg["name"] not in _SHADOW_ZONES:
+        _SHADOW_ZONES[cfg["name"]] = _bridge_shadow_zones(cfg, frame)
+    img = ground["ground"]
+    W, H = img.size
+    to_px_arr = ground["to_px_arr"]
+    arr = None
+    total = 0
+    for zone, protect in _SHADOW_ZONES[cfg["name"]]:
+        x0, y0, x1, y1 = zone.bounds
+        cx, cy = to_px_arr(np.array([x0, x1, x1, x0]), np.array([y0, y0, y1, y1]))
+        c0, c1 = int(max(0, np.floor(min(cx)))), int(min(W, np.ceil(max(cx))))
+        r0, r1 = int(max(0, np.floor(min(cy)))), int(min(H, np.ceil(max(cy))))
+        if c1 - c0 < 8 or r1 - r0 < 8:
+            continue
+        if arr is None:
+            arr = np.asarray(img.convert("RGB")).copy()
+
+        def raster(geom):
+            m = Image.new("L", (c1 - c0, r1 - r0), 0)
+            if geom is None or geom.is_empty:
+                return np.zeros((r1 - r0, c1 - c0), bool)
+            d = ImageDraw.Draw(m)
+            for pg in getattr(geom, "geoms", [geom]):
+                if pg.geom_type != "Polygon" or pg.is_empty:
+                    continue
+                for k, ring in enumerate([pg.exterior, *pg.interiors]):
+                    c = np.asarray(ring.coords)
+                    x, y = to_px_arr(c[:, 0], c[:, 1])
+                    d.polygon(list(zip((np.asarray(x) - c0).tolist(), (np.asarray(y) - r0).tolist())),
+                              fill=255 if k == 0 else 0)
+            return np.asarray(m) > 0
+
+        zm = raster(zone)
+        if not zm.any():
+            continue
+        crop = arr[r0:r1, c0:c1]
+        out, mask = bridges.clear_water_shadows(crop, zm, zm, raster(protect))
+        arr[r0:r1, c0:c1] = out
+        total += int(mask.sum())
+    if arr is not None and total:
+        ground["ground"] = Image.fromarray(arr)
+    print(f"  bridge shadows: {total:,} px of river filled", flush=True)
+    return {"bridge_shadow_px": total}
+
+
+# Ground under the modeled bridge decks (Nov. 9): the photo deck on the
+# ground plane is painted out this far past the modeled deck's plan, so its
+# edges and railings don't survive as a ghost road under the raised deck.
+# 2 m left the Walt Whitman's lit railing outside the hole in the Nov. 9
+# test render: the 2024 aerial is not a true orthophoto, so a deck 50 m up
+# sits a few meters off its plan position (relief displacement), measured
+# at up to ~3-4 m on the WWB main span
+DECK_GROUND_MARGIN_M = 5.0
+DECK_GROUND_CROP_PAD_M = 40.0  # context around each deck for the fill
+_DECK_GROUND = {}
+
+
+def bridge_deck_ground(cfg, frame, ground):
+    """With "bridge_structures": true, paint the photo deck out of the
+    ground texture under each modeled bridge deck and approach
+    (pixelphilly.bridges.deck_plan, paint_out_decks): river over water, the
+    surrounding ground over land. Returns QA."""
+    if not cfg.get("bridge_structures"):
+        return {}
+    from pixelphilly import bridges
+
+    if cfg["name"] not in _DECK_GROUND:
+        st = bridges.suspension_structures_cached(cfg, frame)
+        _DECK_GROUND[cfg["name"]] = (bridges.deck_plan(st["buildings"], DECK_GROUND_MARGIN_M),
+                                     bridges.water_local(cfg, frame))
+    plan, water = _DECK_GROUND[cfg["name"]]
+    qa = paint_deck_ground(ground, plan, water)
+    print(f"  bridge deck ground: {qa['bridge_deck_ground_px']:,} px painted out", flush=True)
+    return qa
+
+
+def paint_deck_ground(ground, plan, water):
+    """Paint `plan` (local m) out of ground["ground"], one crop per plan
+    piece (a bridge and its approaches), through ground["to_px_arr"]; water
+    (local m) decides river or land fill. {"bridge_deck_ground_px": n}."""
+    from pixelphilly import bridges
+
+    total = 0
+    if plan is None or plan.is_empty:
+        return {"bridge_deck_ground_px": 0}
+    img = ground["ground"]
+    W, H = img.size
+    to_px_arr = ground["to_px_arr"]
+    arr = None
+    for piece in getattr(plan, "geoms", [plan]):
+        x0, y0, x1, y1 = piece.buffer(DECK_GROUND_CROP_PAD_M).bounds
+        cx, cy = to_px_arr(np.array([x0, x1, x1, x0]), np.array([y0, y0, y1, y1]))
+        c0, c1 = int(max(0, np.floor(min(cx)))), int(min(W, np.ceil(max(cx))))
+        r0, r1 = int(max(0, np.floor(min(cy)))), int(min(H, np.ceil(max(cy))))
+        if c1 - c0 < 8 or r1 - r0 < 8:
+            continue
+        hole = _raster_local(piece, to_px_arr, c0, r0, c1 - c0, r1 - r0)
+        if not hole.any():
+            continue
+        if arr is None:
+            arr = np.asarray(img.convert("RGB")).copy()
+        wet = _raster_local(water, to_px_arr, c0, r0, c1 - c0, r1 - r0)
+        arr[r0:r1, c0:c1] = bridges.paint_out_decks(arr[r0:r1, c0:c1], hole, wet)
+        total += int(hole.sum())
+    if arr is not None and total:
+        ground["ground"] = Image.fromarray(arr)
+    return {"bridge_deck_ground_px": total}
+
+
+def _raster_local(geom, to_px_arr, c0, r0, w, h):
+    """Boolean (h, w) mask of local-m polygons in the texture crop whose
+    top-left pixel is (c0, r0)."""
+    m = Image.new("L", (w, h), 0)
+    if geom is None or geom.is_empty:
+        return np.zeros((h, w), bool)
+    d = ImageDraw.Draw(m)
+    for pg in getattr(geom, "geoms", [geom]):
+        if pg.geom_type != "Polygon" or pg.is_empty:
+            continue
+        for k, ring in enumerate([pg.exterior, *pg.interiors]):
+            c = np.asarray(ring.coords)
+            x, y = to_px_arr(c[:, 0], c[:, 1])
+            d.polygon(list(zip((np.asarray(x) - c0).tolist(), (np.asarray(y) - r0).tolist())),
+                      fill=255 if k == 0 else 0)
+    return np.asarray(m) > 0
+
+
 def attach_facades(cfg, frame, buildings):
     """With "facades": "opa" in the config, give each footprint a compact
     façade from its property record (pixelphilly.facades; data from
@@ -1035,12 +1239,37 @@ def lidar_shaped(cfg, frame, buildings):
     fps = [unary_union([Polygon(p[0], p[1:]) for p in b["polys"]]).buffer(0) for b in buildings]
     highways = highway_mask(cfg, frame)
     rails = rail_mask(cfg, frame)
+    # Elevated decks (Nov. 9, the Walt Whitman's "buildings on the roadway"):
+    # OSM motorway and trunk bridge ways at full deck width, for the DRPA
+    # spans that City centerlines don't cover (pixelphilly.bridges)
+    from pixelphilly import bridges
+
+    decks = bridges.deck_corridors_for(cfg, frame) if cfg.get("bridge_decks") else []
+    if decks:
+        out, deck_parts = bridges.drop_deck_parts(out, decks)
+        for b in deck_parts:
+            c = Polygon(b["polys"][0][0]).centroid
+            lon, lat = frame.to_wgs84(c.x, c.y)
+            print(f"  deck part dropped: {b['id']} h {b['h']:.1f} m at {float(lon):.5f},{float(lat):.5f}", flush=True)
+    # Reviewed part caps (config/part_caps.json): roof parts the LiDAR
+    # shaped from objects the 2024 aerial shows aren't buildings (cranes)
+    from pixelphilly import reviewed as _reviewed
+
+    caps = {k: e for k, e in _reviewed.load(_reviewed.PART_CAPS).items() if e.get("area") == name}
+    capped = {}
+    if caps:
+        heights = {b["id"]: b["h"] for b in out}
+        out, capped = _reviewed.drop_capped_parts(
+            out, caps, lambda lon, lat: tuple(float(v) for v in frame.to_local(lon, lat)))
+        for k, ids in capped.items():
+            for i in ids:
+                print(f"  part capped (reviewed {k}): {i} h {heights[i]:.1f} m", flush=True)
     if highways is None:
         print(f"  WARNING: no data/raw/{name}_highways.geojson (scripts/04d_fetch_highways.py): "
               "structures run without the highway mask, so elevated expressway decks can come through",
               flush=True)
     s_parts = lidar.structures(struct, ground, origin, lidar.RES_M, fps, water_level=WATER_LEVEL_M,
-                               exclude=(highways or []) + (rails or []))
+                               exclude=(highways or []) + (rails or []) + decks)
     found = len({p["region"] for p in s_parts})
     s_parts, dropped_photo = photo_check(cfg, frame, s_parts)
     # Reviewed exclusions (config/structure_exclusions.json): objects the
@@ -1084,12 +1313,55 @@ def lidar_shaped(cfg, frame, buildings):
                  "lidar_structures": n_regions, "lidar_structure_parts": len(s_parts),
                  "lidar_structure_area_m2": round(s_area, 1), "lidar_structures_dropped_photo": dropped_photo,
                  **({"lidar_structures_dropped_reviewed": dropped_reviewed} if dropped_reviewed else {}),
+                 **({"lidar_parts_capped_reviewed": capped} if capped else {}),
                  "lidar_highway_mask": highways is not None, "lidar_highway_masked_m2": round(masked_m2, 1),
                  "lidar_rail_mask": rails is not None,
+                 **({"bridge_deck_corridors": len(decks), "bridge_deck_parts_dropped": [b["id"] for b in deck_parts]}
+                    if decks else {}),
                  **({"vessels": [{k: v[k] for k in ("id", "kind", "h_top", "h_source", "parts")} for v in v_report]}
                     if v_report else {}),
                  "lidar_margin_m": lidar.LIDAR_MARGIN_M}
 
+
+
+def add_bridge_towers(cfg, frame, buildings):
+    """Append the suspension-bridge tower legs (pixelphilly.bridges.tower_legs;
+    "bridge_towers": true) and return their QA. Called after lidar_shaped, so
+    the deck-part drop and the reviewed part caps, which run inside it, can't
+    remove a leg. Each leg carries fixed_color: colored() uses the paint color
+    instead of the aerial, which sees only the tower top."""
+    from pixelphilly import bridges
+
+    legs = bridges.tower_legs_for(cfg, frame)
+    for b in legs:
+        print(f"  bridge tower leg: {b['id']} h {b['h']} m", flush=True)
+    buildings.extend(legs)
+    return {"bridge_tower_legs": len(legs)} if legs else {}
+
+
+def add_bridge_structures(cfg, frame, buildings, tubes, structures=None):
+    """Append the suspension-bridge structures (pixelphilly.bridges
+    .suspension_structures_for; "bridge_structures": true): raised deck and
+    approach segments, lane lines, piers, anchorages and crossbeams to
+    `buildings`, cables, hangers, truss and bracing to `tubes`. Called after
+    lidar_shaped, like add_bridge_towers, so the deck-part drop and the part
+    caps can't remove them. The tower legs come from add_bridge_towers and
+    are not repeated. structures: a precomputed result (tests). Returns QA."""
+    from pixelphilly import bridges
+
+    st = structures if structures is not None else bridges.suspension_structures_cached(cfg, frame)
+    if not st["buildings"] and not st["tubes"]:
+        return {}
+    qa = {}
+    for eid, info in st.get("qa", {}).items():
+        nb = sum(1 for b in st["buildings"] if b["id"].startswith(f"bridge-{eid}-"))
+        nt = sum(1 for t in st["tubes"] if t["id"].startswith(f"bridge-{eid}-"))
+        print(f"  bridge structure: {eid} buildings {nb} tubes {nt}", flush=True)
+        qa[eid] = {"buildings": nb, "tubes": nt,
+                   **{k: info[k] for k in ("deck_top_m", "segments", "floating", "approach") if k in info}}
+    buildings.extend(st["buildings"])
+    tubes.extend(st["tubes"])
+    return {"bridge_structures": qa}
 
 def colored(buildings, ground, cfg, cache=None):
     """Attach wall colors from the ground mosaic. With a cache (tiled areas),
@@ -1098,6 +1370,12 @@ def colored(buildings, ground, cfg, cache=None):
     for b in buildings:
         if cache is not None and b["id"] in cache:
             color, roof = cache[b["id"]]
+        elif b.get("fixed_color"):
+            # Bridge tower legs: published paint color for walls and roof
+            # (fixed_color is not written to the scene)
+            color = roof = list(b["fixed_color"])
+            if cache is not None:
+                cache[b["id"]] = (color, roof)
         else:
             roof = mean_color(ground["mosaic_arr"], b["polys"], ground["to_px"]) or [150, 140, 130]
             color = wall_color(roof, b["h"], cfg.get("wall_tint"), terrace=b.get("terrace", False),
@@ -1109,8 +1387,29 @@ def colored(buildings, ground, cfg, cache=None):
             # Tall "MASONRY" with no OSM colour: its own aerial colour, untinted
             # (pale stone stays pale; facades.facade_spec)
             facade = {**{k: v for k, v in facade.items() if k != "u"}, "w": list(roof)}
+        # z0 (raised base) and roof_rgb (flat top color) are bridge-deck
+        # options read by render/render.js; written only when set, so other
+        # scenes stay byte-identical
         out.append({"id": b["id"], "h": b["h"], "color": color, "polys": b["polys"],
-                    **({"facade": facade} if facade else {})})
+                    **({"facade": facade} if facade else {}),
+                    **({"z0": b["z0"]} if b.get("z0") else {}),
+                    **({"roof_rgb": list(b["roof_rgb"])} if b.get("roof_rgb") else {})})
+    return out
+
+
+def tubes_in_reach(tubes, reach):
+    """The tubes (cables, hangers) to write into one render tile's scene:
+    those whose bounding box, in local meters, meets the tile's reach. A
+    bbox test can include a tube that just misses the reach; the renderer
+    clips it, and missing a cable in one tile would be worse."""
+    from shapely.geometry import box
+
+    out = []
+    for t in tubes:
+        e = [p[0] for p in t["pts"]]
+        n = [p[1] for p in t["pts"]]
+        if box(min(e) - t["r"], min(n) - t["r"], max(e) + t["r"], max(n) + t["r"]).intersects(reach):
+            out.append(t)
     return out
 
 
@@ -1136,10 +1435,13 @@ def camera_params(cfg, cam):
     return cam.three_js_params(cfg.get("camera_distance_m", 3000.0))
 
 
-def scene_dict(cfg, frame, cam, frames, ground, ground_rel, buildings, trees):
+def scene_dict(cfg, frame, cam, frames, ground, ground_rel, buildings, trees, tubes=None):
+    """tubes: [{"id", "pts": [[east, north, z], ...], "r", "color"}] for
+    render/render.js; the key is left out when there are none, so scenes
+    without bridges are unchanged."""
     mpp = cam.meters_per_pixel
     cu, cv = ground["uv"]
-    return {
+    scene = {
         "name": cfg["name"],
         "origin_wgs84": [frame.lon0, frame.lat0],
         "camera": camera_params(cfg, cam),
@@ -1154,6 +1456,9 @@ def scene_dict(cfg, frame, cam, frames, ground, ground_rel, buildings, trees):
         "buildings": buildings,
         "trees": trees,
     }
+    if tubes:
+        scene["tubes"] = tubes
+    return scene
 
 
 def write_qa(cfg, info, buildings_count, tallest, trees_count, extra):
@@ -1179,15 +1484,22 @@ def main_single(cfg, frame, cam, frames):
     ground = prepare_ground(cfg, frame)
     buildings, info = load_buildings(cfg, frame)
     lawn_qa = lawn_correct_ground(cfg, frame, ground, buildings)
+    lawn_qa.update(bridge_shadow_ground(cfg, frame, ground))
+    lawn_qa.update(bridge_deck_ground(cfg, frame, ground))
     ground_path = PROCESSED / f"{name}_ground.jpg"
     ground["ground"].save(ground_path, quality=92)
     facade_qa = attach_facades(cfg, frame, buildings)
     lidar_qa = {}
     if cfg.get("building_shapes") == "lidar":
         buildings, lidar_qa = lidar_shaped(cfg, frame, buildings)
+    lidar_qa.update(add_bridge_towers(cfg, frame, buildings))
+    # Cables, hangers, truss and bracing of the modeled bridges
+    tubes = []
+    lidar_qa.update(add_bridge_structures(cfg, frame, buildings, tubes))
     buildings = colored(buildings, ground, cfg)
     trees = woods_trees(cfg, frame, buildings, load_trees(cfg, frame))
-    scene = scene_dict(cfg, frame, cam, frames, ground, f"data/processed/{ground_path.name}", buildings, trees)
+    scene = scene_dict(cfg, frame, cam, frames, ground, f"data/processed/{ground_path.name}", buildings, trees,
+                       tubes)
     (PROCESSED / f"{name}_scene.json").write_text(json.dumps(scene, separators=(",", ":")))
     tallest = sorted(({"id": b["id"], "h": b["h"]} for b in buildings), key=lambda b: -b["h"])[:10]
     write_qa(cfg, info, len(buildings), tallest, len(trees), {
@@ -1231,6 +1543,12 @@ def main_tiled(cfg, frame, cam, frames):
     lidar_qa = {}
     if cfg.get("building_shapes") == "lidar":
         buildings, lidar_qa = lidar_shaped(cfg, frame, buildings)
+    lidar_qa.update(add_bridge_towers(cfg, frame, buildings))
+    # Cables, hangers, truss and bracing of the modeled bridges; each tile
+    # gets the ones within its reach (tubes_in_reach). Their deck and pier
+    # prisms go into the footprint index below with every other building
+    tubes = []
+    lidar_qa.update(add_bridge_structures(cfg, frame, buildings, tubes))
     trees = woods_trees(cfg, frame, buildings, load_trees(cfg, frame))
     # Spatial indexes over footprints (by exterior bbox) and trees
     b_boxes = [box(*Polygon(b["polys"][0][0]).bounds) for b in buildings]
@@ -1255,7 +1573,9 @@ def main_tiled(cfg, frame, cam, frames):
         px, py = merc_px(lon, lat, z)
         tile_range = (int(px.min() // TILE), int(px.max() // TILE), int(py.min() // TILE), int(py.max() // TILE))
         ground = prepare_ground(cfg, frame, tile_range)
-        for k, v in lawn_correct_ground(cfg, frame, ground, buildings).items():
+        for k, v in {**lawn_correct_ground(cfg, frame, ground, buildings),
+                     **bridge_shadow_ground(cfg, frame, ground),
+                     **bridge_deck_ground(cfg, frame, ground)}.items():
             lawn_qa[k] = lawn_qa.get(k, 0) + v  # summed over tiles (tiles overlap)
         tex_sizes.append(max(ground["ground"].size))
         residuals.append(ground["residual_m"])
@@ -1270,7 +1590,8 @@ def main_tiled(cfg, frame, cam, frames):
         tile_t = [trees[i] for i in np.nonzero(sel)[0]]
 
         scene = scene_dict(cfg, frame, cam, tile_frames, ground,
-                           f"data/processed/{name}/tiles/{stem}_ground.jpg", tile_b, tile_t)
+                           f"data/processed/{name}/tiles/{stem}_ground.jpg", tile_b, tile_t,
+                           tubes_in_reach(tubes, reach))
         (out_dir / f"{stem}.json").write_text(json.dumps(scene, separators=(",", ":")))
         index.append({"tile": stem, "scene": f"data/processed/{name}/tiles/{stem}.json",
                       "frames": [f.name for f in tile_frames], "buildings": len(tile_b), "trees": len(tile_t),

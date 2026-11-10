@@ -106,6 +106,14 @@ def main():
     html = index.read_text()
     assert '<html lang="en">' in html
     index.write_text(html.replace('<html lang="en">', '<html lang="en" data-offline="1">', 1))
+    # The hosted pages carry a GoatCounter visit counter, a remote request;
+    # the offline copy promises none, so the counter is removed from both pages
+    import re
+
+    for page in ("index.html", "about.html"):
+        p = out / "viewer" / page
+        p.write_text(re.sub(r"<!-- Visit counter.*?</script>\n", "", p.read_text(), flags=re.S))
+        assert "goatcounter" not in p.read_text(), f"counter left in offline {page}"
 
     # Tiles, at the path the viewer resolves (../output/<name>/tiles/<v>/)
     import json

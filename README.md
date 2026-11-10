@@ -525,6 +525,16 @@ uv run python scripts/24_style_compare.py
 - **Check it:** `uv run python scripts/26_freeze_map.py --name philly --version v17 --verify`.
 - **Known flaws Stephen accepted:** raw shadow strips along some bridge decks (W Roosevelt Blvd), plus dark rectangles and a three-box outline on the water at the Platt Bridge.
 - **Not yet made for v17:** an offline copy. The one below is v14. Build one with `27_offline_copy.py --version v17`.
+- **Hosted:** v17's illustration layer is online at https://pixelphilly.sstirling.com/viewer/index.html (see "Hosting" below).
+
+## Next: v18, the 3D suspension bridges (Nov. 9; building, not the viewer default)
+
+v18 is v17 plus the Ben Franklin and Walt Whitman bridges modeled in 3D: raised decks from the 2022 LiDAR, both towers with crossbeams, main cables, hangers, the Ben Franklin's stiffening truss and the approach spans. Stephen asked for this Nov. 9, after the v17 bridges drew with buildings on the roadway, a shadow slab and missing towers. Method and sources: `data/README.md` ("Suspension bridges"); the iterations, LiDAR checks and costs: the CHANGELOG.
+- **Build:** `uv run python scripts/16_build_tiles.py --areas <12 areas> --name philly --prompt qwen_joint_light8_fac --version v18 --with-photo`, then `25_join_seams.py` and `33_bridge_crops.py --before v17 --after v18`.
+- **Results:** v18 built Nov. 9 at 10:54 p.m. (`output/philly/build_v18.log`): 37,681 tiles per layer. 326 of 28,188 full-resolution tiles differ from v17. Seams are identical to v17 on all 22 region pairs (`output/philly/join_seams_v18.log`). The tan band under the cables is gone after the members-zone repaint fix. Crops: `output/review/bridges/nj/final_v18/` (v17 vs v18) and `output/review/bridges/crops_None/` (bridge sheet, 105 crops). The build first stopped on the stale-cell guard: southwest's `water_band/south_lidar/` copies of 11 redrawn frames predated the redraw; southwest was re-repainted (`output/southwest/repaint_v18.log`) and the build rerun. Not the viewer default until Stephen accepts it.
+- **Status:** not the viewer default until Stephen accepts it. v14 and v17 stay frozen.
+- **Rebuilding the bridges from scratch:** `PP_AREA=south_lidar uv run python scripts/04q_fetch_bridge_towers.py` (tower outlines; `04p_fetch_bridges.py` must already have run), then `05_build_scene.py`, the render, the redraw of the changed frames and `10_repaint_water.py` for south_lidar. The area flags are `"bridge_decks"`, `"bridge_shadows"`, `"bridge_towers"` and `"bridge_structures"` in `config/south_lidar.json`.
+- **Rolling back to v17's bridges:** the v17 drawings, renders, masks, scene and water outputs are kept under `*_pre_bridges` names (listed in the CHANGELOG).
 
 ## The talk map: v14, frozen (Nov. 4)
 
@@ -540,7 +550,18 @@ uv run python scripts/27_offline_copy.py --name philly --version v14   # -> outp
 cd output/philly_offline_v14 && sh start.sh                             # http://127.0.0.1:8137/viewer/?area=philly&v=v14
 ```
 
-**Hosting plan** (research only; nothing uploaded and no accounts made; sources checked Nov. 4, 2026):
+**Hosting** (live since Nov. 9, 2026; the plan below was researched Nov. 4):
+
+- **What's up:** v17's illustration layer (37,682 tiles, 4.34 GiB) and `viewer/`, in the Cloudflare R2 bucket `pixel-philly`, served at https://pixelphilly.sstirling.com/viewer/index.html. The photo layer was not uploaded.
+- **Upload:** rclone, about 7 minutes; `rclone check` found 0 differences. Log: `output/philly/r2_upload_v17.log`. The objects keep their repo paths (`output/philly/tiles/v17/...`).
+- **Credentials:** the rclone remote `r2` is in `~/.config/rclone/rclone.conf`. Never commit or print that file.
+- **Root redirect:** `/` goes to `/viewer/index.html` through a Redirect Rule in the Cloudflare dashboard, not in the repo.
+- **Address search:** works from this origin, because the City's AIS API sends `access-control-allow-origin: *`.
+- **Visit counter:** the hosted pages load GoatCounter (Stephen's account, no cookies). `27_offline_copy.py` removes it from the offline copy.
+- **A new version** (v18 once accepted) goes under its own prefix; don't overwrite v17's tiles.
+
+The original plan follows.
+
 
 - **Recommended: Cloudflare R2 behind a custom domain.**
   - Storage is $0.015/GB-month with 10 GB-month free.
@@ -601,7 +622,7 @@ curl -I https://map.example.org/philly/v14/map_files/12/0_0.webp     # Content-T
   - S3 + CloudFront works, with request fees past the free tier.
   - Backblaze B2 + Cloudflare, or Bunny CDN ($0.01/GB), also work.
 - **Before publishing** (licenses; for Stephen and the credits page he is writing):
-  - **City imagery:** the photo layer is the City's 2024 aerial imagery, and the illustration is derived from it. OpenDataPhilly says the City "retains all rights" to the aerials. Confirm with maps@phila.gov before public hosting. Publishing only the illustration layer narrows this question but doesn't remove it.
+  - **City imagery:** the photo layer is the City's 2024 aerial imagery, and the illustration is derived from it. OpenDataPhilly says the City "retains all rights" to the aerials. Resolved: Stephen (Nov. 9): "We're good on the aerial imagery."
   - **OpenStreetMap (ODbL):** OSM data shaped the façade colors and the golf-course corrections. Credit "© OpenStreetMap contributors" on the page. The map's credits string mentions OSM only for façade colors; it should cover golf courses too.
   - **Gemini disclosure:** the style LoRA was trained on Gemini 3 Pro Image outputs, and the Gemini API terms restrict using outputs to develop models. Stephen decided (Nov. 2) to disclose it wherever the map is presented or published; see Licensing below.
   - **Other credits:** check the remaining sources for the credits page: USGS NHD water; LiDAR (2022, "City of Philadelphia via PASDA"); USFWS NWI wetlands; PPR parks and trees; the City water (PWD), limits and footprint layers; SEPTA rail.
@@ -622,6 +643,9 @@ Tracked across rounds; details in CHANGELOG.
 | Issue | Where | Likely cause | Kind |
 |---|---|---|---|
 | Ships (Stephen, Oct. 23 and Nov. 5): **mostly fixed in v15, pending review** | Navy Yard, Packer Ave, Pier 82, Penn's Landing, Tioga, Schuylkill | Reviewed vessel outlines from the 2024 aerial (`config/vessels.json`) and OSM piers now protect hulls and piers from the water repaint. Each accepted hull is one structure at water level, shaped by the 2022 LiDAR where it saw the same hull or flat at an assumed height by kind. Still open: the carrier's and SS United States's hull sides carry window-like lines; the Moshulu keeps its flat v14-style drawing (LiDAR masts drew as towers); cranes stay partial | Geometry and drawing |
+| Ben Franklin and Walt Whitman bridges (Stephen, Nov. 9: "look awful," "buildings on the roadway"): **fixed in v18, pending review** | Delaware River, south_lidar | Modeled in 3D (`config/bridge_structures.json`): deck buildings, the shadow slab and the invented spans are gone, and both towers draw. Accepted flaws: the Ben Franklin's PA anchorages draw as blue blocks (real ones are stone); a thin brown strip (~8 px) along the deck's lower edge; the Ben Franklin's PA approach ends ~8 m up near 5th St; the NJ approaches use estimated grades and end in the air | Geometry |
+| Second Packer Ave crane cluster drawn as a high-rise | ~330 m south of the Walt Whitman | The 2022 LiDAR shaped container cranes into roof parts; the reviewed cap (`config/part_caps.json`) covers only the cluster by the PA tower. Not addressed | Geometry (reviewed list) |
+| Shadow strips and Platt Bridge rectangles (accepted in v17) | W Roosevelt Blvd, Platt Bridge | Raw drawn colors inside the water-level bridge bands; no safe color rule (CHANGELOG, Nov. 8) | Repaint |
 | Construction sites drawn with invented water or lawns | Penn's Landing and elsewhere | Drawing-model behavior on featureless ground | Model (training) |
 | Teal invented water not caught by the scan | Cobbs Creek construction site (found by eye and redrawn Nov. 4) | The scan's water hue band is 185–215°; the model sometimes draws water at hue ~165°. Widening the band also catches real pools and basins, so each hit would need review | Scan rule |
 | Stadium outer walls drawn with windows | The Linc, CBP, Franklin Field | Drawing-model behavior: tall walls read as façades | Model (training) |
@@ -632,7 +656,8 @@ Tracked across rounds; details in CHANGELOG.
 
 ## Licensing and open questions (for legal / standards)
 
-- **City data.** OpenDataPhilly lists these layers under the "City of Philadelphia License". Its aerial imagery page says the city "retains all rights." Before publishing, confirm with maps@phila.gov that publication and AI-derived works are allowed.
+- **City data.** OpenDataPhilly lists these layers under the "City of Philadelphia License". Its aerial imagery page says the city "retains all rights." Stephen said Nov. 9 that use of the aerial imagery is cleared ("We're good on the aerial imagery").
+- **OpenStreetMap.** The bridge towers, bridge decks and approaches come from OSM (ODbL 1.0); credit "© OpenStreetMap contributors".
 - **Gemini outputs as training data.** The map's style LoRA (`qe2511_oldcity_r16_v1`) was trained on Gemini 3 Pro Image outputs (see Phase 2 above). The Gemini API terms restrict using outputs to develop models.
   - **Attempts to replace it with a clean style:**
     - prompt-only drawing;

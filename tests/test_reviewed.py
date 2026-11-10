@@ -109,3 +109,28 @@ def test_structure_exclusion_drops_the_region_at_a_reviewed_point():
     kept, dropped = reviewed.drop_excluded_structures(parts, ex, far)
     assert len(kept) == 3 and dropped == []
     assert reviewed.drop_excluded_structures(parts, {}, far) == (parts, [])
+
+
+# Reviewed part caps (config/part_caps.json, Nov. 9): LiDAR-shaped parts of
+# any footprint within radius_m of a reviewed point and taller than max_m are
+# dropped; the footprint's other parts stay. First entry: the Packer Ave
+# warehouse beside the Walt Whitman Bridge's PA tower, where the 2022 LiDAR
+# caught two container cranes (35-57 m) and shaped them into the roof.
+def test_part_caps_drop_tall_parts_near_the_point_and_keep_the_rest():
+    to_local = lambda lon, lat: (lon, lat)  # points given in local m here
+    caps = {"crane": {"id": "crane", "lonlat": [0.0, 0.0], "radius_m": 30.0, "max_m": 25.0}}
+    parts = [
+        {"id": "14875-60", "h": 45.0, "polys": [_sq(0, 0, 5)]},     # crane in the roof: dropped
+        {"id": "14875-1", "h": 12.0, "polys": [_sq(5, 5, 20)]},     # the warehouse roof: kept
+        {"id": "14875-61", "h": 46.0, "polys": [_sq(100, 0, 5)]},   # tall but far from the point: kept
+        {"id": 900, "h": 40.0, "polys": [_sq(2, 2, 5)]},            # single-height footprint: kept
+        {"id": "s12-0", "h": 50.0, "polys": [_sq(1, 1, 5)]},        # structure (other list): kept
+    ]
+    kept, hit = reviewed.drop_capped_parts(parts, caps, to_local)
+    assert [p["id"] for p in kept] == ["14875-1", "14875-61", 900, "s12-0"]
+    assert hit == {"crane": ["14875-60"]}
+
+
+def test_part_caps_change_nothing_without_entries():
+    parts = [{"id": "1-0", "h": 80.0, "polys": [_sq(0, 0, 5)]}]
+    assert reviewed.drop_capped_parts(parts, {}, lambda lon, lat: (lon, lat)) == (parts, {})

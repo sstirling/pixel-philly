@@ -38,5 +38,9 @@
   "golf_correct": true,
   "woods_trees": true,
   "lawn_skip_woods": true,
-  "vessels": true
+  "vessels": true,
+  "bridge_decks": true,
+  "bridge_towers": true,
+  "bridge_structures": true,
+  "bridge_shadows": true
 }
