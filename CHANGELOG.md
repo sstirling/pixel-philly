@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-11-11 (later): repo prepared for public release
+
+Stephen plans to make the repository public. A security review of every file in all 14 commits found no credentials: no API keys, tokens, private keys, Cloudflare account IDs or rclone settings (matches were checked masked). Changes he asked for:
+- **Personal project:** removed every reference to Stephen's employer: the City-data User-Agent (`src/pixelphilly/sources.py`), the Wikimedia User-Agent and contact (`scripts/19_landmark_refs.py`) and a hosting note in `docs/history.md`. Both User-Agents now give the repo URL and Stephen's personal email as contact.
+- **License:** MIT (`LICENSE`), with the vendored libraries' own license texts added beside them (`viewer/vendor/LICENSE-openseadragon.txt`, BSD 3-Clause; `render/vendor/LICENSE-three.txt`, MIT), both fetched from the projects' repos at the vendored versions. `pyproject.toml` gained the author and license.
+- **Raw data out of git:** the 478 raw downloads (1.6 GB) are now one archive, `pixel-philly-data-raw-2026-11-11.tar.xz` (189.6 MB, SHA-256 `92c7284c…742f`), for the GitHub release `data-2026-11-11`. `data/raw/SHA256SUMS` (tracked) lists every file's checksum; `data/raw/MANIFEST.json` stays tracked. New `scripts/00_get_data.py` downloads the archive, checks it and every file, unpacks safely and never overwrites a raw file that differs. Tests: `tests/test_get_data.py` (8). Check: unpacked into an empty folder, all 478 files were byte-identical to `data/raw`. The first archive was refused by the script's own check because macOS `tar` had added hidden `._` metadata files; it was rebuilt with metadata off.
+- **History:** the raw data and the old employer references were removed from all past commits with `git filter-repo`, after a full backup bundle (`output/backup/`). See the next steps in the README's "One-time setup" for getting the data.
+
 ## 2026-11-11: README rewritten as an overview; build notebook moved to docs/history.md
 
 Stephen asked to clean up the documentation "so that people understand how this was put together." The README had grown as a dated lab notebook still titled "Old City pilot," and its "Reproduce it" section rebuilt only the pilot.

@@ -90,6 +90,14 @@ uv run modal run gpu/modal_app.py::download_weights   # ~58 GB into the pp-weigh
 uv run modal deploy gpu/train_app.py              # training app (ai-toolkit)
 ```
 
+**The data.** The vector downloads the map was built from (478 files, about 1.6 GB) are a snapshot attached to a GitHub release, not stored in git. This downloads it (about 190 MB), checks every file against `data/raw/SHA256SUMS` and unpacks it into `data/raw/`:
+
+```bash
+uv run python scripts/00_get_data.py
+```
+
+The LiDAR tiles and aerial imagery aren't in the snapshot (about 1 GB per LiDAR tile); the region runner and `04c_fetch_lidar.py`/`03_fetch_imagery.py` download them as needed. To start from live data instead, run the fetch scripts (`01`–`04q`); the City's layers may have changed since the map was drawn.
+
 **The style LoRA.** It lives in Modal's `pp-runs` Volume at `/runs/lora/qe2511_oldcity_r16_v1/qe2511_oldcity_r16_v1.safetensors`. To train it again you need a Gemini API key (`cp .env.example .env`):
 
 ```bash
@@ -226,6 +234,7 @@ uv run pytest      # projection, regions, LiDAR shaping, facades, water, bridges
 |---|---|
 | `config/<area>.json` | One file per area: bounding box, camera, data and drawing options. The 12 city regions plus earlier and test areas (`oldcity`, `fishtown`, `centercity`, `downtown`, `atlas_*`, `test_*`); configs that no longer build are in `config/retired/`. `config/flyover/` holds video camera paths |
 | `config/*.json` (others) | Reviewed lists applied in the scene build or QA: `qa_exceptions`, `height_overrides`, `stadium_exclusions`, `structure_exclusions`, `part_caps`, `invented_water_holds`, `golf`, `vessels`, `bridge_towers`, `bridge_structures`. Each entry records its reason and review date |
+| `scripts/00_get_data.py` | Downloads and checks the raw-data snapshot (see "One-time setup") |
 | `scripts/01`–`04q` (a few numbers are shared by two scripts, such as `23` and `25`; use the full file name) | Data downloads (buildings, trees, imagery, water, LiDAR, highways, rail, property records, OSM, streets, pools, parks, wetlands, city limits, golf, piers, bridges). `04m` prunes LiDAR tiles (dry run by default) |
 | `scripts/05`, `06`, `09` | Scene build, render (color and mask), alignment check |
 | `scripts/07`, `08`, `11`, `12`–`14` | Old City pilot tools: Gemini redraw, comparison page, palette test; Qwen baseline, training set and LoRA training |
@@ -245,7 +254,7 @@ uv run pytest      # projection, regions, LiDAR shaping, facades, water, bridges
 | `viewer/` | The map page, about page, OpenSeadragon 6.1.1 (vendored) and site images |
 | `prompts/` | Versioned prompts from the Gemini pilot |
 | `tests/` | pytest suite |
-| `data/raw/`, `data/processed/` | Downloads (immutable, logged in `MANIFEST.json`) and derived files. Large files are git-ignored |
+| `data/raw/`, `data/processed/` | Downloads (immutable, logged in `MANIFEST.json`, checksums in `SHA256SUMS`; the files themselves come from `00_get_data.py`) and derived files |
 | `output/<area>/` | Everything generated for an area: renders, masks, drawings (`redraws/<run>/`), repainted frames, reports. `output/philly/tiles/<version>/` holds the merged maps |
 | `output/gpu_runs.jsonl` | Cost estimate and duration of every GPU run |
 
@@ -281,6 +290,7 @@ Details and history in the CHANGELOG.
 
 ## Licensing and disclosure
 
+- **Code.** MIT ([`LICENSE`](LICENSE)). The vendored OpenSeadragon (BSD 3-Clause) and three.js (MIT) keep their own licenses, next to each library. Data, and images derived from it, keep their sources' terms below and in `data/README.md`.
 - **City data.** OpenDataPhilly lists the City layers under the "City of Philadelphia License." The aerial imagery page says the City "retains all rights"; its use for this map has been cleared.
 - **OpenStreetMap.** Building colors, golf courses, piers and the bridge towers, decks and approaches use OSM data (ODbL 1.0). Credit: "© OpenStreetMap contributors."
 - **Gemini outputs as training data.** The style LoRA was trained on Gemini 3 Pro Image outputs, and the Gemini API terms restrict using outputs to develop models. Replacement styles with no Gemini output were noisier or invented more detail (`output/style/compare.html`), so the map keeps the original style. Anyone presenting or publishing the map should disclose that the style was trained on Gemini outputs.

@@ -1,7 +1,10 @@
 [project]
 name = "pixelphilly"
 version = "0.1.0"
-description = "Pilot: isometric pixel-art map of Philadelphia from city open data"
+description = "Isometric pixel-art map of Philadelphia, drawn by an AI image model from city open data"
+authors = [{ name = "Stephen Stirling", email = "stephenstirling@gmail.com" }]
+license = "MIT"
+license-files = ["LICENSE"]
 requires-python = ">=3.12"
 dependencies = [
     "requests",

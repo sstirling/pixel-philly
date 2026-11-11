@@ -12,6 +12,8 @@ Every raw download is recorded in `raw/MANIFEST.json` with:
 
 Raw files are never edited. All transformations write to `processed/`.
 
+The raw downloads are not stored in git. `scripts/00_get_data.py` downloads the exact snapshot the map was built from (a release attachment, checked file by file against `raw/SHA256SUMS`); `raw/MANIFEST.json` stays in git as the record of every query.
+
 Imagery tiles (`raw/imagery/`) are git-ignored because of their size. `scripts/03_fetch_imagery.py` re-downloads them.
 
 The fetch extent is the ground seen by the whole frame lattice, which is larger than the Old City bbox. For the 54° camera it is about 3 km across. The exact bbox is in the manifest.
