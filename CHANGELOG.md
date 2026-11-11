@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-11-11: README rewritten as an overview; build notebook moved to docs/history.md
+
+Stephen asked to clean up the documentation "so that people understand how this was put together." The README had grown as a dated lab notebook still titled "Old City pilot," and its "Reproduce it" section rebuilt only the pilot.
+- **New `README.md`:** what the map is and where to see it; how it was made, in 10 plain-language steps; scale and cost; map versions; how to rebuild v18 (one-time setup, the 12 regions in drawing order with their known neighbors and budgets, fix passes, build, freeze and hosting); repository layout; design decisions; known issues; licensing and disclosure.
+- **Rebuild steps are reconstructed** from each region's `joint/qwen_joint_light8_fac/call.json`, `region_report.json` and `region_run.log`, the v18 pipeline script and this changelog. Where a command line wasn't saved (the `22_run_region.py` calls, the R2 uploads), the README says so and gives the form. Every flag was checked against each script's `--help`.
+- **Gaps now documented rather than hidden:** merging a redraw pass into the base run is a manual copy with no script in the repo; `26_freeze_map.py` writes a generic "talk map" purpose that was hand-edited for v17 and v18; some `qwen_joint_light8_fac_*` folders listed in the v18 manifest contribute no frames (they were checked by hash against the base drawings).
+- **Corrected:** stale statements, including the pilot status, the photo toggle (removed Nov. 5), "pending review" for ships and bridges, "v18 once accepted" under hosting, the Oct. 24 seam figure (v18: median 2.45 over 335 join edges, worst 10.32), and "legal review is required" (superseded by the Nov. 2 disclosure decision).
+- **`docs/history.md`:** the old README's build sections, unchanged except a short introduction, three "(superseded: ...)" notes and American spellings.
+- **Trimmed (Stephen: the README "should be instructive, but it doesn't have to be a blow-for-blow recreation"):** removed who-decided-what and when, the talk reference, region start dates, notes on which command lines weren't saved, and "accepted in v17/v18" tags. That history stays in this changelog and `docs/history.md`.
+- **Spelling:** British spellings in prose changed to American AP style in `docs/history.md`, `data/README.md` and this file ("colour," "labelled," "grey"); OSM tag names such as `building:colour` are unchanged. `data/README.md` gained a pointer to the README's overview.
+
 ## 2026-11-10: favicon and social preview
 
 Stephen asked for a favicon and a social preview showing the map. Both are crops of the frozen v18 tiles, not new drawings.
@@ -203,7 +214,7 @@ Stephen (Nov. 5): fix ships, building v15. GPU cap $5. No commits, no LiDAR prun
 ### Whole hulls (`vessels.vessel_parts`, `drop_fragments`)
 - **Shape:** each accepted hull is one structure at the water level (0 m NAVD88). A dry-dock hull (N10) uses its ground instead.
 - **Heights from the LiDAR:** where the 2022 LiDAR saw the same hull (30% of its cells 2 m or more above the water), its class-1 heights shape the hull after gaps are filled. This keeps photo_agrees's job of dropping moved ships, because the 2024 outline decides where a hull is.
-- **Assumed heights:** where the LiDAR didn't see the hull, the hull is flat at an assumed height by vessel kind (`kind_defaults_m`, labelled "default (assumed by kind)"). Shadow-length estimates were not attempted.
+- **Assumed heights:** where the LiDAR didn't see the hull, the hull is flat at an assumed height by vessel kind (`kind_defaults_m`, labeled "default (assumed by kind)"). Shadow-length estimates were not attempted.
 - **Fragments:** LiDAR structure regions at least half inside a hull give way to it. Cranes and piers that only touch a hull stay (tested).
 - **Counts:**
   - south_lidar: 44 hulls (18 LiDAR-shaped), 33 fragment regions replaced;
@@ -1413,11 +1424,11 @@ Whether to redraw downtown with LiDAR shapes before expanding. That needs LiDAR 
 ## 2026-10-21: fix for invented content where imagery is missing (downtown v2)
 
 - **Bug** (reported by Stephen): a large cartoon person, a seaplane, a bridge and buildings appeared on the New Jersey side of the river.
-- **Cause:** the city's 2024 aerial imagery ends a block or two inland in Camden. Those 350 z19 tiles return HTTP 404 and were filled with flat grey in the ground mosaic. Given a featureless input, the model invented a scene, the same failure as invented water on land.
+- **Cause:** the city's 2024 aerial imagery ends a block or two inland in Camden. Those 350 z19 tiles return HTTP 404 and were filled with flat gray in the ground mosaic. Given a featureless input, the model invented a scene, the same failure as invented water on land.
 - **Test first:** `tests/test_nodata.py` failed on the v1 output.
 - **Fix** (`src/pixelphilly/nodata.py`, applied in `10_repaint_water.py` after the water repaint):
   - Pixels where the source imagery is missing, plus a 16 px margin, are set to the map background (204, 214, 227).
-  - The missing area is computed from the no-coverage tile list (exact), not from grey pixels, which real roofs can also be.
+  - The missing area is computed from the no-coverage tile list (exact), not from gray pixels, which real roofs can also be.
   - 7,962,484 px cleared downtown.
   - Old City, Fishtown and Center City have no missing tiles, and their outputs are byte-identical (SHA-256 checked).
 - **Tiles:** rebuilt as **v2** (2,941 tiles, 446 MB). v1 is kept unchanged (versions are immutable). The viewer now defaults to v2.

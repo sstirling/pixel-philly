@@ -1,5 +1,7 @@
 # Data provenance
 
+For how these sources become the map, see "How it was made" in the [main README](../README.md#how-it-was-made). The table below was written for the first test area, Old City; every later area and region uses the same sources and fetch scripts.
+
 Files are prefixed with their area: `oldcity_*` and `fishtown_*`. Every area uses the same sources, queries and fetch scripts, run with `PP_AREA=<area>`. The table below describes the Old City files; the Fishtown files are identical in kind, fetched Oct. 20, 2026 for the Fishtown lattice extent. The Fishtown core box comes from the Azavea/OpenDataPhilly neighborhoods layer (Robert Cheetham, CC BY 4.0): the FISHTOWN polygon's bbox is [-75.1367, 39.9609, -75.1132, 39.9848], about 3.1 km². The test box is a same-size-as-Old-City core inside it, [-75.1338, 39.9663, -75.1213, 39.9768].
 
 Every raw download is recorded in `raw/MANIFEST.json` with:
@@ -78,7 +80,7 @@ The fetch extent is the ground seen by the whole frame lattice, which is larger 
     - `protect`: a vessel-like trace, kept out of the water repaint only.
     - `rejected`: not a vessel.
   - **Heights:** a hull's height comes from the 2022 LiDAR when at least 30% of its cells are 2 m or more above the water. The scene build records these as `"lidar (2022)"` in `data/processed/<area>_qa.json` `"vessels"`. A ship at the same berth in 2022 may not be the same ship.
-  - **Assumed heights:** where the LiDAR didn't see the hull, the height is `kind_defaults_m`, an assumption by vessel kind, labelled `"default (assumed by kind)"`. Shadow-length estimates were not made.
+  - **Assumed heights:** where the LiDAR didn't see the hull, the height is `kind_defaults_m`, an assumption by vessel kind, labeled `"default (assumed by kind)"`. Shadow-length estimates were not made.
   - **Base:** the water level, 0 m NAVD88. A hull in a dry dock (`"base": "ground"`) stands on the surrounding ground instead.
 - **`raw/<area>_piers.json`**: OpenStreetMap piers (`man_made=pier`) and ships (`scripts/04o_fetch_piers.py`, Overpass, `out geom`). Pier lines are buffered to their `width` tag, or 3 m without one. License: ODbL 1.0, credit "© OpenStreetMap contributors".
 - **Use:**
@@ -134,7 +136,7 @@ The fetch extent is the ground seen by the whole frame lattice, which is larger 
 - **Property records (façades).** The OPA table also holds owner names, mailing addresses, sale, tax and exemption figures. None of it is fetched: queries name their columns, and `src/pixelphilly/opa.py` refuses owner\*, mailing\*, sale\*, taxable\*, exempt\*, market_value, homestead\*, book_and_page, registry_number, cross_reference and recording_date, both in the query and in the downloaded file. `exterior_condition` is excluded too, by editorial rule: the map does not encode vacancy or condition, which would stigmatize blocks.
   - **Join** (`src/pixelphilly/facades.py`): footprint `parcel_id_num` → `pwd_parcels.brt_id` → OPA `parcel_number` (95% of Old City), then address (97%; condos repeat an address, the majority style wins), then OPA points inside the footprint. Unmatched footprints keep plain walls.
   - **OpenStreetMap:** `building:colour` (hex or CSS name) and `building:material` win over the property record where an OSM shape and a footprint (or LiDAR part) overlap each other by half or more; `building:part` shapes before buildings. Coverage is thin outside Center City (atlas spots: 176 footprints at Independence Hall, 22 at City Hall, 1 or none in the rowhouse spots). ODbL: maps using it must credit "© OpenStreetMap contributors".
-  - **Tall buildings:** OPA "MASONRY" includes limestone and terra cotta. Non-rowhouse buildings above 20 m with no OSM colour keep their own colour sampled from the aerial instead of the brick palette.
+  - **Tall buildings:** OPA "MASONRY" includes limestone and terra cotta. Non-rowhouse buildings above 20 m with no OSM color keep their own color sampled from the aerial instead of the brick palette.
   - **Limits:** `general_construction` is undocumented (A ≈ masonry, C/D ≈ frame, E/J ≈ stone, inferred) and used only when the building code names no material. `number_stories` is often null for big buildings (height ÷ 3.2 m then). `year_built` is unreliable for big public buildings; it only separates modern glass towers from pre-war masonry ones. Codes 41-47 have no style description. Façades are drawn procedurally from these records (window grid, storefront, porch and cornice bands): they are a typology, not a survey of each façade.
 - **LiDAR structures.** Objects with no footprint are drawn from the LiDAR when they are flat and clear the ground (`structures()` in `src/pixelphilly/lidar.py`). The rule:
   - **Grid.** A class-1-only max-Z grid (`struct` in `processed/<area>_lidar_grid.npz`). Bridges (17), water (9) and ground (2) are left out.
