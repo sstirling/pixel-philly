@@ -25,3 +25,6 @@ data/processed/*.npz
 
 # Landmark reference photos (Track 3): downloaded by scripts/19_landmark_refs.py; licenses in data/landmarks/manifest.json
 data/landmarks/refs/
+
+# Promo videos' camera paths: local only (the videos themselves are in output/flyover/, ignored above)
+config/flyover/promo*.json

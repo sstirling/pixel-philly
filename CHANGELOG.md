@@ -1,5 +1,91 @@
 # Changelog
 
+## 2026-11-13: promo video and GIF
+
+Stephen asked for a video or GIF that slowly pans across parts of the city to promote the map.
+
+The promo camera paths (`config/flyover/promo*.json`) and the videos (`output/flyover/`) are git-ignored and stay local (Nov. 14). The script features and tests below are tracked.
+
+- **`scripts/29_flyover.py` gained four shot options and two flags.** The preview path renders the same 885 frames as before (tested).
+  - `cut`: jump to a new scene with a crossfade.
+  - `by`: pan by a fixed number of map pixels.
+  - `offset`: aim beside a lon/lat point, such as onto a bridge deck.
+  - `caption`: a scene name in the lower left.
+  - `--size` renders other shapes from the same path (square, vertical). `--gif WIDTH` also writes a looping GIF with one shared palette.
+  - The credit text is now sized from the frame's short side, so it fits a vertical frame.
+- **`config/flyover/promo.json`** (v18, 68.5 s). It opens on the Center City towers ("Pixel Philly"). It then pans across seven more scenes joined by 1-second crossfades: the Ben Franklin Bridge, Eastern State Penitentiary, the Art Museum to Boathouse Row, South Philadelphia rowhouses, the sports complex and Manayunk. It ends with a pull-back to the whole city captioned with the site address. Scenes were picked by eye from a contact sheet of the v18 tiles.
+- **`config/flyover/promo_loop.json`**: a 7-second pan along the Ben Franklin Bridge at 800 x 450. It fades back to its first frame, so the GIF loops without a jump.
+- **Credit line:** "AI-generated illustration. Data: City of Philadelphia, USGS, © OpenStreetMap contributors."
+- **Outputs** (in `output/flyover/`, not tracked):
+  - `promo.mp4`, 1920 x 1080, 104.6 MB;
+  - `promo_1080x1080.mp4`, 64.5 MB;
+  - `promo_1080x1920.mp4`, 101.4 MB;
+  - `promo_loop.gif`, 14.0 MB.
+  - Each video renders in about 18 seconds, with no GPU.
+- **Tests:** `tests/test_flyover.py` (10). The full suite passes (488).
+- **Shorter cut and a Center City GIF.** Stephen asked for a 10–15 second video and a GIF over Center City.
+  - **`config/flyover/promo_short.json`**: 14 s in all.
+    - A 4.5-second pan across the Center City towers, captioned "Pixel Philly."
+    - A 0.7-second crossfade to a 4-second pan along the Ben Franklin Bridge.
+    - A 3.5-second pull-back to the whole city captioned with the site address, then a 1.3-second hold.
+    - Output: `output/flyover/promo_short.mp4`, 1920 x 1080, 29.4 MB.
+  - **`promo_loop.json` now pans across the Center City towers.**
+    - 640 x 360 at scale 3, the social preview's zoom.
+    - A 5-second pan, then a 0.8-second fade back to the start.
+    - The GIF is 10 fps, 12.1 MB.
+    - Any pan changes every pixel in every frame, so GIF size grows fast. At 800 px wide and 15 fps it was 32.5 MB.
+- **TikTok/Reels cut with the link on screen.** Stephen asked for a TikTok/Instagram version labeled with the map's link.
+  - **`config/flyover/promo_vertical.json`**: the 14-second cut at 1080 x 1920.
+    - "pixelphilly.sstirling.com" stays on screen the whole time, near the top.
+    - The scene captions sit under it: "Center City," "Ben Franklin Bridge," "All of Philadelphia, as pixel art."
+    - The credit line sits at the bottom of the safe box.
+    - Output: `output/flyover/promo_vertical.mp4`, 32.9 MB.
+  - **Safe box.** The apps cover the frame's edges with buttons and captions, so all text stays inside a box:
+    - 270 px from the top, 672 px from the bottom and 65 px from the left. These are Meta's published Reels ad margins (14%, 35%, 6%), as summarized by third-party tools.
+    - 150 px from the right, which clears TikTok's button column.
+    - Sources disagree, and the numbers are ad guidance, so preview each upload in the app.
+  - **New config options in `scripts/29_flyover.py`:**
+    - `label`: always-on text that doesn't fade with the scenes.
+    - `safe`: the margins in px. With it, text is centered in the safe box, and the caption sits in a fixed slot under the label.
+    - Text drawing is now one function, `draw_overlays`.
+  - **Tests:** 2 more in `tests/test_flyover.py`, covering that all text stays inside the safe box and that the label and caption don't overlap.
+- **Single-sweep promo.** Stephen asked for one sweep from the Art Museum across Center City to Old City, then back out to the full map.
+  - **New `via` shot in `scripts/29_flyover.py`.** It is one continuous move through several points, with no stop at each.
+    - The path is a Catmull-Rom curve that passes through every point.
+    - Frames are spaced by distance along the curve, so the speed is steady.
+    - It eases in and out over the first and last 25% of the time (`ramp`), so the top speed is 1.33x the average (smoothstep's is 1.5x).
+    - Each point's caption takes over halfway to it.
+  - **`config/flyover/promo_sweep_vertical.json`** (TikTok/Reels, 1080 x 1920, 15 s), with the address pinned and the same safe box as `promo_vertical.json`:
+    - a 10.5-second sweep at scale 3 (the social preview's zoom), from the Art Museum through City Hall to Old City at the Ben Franklin Bridge;
+    - a 3-second pull-back to the whole city, then a 1.5-second hold.
+    - Captions in order: "Philadelphia Museum of Art," "Center City," "Old City," "All of Philadelphia, as pixel art."
+    - Output: `output/flyover/promo_sweep_vertical.mp4`, 101.3 MB.
+  - **`config/flyover/promo_sweep.json`**: the same path at 1920 x 1080, captioned "Pixel Philly" at the start and with the site address at the end. Output: `output/flyover/promo_sweep.mp4`, 99.6 MB.
+  - The files are about three times the size of the 14-second cut: a fast sweep changes most of the frame every frame.
+  - **Tests:** 3 more:
+    - the sweep passes through every point and ends on the last;
+    - its speed stays steady through the middle point;
+    - captions switch once each, in order.
+    - The first version of the speed test set a 1.3x limit, below the ramp's own 1.33x peak. The test was wrong, not the code, and was corrected.
+- **Slower sweep; TikTok/Reels and Instagram feed versions.** Stephen asked for a slightly slower sweep and Instagram/TikTok versions.
+  - **Slower:** the sweep now takes 13.5 s instead of 10.5 s, about 22% slower. Each video is 18 s.
+  - **`config/flyover/promo_tiktok_reels.json`** (1080 x 1920) replaces `promo_sweep_vertical.json`. One file works for both apps.
+    - Top margin 290 px, which clears four limits:
+      - Meta's 269 px Reels margin;
+      - TikTok's 130–240 px;
+      - the 285 px Instagram trims from the top when it shows a Reel in the main feed as a centered 4:5 crop (1080 x 1350);
+      - with bottom 672 px, left 65 px and right 150 px as before.
+    - Checked on frames: all text sits inside both the safe box and the 4:5 crop.
+    - Output: `output/flyover/promo_tiktok_reels.mp4`, 117.1 MB.
+  - **`config/flyover/promo_instagram_feed.json`**: a 1080 x 1350 (4:5) feed post with the same path and text, and 60 px margins. Output: `output/flyover/promo_instagram_feed.mp4`, 78.5 MB.
+  - **`promo_sweep.json` (16:9)** was slowed to match.
+  - **Sources:** the margins come from third-party summaries, and they disagree, so preview each upload in the app.
+- **Credit line dropped from the sweep promos.** Stephen asked to drop the source line from the promo.
+  - `promo_tiktok_reels`, `promo_instagram_feed` and `promo_sweep` no longer have a `credit`.
+  - `scripts/29_flyover.py` now treats `credit` as optional.
+  - The "AI-generated illustration" label went with that line. The map's own credits and the about page still carry it.
+  - Re-rendered: 118.9, 79.3 and 115.9 MB. The other flyover configs keep their credit lines.
+
 ## 2026-11-11 (later): repo prepared for public release
 
 Stephen plans to make the repository public. A security review of every file in all 14 commits found no credentials: no API keys, tokens, private keys, Cloudflare account IDs or rclone settings (matches were checked masked). Changes he asked for:
