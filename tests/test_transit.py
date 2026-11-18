@@ -110,3 +110,66 @@ def test_el_schedule_shares_patterns():
     assert len(sched["patterns"]) == 1
     assert sched["patterns"][0]["stops"] == [[0, 0.0], [120, 100.0]]
     assert sched["trips"] == [[0, 8 * 3600, "SA"], [0, 24 * 3600 + 58 * 60, "SA"]]
+
+
+# --- out-and-back spikes (Nov. 18) -------------------------------------------------------------
+# SEPTA's Wilmington/Newark shape 007201 goes out and back over about 20 m near University
+# City (points 84-88). Clipping split it into 4 pieces, and trains lost cars there.
+
+def test_out_and_back_spike_is_removed():
+    x = np.array([0.0, 250, 270, 250, 500])
+    y = np.zeros(5)
+    rx, ry = tr.remove_spikes(x, y)
+    assert list(rx) == [0, 250, 500] and list(ry) == [0, 0, 0]
+
+
+def test_retraced_spike_with_overlapping_points_is_removed():
+    # The 007201 pattern: A, B, back to near A, A again, B again, then on
+    x = np.array([0.0, 100, 120, 102, 100, 120, 300])
+    y = np.array([0.0, 0, 5, 0.5, 0, 5, 50])
+    rx, ry = tr.remove_spikes(x, y)
+    seg = np.diff(np.column_stack([rx, ry]), axis=0)
+    cos = (seg[:-1] * seg[1:]).sum(1) / np.hypot(*seg.T)[:-1] / np.hypot(*seg.T)[1:]
+    assert (cos > -0.94).all()  # no reversal left
+    assert (rx[0], rx[-1]) == (0, 300)
+
+
+def test_real_turnarounds_are_kept():
+    # Around a block: 90-degree turns, not a reversal
+    block = (np.array([0.0, 100, 100, 0, 0]), np.array([0.0, 0, 60, 60, 120]))
+    # A U-turn onto a parallel street 10 m away: reverses, but doesn't retrace
+    uturn = (np.array([0.0, 100, 100, 0]), np.array([0.0, 0, 10, 10]))
+    # A long out-and-back (a 200 m spur to a terminal and back) is a real route
+    spur = (np.array([0.0, 100, 300, 100, 100]), np.array([0.0, 0, 0, 0, 200]))
+    for x, y in (block, uturn, spur):
+        rx, ry = tr.remove_spikes(x, y)
+        assert list(rx) == list(x) and list(ry) == list(y)
+
+
+def test_wilmington_shape_is_one_piece():
+    import json
+
+    from pixelphilly.projection import REPO_ROOT
+
+    gtfs = REPO_ROOT / "data" / "raw" / "septa_gtfs_v202611010.zip"
+    map_json = REPO_ROOT / "output" / "philly" / "tiles" / "v18" / "map.json"
+    if not (gtfs.exists() and map_json.exists()):
+        pytest.skip("GTFS or v18 map not on this machine")
+    fit = json.loads(map_json.read_text())["fit"]
+    shapes = tr.shapes_by_id(tr.read_gtfs(gtfs)["rail"]["shapes"])
+    pieces = tr.shape_pieces(*shapes["007201"], fit, fit["bounds_wgs84"], "rail", None)
+    assert len(pieces) == 1
+
+
+def test_short_gap_between_tunnels_is_underground():
+    # OSM tags the Center City tunnel in stretches with gaps at the underground stations
+    # (Suburban, Jefferson): a train stopped there showed a car between skyscrapers.
+    # A gap under TUNNEL_GAP_M between two tunnels is underground too; a longer one isn't.
+    lon, lat = _straight_shape()
+    m = lambda d: lon[0] + d / tr.M_PER_DEG_LON
+    near = tr.Tunnels(_osm([("rail", [(m(100), 39.95), (m(400), 39.95)]), ("rail", [(m(500), 39.95), (m(900), 39.95)])]))
+    [piece] = tr.shape_pieces(lon, lat, FIT, BOX, "rail", near)
+    assert len(piece["tunnels"]) == 1
+    far = tr.Tunnels(_osm([("rail", [(m(100), 39.95), (m(300), 39.95)]), ("rail", [(m(700), 39.95), (m(900), 39.95)])]))
+    [piece] = tr.shape_pieces(lon, lat, FIT, BOX, "rail", far)
+    assert len(piece["tunnels"]) == 2

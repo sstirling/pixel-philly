@@ -10,6 +10,12 @@
 // a shape means a larger "along".
 
 export const MAX_SNAP_PX = 60;      // about 15-18 m: farther than that from every shape, a vehicle is off-route (detour, garage)
+// Trains: TrainView positions sit a median 29 px from the GTFS track and a quarter
+// are past 51 px (Nov. 18 recording), and rail corridors are several tracks wide
+export const RAIL_SNAP_PX = 120;    // about 30-40 m
+// Another line's track costs this much extra, so where lines share a corridor a
+// train stays on its own line's shape
+export const OTHER_LINE_PX = 15;
 export const BACKTRACK_PX = 40;     // GPS jitter allowed backward along a shape before it counts as the wrong direction
 export const MAX_GLIDE_PX = 6000;   // more than this in one update (about 1.5 km) is a jump, not a drive
 
@@ -114,15 +120,20 @@ export function projectOnto(shape, x, y) {
 // already on a shape prefers to stay on it and to move forward: two
 // directions of a route often share a street, and only the shape it is
 // already moving along tells them apart. Returns {shape, along, dist} or
-// null when no shape is within MAX_SNAP_PX.
-export function snap(shapes, x, y, prev = null) {
+// null when no shape is within maxPx.
+// Options: maxPx (RAIL_SNAP_PX for trains); others, shapes of other lines a
+// vehicle may also be on (trains run through Center City onto other lines'
+// track, and TrainView's line label can name the line a train runs next),
+// each costing OTHER_LINE_PX more than the vehicle's own.
+export function snap(shapes, x, y, prev = null, { maxPx = MAX_SNAP_PX, others = [] } = {}) {
   let best = null, bestCost = Infinity;
-  for (const s of shapes) {
+  const own = new Set(shapes);
+  for (const s of own.size === shapes.length && !others.length ? shapes : [...shapes, ...others.filter((o) => !own.has(o))]) {
     const [x0, y0, x1, y1] = s.bbox;
-    if (x < x0 - MAX_SNAP_PX || x > x1 + MAX_SNAP_PX || y < y0 - MAX_SNAP_PX || y > y1 + MAX_SNAP_PX) continue;
+    if (x < x0 - maxPx || x > x1 + maxPx || y < y0 - maxPx || y > y1 + maxPx) continue;
     const p = projectOnto(s, x, y);
-    if (p.dist > MAX_SNAP_PX) continue;
-    let cost = p.dist;
+    if (p.dist > maxPx) continue;
+    let cost = p.dist + (own.has(s) ? 0 : OTHER_LINE_PX);
     if (prev && prev.shape) {
       if (prev.shape.id === s.id) cost += p.along < prev.along - BACKTRACK_PX ? 80 : -5;
       else cost += 10;
@@ -147,15 +158,35 @@ export function positionOf(snapped, x, y, bearing) {
 
 export const HOP_PX = 30; // shorter moves (snapping onto the road, GPS jitter) don't turn a vehicle
 
-export function planMove(from, to, inv = IDENTITY) {
-  if (from.shape && to.shape && from.shape === to.shape && to.along >= from.along && to.along - from.along <= MAX_GLIDE_PX) {
-    // Glide at a steady ground speed, so a vehicle doesn't speed up on screen
-    // when the road turns toward a less foreshortened direction
-    return { kind: "along", shape: to.shape, m0: pxToM(to.shape, from.along), m1: pxToM(to.shape, to.along), end: to };
+// Options: maxPx, how far a vehicle may be from a shape to count as on it
+// (RAIL_SNAP_PX for trains); track: a vehicle that only exists on track (a
+// train), which never makes a straight-line move. A train's cars are laid out
+// along the track, so on a straight line it would collapse into one car facing
+// the line (Nov. 18: 60% of train frames in a replay of live data).
+export function planMove(from, to, inv = IDENTITY, { maxPx = MAX_SNAP_PX, track = false } = {}) {
+  if (from.shape && to.shape) {
+    // From where the vehicle is now, measured along the shape it is moving onto: the
+    // same shape, or another one on the same track (a train through Center City onto
+    // another line, or the other direction's shape after a wrong first guess)
+    let a0 = from.along;
+    if (from.shape !== to.shape) {
+      const p = projectOnto(to.shape, from.x, from.y);
+      a0 = p.dist <= maxPx ? p.along : null;
+    }
+    if (a0 !== null && to.along >= a0 && to.along - a0 <= MAX_GLIDE_PX) {
+      // Glide at a steady ground speed, so a vehicle doesn't speed up on screen
+      // when the road turns toward a less foreshortened direction
+      return { kind: "along", shape: to.shape, m0: pxToM(to.shape, a0), m1: pxToM(to.shape, to.along), end: to };
+    }
+    if (a0 !== null && a0 - to.along <= BACKTRACK_PX) {
+      // A small step backward is GPS jitter: hold still on the track
+      const m = pxToM(to.shape, a0);
+      return { kind: "along", shape: to.shape, m0: m, m1: m, end: { ...pointAt(to.shape, a0), shape: to.shape, along: a0 } };
+    }
   }
   const dx = to.x - from.x, dy = to.y - from.y;
   const dist = Math.hypot(dx, dy);
-  if (dist > MAX_GLIDE_PX) return { kind: "jump", end: to };
+  if (dist > MAX_GLIDE_PX || track) return { kind: "jump", end: to };
   // Facing: the road's direction when the vehicle lands on its route; else
   // the direction it moves, unless the move is only a short hop
   const bearing = to.shape ? to.bearing : dist > HOP_PX ? bearingOf(inv, dx, dy) : (from.bearing ?? to.bearing);
@@ -166,11 +197,11 @@ export function planMove(from, to, inv = IDENTITY) {
 // update came before the move finished) gets that route attached, at the
 // nearest point, so the following move glides along the route instead of
 // starting another straight line.
-export function onRoute(pos, move) {
+export function onRoute(pos, move, maxPx = MAX_SNAP_PX) {
   const shape = move && move.end && move.end.shape;
   if (pos.shape || !shape) return pos;
   const p = projectOnto(shape, pos.x, pos.y);
-  return p.dist <= MAX_SNAP_PX ? { ...pos, shape, along: p.along } : pos;
+  return p.dist <= maxPx ? { ...pos, shape, along: p.along } : pos;
 }
 
 // Where a move is at fraction f (0..1) of its time
@@ -275,6 +306,80 @@ export function carLayout(shape, centerAlong, kind, cars, inv = shape.inv || IDE
                along: mToPx(shape, front - L / 2) });
   }
   return out;
+}
+
+// Track behind the start of a shape. Six Regional Rail lines' shapes start at
+// 30th Street, so a train there sat at its shape's very start and carLayout
+// had nowhere to put its trailing cars: only the lead car was drawn (Nov. 18).
+// The track that leads into the start is another shape passing within
+// EXTEND_JOIN_PX of it in the same direction; up to EXTEND_BACK_M of it is
+// prepended to a copy of the shape, stored as shape.ext = {shape, offset (px
+// where the original starts), from (the other shape's id)}. trackCars uses
+// it. The original shape is unchanged, so snapping and gliding aren't.
+export const EXTEND_BACK_M = 300;   // longer than an 8-car train (8 x 26.9 m)
+const EXTEND_JOIN_PX = 20;
+export function extendBack(shape, candidates, inv = shape.inv || IDENTITY) {
+  const s0 = pointAt(shape, 0);
+  let best = null;
+  for (const o of candidates) {
+    if (o === shape) continue;
+    const p = projectOnto(o, s0.x, s0.y);
+    if (p.dist > EXTEND_JOIN_PX || p.along < 1) continue;
+    let da = Math.abs(pointAt(o, p.along).angle - s0.angle) % (2 * Math.PI);
+    if (Math.min(da, 2 * Math.PI - da) > Math.PI / 6) continue; // the other direction's track
+    if (!best || p.along > best.along) best = { o, along: p.along }; // the most track behind
+  }
+  if (!best) return shape;
+  const { o, along } = best;
+  const a0 = mToPx(o, Math.max(0, pxToM(o, along) - EXTEND_BACK_M));
+  const start = pointAt(o, a0);
+  const pts = [start.x, start.y];
+  for (let i = 0; i < o.cum.length; i++) if (o.cum[i] > a0 && o.cum[i] < along) pts.push(o.pts[2 * i], o.pts[2 * i + 1]);
+  const head = pts.length / 2;
+  pts.push(...shape.pts);
+  const ext = prepareShape({ id: `${shape.id}<${o.id}`, pts, tunnels: [] }, inv);
+  const offset = ext.cum[head];
+  ext.tunnels = [
+    ...o.tunnels.filter(([a, b]) => b > a0 && a < along).map(([a, b]) => [Math.max(a, a0) - a0, Math.min(b, along) - a0]),
+    ...shape.tunnels.map(([a, b]) => [a + offset, b + offset]),
+  ];
+  shape.ext = { shape: ext, offset, from: o.id };
+  return shape;
+}
+
+// The cars of a vehicle at `pos` that can be seen: laid out on its track
+// (carLayout), less any car whose middle is in a tunnel when hideTunnels is
+// set. Each car is checked on its own, so a train going into a tunnel loses
+// its cars one by one (Nov. 18: the whole train vanished when its lead car
+// went underground west of the river). Off its route, a vehicle is one car
+// facing its bearing.
+export function trackCars(pos, kind, n, inv = IDENTITY, hideTunnels = false) {
+  if (!pos.shape) return [{ x: pos.x, y: pos.y, bearing: pos.bearing ?? 0, sprite: pickByBearing(kind.sprites, pos.bearing ?? 0) }];
+  // On the shape extended back (extendBack), when there is one: the same track
+  // from the original start on, so the lead car is in the same place
+  const ext = pos.shape.ext;
+  const shape = ext ? ext.shape : pos.shape;
+  const cars = carLayout(shape, pos.along + (ext ? ext.offset : 0), kind, n, inv);
+  return hideTunnels ? cars.filter((c) => !inTunnel(shape, c.along)) : cars;
+}
+
+// TrainView reports trains it can't locate at one fixed point in Suburban
+// Station, even when their current stop is miles away (7 of 24 trains in
+// tests/fixtures/septa/trainview.json). SEPTA doesn't document it; it was
+// observed in the feed. Compared at 5 decimal places (about 1 m), since the
+// feed is rounded to 6.
+export const PLACEHOLDER = [-75.1677778, 39.9538889];
+export function isPlaceholder(lon, lat) {
+  return Math.round(lon * 1e5) === Math.round(PLACEHOLDER[0] * 1e5) && Math.round(lat * 1e5) === Math.round(PLACEHOLDER[1] * 1e5);
+}
+
+// Trees: a tree mask pixel at map y `py` stores d, how many map px below it its
+// trunk stands (0 = no tree; scripts/40_build_tree_mask.py). The map looks down
+// at 45°, so a canopy hangs over what is just behind it on screen. It hides a
+// vehicle whose ground point is at groundY only when the trunk is at or below
+// that point: in front of the vehicle, nearer the viewer.
+export function hiddenByTree(d, py, groundY) {
+  return d > 0 && py + d >= groundY;
 }
 
 export function pointInPolygon(flat, x, y) {

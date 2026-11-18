@@ -50,6 +50,13 @@ const lateness = (v) => {
   return x === null || Math.abs(x) > 600 ? null : x;
 };
 const inside = (lon, lat, b) => lon >= b[0] && lon <= b[2] && lat >= b[1] && lat <= b[3];
+// TrainView reports trains it can't locate at one fixed point in Suburban
+// Station, even when their current stop is miles away (observed, not
+// documented; 7 of 24 trains in tests/fixtures/septa/trainview.json). Those
+// aren't positions, so they're dropped. Compared at 5 decimal places (~1 m).
+const PLACEHOLDER = [-75.1677778, 39.9538889];
+const isPlaceholder = (lon, lat) =>
+  Math.round(lon * 1e5) === Math.round(PLACEHOLDER[0] * 1e5) && Math.round(lat * 1e5) === Math.round(PLACEHOLDER[1] * 1e5);
 
 function normalize(transitView, trainView, nowS, bounds = BOUNDS) {
   const vehicles = [];
@@ -66,7 +73,7 @@ function normalize(transitView, trainView, nowS, bounds = BOUNDS) {
   }
   for (const t of Array.isArray(trainView) ? trainView : []) {
     const lon = num(t.lon), lat = num(t.lat);
-    if (lon === null || lat === null || !inside(lon, lat, bounds)) continue;
+    if (lon === null || lat === null || !inside(lon, lat, bounds) || isPlaceholder(lon, lat)) continue;
     const consist = String(t.consist || "").split(",").filter((c) => c.trim()).length;
     vehicles.push(["rr", String(t.line || ""), String(t.trainno || ""), round6(lon), round6(lat),
       null, lateness(t.late), String(t.dest || ""), nowS, consist || null]);

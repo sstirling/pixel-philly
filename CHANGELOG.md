@@ -1,5 +1,84 @@
 # Changelog
 
+## 2026-11-18: train physics fixes and a tree mask
+
+Stephen reported trains turning sideways on the track, losing their trailing cars, and odd behavior where they enter Center City by the river. He also asked for a tree mask, since every vehicle was drawn over tree canopy. The plan was approved in plan mode.
+
+**Diagnosis.** I recorded 61 live updates (15 minutes) and replayed them through the real viewer in headless Chromium, 30 times faster than real time, logging every train in view on every frame. Before the fixes, 5,458 of 8,756 train frames (62%) showed a multi-car train as one car, and 4,327 were straight-line moves with no track under them. Causes, each confirmed in the data:
+- **Own line only:** trains snapped only to their own line's track. 22.7% of train reports were more than 60 px from it, some 1 to 3 km (through-routed trains, and line labels naming the next line).
+- **Too tight:** the 60 px snap distance was too tight for rail (median distance 29 px, 75th percentile 51 px).
+- **Changing shapes:** any change of shape, including a line's other direction after a wrong first guess, or a step backward, became a straight-line move. That's drawn as one car facing the move, or north: the sideways trains.
+- **Tunnel portal:** the whole train was hidden once its lead car entered a tunnel (the Center City tunnel west of the river).
+- **Placeholder:** TrainView reports unlocated trains at one point in Suburban Station.
+- **Tunnel gaps:** OSM tunnel data had gaps at underground stations, so a stopped train showed a car between skyscrapers west of Suburban Station.
+- **Shapes starting at 30th Street:** six lines' shapes start there, so a train at 30th Street had no track behind it for its trailing cars.
+- **A glitch in SEPTA's data:** the Wilmington/Newark shape retraces itself over about 20 m near University City, which split it into 4 pieces.
+
+**Fixes** (each with a failing test first; 27 new tests):
+- **`viewer/transit_core.js`:**
+  - `snap` takes `maxPx` and `others`: rail uses `RAIL_SNAP_PX` (120) and every line's track, at +15 px for another line.
+  - `planMove` projects the start onto a new shape and glides along it. A step backward of up to 40 px holds still. With `track: true` (trains) it never makes a straight-line move.
+  - `trackCars` hides tunnel cars one by one.
+  - `extendBack` prepends up to 300 m of the track that leads into a shape's start.
+  - `isPlaceholder` and `hiddenByTree` are new.
+- **`viewer/transit.js`:**
+  - loads every rail line at start and extends rail shapes back;
+  - drops placeholder reports;
+  - skips trains that are off every track;
+  - draws trees (below).
+- **`worker/septa-live.js` and `scripts/38_live_feed.py`** drop the placeholder; the Python and JavaScript versions still match. The Worker on Cloudflare needs the new code pasted in. The viewer filters the placeholder either way.
+- **`src/pixelphilly/transit.py`:**
+  - `remove_spikes` removes out-and-back stretches under 50 m before clipping;
+  - `fill_tunnel_gaps` treats gaps under 250 m between two tunnel stretches as tunnel.
+- **Rebuilt `output/philly/transit/v202611010/`** (same GTFS release):
+  - 12 routes lost split pieces from spikes; Wilmington/Newark went from 6 shapes to 2.
+  - Tunnel gaps were filled at Jefferson and Suburban on every Regional Rail line, at El and trolley-tunnel stations, and nowhere else. I checked the El gaps against the map: no elevated track is drawn there, and the portals didn't move.
+  - El timetable times are unchanged; stop positions moved by at most 0.1 px, from simplifying within the merged tunnel stretches.
+
+**Result** (same 15 minutes, before and after): straight-line train moves went from 4,327 frames to 0, and one-car trains from 5,458 to 200 (2.8%). Every remaining short train is going in or out of a tunnel portal (west of Suburban, south of 30th Street, north of Jefferson), where that's correct. No neighboring cars were more than 45° apart in either run.
+
+**Tree mask.** `scripts/40_build_tree_mask.py` (written by a subagent, with 12 tests in `tests/test_tree_mask.py`) finds the canopy in v18's full-resolution tiles. Trees in the scene's render were only a guide for the image model, which moved some and added many.
+- **Color:** saturation and hue alone mixed crowns up with lawns (lawn saturation is about 0.42–0.45, canopy about 0.5). Crowns are a cooler green (red/green 0.4–0.65, lawns 0.7–0.9).
+- **Outlines:** every drawn crown has a near-black outline. Seeds by color grow into the crown up to the outline. Outlined regions that are mostly crown green count too. An outline-evidence filter then drops lawn, meadow and turf that touches a crown.
+- **Depth:** each canopy pixel stores how far below it its run of canopy ends, plus 4 px of trunk. The viewer hides a car's pixel only when that trunk is at or below the car's ground point, so a bus passes in front of far-side trees and under near-side ones.
+- **Output:** `output/philly/overlays/v18/trees/`, 11,770 of 28,188 tiles with canopy, 39 MB, built in about 2.4 minutes.
+- **Limits** (a color estimate): some dark or yellow-green crowns are missed or only partly caught, the smallest street trees can be missed, and a few meadow patches beside woods are included. Turf fields and lawns are left out (checked at Franklin Field, Lincoln Financial Field, Rittenhouse Square and the Belmont Plateau ballfields).
+- **The viewer** applies trees at 0.3 screen px per map px or closer, one car at a time.
+
+v18 is untouched: 75,367 files in `output/philly/tiles/v18`.
+
+## 2026-11-16: vertical transit promo for TikTok and Reels
+
+Stephen asked for a TikTok/Instagram version of the transit promo.
+
+- **`scripts/39_transit_promo.py --vertical`** renders 1080 x 1920 to `output/flyover/promo_transit_vertical.mp4` (not tracked).
+  - **Text:** the address and caption sit in the same safe box as `config/flyover/promo_vertical.json` (top 270 px, right 150, bottom 672, left 65), centered, so the apps' buttons and captions don't cover them.
+  - **Scoring and framing:** scenes are scored, and each subject centered, in the open part of that box: under the caption and above the bottom margin. The horizontal cut still uses the middle 60% of the frame, so it's unchanged.
+  - **Zoom 2.5** (3 for horizontal): the frame is only 1080 px wide, and a four-car train at zoom 3 is about 1,000 px long.
+- **Output:** 10.0 s, 30 fps, 1.7 MB. Four 2.5-second cuts: a four-car Regional Rail train moving through a rail yard (about 85 px across the cut), a trolley, buses at an intersection and a bus on a divided highway. The train's rear car runs past the frame's right edge.
+- `--zoom`, `--size` and `--name` still override the defaults.
+- **No overlapping vehicles** (Stephen: the first two cuts showed trains and buses on top of each other, a rail yard with two trains side by side and buses stacked at a loop). Scoring now skips any spot where cars of two different vehicles are drawn less than about 10 m apart anywhere in the frame (a bus, the shortest, is 12.2 m long). It checks at the start, middle and end of the clip, on the layer's own clock. This applies to the horizontal cut too.
+  - Re-rendered: a Regional Rail train crossing a river bridge, a trolley and buses on two avenues, each alone in its frame. 2.1 MB.
+- **No vehicles over trees** (Stephen: the third shot showed a bus on top of a tree). The building masks hide vehicles behind buildings, not trees, so a bus in a curb lane under the map's street trees is drawn over the canopy. The live viewer does this too; only the promo is changed.
+  - Each scene is now framed exactly as it will be filmed before it's accepted, then checked at 9 moments across the clip: no overlapping vehicles, and no vehicle over green (tree canopy or grass). The green check hides the transit layer, screenshots the map and rejects a scene when more than a quarter of the pixels within about 2 m of any visible car's center are green.
+  - A rejected scene is replaced by the next best of its kind. The train opener is checked inside the retry loop, so if no train is in a clean view the script waits for fresh updates. Each check prints why a scene was rejected.
+  - Re-rendered: a Regional Rail train in a rail yard, a trolley on an avenue, a bus by a high-rise and buses on a wide street. One trolley spot was rejected for trees. 2.3 MB.
+
+## 2026-11-14: transit promo video
+
+Stephen asked for a short horizontal promo with the site address and "Now with live SEPTA vehicles," cut from the vehicles in action, with at least one train.
+
+- **`scripts/39_transit_promo.py`** films the real viewer in headless Chromium, with the local server and `38_live_feed.py` running.
+  - **Clock:** after two feed updates, it takes over the transit layer's clock (`performance.now`, `Date`, `requestAnimationFrame`) and stops further updates. Each frame advances exactly 1/30 s, so motion is smooth and real-time, never sped up.
+  - **Scenes:** it scores one candidate spot per neighborhood with a live vehicle, by how far the visible vehicles near the middle of the frame glide.
+  - **A moving Regional Rail train is required and opens the cut.** If none is moving, the script waits for fresh updates and tries again, up to 3 times. Then come the best trolley and bus spots.
+  - **Framing:** each scene centers on its main vehicle, all cars included, as it will be halfway through the clip.
+  - **What's filmed:** live vehicles only. El trains are timetable positions, so they aren't used to illustrate "live."
+  - **Text:** `29_flyover.py`'s `draw_overlays`, with no source line.
+- **First cut, zoom 1.6:** the vehicles were about 30 px long, too small to read. Zoom 3 makes a bus about 125 px long.
+- **Output:** `output/flyover/promo_transit.mp4` (not tracked): 1920 x 1080, 10.0 s, 30 fps, 1.7 MB. It's four 2.5-second cuts: a four-car Regional Rail train on its tracks, a bus turning a corner, buses on an avenue, and a trolley. A frame-difference check found no vehicle popping in or out within a clip.
+- Each run takes about 5 minutes and depends on what SEPTA's vehicles are doing at the time.
+
 ## 2026-11-14: live SEPTA transit layer
 
 Stephen asked for live SEPTA buses, rail and the El on the map (Indego skipped for now). The plan was approved in plan mode. This is a viewer layer, so the map image doesn't change, and v18 stays frozen and untouched (new files live in their own folders).

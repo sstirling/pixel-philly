@@ -173,12 +173,86 @@ def runs_of(flags) -> list[tuple[int, int, bool]]:
     return out
 
 
+# OSM tags the Center City rail tunnel in stretches, with gaps at the underground
+# stations (Suburban, Jefferson), which are mapped as stations, not tunnel. A train
+# stopped there showed a car between skyscrapers (Nov. 18). The shortest open-air
+# stretch between two tunnels on these lines is far longer (the Main Line's short
+# tunnels under highways are over 500 m apart).
+TUNNEL_GAP_M = 250.0
+
+
+def fill_tunnel_gaps(flags, xy):
+    """Mark open stretches shorter than TUNNEL_GAP_M between two tunnel
+    stretches as tunnel. flags: per point of xy (local meters, in order)."""
+    flags = np.asarray(flags, bool).copy()
+    d = np.concatenate([[0.0], np.cumsum(np.hypot(*np.diff(np.asarray(xy, float), axis=0).T))])
+    for a, b, flag in runs_of(flags):
+        # runs_of shares end points: an open run between tunnels starts and ends on tunnel points
+        if not flag and 0 < a and b < len(flags) - 1 and d[b] - d[a] < TUNNEL_GAP_M:
+            flags[a:b + 1] = True
+    return flags
+
+
+SPIKE_MAX_M = 50.0     # out-and-back shorter than this is a drawing error, not a route
+SPIKE_RETRACE_M = 2.0  # coming back within this of where it turned off counts as retracing
+SPIKE_COS = -0.94      # a turn of more than about 160 degrees
+
+
+def remove_spikes(x, y):
+    """Remove short out-and-back spikes from a shape (local meters).
+
+    Some SEPTA GTFS shapes go a few meters out and come straight back over
+    the same points (Wilmington/Newark shape 007201, points 84-88, about 20 m
+    near University City). A vehicle laid out on that would fold back on
+    itself, and clipping the shape (shapely's intersection) splits it into
+    pieces there. A spike is a turn of more than about 160 degrees at the end
+    of a stretch of at most SPIKE_MAX_M, after which the path comes back to
+    within SPIKE_RETRACE_M of a point on that stretch; everything between is
+    removed. Turnarounds that go around a block, U-turns onto another street
+    and longer spurs to a terminal are kept. Returns new (x, y) arrays."""
+    p = np.column_stack([np.asarray(x, float), np.asarray(y, float)])
+    changed = True
+    while changed and len(p) > 2:
+        changed = False
+        keep = np.ones(len(p), bool)
+        keep[1:] = np.hypot(*np.diff(p, axis=0).T) > 1e-6  # drop repeated points
+        p = p[keep]
+        seg = np.diff(p, axis=0)
+        length = np.hypot(*seg.T)
+        cos = (seg[:-1] * seg[1:]).sum(1) / (length[:-1] * length[1:])
+        for apex in np.nonzero(cos < SPIKE_COS)[0] + 1:
+            # Points on the way out, up to SPIKE_MAX_M back from the turn
+            out, run = [], 0.0
+            for k in range(apex - 1, -1, -1):
+                run += length[k]
+                if run > SPIKE_MAX_M:
+                    break
+                out.append(k)
+            if not out:
+                continue
+            # The first point on the way back that returns to one of them
+            back = 0.0
+            for j in range(apex + 1, len(p)):
+                back += length[j - 1]
+                if back > SPIKE_MAX_M + SPIKE_RETRACE_M:
+                    break
+                near = [k for k in out if np.hypot(*(p[j] - p[k])) <= SPIKE_RETRACE_M]
+                if near:
+                    k = max(near)
+                    p = np.vstack([p[:k + 1], p[j + 1:]])
+                    changed = True
+                    break
+            if changed:
+                break
+    return p[:, 0], p[:, 1]
+
+
 def shape_pieces(lon, lat, fit: dict, clip_box, kind: str, tunnels: Tunnels | None):
     """One GTFS shape -> pieces inside `clip_box` (lon/lat), each
     {"pts": [x0, y0, x1, y1, ...] map px (integers), "tunnels": [[d0, d1], ...]
     px along the piece}. A route that leaves the map and comes back makes
     two pieces."""
-    x, y = local_m(lon, lat)
+    x, y = remove_spikes(*local_m(lon, lat))
     line = LineString(np.column_stack([x, y]))
     bx0, by0 = local_m(clip_box[0], clip_box[1])
     bx1, by1 = local_m(clip_box[2], clip_box[3])
@@ -190,6 +264,7 @@ def shape_pieces(lon, lat, fit: dict, clip_box, kind: str, tunnels: Tunnels | No
             continue
         dense = np.asarray(part.segmentize(DENSIFY_M).coords)
         flags = tunnels.flags(dense[:, 0], dense[:, 1], kind) if tunnels else np.zeros(len(dense), bool)
+        flags = fill_tunnel_gaps(flags, dense)
         plon, plat = lonlat_from_local(dense[:, 0], dense[:, 1])
         px = np.column_stack(lonlat_to_px(fit, plon, plat))
         pieces_px, tunnel_flags = [], []

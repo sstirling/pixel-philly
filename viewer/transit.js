@@ -22,8 +22,8 @@
 
 import { lonLatToPx } from "./projection.js";
 import {
-  carLayout, describe, elTrains, inTunnel, invert2, motionAt, onRoute, pickByBearing, planMove, pointInPolygon,
-  positionOf, prepareShape, snap,
+  carLayout, describe, elTrains, extendBack, hiddenByTree, inTunnel, invert2, isPlaceholder, MAX_SNAP_PX, motionAt, onRoute, planMove,
+  pointInPolygon, positionOf, prepareShape, RAIL_SNAP_PX, snap, trackCars,
 } from "./transit_core.js";
 
 export const GTFS_RELEASE = "v202611010";
@@ -36,6 +36,10 @@ const STALE_S = 120;
 const MIN_SCALE = 0.12;
 const HIT_PX = 14;
 const MASK_CACHE = 400;
+// Trees (overlays/v18/trees, scripts/40_build_tree_mask.py) hide vehicles only
+// zoomed in: below this a bus is a few px long and per-car work isn't worth it
+const TREE_MIN_SCALE = 0.3;
+const TREE_CACHE = 120; // full-resolution tiles, 256 KB each decoded
 
 export function createTransitLayer(viewer, { meta, root, liveUrl, button = null, status, reduceMotion }) {
   const staticBase = `${root}output/philly/transit/${GTFS_RELEASE}/`;
@@ -57,6 +61,9 @@ export function createTransitLayer(viewer, { meta, root, liveUrl, button = null,
   const shapes = new Map();       // route id -> [prepared shapes] (or a pending Promise)
   const vehicles = new Map();     // "tv:1234" -> state
   const masks = new Map();        // "level/x_y" -> canvas (alpha = building) or "loading"/"missing"
+  let trees = null;               // trees.json, or null when there is no tree mask
+  const treeTiles = new Map();    // "x_y" -> Uint8Array (trunk distance per px) or "loading"/"missing"
+  const cut = document.createElement("canvas"); // one car at a time, with tree pixels erased
   let lastFetched = 0, lastError = null, elFallback = null, drawn = [];
 
   const tiled = () => viewer.world.getItemAt(0);
@@ -68,11 +75,20 @@ export function createTransitLayer(viewer, { meta, root, liveUrl, button = null,
       get(staticBase + "routes.json"), get(`${root}output/philly/transit/sprites.json`),
       get(overlayBase + "occlusion.json"), get(staticBase + "el_schedule.json")]);
     inv = invert2(sprites.ground_to_px);
+    // Optional: without it vehicles are simply drawn over trees
+    trees = await fetch(overlayBase + "trees/trees.json").then((r) => (r.ok ? r.json() : null)).catch(() => null);
+    if (trees) trees.have = new Set(trees.tiles);
     sheet = new Image();
     sheet.src = `${root}output/philly/transit/sprites.png`;
     await sheet.decode();
-    await routeShapes("L1");
+    // The El, and every Regional Rail line: a train may be on any line's track
+    await Promise.all(["L1", ...new Set(Object.values(index.rail_lines))].map(routeShapes));
+    // Shapes that start mid-network (six lines start at 30th Street) get the track
+    // that leads into them, so a train at the start keeps its trailing cars
+    const rail = railShapes();
+    for (const s of rail) extendBack(s, rail, inv);
   }
+  const railShapes = () => [...new Set(Object.values(index.rail_lines))].flatMap((r) => shapesNow(r) || []);
 
   function routeShapes(rid) {
     const have = shapes.get(rid);
@@ -116,6 +132,7 @@ export function createTransitLayer(viewer, { meta, root, liveUrl, button = null,
       const info = index.routes[rid];
       const kind = src === "rr" ? "rail" : info?.kind === "trolley" ? "trolley" : "bus";
       if (info?.kind === "el" || (info === undefined && src === "tv" && /^B\d/.test(route))) continue;
+      if (src === "rr" && isPlaceholder(lon, lat)) continue; // not a real position (see transit_core.js)
       const [x, y] = lonLatToPx(meta.fit, lon, lat);
       if (!pointInPolygon(index.city, x, y)) continue;
       const key = `${src}:${id}`;
@@ -126,8 +143,11 @@ export function createTransitLayer(viewer, { meta, root, liveUrl, button = null,
       // and the vehicle can now be snapped onto its route in place
       if (v && v.ts === ts && v.lon === lon && v.lat === lat && (v.motion.end.shape || !list)) continue;
       if (rid && !list) routeShapes(rid); // snapped from the next update on
-      const prevPos = v ? onRoute(motionAt(v.motion, (now - v.t0) / GLIDE_MS), v.motion) : null;
-      const snapped = list ? snap(list, x, y, prevPos) : null;
+      // Trains snap farther off the track and onto any line's track; a train is
+      // drawn only on track, never on a straight line (transit_core.js planMove)
+      const opts = kind === "rail" ? { maxPx: RAIL_SNAP_PX, others: railShapes(), track: true } : { maxPx: MAX_SNAP_PX };
+      const prevPos = v ? onRoute(motionAt(v.motion, (now - v.t0) / GLIDE_MS), v.motion, opts.maxPx) : null;
+      const snapped = list ? snap(list, x, y, prevPos, opts) : null;
       // Off-route vehicles face SEPTA's GPS heading (a compass bearing) or keep their last one
       const bearing = heading !== null ? heading : prevPos?.bearing ?? 0;
       const target = positionOf(snapped, x, y, bearing);
@@ -138,7 +158,7 @@ export function createTransitLayer(viewer, { meta, root, liveUrl, button = null,
         vehicles.set(key, v);
       } else {
         Object.assign(v, fields);
-        v.motion = reduceMotion ? { kind: "jump", end: target } : planMove(prevPos, target, inv);
+        v.motion = reduceMotion ? { kind: "jump", end: target } : planMove(prevPos, target, inv, opts);
         v.t0 = now;
       }
     }
@@ -200,6 +220,64 @@ export function createTransitLayer(viewer, { meta, root, liveUrl, button = null,
     return null;
   }
 
+  // --- trees ------------------------------------------------------------------------------
+  // Each tree pixel stores how far below it, in map px, its tree's trunk stands
+  // (0 = no tree). The map looks down at 45°, so a canopy hangs over whatever is
+  // just behind it on screen: a tree hides a car only when its trunk is at or
+  // below the car's ground point. A bus passing a tree on the far sidewalk stays
+  // in front of it; one under a near-side tree is hidden.
+  function treeTile(tx, ty) {
+    const key = `${tx}_${ty}`;
+    if (!trees.have.has(key)) return null;
+    const have = treeTiles.get(key);
+    if (have) return typeof have === "string" ? null : have;
+    treeTiles.set(key, "loading");
+    const img = new Image();
+    img.onload = () => {
+      const c = document.createElement("canvas");
+      c.width = img.width; c.height = img.height;
+      const g = c.getContext("2d", { willReadFrequently: true });
+      g.drawImage(img, 0, 0);
+      const d = g.getImageData(0, 0, c.width, c.height).data;
+      const out = new Uint8Array(c.width * c.height);
+      for (let i = 0; i < out.length; i++) out[i] = d[4 * i];
+      treeTiles.set(key, out);
+      if (treeTiles.size > TREE_CACHE) treeTiles.delete(treeTiles.keys().next().value);
+    };
+    img.onerror = () => treeTiles.set(key, "missing");
+    img.src = `${overlayBase}trees/trees_files/${trees.level}/${key}.png`;
+    return null;
+  }
+
+  // The car's sprite with the pixels trees hide erased, on `cut` (sprite px are
+  // map px), or null when no tree hides any of it
+  function treeCut(it) {
+    const s = it.sprite, size = trees.tile_size;
+    const x0 = Math.round(it.mx - s.ax), y0 = Math.round(it.my - s.ay);
+    let hidden = null;
+    for (let y = 0; y < s.h; y++) {
+      const py = y0 + y;
+      for (let x = 0; x < s.w; x++) {
+        const px = x0 + x;
+        const t = treeTile(Math.floor(px / size), Math.floor(py / size));
+        if (!t) continue;
+        const d = t[(py % size) * size + (px % size)];
+        if (hiddenByTree(d, py, it.my)) {
+          hidden = hidden || new Uint8ClampedArray(s.w * s.h * 4);
+          hidden[4 * (y * s.w + x) + 3] = 255;
+        }
+      }
+    }
+    if (!hidden) return null;
+    cut.width = s.w; cut.height = s.h;
+    const g = cut.getContext("2d", { willReadFrequently: true });
+    g.putImageData(new ImageData(hidden, s.w, s.h), 0, 0);
+    g.globalCompositeOperation = "source-out"; // the sprite, only where no tree is
+    g.drawImage(sheet, s.x, s.y, s.w, s.h, 0, 0, s.w, s.h);
+    g.globalCompositeOperation = "source-over";
+    return cut;
+  }
+
   function frame() {
     raf = on ? requestAnimationFrame(frame) : 0;
     const item = tiled();
@@ -222,14 +300,10 @@ export function createTransitLayer(viewer, { meta, root, liveUrl, button = null,
     const kinds = sprites.kinds;
     for (const v of vehicles.values()) {
       const pos = motionAt(v.motion, (now - v.t0) / GLIDE_MS);
-      if (pos.shape && v.kind !== "bus" && inTunnel(pos.shape, pos.along)) continue;
-      const kind = kinds[v.kind];
-      // On its route, a vehicle sits on the track like a real one (carLayout); off it, it
-      // faces its bearing. A train at the very start of its route shows the cars that fit.
-      let cars = pos.shape ? carLayout(pos.shape, pos.along, kind, v.cars, inv) : [];
-      if (!cars.length) cars = [{ x: pos.x, y: pos.y, sprite: pickByBearing(kind.sprites, pos.bearing ?? 0) }];
-      for (const c of cars) {
-        if (c.along !== undefined && pos.shape && inTunnel(pos.shape, c.along)) continue;
+      if (v.kind === "rail" && !pos.shape) continue; // a train off every track is a data error
+      // On its route, a vehicle sits on the track like a real one, each car hidden on
+      // its own in a tunnel (buses aren't: their routes cross tunneled rail)
+      for (const c of trackCars(pos, kinds[v.kind], v.cars, inv, v.kind !== "bus")) {
         const [sx, sy] = toScreen(c.x, c.y);
         if (visible(sx, sy)) items.push({ sx, sy, mx: c.x, my: c.y, sprite: c.sprite, color: v.color, v });
       }
@@ -261,8 +335,12 @@ export function createTransitLayer(viewer, { meta, root, liveUrl, button = null,
     g.clearRect(0, 0, scratch.width, scratch.height);
     g.setTransform(dpr, 0, 0, dpr, 0, 0);
     g.imageSmoothingEnabled = scale < 1;
-    for (const { sx, sy, sprite: s } of items) {
-      g.drawImage(sheet, s.x, s.y, s.w, s.h, sx - s.ax * scale, sy - s.ay * scale, s.w * scale, s.h * scale);
+    const treesNow = trees && scale >= TREE_MIN_SCALE;
+    for (const it of items) {
+      const { sx, sy, sprite: s } = it;
+      const c = treesNow ? treeCut(it) : null;
+      if (c) g.drawImage(c, 0, 0, s.w, s.h, sx - s.ax * scale, sy - s.ay * scale, s.w * scale, s.h * scale);
+      else g.drawImage(sheet, s.x, s.y, s.w, s.h, sx - s.ax * scale, sy - s.ay * scale, s.w * scale, s.h * scale);
     }
     // Erase behind buildings: the mask level closest to the screen scale
     const top = Math.max(...occlusion.levels);

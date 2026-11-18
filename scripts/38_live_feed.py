@@ -54,6 +54,17 @@ def _inside(lon, lat, b):
     return b[0] <= lon <= b[2] and b[1] <= lat <= b[3]
 
 
+# TrainView reports trains it can't locate at one fixed point in Suburban Station,
+# even when their current stop is miles away (observed, not documented; 7 of 24
+# trains in tests/fixtures/septa/trainview.json). Same test as worker/septa-live.js:
+# equal at 5 decimal places (about 1 m), rounding half up like JavaScript's Math.round
+PLACEHOLDER = (-75.1677778, 39.9538889)
+
+
+def _is_placeholder(lon, lat):
+    return all(math.floor(v * 1e5 + 0.5) == math.floor(p * 1e5 + 0.5) for v, p in zip((lon, lat), PLACEHOLDER))
+
+
 def normalize(transit_view, train_view, now_s, bounds=BOUNDS):
     vehicles = []
     for group in (transit_view or {}).get("routes", []):
@@ -71,7 +82,7 @@ def normalize(transit_view, train_view, now_s, bounds=BOUNDS):
                                  _js_number(ts if ts is not None else now_s), None])
     for t in train_view if isinstance(train_view, list) else []:
         lon, lat = _num(t.get("lon")), _num(t.get("lat"))
-        if lon is None or lat is None or not _inside(lon, lat, bounds):
+        if lon is None or lat is None or not _inside(lon, lat, bounds) or _is_placeholder(lon, lat):
             continue
         consist = len([c for c in str(t.get("consist") or "").split(",") if c.strip()])
         vehicles.append(["rr", str(t.get("line") or ""), str(t.get("trainno") or ""),

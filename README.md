@@ -85,15 +85,30 @@ SEPTA TransitViewAll + TrainView ──(every 15 s)── Cloudflare Worker (wor
                                                         │ writes
                                          R2: live/vehicles.json  (~31 KB, ~9 KB gzipped)
                                                         │ each viewer polls every 15 s
-viewer/transit.js ── snaps vehicles to route shapes, glides them along, hides them behind buildings
+viewer/transit.js ── snaps vehicles to route shapes, glides them along, hides them behind buildings and trees
 ```
 
 - **Why a Worker:** SEPTA's live feeds send no CORS header, so a browser on this domain can't read them. The Worker fetches them 4 times a minute and writes one small file to the map's bucket. SEPTA sees 4 requests a minute however many people are watching, and viewers read a cached static file.
 - **The El has no live data.** On Nov. 14, 2026, routes L1 (El) and B1–B3 (Broad Street Line) were missing from TransitView, GTFS-RT vehicle positions and GTFS-RT trip updates. El trains are placed from SEPTA's GTFS timetable and labeled "scheduled." The Broad Street Line is underground in the city and isn't drawn.
-- **Snapping:** each vehicle is snapped onto its route's GTFS shape (in map pixels). Between updates it glides there along the shape from where it is drawn, so the display runs about one update (15 s) behind. A vehicle prefers the shape it is already moving forward on, which tells a route's two directions apart. A vehicle more than 60 map px (about 18 m) from every shape (detours, garages) is drawn where SEPTA reports it. In a test on Nov. 14, 93% of bus and trolley reports were within 60 px of a shape.
+- **Snapping:** each vehicle is snapped onto its route's GTFS shape (in map pixels). Between updates it glides there along the shape from where it is drawn, so the display runs about one update (15 s) behind. A vehicle prefers the shape it is already moving forward on, which tells a route's two directions apart. A bus or trolley more than 60 map px (about 18 m) from every shape (detours, garages) is drawn where SEPTA reports it. In a test on Nov. 14, 93% of bus and trolley reports were within 60 px of a shape.
+- **Trains only on track:**
+  - A Regional Rail train snaps within 120 px (about 35 m), onto any line's track, preferring its own line.
+    - TrainView positions sat a median 29 px from the track, and a quarter were more than 51 px off (Nov. 18).
+    - Trains run through Center City onto other lines, and TrainView's line label can name the line a train runs next.
+  - When a train moves onto another shape on the same track, it keeps gliding along the track. A small step backward (GPS jitter) holds it still.
+  - A train that can't be put on any track isn't drawn: it is never shown as a straight-line move, which would collapse it into one car facing across the track.
+  - Six lines' shapes start at 30th Street. Each rail shape is extended back along the track that leads into it, so a train there keeps its trailing cars.
+- **TrainView's placeholder:** TrainView reports trains it can't locate at one fixed point in Suburban Station (39.9538889, -75.1677778), even when their current stop is miles away. The Worker, the local feed and the viewer all drop those reports. This was observed in the feed and isn't documented by SEPTA.
 - **Hiding behind buildings:** every frame was also rendered as a building mask (`06_render.py --mode mask`). `36_build_occlusion.py` joins those masks into a pyramid that lines up with v18. Vehicles run at street level, so wherever a building pixel covers a vehicle, the building is in front, and the viewer erases the vehicle there.
 - **Ground level:** elevated track (the El deck, rail viaducts) isn't modeled in the scene; it comes from the aerial photo draped flat. Vehicles sit at ground level, which is where the track is drawn.
 - **Tunnels:** OpenStreetMap rail tunnels, matched by railway type and direction, mark the stretches of each rail and trolley shape where vehicles aren't drawn.
+  - Each car is hidden on its own, so a train goes into a tunnel car by car.
+  - OSM maps the underground stations (Suburban, Jefferson, the El's and the trolley tunnel's) as stations, not tunnel. A gap of under 250 m between two tunnel stretches on the same shape is treated as tunnel.
+- **SEPTA shape glitches:** a few GTFS shapes go a few meters out and straight back over the same points (Wilmington/Newark shape 007201 near University City, and 11 bus and trolley routes). `35_build_transit.py` removes out-and-back stretches under 50 m.
+- **Hiding behind trees:** the trees on the map were drawn by the image model, so `40_build_tree_mask.py` finds them in the v18 tiles themselves. It uses the crowns' cool green and their dark outlines, which tell them from lawns and turf.
+  - Each canopy pixel stores how far below it its trunk stands. The map looks down at 45°, so a canopy hangs over whatever is just behind it on screen. A tree hides a vehicle only when its trunk is at or below the vehicle's ground point: a bus under a near-side street tree is hidden, and one passing a far-side tree stays in front.
+  - It's a color estimate. Some dark or yellow-green crowns are missed or only partly caught, and a few meadow patches beside woods are included.
+  - Trees are applied zoomed in (0.3 screen px per map px or closer).
 - **Sprites:** boxes at real size (approximate published dimensions), drawn with the map's own camera in 72 headings, every 5° (`37_vehicle_sprites.py`). Vehicles appear only zoomed in (0.12 screen px per map px or closer, where a bus is about 5 px long). There are no citywide dots: the layer is meant to be come across, not to drive the map.
 - **Laying vehicles on the track:** the camera foreshortens the ground (1 m is 2.4 to 3.4 map px depending on direction), so the viewer works in ground meters. Each car is its real length, with 1 m between cars, measured along the track. It rests on two trucks (axles, for a bus) on the route shape, faces along the line between them and is drawn at their midpoint. Cars stay uniform and bend through curves, and a bus turning a corner faces between the two streets. Vehicles glide at a steady ground speed. Off-route vehicles face SEPTA's GPS heading.
 - **Offline copy and other versions:** the layer is off. `?live=off` turns it off on the hosted site.
@@ -105,6 +120,7 @@ uv run python scripts/04r_fetch_transit.py        # SEPTA GTFS (pinned release) 
 uv run python scripts/35_build_transit.py         # -> output/philly/transit/v202611010/ (routes, shapes, El timetable, 1.3 MB)
 uv run python scripts/36_build_occlusion.py       # -> output/philly/overlays/v18/ (building masks, 37,039 tiles, 47 MB)
 uv run python scripts/37_vehicle_sprites.py       # -> output/philly/transit/sprites.png + sprites.json
+uv run python scripts/40_build_tree_mask.py       # -> output/philly/overlays/v18/trees/ (tree canopy and trunk depth, 11,770 tiles, 39 MB)
 ```
 
 **Work on it locally:** run `uv run python scripts/38_live_feed.py` next to the local web server. It writes `output/live/vehicles.json` every 15 s, and the viewer reads that file when it's served from `localhost` or `127.0.0.1` (or with `?live=local`).
@@ -303,9 +319,10 @@ uv run pytest      # projection, regions, LiDAR shaping, facades, water, bridges
 | `scripts/23_build_clean_trainset` | The clean-style training set (not used in the map) |
 | `scripts/26`–`28` | Freeze a version, make and check an offline copy |
 | `scripts/29_flyover` | Flyover video from finished tiles |
+| `scripts/39_transit_promo` | Promo video of the live transit layer, filmed from the viewer (needs the local server and `38_live_feed.py`); `--vertical` for TikTok/Reels |
 | `scripts/29_trace_vessels`–`33` | Ship and bridge review: vessel tracing, crops and contact sheets |
 | `scripts/34` | Favicon, touch icon and social preview cut from the tiles |
-| `scripts/04r`, `35`–`38` | Live transit layer: SEPTA timetable and tunnels, route shapes and El timetable, building-mask pyramid, vehicle sprites, local feed (see "Live transit layer") |
+| `scripts/04r`, `35`–`38`, `40` | Live transit layer: SEPTA timetable and tunnels, route shapes and El timetable, building-mask pyramid, vehicle sprites, local feed, tree mask (see "Live transit layer") |
 | `worker/` | The Cloudflare Worker that copies SEPTA's live feeds to the bucket |
 | `src/pixelphilly/` | The library: `projection.py` (the single source of truth for the camera), `lidar.py`, `facades.py`, `lawns.py`, `golf.py`, `vessels.py`, `bridges.py`, `water.py`/`waterpaint.py`, `regions.py`, `joint_sampler.py`, `region_runner.py`, `qa.py`/`qa_scan.py`, `viewer_geo.py` and others |
 | `render/` | The three.js page that draws scenes (three.js r169, vendored, MIT) |

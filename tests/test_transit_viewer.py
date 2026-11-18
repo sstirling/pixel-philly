@@ -21,7 +21,8 @@ def js():
         page.set_content("<html></html>")
         page.add_script_tag(content=src + "\nwindow.T = { prepareShape, pointAt, projectOnto, snap, inTunnel, positionOf,"
                                           " planMove, motionAt, nyClock, servicesFor, elTrains, pickByBearing, carLayout,"
-                                          " pointInPolygon, describe, invert2, pxToGround, bearingOf, mToPx, pxToM, lengthM, onRoute }; window.__ready = true;", type="module")
+                                          " pointInPolygon, describe, invert2, pxToGround, bearingOf, mToPx, pxToM, lengthM, onRoute,"
+                                          " RAIL_SNAP_PX, trackCars, isPlaceholder, extendBack, hiddenByTree }; window.__ready = true;", type="module")
         page.wait_for_function("window.__ready === true")
 
         def run(expr, arg=None):
@@ -230,3 +231,91 @@ def test_a_vehicle_caught_mid_move_onto_its_route_keeps_gliding_along_it(js):
              "const m2 = T.planMove(mid, T.positionOf({shape: s, along: p2}), inv); return m2.kind;",
              {"A": A, "pts": pts})
     assert got == "along"
+
+
+# --- train physics (Nov. 18: trains turned sideways, lost cars, misbehaved by the river) ---------
+# A replay of 33 live updates through the viewer found 60% of train frames drawn as a single
+# car on a straight-line move: trains only snapped to their own line, only within 60 px, and
+# any change of shape (or a step backward) fell back to a straight line.
+
+def test_rail_snaps_to_another_lines_track_but_prefers_its_own(js):
+    got = js(SHAPES + "const other = T.prepareShape({id: 'O', pts: [0, 40, 1000, 40], tunnels: []});"
+             # On another line's track only: snaps there
+             "const a = T.snap([east], 500, 42, null, {others: [other], maxPx: T.RAIL_SNAP_PX});"
+             # Shared corridor, own line 10 px off and the other 2 px off: own line wins
+             "const b = T.snap([east], 500, 10, null, {others: [T.prepareShape({id: 'O2', pts: [0, 12, 1000, 12], tunnels: []})],"
+             " maxPx: T.RAIL_SNAP_PX});"
+             "return [a && a.shape.id, b && b.shape.id];")
+    assert got == ["O", "E"]
+
+
+def test_rail_snaps_farther_off_the_track_than_a_bus(js):
+    got = js(SHAPES + "return [T.snap([east], 500, -90), T.snap([east], 500, -90, null, {maxPx: T.RAIL_SNAP_PX}) !== null];")
+    assert got == [None, True]
+
+
+def test_a_move_onto_an_overlapping_shape_glides_along_it(js):
+    # Two shapes on the same track (e.g. two lines through one corridor): the train moves
+    # from A to B and must glide on the track, not collapse into a straight-line move
+    got = js("const a = T.prepareShape({id: 'A', pts: [0, 0, 1000, 0], tunnels: []});"
+             "const b = T.prepareShape({id: 'B', pts: [200, 3, 1000, 3, 1000, 800], tunnels: []});"
+             "const from = T.positionOf({shape: a, along: 300}), to = T.positionOf({shape: b, along: 900});"
+             "const m = T.planMove(from, to, undefined, {maxPx: T.RAIL_SNAP_PX, track: true});"
+             "const mid = T.motionAt(m, 0.5); return [m.kind, m.shape && m.shape.id, !!mid.shape, Math.round(mid.y)];")
+    assert got[:3] == ["along", "B", True]
+
+
+def test_a_small_step_backward_holds_still(js):
+    got = js(SHAPES + "const from = T.positionOf({shape: east, along: 500}), to = T.positionOf({shape: east, along: 480});"
+             "const m = T.planMove(from, to, undefined, {track: true}); const p = T.motionAt(m, 0.5), e = T.motionAt(m, 1);"
+             "return [m.kind, Math.round(p.along), Math.round(e.along), !!e.shape];")
+    assert got == ["along", 500, 500, True]
+
+
+def test_a_train_is_never_drawn_on_a_straight_line(js):
+    # Off every track, or coming onto the track from off it: a jump, never a "line" move
+    got = js(SHAPES + "const on = T.positionOf({shape: east, along: 500});"
+             "return [T.planMove({x: 500, y: 300, bearing: 0}, on, undefined, {track: true}).kind,"
+             " T.planMove(on, {x: 520, y: 300, bearing: 0}, undefined, {track: true}).kind];")
+    assert got == ["jump", "jump"]
+
+
+def test_a_train_entering_a_tunnel_loses_only_the_cars_inside(js):
+    # Tunnel on E from 400 to 600 px; lead car's middle at 430 px: cars of 100 px. The lead
+    # is underground, the cars behind it are still outside and must stay drawn
+    got = js(SHAPES + "const kind = {length_m: 100, gap_m: 0, trucks: [0.15, 0.85], sprites: [{bearing: 90}]};"
+             "const cars = T.trackCars(T.positionOf({shape: east, along: 430}), kind, 3, undefined, true);"
+             "return cars.map((c) => Math.round(c.along));")
+    assert got == [330, 230]
+
+
+def test_placeholder_train_position_is_recognized(js):
+    got = js("return [T.isPlaceholder(-75.1677778, 39.9538889), T.isPlaceholder(-75.167778, 39.953889),"
+             " T.isPlaceholder(-75.1660, 39.9530)];")
+    assert got == [True, True, False]
+
+
+def test_a_train_at_the_start_of_its_shape_keeps_its_trailing_cars(js):
+    # Six lines' shapes start at 30th Street. A train there sat at its shape's very start
+    # and only the lead car was drawn. The shape is extended back along the track that
+    # leads into it (another line's shape through the same point, same direction).
+    got = js("const lead = T.prepareShape({id: 'IN', pts: [-500, 2, 600, 2], tunnels: [[300, 400]]});"
+             "const back = T.prepareShape({id: 'BACK', pts: [600, 0, -500, 0], tunnels: []});"  # opposite direction
+             "const s = T.prepareShape({id: 'S', pts: [0, 0, 1000, 0], tunnels: []});"
+             "T.extendBack(s, [back, lead]);"
+             "const kind = {length_m: 100, gap_m: 0, trucks: [0.15, 0.85], sprites: [{bearing: 90}]};"
+             "const all = T.trackCars(T.positionOf({shape: s, along: 50}), kind, 4);"
+             "const shown = T.trackCars(T.positionOf({shape: s, along: 50}), kind, 4, undefined, true);"
+             "return [s.ext && s.ext.from, all.map((c) => Math.round(c.x)), shown.length];")
+    assert got[0] == "IN"
+    assert got[1] == [50, -50, -150, -250]  # every car, the trailing ones on the track behind
+    assert got[2] == 3  # IN's tunnel (along 300-400, x -200 to -100) hides the car at -150
+
+
+def test_a_tree_hides_a_vehicle_behind_it_but_not_one_in_front(js):
+    # A canopy pixel at map y 100 whose trunk stands 20 px lower (y 120)
+    got = js("return [T.hiddenByTree(20, 100, 110), T.hiddenByTree(20, 100, 120), T.hiddenByTree(20, 100, 130),"
+             " T.hiddenByTree(0, 100, 50)];")
+    # Bus at y 110 (behind the trunk, under the canopy): hidden. Level with it: hidden.
+    # At y 130 (in front, nearer the viewer): drawn over the tree. No tree: drawn.
+    assert got == [True, True, False, False]

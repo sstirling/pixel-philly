@@ -81,3 +81,14 @@ def test_worker_bounds_match_the_map():
         pytest.skip("v18 tiles not on this machine")
     assert json.loads(meta.read_text())["fit"]["bounds_wgs84"] == live.BOUNDS
     assert str(live.BOUNDS) .replace(" ", "") in (REPO_ROOT / "worker" / "septa-live.js").read_text().replace(" ", "")
+
+
+def test_trainview_placeholder_position_is_dropped(outputs):
+    # TrainView reports trains it can't locate at one fixed point in Suburban Station
+    # (39.9538889, -75.1677778), even when their current stop is miles away (7 of 24
+    # trains in the fixture, e.g. 1715P at Holmesburg Jct). Observed, not documented.
+    fixture = json.loads((FIX / "trainview.json").read_text())
+    assert sum((t["lat"], t["lon"]) == ("39.9538889", "-75.1677778") for t in fixture) == 7
+    for out in outputs:
+        rr = [v for v in out["vehicles"] if v[0] == "rr"]
+        assert rr and not any(round(v[3], 5) == -75.16778 and round(v[4], 5) == 39.95389 for v in rr)
