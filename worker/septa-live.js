@@ -23,12 +23,23 @@
 // If a feed fails, the last good file is left in place; the viewer warns when
 // it's more than two minutes old.
 //
+// Weather: every 5 minutes it also writes live/weather.json from the National
+// Weather Service's latest observation at Philadelphia International Airport
+// (public domain, https://www.weather.gov/documentation/services-web-api):
+//   {"fetched", "observed" (unix s), "station", "kind": "snow"|"rain"|"mix"|null,
+//    "intensity": "light"|"moderate"|"heavy"|null, "text",
+//    "temp_c" (as reported, or null), "night" (true|false|null)}
+// The viewer animates rain or snow from it, and draws nothing otherwise, and
+// shows the temperature in a small pixel badge. A
+// weather failure never touches vehicles.json.
+//
 // Setup (Cloudflare dashboard, no build step): see README "Live transit layer".
 // Bindings: an R2 bucket binding named BUCKET -> pixel-philly. Trigger: cron "* * * * *".
 // The only export is the default handler object: Workers treat other named
 // exports of the main module as entrypoints, so helpers stay unexported.
 // Tests: tests/test_live_feed.py runs normalize() in Chromium against saved
-// SEPTA responses and checks it matches scripts/38_live_feed.py.
+// SEPTA responses and checks it matches scripts/38_live_feed.py;
+// tests/test_weather.py does the same for weatherKind() and weatherRecord().
 
 const TRANSITVIEW = "https://www3.septa.org/api/TransitViewAll/index.php";
 const TRAINVIEW = "https://www3.septa.org/api/TrainView/index.php";
@@ -38,6 +49,16 @@ const BOUNDS = [-75.28399636541867, 39.86480815125875, -74.94781362117637, 40.14
 const MAX_REPORT_AGE_S = 300; // a bus that hasn't reported in 5 minutes is likely out of service
 const POLLS_PER_RUN = 4;
 const POLL_INTERVAL_MS = 15000;
+const STATION = "KPHL";
+const WEATHER_URL = `https://api.weather.gov/stations/${STATION}/observations/latest`;
+const WEATHER_EVERY_MIN = 5; // KPHL reports hourly, plus special reports when the weather changes
+// METAR present-weather codes. Falling snow, snow grains and ice pellets are
+// drawn as snow; rain, drizzle and unknown precipitation as rain. Fog, mist,
+// haze and thunder without rain draw nothing.
+const SNOW = new Set(["SN", "SG", "PL"]);
+const RAIN = new Set(["RA", "DZ", "UP"]);
+const DESCRIPTORS = new Set(["MI", "PR", "BC", "DR", "BL", "SH", "TS", "FZ"]);
+const LEVELS = [null, "light", "moderate", "heavy"];
 
 const num = (v) => {
   const x = typeof v === "number" ? v : parseFloat(v);
@@ -82,6 +103,61 @@ function normalize(transitView, trainView, nowS, bounds = BOUNDS) {
   return { fetched: nowS, vehicles };
 }
 
+// [kind, intensity] for an NWS presentWeather list (same as weather_kind in
+// scripts/38_live_feed.py). Only rawString is read (e.g. "-SN", "+TSRA",
+// "RASN"). Weather in the vicinity (VC) and blowing or drifting snow (BL, DR:
+// lifted off the ground, not falling) don't count.
+function weatherKind(presentWeather) {
+  let snow = false, rain = false, level = 0;
+  for (const item of presentWeather || []) {
+    const raw = String((item && item.rawString) || "").trim().toUpperCase();
+    if (!raw || raw.startsWith("VC")) continue;
+    const lvl = raw[0] === "-" ? 1 : raw[0] === "+" ? 3 : 2;
+    let code = raw.replace(/^[+-]+/, "");
+    let lifted = false;
+    while (DESCRIPTORS.has(code.slice(0, 2))) {
+      lifted = lifted || code.startsWith("BL") || code.startsWith("DR");
+      code = code.slice(2);
+    }
+    if (lifted) continue;
+    const found = [];
+    for (let i = 0; i < code.length; i += 2) found.push(code.slice(i, i + 2));
+    const s = found.some((c) => SNOW.has(c)), r = found.some((c) => RAIN.has(c));
+    if (s || r) { snow = snow || s; rain = rain || r; level = Math.max(level, lvl); }
+  }
+  const kind = snow && rain ? "mix" : snow ? "snow" : rain ? "rain" : null;
+  return [kind, kind ? LEVELS[level] : null];
+}
+
+// What live/weather.json holds, from an NWS observation response
+function weatherRecord(observation, nowS) {
+  const props = (observation && observation.properties) || {};
+  const ts = props.timestamp ? Date.parse(props.timestamp) : NaN;
+  const [kind, intensity] = weatherKind(props.presentWeather);
+  return { fetched: nowS, observed: Number.isFinite(ts) ? Math.floor(ts / 1000) : null, station: STATION, kind, intensity,
+           text: String(props.textDescription || ""), temp_c: tempC(props.temperature), night: isNight(props.icon) };
+}
+
+// Degrees Celsius as NWS reports them, unrounded; null when missing or when
+// NWS quality control marks the value as failed ("X")
+function tempC(t) {
+  if (!t || typeof t.value !== "number" || !Number.isFinite(t.value) || t.qualityControl === "X") return null;
+  return t.value;
+}
+
+// NWS's icon URL says day or night (".../icons/land/night/skc?size=medium")
+function isNight(icon) {
+  const m = /\/land\/(day|night)\//.exec(String(icon || ""));
+  return m ? m[1] === "night" : null;
+}
+
+async function pollWeather(env) {
+  const obs = await getJson(WEATHER_URL);
+  await env.BUCKET.put("live/weather.json", JSON.stringify(weatherRecord(obs, Math.floor(Date.now() / 1000))), {
+    httpMetadata: { contentType: "application/json", cacheControl: "public, max-age=60" },
+  });
+}
+
 async function getJson(url) {
   const r = await fetch(url, { headers: { "User-Agent": "pixel-philly live map (https://github.com/sstirling/pixel-philly)" },
                                cf: { cacheTtl: 0 } });
@@ -100,6 +176,13 @@ async function pollOnce(env) {
 
 export default {
   async scheduled(event, env, ctx) {
+    if (new Date(event.scheduledTime).getUTCMinutes() % WEATHER_EVERY_MIN === 0) {
+      try {
+        await pollWeather(env);
+      } catch (err) {
+        console.log(`weather failed: ${err}`); // keep the last good file
+      }
+    }
     for (let i = 0; i < POLLS_PER_RUN; i++) {
       const started = Date.now();
       try {

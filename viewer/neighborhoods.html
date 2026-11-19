@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neighborhood prints · Pixel Philly</title>
+<meta name="description" content="Every Philadelphia neighborhood cut from Pixel Philly's pixel-art map, as free images for a print, desktop or phone wallpaper.">
+<link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Pixel Philly">
+<meta property="og:title" content="Pixel Philly neighborhood prints">
+<meta property="og:description" content="Every Philadelphia neighborhood cut from Pixel Philly's pixel-art map, for a print, desktop or phone wallpaper.">
+<meta property="og:url" content="https://pixelphilly.sstirling.com/viewer/neighborhoods.html">
+<meta property="og:image" content="https://pixelphilly.sstirling.com/viewer/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Center City skyline drawn as isometric pixel art, from Logan Square to the Comcast towers.">
+<meta name="twitter:card" content="summary_large_image">
+<!-- The about page's tokens and type (about.css), plus the card grid -->
+<link rel="stylesheet" href="about.css">
+<link rel="stylesheet" href="neighborhoods.css">
+<!--
+  Neighborhood prints page. The images and index.json are made by
+  scripts/41_neighborhood_prints.py into output/philly/prints/v18/ and
+  hosted next to the map. Terms are Stephen's (Nov. 19, 2026): personal use,
+  not for sale. Boundaries: OpenDataPhilly, Robert Cheetham, CC BY 4.0.
+-->
+</head>
+<body>
+<nav class="topbar" aria-label="Site">
+  <div class="inner">
+    <a href="./">&larr; Back to the map</a>
+    <a href="about.html">About</a>
+    <span class="name">Pixel Philly</span>
+  </div>
+</nav>
+
+<main class="page wide">
+  <header>
+    <h1>Neighborhood prints</h1>
+    <p class="lede">Every Philadelphia neighborhood, cut from Pixel Philly's map. Download one to print for your wall or use as a desktop or phone wallpaper.</p>
+  </header>
+
+  <section class="terms" aria-label="How you may use these images">
+    <p><strong>Free for personal use.</strong> Print one for your home, or use it as your desktop or phone wallpaper. Please don't sell the images or use them for commercial purposes. These are imperfect. They are visual representations of these neighborhoods circa 2022-24 based on public data, processed by Claude. These images should be used for entertainment purposes only.</p>
+    <p>Each comes in three sizes:</p>
+    <ul>
+      <li><strong>Print</strong> is the full-resolution cut-out, 1 map pixel per image pixel. At 300 dots per inch, 90 of the 159 print at least 18 inches on their long side; the smallest, Woodland Terrace, prints about 5.5 inches.</li>
+      <li><strong>Desktop</strong> is the whole neighborhood at 5,120 by 2,880 pixels, which also suits 4K screens.</li>
+      <li><strong>Phone</strong> is a crop from the middle of the neighborhood that fills a 1,290 by 2,796 screen.</li>
+    </ul>
+  </section>
+
+  <div class="finder">
+    <label for="filter">Find a neighborhood</label>
+    <input id="filter" type="search" autocomplete="off" placeholder="e.g. Fishtown">
+    <p id="count" class="count" aria-live="polite"></p>
+  </div>
+
+  <ul id="grid" class="grid"></ul>
+
+  <!-- Larger preview: a thumbnail opens it; Escape, the close button or a
+       click outside the picture closes it (neighborhoods.js) -->
+  <dialog id="preview" class="preview" aria-labelledby="preview-title">
+    <button type="button" class="close" id="preview-close" aria-label="Close preview">&times;</button>
+    <img id="preview-img" alt="">
+    <div class="caption">
+      <h2 id="preview-title"></h2>
+      <ul class="dl" id="preview-dl"></ul>
+    </div>
+  </dialog>
+  <noscript><p>This list needs JavaScript. The images are also listed in <a href="../output/philly/prints/v18/index.json">index.json</a>.</p></noscript>
+
+  <p class="fine">The map is an AI-generated illustration made from public data. It's imperfect and incomplete, so don't use it for navigation or measurements. Neighborhood boundaries are informal, compiled from public maps and user feedback; they come from <a href="https://opendataphilly.org/datasets/philadelphia-neighborhoods/">OpenDataPhilly's Philadelphia neighborhoods</a>, by Robert Cheetham, licensed <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Buildings and trees along a boundary go to the neighborhood where they stand. Areas are measured from the boundaries. More on the map's sources is on the <a href="about.html">about page</a>.</p>
+</main>
+<script type="module" src="neighborhoods.js"></script>
+</body>
+</html>

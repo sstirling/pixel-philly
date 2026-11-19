@@ -44,6 +44,11 @@ html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg);
   padding: 8px 12px; backdrop-filter: blur(6px); max-width: 760px; }
 .title { display: flex; align-items: center; gap: 10px; }
 h1 { font-size: 1.05rem; margin: 0; letter-spacing: 0.01em; }
+/* Small link to the prints page, next to the title (Stephen, Nov. 19: "out front somewhere small") */
+.pill { font-size: 0.78rem; font-weight: 600; color: var(--accent); text-decoration: none; white-space: nowrap;
+  border: 1px solid var(--line); border-radius: 999px; padding: 3px 9px; }
+.pill:hover { border-color: var(--accent); }
+.pill:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .badge { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;
   background: var(--badge-bg); color: var(--badge-fg); border-radius: 4px; padding: 2px 6px; white-space: nowrap; }
 .search { display: flex; gap: 6px; flex: 1 1 240px; min-width: 0; }
@@ -83,6 +88,29 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 
 /* Live transit layer (transit.js): drawn over the map, never catches the pointer */
 .transit-layer { position: absolute; inset: 0; pointer-events: none; }
+/* Above the map and vehicles, under the controls; empty when it isn't raining or snowing */
+.weather-layer { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+#weather-status:empty { display: none; }
+/* Temperature badge (weather.js renderTemp): top-right corner, clear of the bar,
+   which stops at 760px. Drawn as SVG pixels, so it stays crisp at any zoom. */
+.temp { position: fixed; top: 12px; right: 12px; z-index: 10; margin: 0; display: flex; align-items: center; gap: 8px;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px;
+  backdrop-filter: blur(6px); color: var(--fg); }
+.temp[hidden] { display: none; }
+.temp svg { display: block; }
+.temp-stack { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+.temp-where { color: var(--muted); }
+/* Narrower windows (phones): the bar runs edge to edge, so viewer.js moves the
+   badge into the bar's title row, without its own box and at two-thirds size,
+   so nothing new covers the map (Stephen, Nov. 19, option C). It wraps under
+   the title if the row is too narrow. */
+@media (max-width: 880px) {
+  .title { flex: 1 1 100%; flex-wrap: wrap; }
+  .title .temp { position: static; margin-left: auto; gap: 6px; padding: 0; background: none; border: 0;
+    border-radius: 0; backdrop-filter: none;
+    --temp-icon-px: 2px; --temp-text-px: 3px; }
+  .title .temp-where { display: none; }
+}
 .transit-tip { position: absolute; transform: translate(-50%, calc(-100% - 14px)); max-width: 260px;
   padding: 5px 9px; border-radius: 6px; background: var(--panel); color: var(--fg); border: 1px solid var(--line);
   font-size: 0.82rem; line-height: 1.3; pointer-events: none; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18); z-index: 5; }

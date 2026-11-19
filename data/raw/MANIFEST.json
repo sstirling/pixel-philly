@@ -12285,5 +12285,15 @@
     "license": "Open Database License (ODbL) 1.0, https://opendatacommons.org/licenses/odbl/",
     "credit": "\u00a9 OpenStreetMap contributors",
     "fetched_at": "2026-11-14T18:14:24+00:00"
+  },
+  "philadelphia-neighborhoods.geojson": {
+    "description": "Philadelphia neighborhoods (159 polygons; NAME, LISTNAME, MAPNAME), OpenDataPhilly. Added to data/raw by Stephen on Nov. 18, 2026, downloaded from the dataset page",
+    "query_url": "https://github.com/opendataphilly/odp-data-storage/blob/master/philadelphia-neighborhoods/philadelphia-neighborhoods.geojson",
+    "dataset_page": "https://opendataphilly.org/datasets/philadelphia-neighborhoods/",
+    "bytes": 714923,
+    "sha256": "69c189df692a95d21385e13515c514bebd9e2d3c32ef8a265159d3be7f3f6bab",
+    "license": "CC BY 4.0, https://creativecommons.org/licenses/by/4.0/",
+    "credit": "Robert Cheetham, OpenDataPhilly (the dataset page asks users to attribute the data to him)",
+    "fetched_at": "2026-11-18"
   }
 }

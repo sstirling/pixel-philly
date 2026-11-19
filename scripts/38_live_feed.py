@@ -9,13 +9,20 @@ http://localhost:8000/viewer/?live=local
 normalize() must give exactly what the Worker's normalize() gives;
 tests/test_live_feed.py checks both against saved SEPTA responses.
 
+Every 5 minutes it also writes output/live/weather.json from the National
+Weather Service's latest observation at Philadelphia International Airport,
+as the Worker does; weather_kind() and weather_record() match the Worker's
+(tests/test_weather.py).
+
 Usage: uv run python scripts/38_live_feed.py [--once] [--save-fixture DIR]
 """
 
 import argparse
 import json
 import math
+import re
 import time
+from datetime import datetime
 
 from pixelphilly.projection import REPO_ROOT
 from pixelphilly.sources import session
@@ -25,6 +32,19 @@ TRAINVIEW = "https://www3.septa.org/api/TrainView/index.php"
 BOUNDS = [-75.28399636541867, 39.86480815125875, -74.94781362117637, 40.141246179090835]
 MAX_REPORT_AGE_S = 300
 OUT = REPO_ROOT / "output" / "live" / "vehicles.json"
+# Weather: NWS observations are public domain (api.weather.gov); KPHL reports
+# hourly, plus special reports when the weather changes
+STATION = "KPHL"
+WEATHER_URL = f"https://api.weather.gov/stations/{STATION}/observations/latest"
+WEATHER_EVERY_S = 300
+WEATHER_OUT = REPO_ROOT / "output" / "live" / "weather.json"
+# METAR present-weather codes. Falling snow, snow grains and ice pellets are
+# drawn as snow; rain, drizzle and unknown precipitation as rain. Fog, mist,
+# haze and thunder without rain draw nothing (Stephen: nothing when it's nice)
+SNOW = {"SN", "SG", "PL"}
+RAIN = {"RA", "DZ", "UP"}
+DESCRIPTORS = {"MI", "PR", "BC", "DR", "BL", "SH", "TS", "FZ"}
+LEVELS = [None, "light", "moderate", "heavy"]
 
 
 def _num(v):
@@ -92,6 +112,70 @@ def normalize(transit_view, train_view, now_s, bounds=BOUNDS):
     return {"fetched": now_s, "vehicles": vehicles}
 
 
+def weather_kind(present_weather):
+    """(kind, intensity) for an NWS presentWeather list: kind "snow", "rain",
+    "mix" or None; intensity "light", "moderate", "heavy" or None. Only
+    rawString is read (e.g. "-SN", "+TSRA", "RASN"). Weather in the vicinity
+    (VC) and blowing or drifting snow (BL, DR: snow lifted off the ground, not
+    falling) don't count."""
+    snow = rain = False
+    level = 0
+    for item in present_weather or []:
+        raw = str((item or {}).get("rawString") or "").strip().upper()
+        if not raw or raw.startswith("VC"):
+            continue
+        lvl = 1 if raw[0] == "-" else 3 if raw[0] == "+" else 2
+        code = raw.lstrip("+-")
+        lifted = False
+        while code[:2] in DESCRIPTORS:
+            lifted = lifted or code[:2] in ("BL", "DR")
+            code = code[2:]
+        if lifted:
+            continue
+        found = {code[i:i + 2] for i in range(0, len(code), 2)}
+        s, r = bool(found & SNOW), bool(found & RAIN)
+        if s or r:
+            snow, rain, level = snow or s, rain or r, max(level, lvl)
+    kind = "mix" if snow and rain else "snow" if snow else "rain" if rain else None
+    return kind, LEVELS[level] if kind else None
+
+
+def weather_record(observation, now_s):
+    """What live/weather.json holds, from an NWS observation response."""
+    props = (observation or {}).get("properties") or {}
+    ts = props.get("timestamp")
+    observed = int(datetime.fromisoformat(ts).timestamp()) if ts else None
+    kind, intensity = weather_kind(props.get("presentWeather"))
+    return {"fetched": now_s, "observed": observed, "station": STATION, "kind": kind, "intensity": intensity,
+            "text": str(props.get("textDescription") or ""), "temp_c": temp_c(props.get("temperature")),
+            "night": is_night(props.get("icon"))}
+
+
+def temp_c(t):
+    """Degrees Celsius as NWS reports them, unrounded; None when missing or
+    when NWS quality control marks the value as failed ("X")."""
+    if not isinstance(t, dict) or t.get("qualityControl") == "X":
+        return None
+    v = t.get("value")
+    return v if isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v) else None
+
+
+def is_night(icon):
+    """NWS's icon URL says day or night (".../icons/land/night/skc?size=medium")."""
+    m = re.search(r"/land/(day|night)/", str(icon or ""))
+    return m.group(1) == "night" if m else None
+
+
+def poll_weather():
+    obs = session.get(WEATHER_URL, timeout=30, headers={"Accept": "application/geo+json"}).json()
+    out = weather_record(obs, int(time.time()))
+    WEATHER_OUT.parent.mkdir(parents=True, exist_ok=True)
+    tmp = WEATHER_OUT.with_suffix(".tmp")
+    tmp.write_text(json.dumps(out, separators=(",", ":")))
+    tmp.replace(WEATHER_OUT)
+    return out
+
+
 def poll(save_fixture=None):
     tv = session.get(TRANSITVIEW, timeout=30).json()
     rr = session.get(TRAINVIEW, timeout=30).json()
@@ -114,8 +198,16 @@ def main():
     ap.add_argument("--once", action="store_true")
     ap.add_argument("--save-fixture", type=lambda p: REPO_ROOT / p)
     args = ap.parse_args()
+    last_weather = 0.0
     while True:
         started = time.time()
+        if started - last_weather >= WEATHER_EVERY_S:
+            last_weather = started
+            try:  # separate from SEPTA: one failing never stops the other
+                w = poll_weather()
+                print(f"{time.strftime('%H:%M:%S')} weather: {w['text'] or 'no description'} -> {w['kind']}", flush=True)
+            except Exception as e:
+                print(f"{time.strftime('%H:%M:%S')} weather failed: {e}", flush=True)
         try:
             out = poll(args.save_fixture)
             kinds = {}

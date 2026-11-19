@@ -25,6 +25,7 @@
 <header class="bar">
   <div class="title">
     <h1>Pixel Philly</h1>
+    <a class="pill" href="neighborhoods.html">Neighborhood prints</a>
   </div>
   <form class="search" role="search" id="search">
     <label class="visually-hidden" for="q">Search an address</label>
@@ -33,7 +34,11 @@
   </form>
   <p class="status" id="status" role="status" aria-live="polite"></p>
   <p class="status" id="transit-status" aria-live="polite"></p>
+  <p class="status" id="weather-status" aria-live="polite"></p>
 </header>
+
+<!-- Current temperature at the airport (weather.js renderTemp); hidden until there's a fresh reading -->
+<p class="temp" id="temp" hidden></p>
 
 <main id="map" role="img" aria-label="Isometric pixel-art map of Philadelphia. Use the arrow keys or drag to pan, plus and minus or the buttons to zoom."></main>
 
@@ -47,7 +52,7 @@
   <details>
     <summary id="credits-summary">AI-generated prototype · credits</summary>
     <p id="credits"></p>
-    <p><a href="about.html">About this map and full sources</a></p>
+    <p><a href="about.html">About this map and full sources</a> · <a href="neighborhoods.html">Neighborhood prints</a></p>
   </details>
 </footer>
 

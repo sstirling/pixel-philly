@@ -1,0 +1,21 @@
+{
+  "about": "SYNTHETIC test inputs, not observations: NWS observation presentWeather lists (api.weather.gov, METAR weather codes in rawString) and the animation each should give. Written by hand for tests/test_weather.py on Nov. 18, 2026.",
+  "cases": [
+    {"raw": [], "kind": null, "intensity": null},
+    {"raw": ["-SN"], "kind": "snow", "intensity": "light"},
+    {"raw": ["SN"], "kind": "snow", "intensity": "moderate"},
+    {"raw": ["+RA"], "kind": "rain", "intensity": "heavy"},
+    {"raw": ["RASN"], "kind": "mix", "intensity": "moderate"},
+    {"raw": ["-RA", "SN"], "kind": "mix", "intensity": "moderate"},
+    {"raw": ["-FZDZ"], "kind": "rain", "intensity": "light"},
+    {"raw": ["+TSRA", "BR"], "kind": "rain", "intensity": "heavy"},
+    {"raw": ["-SHSN"], "kind": "snow", "intensity": "light"},
+    {"raw": ["PL"], "kind": "snow", "intensity": "moderate"},
+    {"raw": ["-UP"], "kind": "rain", "intensity": "light"},
+    {"raw": ["BR"], "kind": null, "intensity": null},
+    {"raw": ["FG", "HZ"], "kind": null, "intensity": null},
+    {"raw": ["TS"], "kind": null, "intensity": null},
+    {"raw": ["VCSH"], "kind": null, "intensity": null},
+    {"raw": ["BLSN"], "kind": null, "intensity": null}
+  ]
+}

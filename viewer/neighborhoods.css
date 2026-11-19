@@ -1,0 +1,59 @@
+/* Neighborhood prints page (neighborhoods.html), on top of about.css: the same
+   tokens, type and dark mode, with a wider page for the card grid. */
+.page.wide { max-width: 1120px; }
+.topbar .inner { max-width: 1120px; }
+.topbar .name { margin-left: auto; }
+
+.terms { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px 4px;
+  margin: 18px 0 8px; font: 0.95rem/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
+.terms ul { margin-bottom: 12px; }
+
+.finder { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 24px 0 14px;
+  font: 0.95rem/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; }
+.finder label { font-weight: 600; }
+.finder input { font: inherit; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px;
+  background: var(--card); color: var(--fg); min-width: 0; flex: 1 1 220px; max-width: 360px; }
+.finder input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.count { margin: 0; color: var(--muted); flex-basis: 100%; }
+
+.grid { list-style: none; padding: 0; margin: 0; display: grid; gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+.grid li { margin: 0; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; height: 100%;
+  display: flex; flex-direction: column; font: 0.9rem/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; }
+/* The map's own backdrop behind the cut-out, so it reads the same in dark mode */
+.card .thumb { background: #ccd6e3; aspect-ratio: 4 / 3; overflow: hidden; display: block; width: 100%;
+  padding: 0; border: 0; cursor: zoom-in; }
+.card .thumb:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; }
+/* Every thumbnail fits the same 4:3 box, whatever the neighborhood's shape */
+.card .thumb img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.card .body { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.card h2 { font: 700 1rem/1.25 system-ui, -apple-system, "Segoe UI", sans-serif; margin: 0; padding: 0; border: 0; }
+.card .area { color: var(--muted); font-size: 0.82rem; margin: 0; }
+.card .dl { list-style: none; padding: 0; margin: auto 0 0; display: flex; flex-direction: column; gap: 4px; }
+.card .dl li { margin: 0; }
+.card .dl a { display: flex; justify-content: space-between; gap: 8px; padding: 5px 8px; border: 1px solid var(--line);
+  border-radius: 6px; text-decoration: none; }
+.card .dl a:hover { border-color: var(--accent); }
+.card .dl .size { color: var(--muted); font-size: 0.8rem; white-space: nowrap; }
+
+@media (max-width: 480px) {
+  .grid { grid-template-columns: 1fr; }
+}
+
+/* Larger preview (a modal <dialog>) */
+.preview { border: 1px solid var(--line); border-radius: 12px; padding: 0; background: var(--card); color: var(--fg);
+  width: min(1200px, calc(100vw - 32px)); max-height: calc(100vh - 32px); overflow: auto;
+  font: 0.9rem/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; }
+.preview::backdrop { background: rgba(10, 12, 16, 0.72); }
+.preview img { display: block; width: 100%; height: auto; background: #ccd6e3; cursor: zoom-out; }
+.preview .caption { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 12px 16px 14px; }
+.preview h2 { font: 700 1.1rem/1.25 system-ui, -apple-system, "Segoe UI", sans-serif; margin: 0; padding: 0; border: 0; flex: 1 1 200px; }
+.preview .dl { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; }
+.preview .dl li { margin: 0; }
+.preview .dl a { display: inline-flex; gap: 8px; padding: 5px 9px; border: 1px solid var(--line); border-radius: 6px; text-decoration: none; }
+.preview .dl a:hover { border-color: var(--accent); }
+.preview .dl .size { color: var(--muted); font-size: 0.8rem; white-space: nowrap; }
+.preview .close { position: absolute; top: 8px; right: 8px; width: 36px; height: 36px; border-radius: 50%;
+  border: 1px solid var(--line); background: var(--card); color: var(--fg); font-size: 1.4rem; line-height: 1; cursor: pointer; }
+.preview .close:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }

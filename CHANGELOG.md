@@ -1,5 +1,77 @@
 # Changelog
 
+## 2026-11-19: temperature badge
+
+Stephen asked for the temperature at Philadelphia International Airport in the map's top-right corner, pixelated if possible.
+
+- **Data:** `live/weather.json` gains `temp_c` (NWS's value, unrounded; null when missing or failed quality control) and `night` (from NWS's icon URL), in both the Worker (`worker/septa-live.js`) and the local feed (`scripts/38_live_feed.py`). The Worker needs a re-paste for the hosted badge to appear; until then the hosted file has no `temp_c` and the badge stays hidden.
+- **Viewer:** `viewer/weather.js` draws the badge as SVG pixels: a 9 x 9 icon (sun, moon, cloud, rain, snow or fog), the temperature in a hand-made 3 x 5 bitmap font in whole degrees Fahrenheit, and "PHL". It's hidden when there's no fresh reading (2 hours, as for the animation). Top-right on wide screens. Hover text and screen-reader text give the full reading.
+- **`?weather=snow` and friends** now still poll for the real temperature; only the animation is forced.
+- **Tests:** `tests/test_weather.py` checks the new fields match between Worker and Python (including quality-control rejection and day/night), the icon choice, Fahrenheit rounding (-20.6 C to -5 F), staleness and that the font has every glyph the badge draws. 25 tests pass.
+- **Checked** in Chromium in light and dark mode for all six icons, at 1,440 px and 375 px wide.
+- **Phones (follow-up):** Stephen found the badge cluttered on phones, where it sat in its own box above the zoom buttons. Of three mockups (above the credits, inside the credits bar, inside the top bar), he chose the top bar. Below 880 px the badge now moves into the bar's title row, with no box, no "PHL" and pixels at two-thirds size. It's on the title line at 375 px and wraps to its own line at 320 px; no sideways scrolling at either. Resizing across 880 px moves it back.
+
+## 2026-11-19: neighborhood prints page
+
+Stephen asked for a separate page with high-quality images of each neighborhood, for prints or desktop wallpaper. He chose a shape cut-out with a small name and address, a phone crop that fills the screen, and these terms: personal use, not for sale. The plan was approved in plan mode.
+
+- **Boundaries:** `data/raw/philadelphia-neighborhoods.geojson`, 159 neighborhoods from OpenDataPhilly, CC BY 4.0, credit Robert Cheetham. It's recorded in `MANIFEST.json` and `data/README.md`.
+  - An earlier file, `phila_nabes.json`, was added by mistake. It's kept but unused, and the pilot made from it was deleted.
+  - The file's own `Shape_Area` is out of date by more than 2% for 9 neighborhoods (e.g. Stadium District, 1.66 listed vs. 2.54 sq mi measured), and null for 1. Areas are measured from the geometry.
+- **`src/pixelphilly/neighborhoods.py` and `scripts/41_neighborhood_prints.py`** (written by a subagent; the phone crop is mine): 14 tests in `tests/test_neighborhoods.py`.
+- **The cut-out:** the ground inside the boundary.
+  - **Buildings:** whole, by the center of their footprint, from the render scenes in `data/processed`, drawn back to front.
+  - **Trees:** by their trunk, capped at 36 px, with a 6 px majority vote.
+  - **Why not columns:** the first rule, assigning building pixels by the base of their column, pulled slivers of Market Street towers into Rittenhouse wherever a low roof touched a tower behind it. That rule is now only the fallback. Plain trunk depth striped Chestnut Hill's wooded edge.
+  - **Checked** at full size along Market and Broad streets and Chestnut Hill's south edge.
+- **Phone:** the whole shape came out small on a tall screen (Fishtown filled about a third of it), so the phone image is a crop of the full map that fills the screen. It's the largest phone-shaped rectangle inside the neighborhood's bounds, centered on its center of mass and never upscaled (`phone_rect`, tested).
+- **Build:** 159 neighborhoods in 24.6 minutes, 2.03 GB in all, peak memory 5.5 GB.
+  - No neighborhood is cut by the map edge or at the top of its work window, and all used the scene footprints.
+  - At 300 dpi, 90 prints are at least 18 inches on the long side, 27 at least 36 inches. The smallest, Woodland Terrace, is 1,539 x 1,649 px.
+- **`viewer/neighborhoods.html`, `.css`, `.js`:**
+  - one card per neighborhood (thumbnail, area in AP style, three downloads with pixel size and MB), A–Z, with a filter;
+  - the about page's tokens and dark mode; no sideways scrolling at 320 px;
+  - all 636 links checked locally.
+  - Linked from the map's credits and the about page, which also lists the boundaries among its sources.
+- **Follow-ups (Stephen, Nov. 19):**
+  - A small "Neighborhood prints" link now sits next to the title in the map's top bar.
+  - Clicking a thumbnail opens a larger preview in a modal dialog, with the downloads. Escape, the close button, a click on the picture or a click outside closes it, and focus returns to the thumbnail.
+  - The preview is a new `preview.webp`: 1,920 x 1,080, from the desktop image, 29.2 MB for all 159. Make it alone with `--previews`.
+  - The "AI-generated illustration" flag was dropped from the page's top.
+
+## 2026-11-19: v17 taken off the hosted bucket
+
+- **Why:** the R2 bucket held 9.4 GB of its free 10 GB: v18 and v17 at 4.66 GB each. The neighborhood prints will add an estimated 1.9 GB. Stephen chose to take v17 off the bucket rather than pay about 2 cents a month or shrink the prints.
+- **Checked first:** `rclone check` showed all 37,684 hosted v17 files match the local frozen copy. The other 37,683 local files are the photo layer, which was never hosted. Then `rclone purge` removed `output/philly/tiles/v17` from the bucket. The bucket is now 4.75 GB. Local v17 is unchanged (75,367 files) and can be uploaded again any time.
+- **Viewer:** a version that isn't served (`?v=v17` on the hosted site, or any version that doesn't exist) now opens the current map with a note in the status line, "That map version (philly v17) isn't available here, so this is the current map," instead of a blank page. Locally every version still opens.
+
+## 2026-11-18: live weather
+
+Stephen asked for live weather: "nothing spectacular," an animation when it's raining or snowing, and nothing when it's nice. The plan was approved in plan mode, and he approved the look from preview clips.
+
+- **Data:**
+  - The National Weather Service's latest observation at Philadelphia International Airport (KPHL), public domain.
+  - The API sends `Access-Control-Allow-Origin: *`, but browsers can't send the User-Agent the service asks clients for, and every visitor would add requests. So the transit Worker fetches it every 5 minutes and writes `live/weather.json`, the way it already does for SEPTA. Stephen chose this.
+  - `scripts/38_live_feed.py` does the same locally.
+- **Which weather counts:** `weatherKind()` in the Worker and `weather_kind()` in Python read METAR codes.
+  - Snow, snow grains and ice pellets are snow. Rain, drizzle and unknown precipitation are rain, including showers, thunderstorms and freezing rain. Both together are mix.
+  - Fog, mist, haze, thunder alone, vicinity weather and blowing snow draw nothing.
+  - 19 tests run on synthetic codes (`tests/fixtures/weather/present_weather_cases.json`, labeled synthetic). Python and the Worker agree.
+- **`viewer/weather.js`:**
+  - one canvas over the map, in screen space;
+  - 1 px pixel-art rain streaks and 3–4 px snow squares with a dark edge, plus a faint wash;
+  - no loop when it's dry, when the tab is hidden or with reduced motion; no lightning;
+  - ignores observations more than 2 hours old;
+  - `?weather=snow|rain|mix` (with `&intensity=light|heavy`) for demos, `?weather=off`.
+  - The status line names the weather while it lasts, and the credits and about page add the National Weather Service.
+- **First look, then fixed:** 60–300 particles at 2 px were almost invisible on the busy map. It's now 220, 450 and 850 per 1920 x 1080 window, with bigger flakes, brighter streaks and the wash.
+- **Checks:**
+  - 60 fps in every mode at 1280 x 800;
+  - no pixels drawn with today's clear observation;
+  - nothing drawn with reduced motion;
+  - preview clips in `output/weather_preview/` (git-ignored).
+- **Needs the Worker re-pasted** (README "Live weather"). Until then the viewer finds no weather file and draws nothing.
+
 ## 2026-11-18: train physics fixes and a tree mask
 
 Stephen reported trains turning sideways on the track, losing their trailing cars, and odd behavior where they enter Center City by the river. He also asked for a tree mask, since every vehicle was drawn over tree canopy. The plan was approved in plan mode.

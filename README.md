@@ -13,6 +13,8 @@ The idea comes from [tiny.london](https://tiny.london) and [isometric.nyc](https
 - [Scale and cost](#scale-and-cost)
 - [Map versions](#map-versions)
 - [Live transit layer](#live-transit-layer)
+- [Live weather](#live-weather)
+- [Neighborhood prints](#neighborhood-prints)
 - [Rebuild the map](#rebuild-the-map)
 - [Repository layout](#repository-layout)
 - [Design decisions and assumptions](#design-decisions-and-assumptions)
@@ -69,7 +71,7 @@ The idea comes from [tiny.london](https://tiny.london) and [isometric.nyc](https
 | Version | Frozen | What it is | Open with |
 |---|---|---|---|
 | **v18** | Nov. 9, 2026 | **Current.** v17 plus the Ben Franklin and Walt Whitman bridges modeled in 3D. Viewer default and hosted | `?v=v18` (default) |
-| v17 | Nov. 9, 2026 | v14 plus ship fixes (v15) and bridge-deck fixes (v16, v17). Also hosted | `?v=v17` |
+| v17 | Nov. 9, 2026 | v14 plus ship fixes (v15) and bridge-deck fixes (v16, v17). Local only since Nov. 19, 2026 (taken off the hosted bucket to stay in R2's free 10 GB) | `?v=v17` |
 | v14 | Nov. 4, 2026 | The first full-city map. Local only, plus an offline copy | `?v=v14` |
 
 Each frozen version has a manifest, `output/philly/FROZEN_<version>.json`. Check one with `uv run python scripts/26_freeze_map.py --name philly --version v18 --verify`. Don't rebuild or edit a frozen version; **the next version is v19.** A change for v19 usually means: fix the scene data or a reviewed config list, rerender the affected region, redraw only the frames that changed ("Fix passes" below), merge and repaint, then build v19. Versions before v14 were working builds; the CHANGELOG describes each.
@@ -145,6 +147,54 @@ rclone copy viewer r2:pixel-philly/viewer --s3-no-check-bucket --header-upload "
 6. **Caching:** sstirling.com → **Caching → Cache Rules → Create rule:** custom filter, hostname equals `pixelphilly.sstirling.com` AND URI path starts with `/live/`; cache eligibility **Eligible for cache**; edge TTL **Use cache-control header if present**. Cloudflare doesn't cache `.json` by default, so without this rule every viewer poll is an R2 read.
 
 Cost (estimates): about 173,000 R2 writes a month (free tier: 1 million) and one Worker run a minute (free tier: 100,000 requests a day). The free plan allows 10 ms of CPU per run; parsing SEPTA's 183 KB response four times should fit. If the Worker's logs show CPU-limit errors, Workers Paid is $5 a month. If a feed fails, the Worker keeps the last good file, and the viewer warns once it's more than two minutes old.
+
+## Live weather
+
+When it's raining or snowing in Philadelphia, the viewer draws falling pixel rain or snow over the map, with a faint wash (cool gray for rain, pale for snow). When it isn't, it draws nothing, and its animation loop doesn't run. A small badge in the top-right corner shows the airport's current temperature.
+
+- **Data:** the National Weather Service's latest observation at Philadelphia International Airport (station KPHL, `https://api.weather.gov/stations/KPHL/observations/latest`, public domain). KPHL reports about hourly, plus special reports when the weather changes.
+- **Pipeline:** the transit Worker (`worker/septa-live.js`) fetches it every 5 minutes and writes `live/weather.json`:
+  ```
+  {"fetched", "observed" (unix s), "station", "kind": "snow"|"rain"|"mix"|null, "intensity": "light"|"moderate"|"heavy"|null, "text",
+   "temp_c" (as reported, unrounded, or null), "night": true|false|null}
+  ```
+  `temp_c` is null when NWS has no value or its quality control marks it failed (`X`). `night` comes from the day or night folder in NWS's icon URL.
+  The weather service then gets 12 requests an hour however many people are watching. A weather failure never touches `vehicles.json`. Locally, `scripts/38_live_feed.py` writes `output/live/weather.json` the same way.
+- **Which weather counts:** the observation's METAR codes (`presentWeather[].rawString`).
+  - **Snow:** `SN`, `SG` and `PL` (ice pellets).
+  - **Rain:** `RA`, `DZ` and `UP`, including showers, thunderstorms and freezing rain or drizzle.
+  - **Mix:** rain and snow together.
+  - **Intensity:** from the `-` and `+` prefixes.
+  - **Ignored:** fog, mist, haze, thunder without rain, weather "in the vicinity" (`VC`) and blowing snow (`BL`, `DR`: snow lifted off the ground, not falling).
+  - `weather_kind()` (Python) and `weatherKind()` (Worker) are tested to agree (`tests/test_weather.py`).
+- **Viewer:** `viewer/weather.js` draws in screen space (the same at every zoom). Particles per 1920 x 1080 window: light 220, moderate 450, heavy 850. An observation more than 2 hours old is ignored. There's no lightning, so nothing flashes, and nothing animates with reduced motion. The status line names the weather while it's precipitating, and the credits add the National Weather Service.
+- **Temperature badge:** `renderTemp()` in `viewer/weather.js` draws the temperature in whole degrees Fahrenheit, "PHL" and a 9 x 9 icon (sun or moon, cloud, rain, snow, fog) as SVG squares. The digits are a hand-made 3 x 5 bitmap font, so there's no font download and it stays crisp at any screen density. The icon follows the rain or snow animation first, then the NWS description ("Cloudy", "Overcast", "Fog" and so on). The badge hides when there's no temperature or the observation is more than 2 hours old. Hovering shows the full reading, and screen readers get it as text. It sits in its own box in the top-right corner on wide screens. Below 880 px, `viewer.js` moves it into the top bar's title row, without the box or "PHL" and at two-thirds size (CSS variables `--temp-icon-px` and `--temp-text-px`), so it adds nothing over the map; on the narrowest phones it wraps under the title.
+- **Try it locally:** `?weather=snow`, `?weather=rain` or `?weather=mix`, optionally with `&intensity=light` or `&intensity=heavy`, shows it without data. `?weather=off` turns it off. The offline copy has no weather.
+- **Worker update:** paste the current `worker/septa-live.js` into the Worker (**Edit code**, replace everything, **Deploy**). No new binding or trigger is needed: the same bucket and one-minute cron are used, and the existing `/live/` Cache Rule covers `live/weather.json`. Until then, the viewer finds no weather file and draws nothing.
+
+## Neighborhood prints
+
+`viewer/neighborhoods.html` offers every Philadelphia neighborhood, cut from v18, as free images for personal use (not for sale; Stephen's terms, Nov. 19, 2026). It's linked from a small link next to the title in the map's top bar, the map's credits and the about page.
+
+- **Boundaries:** `data/raw/philadelphia-neighborhoods.geojson`, 159 neighborhoods from [OpenDataPhilly](https://opendataphilly.org/datasets/philadelphia-neighborhoods/), CC BY 4.0, credit Robert Cheetham. Areas are measured from the boundaries: the file's own `Shape_Area` is out of date by more than 2% for 9 neighborhoods, and missing for 1.
+- **The cut-out (`src/pixelphilly/neighborhoods.py`):** the map looks down at 45°, so tall things are drawn up from their base, and a plain boundary would slice towers. The mask is:
+  - the ground inside the boundary;
+  - **buildings:** whole, assigned by the center of their footprint, using the render scenes' footprints and heights in `data/processed`, drawn back to front so each building pixel goes to the building actually drawn there. Without the scenes, a column-run rule is the fallback, but it lets slivers of towers behind low buildings through.
+  - **trees:** assigned by their trunk (the tree mask's depth, capped at 36 px), then smoothed by a majority vote within 6 px.
+- **Outputs (`scripts/41_neighborhood_prints.py`),** in `output/philly/prints/v18/<slug>/`:
+  - `print.jpg`: full resolution, 1 map px per image px, on the map's backdrop (`#ccd6e3`) with a 6% margin;
+  - `desktop.jpg`: 5,120 x 2,880, the whole neighborhood fitted inside;
+  - `phone.jpg`: 1,290 x 2,796, a crop of the full map that fills the screen. It's the largest phone-shaped rectangle inside the neighborhood's bounds, centered on its center of mass, and never upscaled, so it can show bits of neighboring areas at its edges.
+  - `thumb.webp`: 600 px, for the page.
+  - `preview.webp`: 1,920 x 1,080, from the desktop image, for the page's click-to-enlarge view (`--previews` remakes only these).
+  - The name and site address are on every image but the thumbnail, small, lower left. JPEGs are quality 92 with no chroma subsampling.
+  - `index.json` lists every neighborhood's sizes and bytes.
+- **Build:** `uv run python scripts/41_neighborhood_prints.py --all` (or `--only "Rittenhouse,Chestnut Hill"`; `--force` rebuilds). It needs the v18 tiles, the building and tree masks, and the render scenes in `data/processed`.
+- **Publish:**
+  ```bash
+  rclone copy output/philly/prints r2:pixel-philly/output/philly/prints --transfers 16 --s3-no-check-bucket --header-upload "Cache-Control: public, max-age=86400"
+  ```
+  Then upload `viewer/` as usual. The R2 free tier is 10 GB; check `rclone size r2:pixel-philly` before adding more.
 
 ## Rebuild the map
 
@@ -322,6 +372,7 @@ uv run pytest      # projection, regions, LiDAR shaping, facades, water, bridges
 | `scripts/39_transit_promo` | Promo video of the live transit layer, filmed from the viewer (needs the local server and `38_live_feed.py`); `--vertical` for TikTok/Reels |
 | `scripts/29_trace_vessels`–`33` | Ship and bridge review: vessel tracing, crops and contact sheets |
 | `scripts/34` | Favicon, touch icon and social preview cut from the tiles |
+| `scripts/41_neighborhood_prints` | Neighborhood print, desktop and phone images for `viewer/neighborhoods.html` (see "Neighborhood prints") |
 | `scripts/04r`, `35`–`38`, `40` | Live transit layer: SEPTA timetable and tunnels, route shapes and El timetable, building-mask pyramid, vehicle sprites, local feed, tree mask (see "Live transit layer") |
 | `worker/` | The Cloudflare Worker that copies SEPTA's live feeds to the bucket |
 | `src/pixelphilly/` | The library: `projection.py` (the single source of truth for the camera), `lidar.py`, `facades.py`, `lawns.py`, `golf.py`, `vessels.py`, `bridges.py`, `water.py`/`waterpaint.py`, `regions.py`, `joint_sampler.py`, `region_runner.py`, `qa.py`/`qa_scan.py`, `viewer_geo.py` and others |

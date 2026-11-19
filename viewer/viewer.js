@@ -18,29 +18,50 @@
 
 import { inBounds, lonLatToPx } from "./projection.js";
 import { createTransitLayer } from "./transit.js";
+import { createWeatherLayer } from "./weather.js";
 
 const params = new URLSearchParams(location.search);
 // Default: the accepted map (output/philly/FROZEN_v18.json, accepted Nov. 9,
 // 2026: v17 plus the 3D-modeled Ben Franklin and Walt Whitman bridges).
-// v17 stays at ?v=v17 and v14, the frozen talk map, at ?v=v14. Older maps
-// stay reachable with ?area=...&v=...
-const area = params.get("area") || "philly";
-const version = params.get("v") || "v18";
+// Older versions stay reachable with ?v=... (and ?area=...) where their tiles
+// are served: locally, every version. The hosted site serves v18 only (v17
+// was taken off the bucket Nov. 19, 2026, to stay in R2's free 10 GB).
+const DEFAULT_VERSION = "v18";
+let area = params.get("area") || "philly";
+let version = params.get("v") || DEFAULT_VERSION;
 // The offline copy (scripts/27_offline_copy.py) sets <html data-offline="1">:
 // no request ever leaves the machine, so address search (City AIS API) is off
 const offline = document.documentElement.dataset.offline === "1";
-const base = `../output/${area}/tiles/${version}/`;
+let base = `../output/${area}/tiles/${version}/`;
 const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const status = document.getElementById("status");
 
-const meta = await (await fetch(base + "map.json")).json();
+// A version that isn't served here falls back to the current map, with a note,
+// instead of a blank page (an old ?v=v17 link on the hosted site)
+let mapRes = await fetch(base + "map.json");
+let versionNote = "";
+if (!mapRes.ok && (version !== DEFAULT_VERSION || area !== "philly")) {
+  versionNote = `That map version (${area} ${version}) isn't available here, so this is the current map.`;
+  area = "philly";
+  version = DEFAULT_VERSION;
+  base = `../output/${area}/tiles/${version}/`;
+  mapRes = await fetch(base + "map.json");
+}
+const meta = await mapRes.json();
+if (versionNote) status.textContent = versionNote;
 // The live transit layer (transit.js) runs on v18 only: its building masks
 // are v18's. Off in the offline copy (it needs the network) and with ?live=off.
 const liveParam = params.get("live");
 const transitOn = area === "philly" && version === "v18" && !offline && liveParam !== "off";
 // map.json's credits are frozen with the map, so the transit credit is added here
 const TRANSIT_CREDIT = " Live transit: vehicle positions and schedules from SEPTA; tunnels © OpenStreetMap contributors.";
-document.getElementById("credits").textContent = meta.credits + (transitOn ? TRANSIT_CREDIT : "");
+// Live weather: the same places as transit (it needs the network). ?weather=off
+// turns it off; ?weather=snow|rain|mix (optionally ?intensity=light|heavy) shows it
+// without data, for testing and demos.
+const weatherParam = params.get("weather");
+const weatherOn = area === "philly" && !offline && weatherParam !== "off";
+const WEATHER_CREDIT = " Weather: National Weather Service.";
+document.getElementById("credits").textContent = meta.credits + (transitOn ? TRANSIT_CREDIT : "") + (weatherOn ? WEATHER_CREDIT : "");
 document.title = `Pixel Philly: ${meta.label}`;
 
 // City Hall, at 4 map px per screen px: about 2 km of Center City across a
@@ -117,6 +138,31 @@ if (transitOn) {
     status: document.getElementById("transit-status"), reduceMotion,
   });
   viewer.addHandler("open", () => transit.setOn(true));
+}
+
+// --- live weather -------------------------------------------------------------
+// Falling snow or rain when it's snowing or raining at the airport; nothing
+// otherwise (weather.js). Also the temperature badge: top-right corner, or in
+// the bar's title row on phones.
+// Same local/hosted file locations as transit.
+if (weatherOn) {
+  const local = liveParam === "local" || ["localhost", "127.0.0.1"].includes(location.hostname);
+  const forced = ["snow", "rain", "mix"].includes(weatherParam)
+    ? { kind: weatherParam, intensity: ["light", "heavy"].includes(params.get("intensity")) ? params.get("intensity") : "moderate" }
+    : null;
+  // The badge sits top right on wide screens; on phones it moves into the
+  // bar's title row (viewer.css), so it doesn't add a box over the map
+  const temp = document.getElementById("temp");
+  const narrow = matchMedia("(max-width: 880px)");
+  const placeTemp = () => (narrow.matches ? document.querySelector(".bar .title").append(temp)
+                                          : document.getElementById("map").before(temp));
+  placeTemp();
+  narrow.addEventListener("change", placeTemp);
+  createWeatherLayer(viewer.container, {
+    url: local ? "../output/live/weather.json" : "../live/weather.json",
+    status: document.getElementById("weather-status"), reduceMotion, force: forced,
+    badge: document.getElementById("temp"),
+  });
 }
 
 // --- controls ---------------------------------------------------------------
