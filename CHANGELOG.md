@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-11-19: feature promo
+
+Stephen asked for a horizontal and vertical promo of about 15 seconds covering transit, live weather, prints and the full city view.
+
+- **`scripts/43_feature_promo.py`:** renders three segments with the existing promo scripts and joins them with hard cuts (14.6 s):
+  1. live transit, 3.6 s: `39_transit_promo.py --cuts 2` (a moving Regional Rail train, then a trolley);
+  2. a simulated thunderstorm over Center City, 3 s, labeled "Weather simulated for this preview", then the prints grid into the Rittenhouse preview, 3 s: `42_weather_prints_promo.py --parts storm=3,prints=3`;
+  3. a pull-back from Center City to the whole city, 5 s: `29_flyover.py feature_city` (new `config/flyover/feature_city.json` and `feature_city_vertical.json`).
+- **`39_transit_promo.py`:** new `--cuts` and `--caption`. It now hides the temperature badge and the weather layer; the real 50°F badge clashed with the simulated storm and sat in the vertical cut's unsafe corner.
+- **`42_weather_prints_promo.py`:** new `--parts` (snow, rain, storm, grid, preview, prints, each with an optional length). The storm scene times a lightning strike 1.1 s into its clip through a small hook on the weather canvas (`scheduleStrike`, in `viewer/weather.js`; the site never calls it).
+- **Output (not tracked):** `output/flyover/promo_features.mp4` (1920 x 1080, 33 MB) and `promo_features_vertical.mp4` (1080 x 1920, 35 MB). The whole-city pull-back is most of the size: the full map's detail compresses poorly.
+
 ## 2026-11-19: night badge fix and thunderstorms
 
 - **Bug (Stephen, Nov. 19, 10:52 p.m.): the badge showed a sun at night.** NWS's latest KPHL report came with no description and no icon URL, so `night` was null and the badge fell back to the sun. The viewer now works out sun or moon from the sun's position at the airport at the current time (`sunIsDown()` in `viewer/weather.js`), so it no longer depends on NWS's icon or on how old the report is. Failing tests were written first (`test_sun_is_down`, `test_badge_night_comes_from_the_clock_not_nws`), then fixed; I made the fix directly rather than through subagents, as it was one function.

@@ -370,11 +370,12 @@ uv run pytest      # projection, regions, LiDAR shaping, facades, water, bridges
 | `scripts/23_build_clean_trainset` | The clean-style training set (not used in the map) |
 | `scripts/26`–`28` | Freeze a version, make and check an offline copy |
 | `scripts/29_flyover` | Flyover video from finished tiles |
-| `scripts/39_transit_promo` | Promo video of the live transit layer, filmed from the viewer (needs the local server and `38_live_feed.py`); `--vertical` for TikTok/Reels |
+| `scripts/39_transit_promo` | Promo video of the live transit layer, filmed from the viewer (needs the local server and `38_live_feed.py`); `--vertical` for TikTok/Reels, `--cuts` and `--caption` for shorter cuts |
 | `scripts/29_trace_vessels`–`33` | Ship and bridge review: vessel tracing, crops and contact sheets |
 | `scripts/34` | Favicon, touch icon and social preview cut from the tiles |
 | `scripts/41_neighborhood_prints` | Neighborhood print, desktop and phone images for `viewer/neighborhoods.html` (see "Neighborhood prints") |
-| `scripts/42_weather_prints_promo` | 14-second promo of live weather (simulated snow and rain, labeled on screen) and the prints page, filmed from the local site; `--vertical` for TikTok/Reels |
+| `scripts/42_weather_prints_promo` | 14-second promo of live weather (simulated snow and rain, labeled on screen) and the prints page, filmed from the local site; `--parts` picks scenes (snow, rain, storm, grid, preview, prints); `--vertical` for TikTok/Reels |
+| `scripts/43_feature_promo` | About 15-second promo of the map's features (transit, storm, prints, the whole city), joined from segments made by 39, 42 and 29 (`config/flyover/feature_city*.json`); `--vertical` for TikTok/Reels |
 | `scripts/04r`, `35`–`38`, `40` | Live transit layer: SEPTA timetable and tunnels, route shapes and El timetable, building-mask pyramid, vehicle sprites, local feed, tree mask (see "Live transit layer") |
 | `worker/` | The Cloudflare Worker that copies SEPTA's live feeds to the bucket |
 | `src/pixelphilly/` | The library: `projection.py` (the single source of truth for the camera), `lidar.py`, `facades.py`, `lawns.py`, `golf.py`, `vessels.py`, `bridges.py`, `water.py`/`waterpaint.py`, `regions.py`, `joint_sampler.py`, `region_runner.py`, `qa.py`/`qa_scan.py`, `viewer_geo.py` and others |

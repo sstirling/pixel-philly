@@ -1,0 +1,13 @@
+{
+  "about": "Finale of the feature promo (scripts/43_feature_promo.py, v18, 1920 x 1080): a short pan over the Center City towers, then a pull-back to the whole city. About 5 s. No credit line, as in the other promos since Nov. 13.",
+  "version": "v18",
+  "size": [1920, 1080],
+  "fps": 30,
+  "label": "pixelphilly.sstirling.com",
+  "start": {"name": "Center City towers", "lonlat": [-75.1660, 39.9530], "z": 100, "scale": 2.0, "caption": "All of Philadelphia, as pixel art"},
+  "shots": [
+    {"name": "pan across Center City", "seconds": 1.0, "by": [130, -30]},
+    {"name": "pull back to the whole city", "seconds": 3.0, "fit": true},
+    {"name": "hold on the city", "seconds": 1.0, "hold": true}
+  ]
+}

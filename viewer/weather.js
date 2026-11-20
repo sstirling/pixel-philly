@@ -182,6 +182,10 @@ export function createWeatherLayer(container, { url, status = null, reduceMotion
   canvas.className = "weather-layer";
   canvas.setAttribute("aria-hidden", "true");
   container.appendChild(canvas);
+  // For promo videos (scripts/42_weather_prints_promo.py): strike lightning at
+  // this rAF time (ms) instead of a random one, so a short clip is sure to
+  // include a strike. Unused by the site itself.
+  canvas.scheduleStrike = (ms) => { nextStrike = ms; };
   let current = null, raf = 0, last = 0, timer = null;
   let parts = [];
   let nextStrike = 0, strikeAt = -1e9, bolt = []; // lightning: ms (rAF clock) and the bolt's pixels

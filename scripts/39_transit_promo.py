@@ -29,7 +29,11 @@ edges with their own buttons and captions), and scenes are scored and framed
 in the open part of that box, under the caption.
 
 Output: output/flyover/promo_transit.mp4, or promo_transit_vertical.mp4 (not tracked).
-Usage: uv run python scripts/39_transit_promo.py [--vertical] [--seconds 10] [--zoom 3]
+--cuts sets the number of scenes (default 4: the train, a trolley, a bus and
+the next best); --caption replaces the caption. scripts/43_feature_promo.py
+uses a 2-cut version.
+
+Usage: uv run python scripts/39_transit_promo.py [--vertical] [--seconds 10] [--zoom 3] [--cuts 4]
 """
 
 import argparse
@@ -161,6 +165,8 @@ def main():
     # they default a little wider (2.5) to keep a four-car train in the safe box
     ap.add_argument("--zoom", type=float)
     ap.add_argument("--fps", type=int, default=30)
+    ap.add_argument("--cuts", type=int, default=4, help="number of scenes (the first is always a moving train)")
+    ap.add_argument("--caption", default=CAPTION)
     ap.add_argument("--size")
     ap.add_argument("--name")
     args = ap.parse_args()
@@ -173,13 +179,13 @@ def main():
         # bottom margin (same layout as fly.draw_overlays)
         ls, cap = min(w, h) // 20, min(w, h) // 26
         slot = round(ls * 1.3) + 2 * (ls // 3) + ls // 3
-        top = safe["top"] + slot + fly._measure(CAPTION, cap, cap // 3)[1] + 20
+        top = safe["top"] + slot + fly._measure(args.caption, cap, cap // 3)[1] + 20
         box = [safe["left"], top, w - safe["right"], h - safe["bottom"]]
     else:
         box = [w * 0.2, h * 0.2, w * 0.8, h * 0.8]  # the middle 60%
     # Subjects are framed at the box's center, not the frame's
     off = [(box[0] + box[2]) / 2 - w / 2, (box[1] + box[3]) / 2 - h / 2]
-    clip_ms = args.seconds / 4 * 1000  # four cuts
+    clip_ms = args.seconds / args.cuts * 1000
     # Two vehicles' cars with ground centers under ~10 m apart are drawn on top of
     # each other (the shortest, a bus, is 12.2 m long). A meter is 2.44-3.39 map px
     # depending on direction; about 3 x zoom screen px
@@ -214,7 +220,7 @@ def main():
 
         far = lambda r, picks: all(abs(r[2] - q[2]) + abs(r[3] - q[3]) > 1500 for q in picks)
 
-        per = max(1, round(args.seconds * args.fps / 4))
+        per = max(1, round(args.seconds * args.fps / args.cuts))
         half_ms = per / args.fps * 500
 
         def settle():
@@ -295,7 +301,11 @@ def main():
         for attempt in range(1, ATTEMPTS + 1):
             page = browser.new_page(viewport={"width": w, "height": h})
             page.goto(f"{URL}#x=50000&y=58000&z=0.3")
-            page.add_style_tag(content=".bar, .controls, .credits { display: none !important; }")
+            # Only the map and vehicles: no bar, buttons or credits, and no weather
+            # badge or animation (the real temperature would clash with the simulated
+            # storm in scripts/43_feature_promo.py, and the badge sits in the vertical
+            # cut's unsafe corner)
+            page.add_style_tag(content=".bar, .controls, .credits, #temp, .weather-layer { display: none !important; }")
             # Two feed updates after the first: vehicles that reported since are gliding
             for _ in range(3):
                 with page.expect_response(lambda r: "vehicles.json" in r.url, timeout=40000):
@@ -316,9 +326,9 @@ def main():
 
         # Then the best trolley and bus spots, then the next best overall
         scored = score(page, [c for c in spots if c[0] != "rail"])
-        for want in ("trolley", "bus"):
+        for want in ("trolley", "bus")[:max(0, args.cuts - 1)]:
             take([r for r in scored if want in r[4]["kinds"]])
-        while len(framed) < 4 and take([r for r in scored + trains if r[4]["moving"]]):
+        while len(framed) < args.cuts and take([r for r in scored + trains if r[4]["moving"]]):
             pass
         print("scenes:", [(r[1], round(c[0]), round(c[1]), r[4]) for r, c in framed])
 
@@ -335,7 +345,7 @@ def main():
     # Address and caption on every frame (the source line was dropped from promos, Nov. 13)
     for f in sorted(frames_dir.glob("*.png")):
         img = Image.open(f).convert("RGB")
-        fly.draw_overlays(img, caption=CAPTION, label=LABEL, credit="", safe=safe)
+        fly.draw_overlays(img, caption=args.caption, label=LABEL, credit="", safe=safe)
         img.save(f)
     out = OUT / f"{args.name}.mp4"
     subprocess.run([imageio_ffmpeg.get_ffmpeg_exe(), "-y", "-loglevel", "error", "-framerate", str(args.fps),

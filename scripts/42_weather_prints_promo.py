@@ -29,9 +29,16 @@ badge and the page text are large enough to read in a phone feed.
 --vertical makes the TikTok/Reels cut (1080 x 1920), with text in the safe box
 from config/flyover/promo_vertical.json and the badge moved inside it.
 
+--parts picks and orders the scenes, each optionally with its own length in
+seconds: snow, rain, storm (map scenes); grid, preview (the prints page);
+prints (a short grid scroll into a preview, one caption, for a single slot in
+a longer promo). Default "snow,rain,grid,preview". The storm scene times a
+lightning strike into the clip (the weather layer's scheduleStrike hook).
+scripts/43_feature_promo.py uses "storm=3,prints=3".
+
 Output: output/flyover/promo_weather_prints.mp4, or promo_weather_prints_vertical.mp4
 (not tracked).
-Usage: uv run python scripts/42_weather_prints_promo.py [--vertical]
+Usage: uv run python scripts/42_weather_prints_promo.py [--vertical] [--parts storm=3,prints=3] [--name NAME]
 """
 
 import argparse
@@ -68,19 +75,39 @@ DPR = 2
 DEMO = {
     "snow": {"station": "KPHL", "kind": "snow", "intensity": "heavy", "text": "Heavy Snow", "temp_c": -1.1, "night": False},
     "rain": {"station": "KPHL", "kind": "rain", "intensity": "heavy", "text": "Heavy Rain", "temp_c": 8.9, "night": False},
+    "storm": {"station": "KPHL", "kind": "rain", "intensity": "heavy", "text": "Thunderstorm, Heavy Rain", "temp_c": 24.4,
+              "night": False, "thunder": True},
 }
 
-# Map scenes: where (lon, lat), zoom (map px per CSS px), and a pan in CSS px over the clip
-SCENES = [
-    {"weather": "snow", "seconds": 4.0, "lonlat": [-75.1645, 39.9535], "z": 0.6, "pan": [140, -40],
-     "caption": "When it snows in Philly, it snows on the map"},
-    {"weather": "rain", "seconds": 3.5, "lonlat": [-75.1370, 39.9525], "z": 0.6, "pan": [-120, -30],
-     "caption": "Rain too, with the airport's temperature"},
-]
+# Map scenes: where (lon, lat), zoom (map px per CSS px), and a pan in CSS px over
+# the clip. "strike": seconds into the clip for a lightning strike.
+SCENES = {
+    "snow": {"seconds": 4.0, "lonlat": [-75.1645, 39.9535], "z": 0.6, "pan": [140, -40],
+             "caption": "When it snows in Philly, it snows on the map"},
+    "rain": {"seconds": 3.5, "lonlat": [-75.1370, 39.9525], "z": 0.6, "pan": [-120, -30],
+             "caption": "Rain too, with the airport's temperature"},
+    "storm": {"seconds": 3.0, "lonlat": [-75.1645, 39.9535], "z": 0.6, "pan": [120, -35], "strike": 1.1,
+              "caption": "Live weather, thunderstorms included"},
+}
 GRID_SECONDS, GRID_SCROLL = 3.0, 520  # CSS px scrolled while filming the grid
 GRID_CAPTION = "New: every neighborhood, ready to print"
 PREVIEW_SECONDS, PREVIEW_NAME = 3.5, "Rittenhouse"
 PREVIEW_CAPTION = "Free to download for your wall or phone"
+# "prints": the grid for PRINTS_GRID_S, then the preview, under one caption
+PRINTS_SECONDS, PRINTS_GRID_S, PRINTS_SCROLL = 3.0, 0.9, 160
+PRINTS_CAPTION = "Every neighborhood, free to download"
+DEFAULT_PARTS = "snow,rain,grid,preview"
+
+
+def parse_parts(text):
+    """"storm=3,prints" -> [("storm", 3.0), ("prints", None)]"""
+    out = []
+    for item in text.split(","):
+        key, _, sec = item.strip().partition("=")
+        if key not in (*SCENES, "grid", "preview", "prints"):
+            raise SystemExit(f"unknown part {key!r}")
+        out.append((key, float(sec) if sec else None))
+    return out
 
 
 def main():
@@ -88,7 +115,9 @@ def main():
     ap.add_argument("--vertical", action="store_true", help="TikTok/Reels cut, 1080 x 1920, text in the safe box")
     ap.add_argument("--fps", type=int, default=30)
     ap.add_argument("--name")
+    ap.add_argument("--parts", default=DEFAULT_PARTS, help=f"scenes in order, e.g. storm=3,prints=3 (default {DEFAULT_PARTS})")
     args = ap.parse_args()
+    parts = parse_parts(args.parts)
     w, h = (1080, 1920) if args.vertical else (1920, 1080)
     cw, ch = w // DPR, h // DPR  # CSS viewport
     name = args.name or ("promo_weather_prints_vertical" if args.vertical else "promo_weather_prints")
@@ -117,9 +146,10 @@ def main():
             captions.append((caption, credit))
             n += 1
 
-        for sc in SCENES:
+        def film_weather(key, seconds):
+            sc = SCENES[key]
             page = browser.new_page(viewport={"width": cw, "height": ch}, device_scale_factor=DPR)
-            rec = {**DEMO[sc["weather"]], "fetched": int(time.time()), "observed": int(time.time()) - 600}
+            rec = {**DEMO[key], "fetched": int(time.time()), "observed": int(time.time()) - 600}
             page.route("**/output/live/weather.json",
                        lambda route, _req=None, rec=rec: route.fulfill(body=json.dumps(rec), content_type="application/json"))
             page.goto(f"{SITE}index.html?live=off#x=50000&y=58000&z=0.3")
@@ -138,40 +168,67 @@ def main():
             # Let the particles spread over the frame before filming
             for _ in range(30):
                 page.evaluate(f"__step({1000 / args.fps})")
-            frames = round(sc["seconds"] * args.fps)
+            if "strike" in sc:
+                page.evaluate(f"document.querySelector('canvas.weather-layer').scheduleStrike(performance.now() + {sc['strike'] * 1000})")
+            frames = round(seconds * args.fps)
             for k in range(frames):
                 f = k / max(1, frames - 1)
                 f = f * f * (3 - 2 * f)  # ease in and out
                 page.evaluate(tp.GOTO, [x + px * f / z, y + py * f / z, z])
                 page.evaluate(f"__step({1000 / args.fps})")
                 shoot(page, sc["caption"], SIMULATED)
-            print(f"{sc['weather']}: {frames} frames")
+            print(f"{key}: {frames} frames")
             page.close()
 
-        # The prints page: scroll the grid, then a larger preview
-        page = browser.new_page(viewport={"width": cw, "height": ch}, device_scale_factor=DPR)
-        page.goto(f"{SITE}neighborhoods.html")
-        page.add_style_tag(content="html { scrollbar-width: none; } ::-webkit-scrollbar { display: none; }")
-        page.wait_for_selector("#grid li")
-        top = page.evaluate("document.querySelector('.finder').getBoundingClientRect().top + scrollY - 12")
-        # Load every thumbnail the scroll will pass over
-        page.evaluate(f"scrollTo(0, {top + GRID_SCROLL})")
-        page.wait_for_load_state("networkidle")
-        page.evaluate(f"scrollTo(0, {top})")
-        page.wait_for_function("[...document.querySelectorAll('#grid img')].filter(i => i.getBoundingClientRect().top < innerHeight)"
-                               ".every(i => i.complete && i.naturalWidth)")
-        frames = round(GRID_SECONDS * args.fps)
-        for k in range(frames):
-            f = k / max(1, frames - 1)
-            f = f * f * (3 - 2 * f)
-            page.evaluate(f"scrollTo(0, {top + GRID_SCROLL * f})")
-            shoot(page, GRID_CAPTION)
-        page.get_by_role("button", name=f"Larger preview of {PREVIEW_NAME}", exact=True).click()
-        page.wait_for_function("(() => { const i = document.getElementById('preview-img'); return i.complete && i.naturalWidth > 0; })()")
-        page.mouse.move(0, 0)  # no hover outline on the downloads
-        for _ in range(round(PREVIEW_SECONDS * args.fps)):
-            shoot(page, PREVIEW_CAPTION)
-        print(f"prints: {frames} + {round(PREVIEW_SECONDS * args.fps)} frames")
+        prints = {}  # the prints page, opened once and shared by grid, preview and prints
+
+        def prints_page():
+            if "page" not in prints:
+                page = browser.new_page(viewport={"width": cw, "height": ch}, device_scale_factor=DPR)
+                page.goto(f"{SITE}neighborhoods.html")
+                page.add_style_tag(content="html { scrollbar-width: none; } ::-webkit-scrollbar { display: none; }")
+                page.wait_for_selector("#grid li")
+                top = page.evaluate("document.querySelector('.finder').getBoundingClientRect().top + scrollY - 12")
+                # Load every thumbnail the scroll will pass over
+                page.evaluate(f"scrollTo(0, {top + GRID_SCROLL})")
+                page.wait_for_load_state("networkidle")
+                page.evaluate(f"scrollTo(0, {top})")
+                page.wait_for_function("[...document.querySelectorAll('#grid img')].filter(i => i.getBoundingClientRect().top < innerHeight)"
+                                       ".every(i => i.complete && i.naturalWidth)")
+                prints.update(page=page, top=top)
+            return prints["page"], prints["top"]
+
+        def film_grid(seconds, scroll, caption):
+            page, top = prints_page()
+            frames = round(seconds * args.fps)
+            for k in range(frames):
+                f = k / max(1, frames - 1)
+                f = f * f * (3 - 2 * f)
+                page.evaluate(f"scrollTo(0, {top + scroll * f})")
+                shoot(page, caption)
+            print(f"grid: {frames} frames")
+
+        def film_preview(seconds, caption):
+            page, _ = prints_page()
+            page.get_by_role("button", name=f"Larger preview of {PREVIEW_NAME}", exact=True).click()
+            page.wait_for_function("(() => { const i = document.getElementById('preview-img'); return i.complete && i.naturalWidth > 0; })()")
+            page.mouse.move(0, 0)  # no hover outline on the downloads
+            frames = round(seconds * args.fps)
+            for _ in range(frames):
+                shoot(page, caption)
+            print(f"preview: {frames} frames")
+
+        for key, sec in parts:
+            if key in SCENES:
+                film_weather(key, sec or SCENES[key]["seconds"])
+            elif key == "grid":
+                film_grid(sec or GRID_SECONDS, GRID_SCROLL, GRID_CAPTION)
+            elif key == "preview":
+                film_preview(sec or PREVIEW_SECONDS, PREVIEW_CAPTION)
+            else:  # prints
+                total = sec or PRINTS_SECONDS
+                film_grid(PRINTS_GRID_S, PRINTS_SCROLL, PRINTS_CAPTION)
+                film_preview(total - PRINTS_GRID_S, PRINTS_CAPTION)
         browser.close()
 
     for f, (caption, credit) in zip(sorted(frames_dir.glob("*.png")), captions):

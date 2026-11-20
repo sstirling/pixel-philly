@@ -1,0 +1,14 @@
+{
+  "about": "Vertical (TikTok/Reels, 1080 x 1920) cut of feature_city.json, with text in the same safe box as promo_vertical.json.",
+  "version": "v18",
+  "size": [1080, 1920],
+  "fps": 30,
+  "safe": {"top": 270, "right": 150, "bottom": 672, "left": 65},
+  "label": "pixelphilly.sstirling.com",
+  "start": {"name": "Center City towers", "lonlat": [-75.1660, 39.9530], "z": 100, "scale": 2.0, "caption": "All of Philadelphia, as pixel art"},
+  "shots": [
+    {"name": "pan across Center City", "seconds": 1.0, "by": [80, -60]},
+    {"name": "pull back to the whole city", "seconds": 3.0, "fit": true},
+    {"name": "hold on the city", "seconds": 1.0, "hold": true}
+  ]
+}
