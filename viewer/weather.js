@@ -6,14 +6,18 @@
 // (worker/septa-live.js) from the National Weather Service's latest
 // observation at Philadelphia International Airport (KPHL), or locally by
 // scripts/38_live_feed.py. {"observed", "kind": "snow"|"rain"|"mix"|null,
-// "intensity": "light"|"moderate"|"heavy"|null, "text", "temp_c", "night"}.
+// "intensity": "light"|"moderate"|"heavy"|null, "text", "temp_c", "night",
+// "thunder"}.
 //
 // The same file feeds a small temperature badge in the top-right corner
 // (Stephen, Nov. 19), drawn in a pixel font so it matches the map.
 //
 // Drawing: one canvas over the map, in screen space, so weather looks the
 // same at every zoom. Particles are 1 px streaks (rain) and 2-3 px squares
-// (snow), like the map's pixel art. No lightning: no flashing content. The
+// (snow), like the map's pixel art. Thunderstorms (Stephen, Nov. 19) darken
+// the wash and add a pixel lightning bolt every 6-16 seconds with a soft,
+// brief brightening: far below WCAG 2.3.1's limit of three flashes a second,
+// and none at all with reduced motion. The
 // animation loop runs only while there is weather to draw and the tab is
 // visible, and never with prefers-reduced-motion.
 
@@ -24,23 +28,56 @@ export const STALE_S = 2 * 3600; // an observation older than this isn't "now"
 const DENSITY = { light: 220, moderate: 450, heavy: 850 };
 // A faint wash over the whole map, so the weather reads at a glance: cool gray
 // for rain, a pale haze for snow (alpha by intensity)
-const WASH = { rain: [70, 82, 100], snow: [235, 240, 248], mix: [150, 160, 175] };
+const WASH = { rain: [70, 82, 100], snow: [235, 240, 248], mix: [150, 160, 175], storm: [34, 40, 58] };
 const WASH_ALPHA = { light: 0.06, moderate: 0.1, heavy: 0.15 };
+const STORM_EXTRA = 0.08; // a thunderstorm's wash is darker than plain rain's
+// Lightning: seconds between strikes, how long the bolt shows, and the soft
+// brightening (peak alpha of a pale wash, fading with this time constant)
+const STRIKE_GAP_S = [6, 16];
+const BOLT_MS = 160;
+const FLASH_PEAK = 0.12, FLASH_TAU_MS = 140;
 const LABEL = { snow: "snow", rain: "rain", mix: "rain and snow" };
 
-// What to draw for a weather record at nowS (unix s): {kind, intensity} or null
+// What to draw for a weather record at nowS (unix s): {kind, intensity, thunder} or null
 export function activeWeather(rec, nowS) {
-  if (!rec || !rec.kind || rec.observed == null || nowS - rec.observed > STALE_S) return null;
-  return { kind: rec.kind, intensity: rec.intensity || "moderate" };
+  if (!rec || !(rec.kind || rec.thunder) || rec.observed == null || nowS - rec.observed > STALE_S) return null;
+  return { kind: rec.kind || null, intensity: rec.intensity || "moderate", thunder: !!rec.thunder };
 }
 
 // "Light snow at Philadelphia International Airport." for the status line
 export function describeWeather(w) {
   if (!w) return "";
-  const what = LABEL[w.kind] || w.kind;
-  const level = w.intensity === "moderate" ? "" : `${w.intensity} `;
-  const text = `${level}${what} at Philadelphia International Airport.`;
+  let text;
+  if (!w.kind) text = "thunder";
+  else {
+    const level = w.intensity === "moderate" ? "" : `${w.intensity} `;
+    text = `${level}${LABEL[w.kind] || w.kind}${w.thunder ? " and thunder" : ""}`;
+  }
+  text += " at Philadelphia International Airport.";
   return text[0].toUpperCase() + text.slice(1);
+}
+
+// Is the sun down at Philadelphia International Airport at unix time nowS?
+// The badge's sun or moon comes from this, not from NWS: its reports sometimes
+// arrive without the day/night icon (Nov. 19, 2026, after dark, which showed a
+// sun), and a report can be up to 2 hours old. Solar elevation from the
+// standard low-precision formulas (Astronomical Almanac, about 0.01 degree
+// accuracy); "down" is below -0.833 degrees, the usual sunrise/sunset
+// definition (refraction plus the sun's radius).
+const KPHL_LAT = 39.8721, KPHL_LON = -75.2411;
+export function sunIsDown(nowS, lat = KPHL_LAT, lon = KPHL_LON) {
+  const rad = Math.PI / 180;
+  const d = nowS / 86400 + 2440587.5 - 2451545.0; // days since J2000
+  const g = (357.529 + 0.98560028 * d) * rad;     // mean anomaly
+  const q = 280.459 + 0.98564736 * d;             // mean longitude, degrees
+  const L = (q + 1.915 * Math.sin(g) + 0.020 * Math.sin(2 * g)) * rad;
+  const e = (23.439 - 0.00000036 * d) * rad;      // obliquity
+  const ra = Math.atan2(Math.cos(e) * Math.sin(L), Math.cos(L));
+  const dec = Math.asin(Math.sin(e) * Math.sin(L));
+  const gmst = (18.697374558 + 24.06570982441908 * d) * 15; // degrees
+  const ha = (gmst + lon) * rad - ra;
+  const elev = Math.asin(Math.sin(lat * rad) * Math.sin(dec) + Math.cos(lat * rad) * Math.cos(dec) * Math.cos(ha));
+  return elev / rad < -0.833;
 }
 
 // --- temperature badge ---------------------------------------------------------
@@ -63,6 +100,7 @@ const ICONS = {
   cloud: [".........", "...ggg...", "..gwwwg..", ".gwwwwwgg", "gwwwwwwwg", "gwwwwwwwg", ".ggggggg.", ".........", "........."],
   rain: ["...ggg...", "..gwwwg..", ".gwwwwwgg", "gwwwwwwwg", ".ggggggg.", ".........", ".b..b..b.", "b..b..b..", "........."],
   snow: ["...ggg...", "..gwwwg..", ".gwwwwwgg", "gwwwwwwwg", ".ggggggg.", ".........", ".s...s...", "...s...s.", ".s...s..."],
+  storm: ["...ggg...", "..gwwwg..", ".gwwwwwgg", "gwwwwwwwg", ".ggggggg.", "....yo...", "...yo....", "..yyyyo..", "....yo..."],
   fog: [".........", "ggggggg..", ".........", "..ggggggg", ".........", "ggggggg..", ".........", "..ggggggg", "........."],
 };
 // Chosen to read on the light and the dark panel alike
@@ -107,11 +145,12 @@ export function tempReading(rec, nowS) {
   const f = Math.round(rec.temp_c * 9 / 5 + 32);
   const desc = String(rec.text || "");
   let icon;
-  if (rec.kind === "rain") icon = "rain";
+  if (rec.thunder) icon = "storm";
+  else if (rec.kind === "rain") icon = "rain";
   else if (rec.kind === "snow" || rec.kind === "mix") icon = "snow";
   else if (/fog|mist|haze|smoke/i.test(desc)) icon = "fog";
   else if (/cloudy|overcast/i.test(desc) && !/partly/i.test(desc)) icon = "cloud";
-  else icon = rec.night ? "moon" : "sun";
+  else icon = sunIsDown(nowS) ? "moon" : "sun";
   return { f, icon, text: desc };
 }
 
@@ -145,6 +184,7 @@ export function createWeatherLayer(container, { url, status = null, reduceMotion
   container.appendChild(canvas);
   let current = null, raf = 0, last = 0, timer = null;
   let parts = [];
+  let nextStrike = 0, strikeAt = -1e9, bolt = []; // lightning: ms (rAF clock) and the bolt's pixels
 
   function rand(a, b) { return a + Math.random() * (b - a); }
 
@@ -164,7 +204,7 @@ export function createWeatherLayer(container, { url, status = null, reduceMotion
 
   function reset() {
     const w = canvas.clientWidth, h = canvas.clientHeight;
-    const n = Math.round(DENSITY[current.intensity] * (w * h) / (1920 * 1080));
+    const n = current.kind ? Math.round(DENSITY[current.intensity] * (w * h) / (1920 * 1080)) : 0;
     parts = [];
     for (let i = 0; i < n; i++) {
       const kind = current.kind === "mix" ? (i % 2 ? "snow" : "rain") : current.kind;
@@ -186,9 +226,11 @@ export function createWeatherLayer(container, { url, status = null, reduceMotion
     const g = canvas.getContext("2d");
     g.setTransform(dpr, 0, 0, dpr, 0, 0);
     g.clearRect(0, 0, w, h);
-    const [r, gg, b] = WASH[current.kind] || WASH.rain;
-    g.fillStyle = `rgba(${r}, ${gg}, ${b}, ${WASH_ALPHA[current.intensity] ?? 0.1})`;
+    const [r, gg, b] = WASH[current.thunder ? "storm" : current.kind] || WASH.rain;
+    const washA = (WASH_ALPHA[current.intensity] ?? 0.1) + (current.thunder ? STORM_EXTRA : 0);
+    g.fillStyle = `rgba(${r}, ${gg}, ${b}, ${washA})`;
     g.fillRect(0, 0, w, h);
+    if (current.thunder) lightning(g, t, w, h);
     for (let i = 0; i < parts.length; i++) {
       const p = parts[i];
       p.y += p.vy * dt;
@@ -210,9 +252,49 @@ export function createWeatherLayer(container, { url, status = null, reduceMotion
     }
   }
 
+  // A jagged bolt from the top of the window to a point 30-60% down, as runs
+  // of whole pixels, with one short fork
+  function makeBolt(w, h) {
+    const px = [];
+    let x = rand(w * 0.15, w * 0.85), y = 0;
+    const end = rand(h * 0.3, h * 0.6);
+    let fork = null;
+    while (y < end) {
+      const run = Math.round(rand(6, 16)), dx = Math.random() < 0.5 ? -1 : 1;
+      for (let i = 0; i < run && y < end; i++) { px.push([Math.round(x), Math.round(y)]); y += 2; x += dx * rand(0, 1.6); }
+      if (!fork && y > end * 0.4) fork = [x, y];
+    }
+    if (fork) {
+      let [fx, fy] = fork; const dx = x > fork[0] ? -1 : 1;
+      for (let i = 0; i < 18; i++) { px.push([Math.round(fx), Math.round(fy)]); fy += 2; fx += dx * 1.4; }
+    }
+    return px;
+  }
+
+  function lightning(g, t, w, h) {
+    if (!nextStrike) nextStrike = t + rand(1, 4) * 1000; // the first strike comes soon after the storm starts
+    if (t >= nextStrike) {
+      strikeAt = t;
+      bolt = makeBolt(w, h);
+      nextStrike = t + rand(...STRIKE_GAP_S) * 1000;
+    }
+    const age = t - strikeAt;
+    if (age < 0 || age > 6 * FLASH_TAU_MS) return;
+    // Soft brightening of the whole window, fading fast
+    g.fillStyle = `rgba(235, 240, 255, ${FLASH_PEAK * Math.exp(-age / FLASH_TAU_MS)})`;
+    g.fillRect(0, 0, w, h);
+    if (age > BOLT_MS) return;
+    // The bolt: a 2 px white core with a pale blue edge
+    g.fillStyle = "rgba(170, 195, 255, 0.7)";
+    for (const [x, y] of bolt) g.fillRect(x - 1, y - 1, 4, 4);
+    g.fillStyle = "#ffffff";
+    for (const [x, y] of bolt) g.fillRect(x, y, 2, 2);
+  }
+
   function start() {
     if (raf || !current || reduceMotion || document.hidden) return;
     last = 0;
+    nextStrike = 0;
     canvas.width = 0; // forces a resize and a fresh set of particles
     raf = requestAnimationFrame(frame);
   }

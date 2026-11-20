@@ -56,7 +56,7 @@ const transitOn = area === "philly" && version === "v18" && !offline && livePara
 // map.json's credits are frozen with the map, so the transit credit is added here
 const TRANSIT_CREDIT = " Live transit: vehicle positions and schedules from SEPTA; tunnels © OpenStreetMap contributors.";
 // Live weather: the same places as transit (it needs the network). ?weather=off
-// turns it off; ?weather=snow|rain|mix (optionally ?intensity=light|heavy) shows it
+// turns it off; ?weather=snow|rain|mix|storm (optionally ?intensity=light|heavy) shows it
 // without data, for testing and demos.
 const weatherParam = params.get("weather");
 const weatherOn = area === "philly" && !offline && weatherParam !== "off";
@@ -147,8 +147,11 @@ if (transitOn) {
 // Same local/hosted file locations as transit.
 if (weatherOn) {
   const local = liveParam === "local" || ["localhost", "127.0.0.1"].includes(location.hostname);
-  const forced = ["snow", "rain", "mix"].includes(weatherParam)
-    ? { kind: weatherParam, intensity: ["light", "heavy"].includes(params.get("intensity")) ? params.get("intensity") : "moderate" }
+  // ?weather=storm is rain with thunder and lightning
+  const forced = ["snow", "rain", "mix", "storm"].includes(weatherParam)
+    ? { kind: weatherParam === "storm" ? "rain" : weatherParam,
+        intensity: ["light", "heavy"].includes(params.get("intensity")) ? params.get("intensity") : "moderate",
+        thunder: weatherParam === "storm" }
     : null;
   // The badge sits top right on wide screens; on phones it moves into the
   // bar's title row (viewer.css), so it doesn't add a box over the map

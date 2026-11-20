@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026-11-19: night badge fix and thunderstorms
+
+- **Bug (Stephen, Nov. 19, 10:52 p.m.): the badge showed a sun at night.** NWS's latest KPHL report came with no description and no icon URL, so `night` was null and the badge fell back to the sun. The viewer now works out sun or moon from the sun's position at the airport at the current time (`sunIsDown()` in `viewer/weather.js`), so it no longer depends on NWS's icon or on how old the report is. Failing tests were written first (`test_sun_is_down`, `test_badge_night_comes_from_the_clock_not_nws`), then fixed; I made the fix directly rather than through subagents, as it was one function.
+- **Thunderstorms (Stephen asked for a weather skin):**
+  - **Data:** `live/weather.json` gains `thunder` (any `TS` report, not `VCTS`), in the Worker and the local feed, tested to agree on 10 synthetic cases.
+  - **Look:** a darker blue-gray wash, rain as reported, and a jagged pixel lightning bolt with one fork every 6 to 16 seconds, shown for 160 ms, with a soft brightening that fades in about half a second. That's one flash in 6 seconds at most, against WCAG 2.3.1's limit of three a second. Nothing animates with reduced motion. Thunder without rain gets the wash and lightning only.
+  - **Badge:** a cloud with a yellow bolt. **Status line:** e.g. "Heavy rain and thunder at Philadelphia International Airport."
+  - **Demo:** `?weather=storm`. A 20-second preview is in `output/weather_preview/storm.mp4` (not tracked).
+- **The Worker needs a re-paste** for the hosted site to get `thunder`; until then the hosted map shows rain without lightning. The night fix needs only the viewer upload.
+
+## 2026-11-19: weather and prints promo
+
+Stephen asked for horizontal and vertical videos, 10 to 15 seconds, previewing live weather and the neighborhood prints.
+
+- **`scripts/42_weather_prints_promo.py`:** films the local viewer and prints page in headless Chromium at 2x pixel density, with the transit promo's frame-by-frame clock so the snow and rain move smoothly. Four scenes, 14 seconds: snow over Center City (30°F badge), heavy rain over the Ben Franklin Bridge (48°F), the prints grid scrolling, then the Rittenhouse preview.
+- **The weather is simulated:** the viewer is fed made-up `weather.json` records, and every weather frame says "Weather simulated for this preview."
+- **Vertical cut:** text in the Reels/TikTok safe box (`config/flyover/promo_vertical.json`); the badge is moved inside it.
+- **Output (not tracked):** `output/flyover/promo_weather_prints.mp4` (1920 x 1080) and `promo_weather_prints_vertical.mp4` (1080 x 1920).
+
 ## 2026-11-19: temperature badge
 
 Stephen asked for the temperature at Philadelphia International Airport in the map's top-right corner, pixelated if possible.

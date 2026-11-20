@@ -39,8 +39,9 @@ WEATHER_URL = f"https://api.weather.gov/stations/{STATION}/observations/latest"
 WEATHER_EVERY_S = 300
 WEATHER_OUT = REPO_ROOT / "output" / "live" / "weather.json"
 # METAR present-weather codes. Falling snow, snow grains and ice pellets are
-# drawn as snow; rain, drizzle and unknown precipitation as rain. Fog, mist,
-# haze and thunder without rain draw nothing (Stephen: nothing when it's nice)
+# drawn as snow; rain, drizzle and unknown precipitation as rain. Fog, mist
+# and haze draw nothing (Stephen: nothing when it's nice); thunder is flagged
+# separately (weather_thunder) and gets its own storm look
 SNOW = {"SN", "SG", "PL"}
 RAIN = {"RA", "DZ", "UP"}
 DESCRIPTORS = {"MI", "PR", "BC", "DR", "BL", "SH", "TS", "FZ"}
@@ -148,7 +149,22 @@ def weather_record(observation, now_s):
     kind, intensity = weather_kind(props.get("presentWeather"))
     return {"fetched": now_s, "observed": observed, "station": STATION, "kind": kind, "intensity": intensity,
             "text": str(props.get("textDescription") or ""), "temp_c": temp_c(props.get("temperature")),
-            "night": is_night(props.get("icon"))}
+            "night": is_night(props.get("icon")), "thunder": weather_thunder(props.get("presentWeather"))}
+
+
+def weather_thunder(present_weather):
+    """Is there a thunderstorm at the station? Any report with the TS
+    descriptor ("TSRA", "+TSRA", "TS"); a storm in the vicinity ("VCTS")
+    doesn't count, as for rain and snow. Same as the Worker's weatherThunder."""
+    for item in present_weather or []:
+        code = str((item or {}).get("rawString") or "").strip().upper().lstrip("+-")
+        if code.startswith("VC"):
+            continue
+        while code[:2] in DESCRIPTORS:
+            if code[:2] == "TS":
+                return True
+            code = code[2:]
+    return False
 
 
 def temp_c(t):

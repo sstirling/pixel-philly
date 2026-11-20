@@ -28,7 +28,7 @@
 // (public domain, https://www.weather.gov/documentation/services-web-api):
 //   {"fetched", "observed" (unix s), "station", "kind": "snow"|"rain"|"mix"|null,
 //    "intensity": "light"|"moderate"|"heavy"|null, "text",
-//    "temp_c" (as reported, or null), "night" (true|false|null)}
+//    "temp_c" (as reported, or null), "night" (true|false|null), "thunder" (true|false)}
 // The viewer animates rain or snow from it, and draws nothing otherwise, and
 // shows the temperature in a small pixel badge. A
 // weather failure never touches vehicles.json.
@@ -53,8 +53,9 @@ const STATION = "KPHL";
 const WEATHER_URL = `https://api.weather.gov/stations/${STATION}/observations/latest`;
 const WEATHER_EVERY_MIN = 5; // KPHL reports hourly, plus special reports when the weather changes
 // METAR present-weather codes. Falling snow, snow grains and ice pellets are
-// drawn as snow; rain, drizzle and unknown precipitation as rain. Fog, mist,
-// haze and thunder without rain draw nothing.
+// drawn as snow; rain, drizzle and unknown precipitation as rain. Fog, mist
+// and haze draw nothing; thunder is flagged separately (weatherThunder) and gets
+// its own storm look.
 const SNOW = new Set(["SN", "SG", "PL"]);
 const RAIN = new Set(["RA", "DZ", "UP"]);
 const DESCRIPTORS = new Set(["MI", "PR", "BC", "DR", "BL", "SH", "TS", "FZ"]);
@@ -129,13 +130,29 @@ function weatherKind(presentWeather) {
   return [kind, kind ? LEVELS[level] : null];
 }
 
+// Is there a thunderstorm at the station (same as weather_thunder in
+// scripts/38_live_feed.py)? Any report with the TS descriptor ("TSRA", "+TSRA",
+// "TS"); a storm in the vicinity ("VCTS") doesn't count, as for rain and snow.
+function weatherThunder(presentWeather) {
+  for (const item of presentWeather || []) {
+    let code = String((item && item.rawString) || "").trim().toUpperCase().replace(/^[+-]+/, "");
+    if (code.startsWith("VC")) continue;
+    while (DESCRIPTORS.has(code.slice(0, 2))) {
+      if (code.startsWith("TS")) return true;
+      code = code.slice(2);
+    }
+  }
+  return false;
+}
+
 // What live/weather.json holds, from an NWS observation response
 function weatherRecord(observation, nowS) {
   const props = (observation && observation.properties) || {};
   const ts = props.timestamp ? Date.parse(props.timestamp) : NaN;
   const [kind, intensity] = weatherKind(props.presentWeather);
   return { fetched: nowS, observed: Number.isFinite(ts) ? Math.floor(ts / 1000) : null, station: STATION, kind, intensity,
-           text: String(props.textDescription || ""), temp_c: tempC(props.temperature), night: isNight(props.icon) };
+           text: String(props.textDescription || ""), temp_c: tempC(props.temperature), night: isNight(props.icon),
+           thunder: weatherThunder(props.presentWeather) };
 }
 
 // Degrees Celsius as NWS reports them, unrounded; null when missing or when
