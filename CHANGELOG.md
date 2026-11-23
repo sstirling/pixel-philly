@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-11-22: map inertia
+
+Stephen relayed a regular feature request: map inertia.
+
+- **What exists:** OpenSeadragon 6.1.1 has inertia ("flick"), on by default for touch only. Turning it on for the mouse worked, but repeated test drags exposed a bug in it. It samples the pointer every 50 ms, takes the glide's direction from the last sample alone and smooths the speed over several. A drag that pauses just before release gets direction 0 (right) with leftover speed, so the map glides backward: 2 of 8 test drags. Touch users have had that glitch all along.
+- **`viewer/inertia.js`:** a replacement on OpenSeadragon's drag events. Velocity comes from the last 100 ms of real movement; positions within 2 px of the end count as standing still. No glide if the pointer hadn't moved for 100 ms before release, below 120 px/s, during a pinch, during a touch double-tap-drag zoom or with reduced motion. The glide is velocity x 0.25 s, capped at 1,200 px, eased by the viewer's spring. OpenSeadragon's flick is off everywhere.
+- **The pause cutoff:** 50 ms missed quick flicks in testing. The gap between the last move and the release in headless drags was 16–61 ms, so it's 100 ms.
+- **Tests:** `tests/test_inertia.py` has 6 unit tests on synthetic samples (written first) plus real mouse drags in the viewer. Five quick drags must all glide forward; five drags with a 200 ms pause and one slow drag must not glide; with reduced motion, none glides.
+- **Also checked by hand:** a quick touch swipe glides (180 px swipe, view moved 405 px), and pinches add no drift.
+
 ## 2026-11-19: feature promo
 
 Stephen asked for a horizontal and vertical promo of about 15 seconds covering transit, live weather, prints and the full city view.

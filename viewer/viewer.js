@@ -19,6 +19,7 @@
 import { inBounds, lonLatToPx } from "./projection.js";
 import { createTransitLayer } from "./transit.js";
 import { createWeatherLayer } from "./weather.js";
+import { addInertia } from "./inertia.js";
 
 const params = new URLSearchParams(location.search);
 // Default: the accepted map (output/philly/FROZEN_v18.json, accepted Nov. 9,
@@ -80,7 +81,12 @@ const viewer = OpenSeadragon({
   springStiffness: reduceMotion ? 100 : 6.5,
   imageSmoothingEnabled: false,
   gestureSettingsMouse: { clickToZoom: false },
+  // Inertia is our own (inertia.js): OpenSeadragon's touch flick can glide
+  // backward after a pause, so it's off
+  gestureSettingsTouch: { flickEnabled: false },
 });
+// A quick drag keeps gliding after release, for mouse, pen and touch (inertia.js)
+addInertia(viewer, { reduceMotion });
 document.getElementById("map").style.background = meta.background;
 
 // Crisp pixels at 1:1 and closer; smooth when zoomed out so the shrunken
