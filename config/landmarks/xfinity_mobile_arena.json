@@ -1,0 +1,648 @@
+{
+ "slug": "xfinity_mobile_arena",
+ "name": "Xfinity Mobile Arena (formerly Wells Fargo Center)",
+ "wikidata": "Q818735",
+ "kit": "arena_dome",
+ "about": "The Flyers' and 76ers' arena (1996), 3601 S. Broad St.: an oval-plan bowl under a white barrel roof whose edge the venue calls the 'eyebrow', wrapped in lower white, glass and tan-masonry blocks. No source publishes its height or plan, so the roof's size, axis, eave and crown are measured on the 2022 LiDAR: the roof runs flat along its long axis and curves across its width. The 2024 corner LED boards and the 2025 Xfinity logo are dated facade details.",
+ "footprint": {
+  "polygon": [
+   [
+    -75.171483,
+    39.9017776
+   ],
+   [
+    -75.1714377,
+    39.9017733
+   ],
+   [
+    -75.1714437,
+    39.9017352
+   ],
+   [
+    -75.1714466,
+    39.9017166
+   ],
+   [
+    -75.171308,
+    39.9017036
+   ],
+   [
+    -75.1713068,
+    39.901711
+   ],
+   [
+    -75.1712275,
+    39.9017036
+   ],
+   [
+    -75.1711343,
+    39.9016949
+   ],
+   [
+    -75.171121,
+    39.9017793
+   ],
+   [
+    -75.1708209,
+    39.9017512
+   ],
+   [
+    -75.1708621,
+    39.9014902
+   ],
+   [
+    -75.1708954,
+    39.9014933
+   ],
+   [
+    -75.1710775,
+    39.9010586
+   ],
+   [
+    -75.1711169,
+    39.9008088
+   ],
+   [
+    -75.1712147,
+    39.9007997
+   ],
+   [
+    -75.1711913,
+    39.9006378
+   ],
+   [
+    -75.1711879,
+    39.9006145
+   ],
+   [
+    -75.1713785,
+    39.900596
+   ],
+   [
+    -75.1713817,
+    39.9005762
+   ],
+   [
+    -75.171383,
+    39.9005676
+   ],
+   [
+    -75.17144,
+    39.9005729
+   ],
+   [
+    -75.17144,
+    39.9005675
+   ],
+   [
+    -75.1715457,
+    39.9005774
+   ],
+   [
+    -75.1715464,
+    39.9005774
+   ],
+   [
+    -75.1715471,
+    39.9005728
+   ],
+   [
+    -75.1715495,
+    39.900558
+   ],
+   [
+    -75.1715513,
+    39.9005466
+   ],
+   [
+    -75.1715419,
+    39.9005466
+   ],
+   [
+    -75.1715419,
+    39.9005466
+   ],
+   [
+    -75.1715479,
+    39.9005083
+   ],
+   [
+    -75.17155,
+    39.9004952
+   ],
+   [
+    -75.1715455,
+    39.9004952
+   ],
+   [
+    -75.1715648,
+    39.9003729
+   ],
+   [
+    -75.1715652,
+    39.9003698
+   ],
+   [
+    -75.171734,
+    39.9003856
+   ],
+   [
+    -75.1717279,
+    39.9004245
+   ],
+   [
+    -75.1718068,
+    39.9004319
+   ],
+   [
+    -75.1718156,
+    39.9004327
+   ],
+   [
+    -75.1718562,
+    39.9004273
+   ],
+   [
+    -75.1718955,
+    39.9004221
+   ],
+   [
+    -75.1721826,
+    39.9004489
+   ],
+   [
+    -75.1721802,
+    39.9004642
+   ],
+   [
+    -75.1725513,
+    39.9004989
+   ],
+   [
+    -75.1725387,
+    39.9005787
+   ],
+   [
+    -75.1725279,
+    39.9006469
+   ],
+   [
+    -75.1725598,
+    39.9006498
+   ],
+   [
+    -75.1726125,
+    39.9006548
+   ],
+   [
+    -75.1728043,
+    39.9006727
+   ],
+   [
+    -75.1727797,
+    39.9008281
+   ],
+   [
+    -75.1729239,
+    39.9008416
+   ],
+   [
+    -75.1728767,
+    39.9011407
+   ],
+   [
+    -75.1728612,
+    39.9012385
+   ],
+   [
+    -75.1728436,
+    39.9013499
+   ],
+   [
+    -75.1728377,
+    39.9013877
+   ],
+   [
+    -75.1727999,
+    39.9016269
+   ],
+   [
+    -75.172808,
+    39.9016536
+   ],
+   [
+    -75.1728106,
+    39.9016763
+   ],
+   [
+    -75.1727972,
+    39.901703
+   ],
+   [
+    -75.1727651,
+    39.9017318
+   ],
+   [
+    -75.1727155,
+    39.9017445
+   ],
+   [
+    -75.1726975,
+    39.9017428
+   ],
+   [
+    -75.1726825,
+    39.9017414
+   ],
+   [
+    -75.1726604,
+    39.9017339
+   ],
+   [
+    -75.172639,
+    39.9017215
+   ],
+   [
+    -75.1726229,
+    39.9017071
+   ],
+   [
+    -75.1726095,
+    39.9016886
+   ],
+   [
+    -75.1726041,
+    39.9016681
+   ],
+   [
+    -75.1726068,
+    39.9016516
+   ],
+   [
+    -75.1725935,
+    39.9016516
+   ],
+   [
+    -75.1725931,
+    39.9016546
+   ],
+   [
+    -75.1725696,
+    39.9018029
+   ],
+   [
+    -75.1725447,
+    39.9018006
+   ],
+   [
+    -75.1724841,
+    39.9017949
+   ],
+   [
+    -75.1723976,
+    39.9017868
+   ],
+   [
+    -75.1723976,
+    39.9017749
+   ],
+   [
+    -75.1723781,
+    39.901773
+   ],
+   [
+    -75.1723743,
+    39.9017968
+   ],
+   [
+    -75.1723497,
+    39.9017945
+   ],
+   [
+    -75.1723437,
+    39.9018329
+   ],
+   [
+    -75.1722713,
+    39.9018261
+   ],
+   [
+    -75.1722768,
+    39.9017914
+   ],
+   [
+    -75.1722635,
+    39.9017771
+   ],
+   [
+    -75.1722071,
+    39.9018038
+   ],
+   [
+    -75.1721562,
+    39.9018182
+   ],
+   [
+    -75.172091,
+    39.9018316
+   ],
+   [
+    -75.1720757,
+    39.9018347
+   ],
+   [
+    -75.172006,
+    39.9018429
+   ],
+   [
+    -75.1720007,
+    39.9018431
+   ],
+   [
+    -75.1719386,
+    39.901843
+   ],
+   [
+    -75.1718179,
+    39.9018317
+   ],
+   [
+    -75.1716484,
+    39.9017931
+   ],
+   [
+    -75.171483,
+    39.9017776
+   ]
+  ],
+  "source": "https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/LI_BUILDING_FOOTPRINTS/FeatureServer/0",
+  "note": "L&I footprint objectid 60294 (3601 S BROAD ST, 'Wells Fargo Center'); OSM way 25312366 is the same building.",
+  "replaces": {
+   "li_footprint_ids": [
+    60294
+   ],
+   "osm_ways": [
+    25312366
+   ]
+  }
+ },
+ "dims": {
+  "ground_navd88_m": {
+   "value": 6.62,
+   "unit": "m NAVD88",
+   "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+   "note": "Measured: median classified-ground return in a 3-15 m ring around L&I 60294 (scripts/50_landmark_measure.py, output/landmarks/measure/xfinity_mobile_arena.json)."
+  },
+  "roof_top_height_m": {
+   "value": 37.37,
+   "unit": "m above ground",
+   "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+   "note": "Measured: 99th percentile of the roof cells (the region above 70% of the outline's 99th-percentile height, flood-filled from the top) (scripts/50_landmark_measure.py, output/landmarks/measure/xfinity_mobile_arena.json)."
+  },
+  "eave_height_m": {
+   "value": 28.39,
+   "unit": "m above ground",
+   "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+   "note": "Measured: 2nd percentile of the roof cells in the 3 m band along the roof rectangle's edge. The cross-section's end bins read 31.03 and 30.84 m; the lower figure follows the rounded corners down (scripts/50_landmark_measure.py, output/landmarks/measure/xfinity_mobile_arena.json)."
+  },
+  "roof_length_m": {
+   "value": 143.69,
+   "unit": "m",
+   "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+   "note": "Measured: long side of the roof's minimum rotated rectangle (scripts/50_landmark_measure.py, output/landmarks/measure/xfinity_mobile_arena.json)."
+  },
+  "roof_width_m": {
+   "value": 114.43,
+   "unit": "m",
+   "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+   "note": "Measured: short side of the same rectangle (scripts/50_landmark_measure.py, output/landmarks/measure/xfinity_mobile_arena.json)."
+  },
+  "roof_bearing_deg": {
+   "value": 9.46,
+   "unit": "degrees clockwise from north",
+   "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+   "note": "Measured: the roof's long axis (scripts/50_landmark_measure.py, output/landmarks/measure/xfinity_mobile_arena.json)."
+  },
+  "roof_center": {
+   "value": [
+    -75.1719607,
+    39.9011825
+   ],
+   "unit": "lon, lat",
+   "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+   "note": "Measured: center of the roof rectangle (scripts/50_landmark_measure.py, output/landmarks/measure/xfinity_mobile_arena.json)."
+  },
+  "roof_cross_section_m": {
+   "value": {
+    "bin_m": 2.0,
+    "from_m": -57.21424910129636,
+    "max_m": [
+     null,
+     null,
+     31.03,
+     31.69,
+     32.09,
+     32.52,
+     32.96,
+     33.35,
+     33.74,
+     34.13,
+     34.45,
+     34.8,
+     35.13,
+     35.38,
+     35.6,
+     35.86,
+     36.08,
+     36.31,
+     36.49,
+     36.65,
+     36.8,
+     36.94,
+     37.03,
+     37.11,
+     37.2,
+     37.26,
+     37.3,
+     37.33,
+     37.34,
+     37.34,
+     37.31,
+     37.29,
+     37.25,
+     37.17,
+     37.07,
+     36.97,
+     36.87,
+     36.73,
+     36.54,
+     36.34,
+     36.12,
+     35.92,
+     35.69,
+     35.42,
+     35.16,
+     34.86,
+     34.55,
+     34.23,
+     33.88,
+     33.45,
+     33.13,
+     32.65,
+     32.24,
+     31.82,
+     31.02,
+     30.84,
+     null,
+     null
+    ]
+   },
+   "unit": "m above ground per 2 m across the roof",
+   "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+   "note": "Measured: maximum LiDAR height per bin within 3 m of the short axis (scripts/50_landmark_measure.py, output/landmarks/measure/xfinity_mobile_arena.json, bowl.profiles.short). Along the long axis the roof is flat at about the crown height."
+  },
+  "led_board_height_m": {
+   "value": 10.668,
+   "unit": "m",
+   "source": "https://www.xfinitymobilearena.com/news/detail/new-wells-fargo-center-building-renderings",
+   "note": "Published as 35 ft. Three exterior LED boards 'just under 35 feet in height' at the northeast and northwest corners and on the south facade (2023 release; lit April 8, 2024)."
+  },
+  "led_board_count": {
+   "value": 3,
+   "unit": "count",
+   "source": "https://www.xfinitymobilearena.com/news/detail/new-wells-fargo-center-building-renderings"
+  }
+ },
+ "colors": {
+  "roof": {
+   "rgb": [
+    243,
+    243,
+    243
+   ],
+   "source": "https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2024_3in/MapServer",
+   "method": "aerial",
+   "aerial": {
+    "outline": "li:60294"
+   },
+   "note": "White roof from above: median of the lit pixels (darkest 25% dropped) inside li 60294 in the 2024 aerial (scripts/50_landmark_measure.py, output/landmarks/measure/xfinity_mobile_arena.json)."
+  },
+  "roof_side": {
+   "rgb": [
+    228,
+    226,
+    240
+   ],
+   "source": "https://commons.wikimedia.org/wiki/File:Wells_Fargo_Center_-_2019_OWL_Grand_Finals.jpg",
+   "method": "photo",
+   "photo": {
+    "file": "data/landmarks/refs/xfinity_mobile_arena/0_wikimedia_commons.jpg",
+    "box": [
+     960,
+     240,
+     1280,
+     272
+    ],
+    "drop_dark": 0.25
+   },
+   "note": "Roof seen from the side, evening light: median of the box (pixels x0, y0, x1, y1), darkest 25% dropped. Reference photo, a modeling reference only."
+  },
+  "masonry_block": {
+   "rgb": [
+    228,
+    170,
+    134
+   ],
+   "source": "https://commons.wikimedia.org/wiki/File:Wells_Fargo_Center_-_2019_OWL_Grand_Finals.jpg",
+   "method": "photo",
+   "photo": {
+    "file": "data/landmarks/refs/xfinity_mobile_arena/0_wikimedia_commons.jpg",
+    "box": [
+     832,
+     448,
+     1056,
+     608
+    ],
+    "drop_dark": 0.25
+   },
+   "note": "Tan masonry block on the west side, warmed by low sun; render it cooler: median of the box (pixels x0, y0, x1, y1), darkest 25% dropped. Reference photo, a modeling reference only."
+  },
+  "white_facade": {
+   "rgb": [
+    172,
+    176,
+    200
+   ],
+   "source": "https://commons.wikimedia.org/wiki/File:Wells_Fargo_Center_-_2019_OWL_Grand_Finals.jpg",
+   "method": "photo",
+   "photo": {
+    "file": "data/landmarks/refs/xfinity_mobile_arena/0_wikimedia_commons.jpg",
+    "box": [
+     480,
+     368,
+     576,
+     400
+    ],
+    "drop_dark": 0.25
+   },
+   "note": "White curved facade panels, in shade: median of the box (pixels x0, y0, x1, y1), darkest 25% dropped. Reference photo, a modeling reference only."
+  },
+  "glass": {
+   "rgb": [
+    154,
+    166,
+    197
+   ],
+   "source": "https://commons.wikimedia.org/wiki/File:Wells_Fargo_Center_-_2019_OWL_Grand_Finals.jpg",
+   "method": "photo",
+   "photo": {
+    "file": "data/landmarks/refs/xfinity_mobile_arena/0_wikimedia_commons.jpg",
+    "box": [
+     384,
+     592,
+     576,
+     624
+    ],
+    "drop_dark": 0.25
+   },
+   "note": "Glass band: median of the box (pixels x0, y0, x1, y1), darkest 25% dropped. Reference photo, a modeling reference only."
+  },
+  "logo": {
+   "rgb": [
+    104,
+    47,
+    210
+   ],
+   "estimate": true,
+   "method": "report",
+   "reason": "FOX 29 (Aug. 14, 2025, https://www.fox29.com/news/xfinity-mobile-arena-new-signage-added-facade-former-wells-fargo-center) describes the new facade logo as purple; no color value published, so this purple is our pick."
+  }
+ },
+ "kit_params": {
+  "roof": {
+   "form": "barrel: flat along the long axis, curved across the width (LiDAR cross-section)",
+   "length_m": "roof_length_m",
+   "width_m": "roof_width_m",
+   "bearing": "roof_bearing_deg",
+   "center": "roof_center",
+   "eave_m": "eave_height_m",
+   "crown_m": "roof_top_height_m",
+   "edge": "the 'Brow' (https://www.acclaimlighting.com/blogs/projects/xfinity-mobile-arena): a lit band along the roof edge"
+  },
+  "base": "lower blocks inside the L&I outline outside the roof rectangle stay as LiDAR parts",
+  "windows": "glass bands and entries as detail paint; no window grid on the roof volume"
+ },
+ "credits": [
+  "OpenStreetMap data (c) OpenStreetMap contributors, ODbL 1.0 (https://www.openstreetmap.org/copyright)",
+  "LiDAR: City of Philadelphia 2022 classified LiDAR via PASDA (https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154)",
+  "Aerial: City of Philadelphia 2024 3-inch imagery (CityImagery_2024_3in)",
+  "Footprints: City of Philadelphia L&I building footprints (OpenDataPhilly)",
+  "Reference photo: Jen Smith, CC BY 3.0, https://commons.wikimedia.org/wiki/File:Wells_Fargo_Center_-_2019_OWL_Grand_Finals.jpg"
+ ],
+ "review": {
+  "open_questions": [
+   "No published height or plan dimensions; everything structural is measured.",
+   "The reference photo predates the 2024 LED boards and the 2025 Xfinity logo."
+  ]
+ }
+}

@@ -1,0 +1,5 @@
+{
+ "note": "sha256 of the plain test scene's color and mask renders (fixture in this file), recorded from git-HEAD render.js",
+ "plain_color": "a71ec6f4827993ea4eaa6e09212973c292ba4114fdbdcbaec9a2fe021e5f9b32",
+ "plain_mask": "07f79d87f291b30aabd098ac07a3f5813aae4a9a9f3f66bcba00f86d2974ef8e"
+}

@@ -375,3 +375,153 @@ def test_osm_match_with_a_spatial_index_gives_the_same_result():
         x, y = rng.uniform(0, 1000), rng.uniform(0, 1000)
         g = box(x, y, x + rng.uniform(4, 50), y + rng.uniform(4, 50))
         assert facades.osm_match(g, items) == facades.osm_match(g, index)
+
+
+# --- Era option ("facade_eras": true; docs/building_age_plan.md, Phase A) ------
+
+def _rec(new, year=None, est=None, old="ROW 2 STY MASONRY", cat="SINGLE FAMILY"):
+    return {"building_code_description_new": new, "building_code_description": old,
+            "category_code_description": cat, "year_built": year, "year_built_estimate": est,
+            "general_construction": "A", "number_stories": 2}
+
+
+def test_without_eras_facade_spec_is_unchanged():
+    """facade_spec(eras=False), the default, matches the output recorded
+    before the era option existed (tests/fixtures/facade_spec_golden.json:
+    60 real OPA records x 3 sizes, plus no record)."""
+    import json
+    from pathlib import Path
+
+    gold = json.loads((Path(__file__).parent / "fixtures" / "facade_spec_golden.json").read_text())
+    for c in gold["cases"]:
+        w, d = c["footprint_wh"]
+        assert facades.facade_spec(c["rec"], c["height_m"], box(0, 0, w, d), c["bid"]) == c["spec"], c["bid"]
+        assert facades.facade_spec(c["rec"], c["height_m"], box(0, 0, w, d), c["bid"], eras=False) == c["spec"]
+
+
+def test_new_styles_keep_existing_style_ids():
+    old = ["row_porch", "row_typical", "row_postwar", "row_modern", "river_row", "twin", "detached", "apartment_low",
+           "mixed_storefront", "warehouse", "office_tower", "institutional", "other"]
+    assert facades.STYLES[:len(old)] == old
+    for s in ("row_old", "twin_old", "twin_postwar", "detached_postwar"):
+        assert s in facades.STYLES and s in facades.SPACING_M
+
+
+@pytest.mark.parametrize("new, year, era", [
+    ("ROW TYPICAL", "1790", "georgian_federal"),
+    ("ROW TYPICAL", "1839", "georgian_federal"),
+    ("ROW TYPICAL", "1840", "mid19"),
+    ("ROW TYPICAL", "1880", "late_victorian"),
+    ("ROW TYPICAL", "1920", "streetcar"),
+    ("ROW PORCH FRONT", "1940", "interwar"),
+    ("ROW TYPICAL", "1955", "postwar"),
+    ("APARTMENTS - LOW RISE", "1985", "late20"),
+    ("ROW TYPICAL", "2016", "new"),
+    ("ROW TYPICAL", None, "unknown"),
+    ("ROW TYPICAL", "0", "unknown"),
+    # The style code beats the year: OPA's years are mostly estimates heaped on
+    # round numbers, its style codes name the era directly
+    ("ROW POST WAR", "1925", "postwar"),
+    ("TWIN POST WAR", "1920", "postwar"),
+    ("TWIN RANCH", None, "postwar"),
+    ("CAPE", "1940", "postwar"),
+    ("SPLIT LEVEL", "1925", "postwar"),
+    ("ROW MODERN", "1920", "new"),
+    ("ROW MODERN", None, "new"),
+    # "OLD STYLE" keeps an early year but is never later than late Victorian
+    ("ROW OLD STYLE", "1800", "georgian_federal"),
+    ("ROW OLD STYLE", "1925", "late_victorian"),
+    ("TWIN OLD STYLE", None, "late_victorian"),
+])
+def test_era_of(new, year, era):
+    assert facades.era_of(_rec(new, year)) == era
+
+
+def test_an_estimated_year_still_sets_the_era():
+    assert facades.era_of(_rec("ROW TYPICAL", "1925", est="Y")) == "streetcar"
+
+
+@pytest.mark.parametrize("new, year, old, style", [
+    ("ROW OLD STYLE", "1800", "ROW 3 STY MASONRY", "row_old"),
+    ("ROW TYPICAL", "1850", "ROW 3 STY MASONRY", "row_old"),
+    ("ROW TYPICAL", "1920", "ROW 2 STY MASONRY", "row_typical"),
+    ("TWIN OLD STYLE", "1900", "SEMI/DET 2 STY MASONRY", "twin_old"),
+    ("TWIN POST WAR", "1955", "SEMI/DET 2 STY MASONRY", "twin_postwar"),
+    ("TWIN RANCH", "1960", "SEMI/DET 1 STY MASONRY", "twin_postwar"),
+    ("TWIN CONVENTIONAL", "1925", "SEMI/DET 2 STY MASONRY", "twin"),
+    ("CAPE", "1955", "DET 1.5 STY MASONRY", "detached_postwar"),
+    ("RANCH", "1960", "DET 1 STY MASONRY", "detached_postwar"),
+    ("COLONIAL", "1950", "DET 2 STY MASONRY", "detached"),
+    ("ROW POST WAR", "1950", "ROW 2 STY MASONRY", "row_postwar"),
+])
+def test_era_styles(new, year, old, style):
+    rec = _rec(new, year, old=old)
+    assert facades.style_of(rec, 9.0, eras=True) == style
+    # Without eras, nothing new appears
+    assert facades.style_of(rec, 9.0) in facades.STYLES[:13]
+
+
+def test_era_bands():
+    def spec(new, year, old="ROW 2 STY MASONRY"):
+        return facades.facade_spec(_rec(new, year, old=old), 9.0, box(0, 0, 5, 14), "b1", eras=True)
+
+    georgian = spec("ROW OLD STYLE", "1790", "ROW 3 STY MASONRY")
+    assert georgian["pent"] and georgian["cornice"] and not georgian["heavy_cornice"]
+    italianate = spec("ROW TYPICAL", "1860", "ROW 3 STY MASONRY")
+    assert italianate["heavy_cornice"] and italianate["cornice"] and not italianate["pent"]
+    victorian = spec("ROW TYPICAL", "1890")
+    assert victorian["heavy_cornice"]
+    streetcar = spec("ROW TYPICAL", "1920")
+    assert streetcar["cornice"] and not streetcar["heavy_cornice"] and not streetcar["pent"]
+    # Postwar and new rows have no bracketed cornice (docs/building_age_styles.md, section 3)
+    for s in (spec("ROW POST WAR", "1950"), spec("ROW MODERN", "2016")):
+        assert not s["cornice"] and not s["heavy_cornice"] and not s["pent"]
+    assert spec("ROW TYPICAL", "1920")["era"] == "streetcar"
+
+
+def test_era_compact_bits_and_code():
+    s = facades.facade_spec(_rec("ROW OLD STYLE", "1790", old="ROW 3 STY MASONRY"), 9.0, box(0, 0, 5, 14), "b1",
+                            eras=True)
+    c = facades.compact(s)
+    assert c["b"] & facades.BAND_PENT and c["b"] & facades.BAND_CORNICE
+    assert not c["b"] & facades.BAND_HEAVY_CORNICE
+    assert c["e"] == facades.ERAS.index("georgian_federal")
+    # Without eras: no era code, no new bits
+    plain = facades.compact(facades.facade_spec(_rec("ROW OLD STYLE", "1790", old="ROW 3 STY MASONRY"), 9.0,
+                                                box(0, 0, 5, 14), "b1"))
+    assert "e" not in plain and not plain["b"] & (facades.BAND_PENT | facades.BAND_HEAVY_CORNICE)
+
+
+@pytest.mark.parametrize("new, year, era", [
+    ("ROW OLD STYLE", "1790", "georgian_federal"),
+    ("ROW TYPICAL", "1890", "late_victorian"),
+    ("ROW TYPICAL", "1920", "streetcar"),
+    ("ROW PORCH FRONT", "1940", "interwar"),
+])
+def test_era_wall_colors_come_from_the_era_palette(new, year, era):
+    for i in range(30):
+        s = facades.facade_spec(_rec(new, year), 9.0, box(0, 0, 5, 14), f"b{i}", eras=True)
+        assert s["color_source"] == "palette_era"
+        assert any(all(abs(a - b) <= facades.JITTER for a, b in zip(s["wall_rgb"], p))
+                   for p in facades.ERA_PALETTES[era])
+
+
+def test_new_construction_rows_are_not_brick_red():
+    s = facades.facade_spec(_rec("ROW MODERN", "2016"), 11.0, box(0, 0, 5, 14), "b1", eras=True)
+    assert any(all(abs(a - b) <= facades.JITTER for a, b in zip(s["wall_rgb"], p))
+               for p in facades.ERA_PALETTES["new"])
+
+
+def test_postwar_keeps_the_current_brick_palette():
+    """No source found names postwar Northeast brick colors, so the era
+    option leaves them on today's palette."""
+    for i in range(20):
+        a = facades.facade_spec(_rec("ROW POST WAR", "1950"), 9.0, box(0, 0, 5, 14), f"b{i}", eras=True)
+        b = facades.facade_spec(_rec("ROW POST WAR", "1950"), 9.0, box(0, 0, 5, 14), f"b{i}")
+        assert a["wall_rgb"] == b["wall_rgb"]
+
+
+def test_osm_colour_still_wins_with_eras():
+    s = facades.facade_spec(_rec("ROW OLD STYLE", "1790", old="ROW 3 STY MASONRY"), 9.0, box(0, 0, 5, 14), "b1",
+                            osm={"colour": (10, 20, 30)}, eras=True)
+    assert s["wall_rgb"] == [10, 20, 30] and s["color_source"] == "osm"

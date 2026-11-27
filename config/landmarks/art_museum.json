@@ -1,0 +1,425 @@
+{
+ "slug": "art_museum",
+ "name": "Philadelphia Museum of Art (main building)",
+ "wikidata": "Q510324",
+ "kit": "colonnade_portico",
+ "about": "The 1928 main building on Fairmount (Trumbauer; Zantzinger, Borie and Medary; Cret): three linked pavilions around the east court, golden Minnesota stone, pitched roofs of blue-glazed terra cotta tile and porticos with pediments; Corinthian columns on the east and west porticos, Ionic on the wings. No source read gives its plan, heights or column sizes, so heights come from the 2022 LiDAR and the column size is an estimate scaled from a frontal photo; the 1923 scale drawing of the main-entrance column in the museum's archive would replace it. The model replaces the main L&I outline; the 72 east steps and the terraces stay ground.",
+ "footprint": {
+  "polygon": [
+   [
+    -75.180037,
+    39.9659794
+   ],
+   [
+    -75.1797994,
+    39.9658052
+   ],
+   [
+    -75.1801103,
+    39.9655542
+   ],
+   [
+    -75.1803503,
+    39.9657303
+   ],
+   [
+    -75.1803145,
+    39.9657592
+   ],
+   [
+    -75.1803066,
+    39.9657656
+   ],
+   [
+    -75.1806813,
+    39.9660405
+   ],
+   [
+    -75.1807233,
+    39.9660713
+   ],
+   [
+    -75.1809988,
+    39.965849
+   ],
+   [
+    -75.1808801,
+    39.965762
+   ],
+   [
+    -75.1808874,
+    39.9657561
+   ],
+   [
+    -75.1809543,
+    39.9657022
+   ],
+   [
+    -75.1810284,
+    39.9656423
+   ],
+   [
+    -75.1811767,
+    39.9655226
+   ],
+   [
+    -75.1811846,
+    39.9655163
+   ],
+   [
+    -75.1812489,
+    39.9655634
+   ],
+   [
+    -75.1812642,
+    39.9655747
+   ],
+   [
+    -75.1813046,
+    39.9656043
+   ],
+   [
+    -75.1815671,
+    39.9653924
+   ],
+   [
+    -75.1815846,
+    39.9653783
+   ],
+   [
+    -75.1811654,
+    39.9650708
+   ],
+   [
+    -75.1811252,
+    39.9651032
+   ],
+   [
+    -75.1808924,
+    39.9649324
+   ],
+   [
+    -75.1811932,
+    39.9646896
+   ],
+   [
+    -75.181198,
+    39.9646857
+   ],
+   [
+    -75.1812521,
+    39.9647253
+   ],
+   [
+    -75.1813705,
+    39.9648121
+   ],
+   [
+    -75.1814316,
+    39.964857
+   ],
+   [
+    -75.1813875,
+    39.9648926
+   ],
+   [
+    -75.181403,
+    39.9649039
+   ],
+   [
+    -75.1817755,
+    39.9651771
+   ],
+   [
+    -75.1817878,
+    39.9651862
+   ],
+   [
+    -75.1818067,
+    39.9652001
+   ],
+   [
+    -75.1818466,
+    39.9651679
+   ],
+   [
+    -75.1820824,
+    39.9653409
+   ],
+   [
+    -75.1820803,
+    39.9653426
+   ],
+   [
+    -75.1815897,
+    39.9657386
+   ],
+   [
+    -75.1815409,
+    39.965778
+   ],
+   [
+    -75.181784,
+    39.9659564
+   ],
+   [
+    -75.1817047,
+    39.9660203
+   ],
+   [
+    -75.1814868,
+    39.9661963
+   ],
+   [
+    -75.1812426,
+    39.9660172
+   ],
+   [
+    -75.1811731,
+    39.9660733
+   ],
+   [
+    -75.1806912,
+    39.9664623
+   ],
+   [
+    -75.180453,
+    39.9662876
+   ],
+   [
+    -75.1804977,
+    39.9662515
+   ],
+   [
+    -75.1800797,
+    39.9659449
+   ],
+   [
+    -75.180037,
+    39.9659794
+   ]
+  ],
+  "source": "https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/LI_BUILDING_FOOTPRINTS/FeatureServer/0",
+  "note": "L&I footprint objectid 260200 (2500 SPRING GARDEN ST, 'Philadelphia Museum of Art (PMA)'); OSM way 28533972 matches it. Its minimum rotated rectangle is 172.6 by 134.2 m; the 640 ft (195 m) ground-floor corridor 'spanning the entire breadth of the building' (Billy Penn) suggests the outline may miss the ends of the wings. Check before Phase 1.",
+  "replaces": {
+   "li_footprint_ids": [
+    260200
+   ],
+   "osm_ways": [
+    28533972
+   ]
+  }
+ },
+ "dims": {
+  "ground_navd88_m": {
+   "value": 26.0,
+   "unit": "m NAVD88",
+   "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+   "note": "Measured: median classified-ground return in a 3-15 m ring around L&I 260200: the terraces around the building, high on Fairmount (scripts/50_landmark_measure.py, output/landmarks/measure/art_museum.json)."
+  },
+  "main_height_m": {
+   "value": 24.2,
+   "unit": "m above the terrace",
+   "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+   "note": "Measured: median surface height inside L&I 260200 (the wings' roofs) (scripts/50_landmark_measure.py, output/landmarks/measure/art_museum.json)."
+  },
+  "roof_peak_m": {
+   "value": 34.77,
+   "unit": "m above the terrace",
+   "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+   "note": "Measured: 99th-percentile surface height inside L&I 260200 (ridges and pediment apexes) (scripts/50_landmark_measure.py, output/landmarks/measure/art_museum.json)."
+  },
+  "roof_p90_m": {
+   "value": 32.42,
+   "unit": "m above the terrace",
+   "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+   "note": "Measured: 90th percentile inside L&I 260200 (scripts/50_landmark_measure.py, output/landmarks/measure/art_museum.json)."
+  },
+  "breadth_m": {
+   "value": 195.072,
+   "unit": "m",
+   "source": "https://billypenn.com/2021/05/30/philadelphia-art-museum-gehry-renovations-ghost-station-rocky-steps-energy-efficient/",
+   "note": "Published as 640 ft. 'the corridor stretches 640 feet across the ground floor, spanning the entire breadth of the building'; Wikipedia gives the same (citing Plan Philly)."
+  },
+  "east_steps": {
+   "value": 72,
+   "unit": "steps",
+   "source": "https://press.philamuseum.org/faqs",
+   "note": "'The Museum's seventy-two steps leading up to the East Terrace'."
+  },
+  "column_count": {
+   "value": 8,
+   "unit": "columns",
+   "source": "https://commons.wikimedia.org/wiki/File:Philadelphia_Museum_of_Art,_main_building.jpg",
+   "note": "Eight Corinthian columns across the east portico, counted in the reference photo (a modeling reference). Order per Villanova: Corinthian front and rear, Ionic on the wings."
+  },
+  "column_height_m": {
+   "value": 20.74,
+   "unit": "m",
+   "estimate": true,
+   "reason": "Scaled from a frontal photo (https://commons.wikimedia.org/wiki/File:Philadelphia_Museum_of_Art,_main_building.jpg): column base to capital top is 0.597 of base to pediment apex (451 of 756 px), times the LiDAR roof peak (34.77 m) taken as the apex. Assumes the apex is the building's highest point and ignores the steps; replace with the museum archive's 1923 scale drawing."
+  },
+  "column_diameter_m": {
+   "value": 1.75,
+   "unit": "m",
+   "estimate": true,
+   "reason": "Column width 38 px against 451 px of column height in the same photo, times column_height_m."
+  },
+  "north_pediment_m": {
+   "value": [
+    3.658,
+    21.336
+   ],
+   "unit": "m (height, width)",
+   "source": "https://www.associationforpublicart.org/artwork/north-pediment",
+   "note": "The completed polychrome terra cotta pediment (1932): 13 figures by C. Paul Jennewein, colors by Leon V. Solon, made by Atlantic Terra Cotta Co. On the north wing, facing the east court (Villanova); the others are plain."
+  },
+  "roof_tile_m": {
+   "value": 0.914,
+   "unit": "m",
+   "source": "https://quondam.com/19/1928.htm",
+   "note": "Published as 3 ft. Anne Lee, 'Color Sculpture and Architecture,' The Mentor, May 1928, reproduced at quondam.com: terra cotta roof tiles 'approximately three feet square'."
+  }
+ },
+ "colors": {
+  "stone_lit": {
+   "rgb": [
+    219,
+    180,
+    127
+   ],
+   "source": "https://commons.wikimedia.org/wiki/File:Philadelphia_Museum_of_Art,_main_building.jpg",
+   "method": "photo",
+   "photo": {
+    "file": "data/landmarks/refs/art_museum/1_wikimedia_commons.jpg",
+    "box": [
+     888,
+     720,
+     917,
+     912
+    ],
+    "drop_dark": 0.25
+   },
+   "note": "Sunlit column; the stone's 'golden-orange tone clouded with silver-gray' (The Mentor, 1928): median of the box (pixels x0, y0, x1, y1), darkest 25% dropped. Reference photo, a modeling reference only."
+  },
+  "stone_wall": {
+   "rgb": [
+    183,
+    151,
+    115
+   ],
+   "source": "https://commons.wikimedia.org/wiki/File:Philadelphia_Museum_of_Art,_main_building.jpg",
+   "method": "photo",
+   "photo": {
+    "file": "data/landmarks/refs/art_museum/1_wikimedia_commons.jpg",
+    "box": [
+     240,
+     792,
+     336,
+     828
+    ],
+    "drop_dark": 0.25
+   },
+   "note": "Wing wall between windows, sunlit: median of the box (pixels x0, y0, x1, y1), darkest 25% dropped. Reference photo, a modeling reference only."
+  },
+  "roof_tile": {
+   "rgb": [
+    78,
+    78,
+    93
+   ],
+   "source": "https://commons.wikimedia.org/wiki/File:Philadelphia_Museum_of_Art,_main_building.jpg",
+   "method": "photo",
+   "photo": {
+    "file": "data/landmarks/refs/art_museum/1_wikimedia_commons.jpg",
+    "box": [
+     240,
+     612,
+     480,
+     629
+    ],
+    "drop_dark": 0.25
+   },
+   "note": "Roof tiles at the eave, seen from below. The Mentor: 'a grayish blue glaze on the face, with a dark blue edge': median of the box (pixels x0, y0, x1, y1), darkest 25% dropped. Reference photo, a modeling reference only."
+  },
+  "tympanum": {
+   "rgb": [
+    114,
+    75,
+    70
+   ],
+   "source": "https://commons.wikimedia.org/wiki/File:Philadelphia_Museum_of_Art,_main_building.jpg",
+   "method": "photo",
+   "photo": {
+    "file": "data/landmarks/refs/art_museum/1_wikimedia_commons.jpg",
+    "box": [
+     912,
+     300,
+     1008,
+     348
+    ],
+    "drop_dark": 0.25
+   },
+   "note": "East pediment's tympanum, in shade: median of the box (pixels x0, y0, x1, y1), darkest 25% dropped. Reference photo, a modeling reference only."
+  },
+  "roof_top_view": {
+   "rgb": [
+    177,
+    175,
+    151
+   ],
+   "source": "https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2024_3in/MapServer",
+   "method": "aerial",
+   "aerial": {
+    "outline": "li:260200"
+   },
+   "note": "The building from above (tile roofs, flat roofs and the court): median of the lit pixels (darkest 25% dropped) inside li 260200 in the 2024 aerial (scripts/50_landmark_measure.py, output/landmarks/measure/art_museum.json)."
+  }
+ },
+ "kit_params": {
+  "porticos": [
+   {
+    "facade": "east (Parkway)",
+    "columns": "column_count",
+    "order": "Corinthian",
+    "column_height_m": "column_height_m",
+    "column_diameter_m": "column_diameter_m",
+    "pediment": true
+   },
+   {
+    "facade": "west",
+    "order": "Corinthian",
+    "column_height_m": "column_height_m",
+    "pediment": true,
+    "count": "to read from the aerial and the LiDAR in Phase 1"
+   },
+   {
+    "facade": "north and south wings",
+    "order": "Ionic",
+    "pediment": true
+   }
+  ],
+  "roof": {
+   "form": "pitched, with a pediment at each portico",
+   "eave_m": "main_height_m",
+   "ridge_m": "roof_peak_m",
+   "tile_m": "roof_tile_m"
+  },
+  "court": "the east court between the wings stays open ground",
+  "windows": "rows on the wing walls as detail paint, as in the photo; none on the porticos"
+ },
+ "credits": [
+  "OpenStreetMap data (c) OpenStreetMap contributors, ODbL 1.0 (https://www.openstreetmap.org/copyright)",
+  "LiDAR: City of Philadelphia 2022 classified LiDAR via PASDA (https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154)",
+  "Aerial: City of Philadelphia 2024 3-inch imagery (CityImagery_2024_3in)",
+  "Footprints: City of Philadelphia L&I building footprints (OpenDataPhilly)",
+  "Reference photo: Rgordon6, public domain, https://commons.wikimedia.org/wiki/File:Philadelphia_Museum_of_Art,_main_building.jpg"
+ ],
+ "review": {
+  "open_questions": [
+   "Column size is an estimate; the museum archive's 'Scale details of pilaster, column, & cornice, main entrance' (March 17, 1923) would settle it: https://pmalibrary.libraryhost.com/repositories/3/archival_objects/219687",
+   "The L&I outline (172.6 m across) vs. the 640 ft (195 m) corridor: check whether the outline misses wing ends.",
+   "Pediment count differs by source (3, 7 or 8); only the north pediment has sculpture."
+  ]
+ }
+}

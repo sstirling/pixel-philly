@@ -1,0 +1,160 @@
+{
+  "buildings_downloaded": 2498,
+  "buildings_in_scene": 4479,
+  "buildings_dropped": [],
+  "height_source_counts": {
+    "approx_hgt": 2494,
+    "max_hgt": 3,
+    "default": 1
+  },
+  "height_outliers_max_gt_ratio_x_approx": [],
+  "tallest_buildings_m": [
+    {
+      "id": "13263-1",
+      "h": 11.81
+    },
+    {
+      "id": "28318-5",
+      "h": 11.56
+    },
+    {
+      "id": "120696-1",
+      "h": 11.36
+    },
+    {
+      "id": "103419-2",
+      "h": 11.34
+    },
+    {
+      "id": "108116-1",
+      "h": 11.25
+    },
+    {
+      "id": "102602-1",
+      "h": 11.21
+    },
+    {
+      "id": "92357-1",
+      "h": 11.03
+    },
+    {
+      "id": "98065-1",
+      "h": 10.96
+    },
+    {
+      "id": "11925-1",
+      "h": 10.89
+    },
+    {
+      "id": "120898-1",
+      "h": 10.86
+    }
+  ],
+  "trees_in_scene": 86,
+  "ground_texture_px": [
+    5376,
+    4864
+  ],
+  "ground_texture_source_px": [
+    5376,
+    4864
+  ],
+  "uv_fit_max_residual_m": 3.4846995919115724e-06,
+  "ground_median_filter_px": 5,
+  "frames": 21,
+  "roof_fit_pitched": 3,
+  "roof_fit_fitted": 1,
+  "roof_fit_kinds": {
+    "gable": 1
+  },
+  "roof_fit_refused": {
+    "no_fit": 1,
+    "not_simple": 1
+  },
+  "lidar_buildings_shaped": 1775,
+  "lidar_fallback_single_height": 5,
+  "lidar_parts": 2205,
+  "lidar_terrace_parts": 0,
+  "lidar_stadiums": [],
+  "lidar_structures": 3,
+  "lidar_structure_parts": 4,
+  "lidar_structure_area_m2": 117.8,
+  "lidar_structures_dropped_photo": 1,
+  "lidar_highway_mask": true,
+  "lidar_highway_masked_m2": 0.0,
+  "lidar_rail_mask": true,
+  "lidar_margin_m": 100.0,
+  "front_slope_parts_marked": 2231,
+  "front_slope_parts_cut": 1547,
+  "front_slope_refused": {
+    "short_wall": 236,
+    "odd_front": 182,
+    "height": 180,
+    "not_at_front": 86
+  },
+  "facade_join": {
+    "parcel": 2498
+  },
+  "facade_match_rate": 1.0,
+  "facade_styles": {
+    "row_postwar": 2082,
+    "row_porch": 313,
+    "other": 36,
+    "row_typical": 31,
+    "mixed_storefront": 15,
+    "twin_postwar": 6,
+    "detached": 5,
+    "apartment_low": 5,
+    "warehouse": 3,
+    "institutional": 1,
+    "detached_postwar": 1
+  },
+  "facade_materials": {
+    "brick": 2494,
+    "stone": 3,
+    "frame": 1
+  },
+  "facade_colour_source": {
+    "palette": 2213,
+    "palette_era": 285
+  },
+  "facade_osm_footprints": 0,
+  "facade_osm_items": 0,
+  "facade_street_fronts": 328,
+  "facade_unmatched": "plain walls (no facade)",
+  "front_slope_candidates": 2088,
+  "front_slope_street_wall_found": 1926,
+  "facade_eras": {
+    "postwar": 2195,
+    "interwar": 258,
+    "streetcar": 27,
+    "late20": 10,
+    "unknown": 5,
+    "late_victorian": 3
+  },
+  "facade_era_styles": {
+    "postwar/row_postwar": 2082,
+    "interwar/row_porch": 224,
+    "postwar/row_porch": 62,
+    "interwar/row_typical": 29,
+    "streetcar/row_porch": 26,
+    "postwar/other": 23,
+    "postwar/mixed_storefront": 11,
+    "late20/other": 9,
+    "postwar/twin_postwar": 6,
+    "postwar/apartment_low": 5,
+    "interwar/mixed_storefront": 4,
+    "late_victorian/detached": 3,
+    "unknown/warehouse": 3,
+    "postwar/row_typical": 2,
+    "postwar/detached": 2,
+    "unknown/other": 2,
+    "postwar/institutional": 1,
+    "postwar/detached_postwar": 1,
+    "late20/row_porch": 1,
+    "interwar/other": 1,
+    "streetcar/other": 1
+  },
+  "facade_era_year_estimated_share": 0.935,
+  "lawn_corrected_px": 0
+}

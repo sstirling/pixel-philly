@@ -1,0 +1,1503 @@
+{
+ "slug": "citizens_bank_park",
+ "name": "Citizens Bank Park",
+ "wikidata": "Q912770",
+ "kit": "stadium_bowl",
+ "about": "The Phillies' ballpark (2004): a sunken field 23 ft below the street, seating wrapped from the left-field corner around home plate to right field, open toward Center City in the outfield, with red-brick, precast and granite facades, green copper-patina roofs, two light towers, the scoreboard and the Liberty Bell sign. Fence distances and heights come from the Phillies; stand heights by sector from the 2022 LiDAR. The diamond and outfield grass stay as the aerial shows them.",
+ "footprint": {
+  "polygon": [
+   [
+    -75.1669881,
+    39.9068877
+   ],
+   [
+    -75.1670064,
+    39.9068035
+   ],
+   [
+    -75.1669945,
+    39.9067902
+   ],
+   [
+    -75.1669208,
+    39.9067656
+   ],
+   [
+    -75.1668243,
+    39.9068173
+   ],
+   [
+    -75.1667347,
+    39.9068057
+   ],
+   [
+    -75.1667419,
+    39.9067726
+   ],
+   [
+    -75.1666001,
+    39.9067542
+   ],
+   [
+    -75.1666084,
+    39.9067164
+   ],
+   [
+    -75.1664912,
+    39.9067012
+   ],
+   [
+    -75.1664793,
+    39.9066997
+   ],
+   [
+    -75.1666245,
+    39.9066222
+   ],
+   [
+    -75.1667181,
+    39.9066343
+   ],
+   [
+    -75.1672658,
+    39.9063333
+   ],
+   [
+    -75.1672786,
+    39.9062746
+   ],
+   [
+    -75.1671121,
+    39.9060913
+   ],
+   [
+    -75.1671262,
+    39.9060268
+   ],
+   [
+    -75.1670833,
+    39.9058917
+   ],
+   [
+    -75.1670602,
+    39.9058191
+   ],
+   [
+    -75.1670468,
+    39.9058047
+   ],
+   [
+    -75.1670334,
+    39.9058109
+   ],
+   [
+    -75.1667924,
+    39.9055569
+   ],
+   [
+    -75.1667161,
+    39.9054765
+   ],
+   [
+    -75.166694,
+    39.9054532
+   ],
+   [
+    -75.1665415,
+    39.9054334
+   ],
+   [
+    -75.1661067,
+    39.905671
+   ],
+   [
+    -75.1660973,
+    39.9056607
+   ],
+   [
+    -75.1660436,
+    39.9056885
+   ],
+   [
+    -75.1659005,
+    39.905867
+   ],
+   [
+    -75.1658864,
+    39.9059314
+   ],
+   [
+    -75.1656921,
+    39.9060393
+   ],
+   [
+    -75.1655794,
+    39.9060248
+   ],
+   [
+    -75.1655716,
+    39.9060607
+   ],
+   [
+    -75.1656304,
+    39.9060683
+   ],
+   [
+    -75.1656255,
+    39.906091
+   ],
+   [
+    -75.1660961,
+    39.9065976
+   ],
+   [
+    -75.1661013,
+    39.9066033
+   ],
+   [
+    -75.1659458,
+    39.9065663
+   ],
+   [
+    -75.16599,
+    39.9066136
+   ],
+   [
+    -75.1659863,
+    39.9066132
+   ],
+   [
+    -75.1658106,
+    39.9065936
+   ],
+   [
+    -75.1655568,
+    39.9065652
+   ],
+   [
+    -75.1654348,
+    39.9064426
+   ],
+   [
+    -75.1654347,
+    39.9064425
+   ],
+   [
+    -75.1653421,
+    39.9064913
+   ],
+   [
+    -75.1653385,
+    39.9064908
+   ],
+   [
+    -75.1653385,
+    39.9064908
+   ],
+   [
+    -75.1652645,
+    39.9064819
+   ],
+   [
+    -75.1652217,
+    39.9066745
+   ],
+   [
+    -75.1651953,
+    39.906794
+   ],
+   [
+    -75.1651934,
+    39.9068023
+   ],
+   [
+    -75.1651863,
+    39.9068014
+   ],
+   [
+    -75.1647766,
+    39.9067495
+   ],
+   [
+    -75.1647766,
+    39.9067495
+   ],
+   [
+    -75.1648364,
+    39.9064753
+   ],
+   [
+    -75.1648396,
+    39.9064608
+   ],
+   [
+    -75.1648505,
+    39.9064105
+   ],
+   [
+    -75.1648915,
+    39.9062226
+   ],
+   [
+    -75.1648916,
+    39.9062226
+   ],
+   [
+    -75.16484,
+    39.9062159
+   ],
+   [
+    -75.1648433,
+    39.9062007
+   ],
+   [
+    -75.1648719,
+    39.9060699
+   ],
+   [
+    -75.1648815,
+    39.9060258
+   ],
+   [
+    -75.1649686,
+    39.9056265
+   ],
+   [
+    -75.1649797,
+    39.9055758
+   ],
+   [
+    -75.1650008,
+    39.9054792
+   ],
+   [
+    -75.1650008,
+    39.9054791
+   ],
+   [
+    -75.1650031,
+    39.9054794
+   ],
+   [
+    -75.1651246,
+    39.9054952
+   ],
+   [
+    -75.1652164,
+    39.9050745
+   ],
+   [
+    -75.1651981,
+    39.9050722
+   ],
+   [
+    -75.1651841,
+    39.9051331
+   ],
+   [
+    -75.1651555,
+    39.9051289
+   ],
+   [
+    -75.1651254,
+    39.9052659
+   ],
+   [
+    -75.164694,
+    39.9052096
+   ],
+   [
+    -75.1648403,
+    39.9045449
+   ],
+   [
+    -75.1652701,
+    39.904601
+   ],
+   [
+    -75.1652577,
+    39.9046575
+   ],
+   [
+    -75.1652535,
+    39.9046764
+   ],
+   [
+    -75.1652973,
+    39.9046821
+   ],
+   [
+    -75.1652973,
+    39.9046821
+   ],
+   [
+    -75.1652937,
+    39.9046985
+   ],
+   [
+    -75.1652514,
+    39.904693
+   ],
+   [
+    -75.1652514,
+    39.9046931
+   ],
+   [
+    -75.1651741,
+    39.9050444
+   ],
+   [
+    -75.1652217,
+    39.9050499
+   ],
+   [
+    -75.1652495,
+    39.9049227
+   ],
+   [
+    -75.1653859,
+    39.9049403
+   ],
+   [
+    -75.1653617,
+    39.9050692
+   ],
+   [
+    -75.1653958,
+    39.9051059
+   ],
+   [
+    -75.1655595,
+    39.9052821
+   ],
+   [
+    -75.1655823,
+    39.9052677
+   ],
+   [
+    -75.1656038,
+    39.9052944
+   ],
+   [
+    -75.1656426,
+    39.9052749
+   ],
+   [
+    -75.1656721,
+    39.9053058
+   ],
+   [
+    -75.16588,
+    39.9051926
+   ],
+   [
+    -75.1658907,
+    39.9052029
+   ],
+   [
+    -75.1659135,
+    39.9051905
+   ],
+   [
+    -75.1657727,
+    39.9050414
+   ],
+   [
+    -75.1658254,
+    39.9050111
+   ],
+   [
+    -75.1659363,
+    39.9050254
+   ],
+   [
+    -75.1659471,
+    39.9050352
+   ],
+   [
+    -75.1660026,
+    39.9050089
+   ],
+   [
+    -75.1660026,
+    39.9050088
+   ],
+   [
+    -75.1659236,
+    39.9049986
+   ],
+   [
+    -75.1659358,
+    39.9049428
+   ],
+   [
+    -75.1658856,
+    39.9049363
+   ],
+   [
+    -75.1659194,
+    39.9047816
+   ],
+   [
+    -75.1659202,
+    39.9047777
+   ],
+   [
+    -75.1659347,
+    39.9047113
+   ],
+   [
+    -75.1659374,
+    39.9046993
+   ],
+   [
+    -75.1661618,
+    39.9047283
+   ],
+   [
+    -75.1661664,
+    39.9047096
+   ],
+   [
+    -75.1673466,
+    39.9048615
+   ],
+   [
+    -75.1673688,
+    39.9048643
+   ],
+   [
+    -75.1673646,
+    39.9048834
+   ],
+   [
+    -75.1675675,
+    39.9049097
+   ],
+   [
+    -75.1675866,
+    39.9049121
+   ],
+   [
+    -75.1675857,
+    39.904916
+   ],
+   [
+    -75.1675344,
+    39.9051513
+   ],
+   [
+    -75.1675229,
+    39.9051483
+   ],
+   [
+    -75.1675067,
+    39.9052225
+   ],
+   [
+    -75.1674084,
+    39.9052098
+   ],
+   [
+    -75.1673622,
+    39.9052358
+   ],
+   [
+    -75.1673512,
+    39.9052419
+   ],
+   [
+    -75.1673914,
+    39.9052872
+   ],
+   [
+    -75.1674706,
+    39.905245
+   ],
+   [
+    -75.1675126,
+    39.905289
+   ],
+   [
+    -75.1675148,
+    39.9052913
+   ],
+   [
+    -75.167437,
+    39.9053345
+   ],
+   [
+    -75.1674504,
+    39.905352
+   ],
+   [
+    -75.1673968,
+    39.9053819
+   ],
+   [
+    -75.1674142,
+    39.9054004
+   ],
+   [
+    -75.1674317,
+    39.9053932
+   ],
+   [
+    -75.1675873,
+    39.9055629
+   ],
+   [
+    -75.1675712,
+    39.9055712
+   ],
+   [
+    -75.1676034,
+    39.9056041
+   ],
+   [
+    -75.1677361,
+    39.9055341
+   ],
+   [
+    -75.1677831,
+    39.9055835
+   ],
+   [
+    -75.1677053,
+    39.9056277
+   ],
+   [
+    -75.1677536,
+    39.9056791
+   ],
+   [
+    -75.1678273,
+    39.905636
+   ],
+   [
+    -75.1678133,
+    39.9056203
+   ],
+   [
+    -75.1678252,
+    39.9055656
+   ],
+   [
+    -75.1679012,
+    39.9055755
+   ],
+   [
+    -75.1679025,
+    39.9055696
+   ],
+   [
+    -75.1679063,
+    39.9055521
+   ],
+   [
+    -75.168096,
+    39.9055766
+   ],
+   [
+    -75.1680909,
+    39.9056
+   ],
+   [
+    -75.1680683,
+    39.9057034
+   ],
+   [
+    -75.1680834,
+    39.9057054
+   ],
+   [
+    -75.1679885,
+    39.9061404
+   ],
+   [
+    -75.1679703,
+    39.9062239
+   ],
+   [
+    -75.1679536,
+    39.9063003
+   ],
+   [
+    -75.1678717,
+    39.9066759
+   ],
+   [
+    -75.167857,
+    39.906674
+   ],
+   [
+    -75.1678501,
+    39.9067058
+   ],
+   [
+    -75.1677535,
+    39.9066933
+   ],
+   [
+    -75.1677616,
+    39.9066562
+   ],
+   [
+    -75.1677644,
+    39.9066434
+   ],
+   [
+    -75.1676737,
+    39.9066316
+   ],
+   [
+    -75.1676888,
+    39.9065624
+   ],
+   [
+    -75.1677006,
+    39.906556
+   ],
+   [
+    -75.1677759,
+    39.9065658
+   ],
+   [
+    -75.1678267,
+    39.9063329
+   ],
+   [
+    -75.1677901,
+    39.9063282
+   ],
+   [
+    -75.1676989,
+    39.9063164
+   ],
+   [
+    -75.1676728,
+    39.906436
+   ],
+   [
+    -75.1676437,
+    39.9064322
+   ],
+   [
+    -75.1676716,
+    39.906304
+   ],
+   [
+    -75.1675133,
+    39.9062835
+   ],
+   [
+    -75.1674196,
+    39.9063321
+   ],
+   [
+    -75.1674107,
+    39.9063732
+   ],
+   [
+    -75.1674394,
+    39.9063769
+   ],
+   [
+    -75.1674171,
+    39.9064791
+   ],
+   [
+    -75.1673902,
+    39.9064929
+   ],
+   [
+    -75.1674116,
+    39.9065217
+   ],
+   [
+    -75.1674358,
+    39.9065073
+   ],
+   [
+    -75.1675309,
+    39.9066131
+   ],
+   [
+    -75.1675432,
+    39.9065568
+   ],
+   [
+    -75.16758,
+    39.9065616
+   ],
+   [
+    -75.1675529,
+    39.9066858
+   ],
+   [
+    -75.1675591,
+    39.9066925
+   ],
+   [
+    -75.1674291,
+    39.9067717
+   ],
+   [
+    -75.1674398,
+    39.9067841
+   ],
+   [
+    -75.167299,
+    39.906854
+   ],
+   [
+    -75.1672896,
+    39.9068468
+   ],
+   [
+    -75.1671582,
+    39.9069157
+   ],
+   [
+    -75.1671518,
+    39.9069089
+   ],
+   [
+    -75.1669881,
+    39.9068877
+   ]
+  ],
+  "source": "https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/LI_BUILDING_FOOTPRINTS/FeatureServer/0",
+  "note": "L&I footprint objectid 17579 (1 CITIZENS BANK WAY). OSM had no ballpark outline or parts in the Nov. 26 fetch.",
+  "replaces": {
+   "li_footprint_ids": [
+    17579
+   ],
+   "osm_ways": []
+  }
+ },
+ "dims": {
+  "ground_navd88_m": {
+   "value": 4.62,
+   "unit": "m NAVD88",
+   "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+   "note": "Measured: median classified-ground return in a 3-15 m ring around L&I 17579 (scripts/50_landmark_measure.py, output/landmarks/measure/citizens_bank_park.json)."
+  },
+  "field_below_street_m": {
+   "value": 7.01,
+   "unit": "m",
+   "source": "https://www.mlb.com/phillies/ballpark/information/facts-figures-fun-features",
+   "note": "Published as 23 ft. Phillies, 'Facts, Figures and Fun Features': 'Playing field: 23' below street level.'"
+  },
+  "field_level_lidar_m": {
+   "value": -4.5,
+   "unit": "m relative to the ground ring",
+   "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+   "note": "Measured: median height of the low, flat center of the bowl. About 2.5 m shallower than the published 23 ft: the ground ring around the outline is lower than the street level the Phillies measure from (scripts/50_landmark_measure.py, output/landmarks/measure/citizens_bank_park.json)."
+  },
+  "lf_line_m": {
+   "value": 100.279,
+   "unit": "m",
+   "source": "https://www.mlb.com/phillies/ballpark/information/facts-figures-fun-features",
+   "note": "Published as 329 ft. Phillies, 'Facts, Figures and Fun Features'; left-field foul pole. Ballparks of Baseball appears to swap the two foul-pole figures."
+  },
+  "lf_alley_m": {
+   "value": 113.995,
+   "unit": "m",
+   "source": "https://www.mlb.com/phillies/ballpark/information/facts-figures-fun-features",
+   "note": "Published as 374 ft. Phillies, 'Facts, Figures and Fun Features'"
+  },
+  "monty_angle_m": {
+   "value": [
+    124.663,
+    117.958,
+    117.348
+   ],
+   "unit": "m",
+   "source": "https://www.mlb.com/phillies/ballpark/information/facts-figures-fun-features",
+   "note": "Phillies, 'Facts, Figures and Fun Features': 'Monty's Angle' in left-center to center, 409, 387 and 385 ft."
+  },
+  "cf_m": {
+   "value": 122.225,
+   "unit": "m",
+   "source": "https://www.mlb.com/phillies/ballpark/information/facts-figures-fun-features",
+   "note": "Published as 401 ft. Phillies, 'Facts, Figures and Fun Features'; straightaway center."
+  },
+  "rf_alley_m": {
+   "value": 112.471,
+   "unit": "m",
+   "source": "https://www.mlb.com/phillies/ballpark/information/facts-figures-fun-features",
+   "note": "Published as 369 ft. Phillies, 'Facts, Figures and Fun Features'"
+  },
+  "rf_line_m": {
+   "value": 100.584,
+   "unit": "m",
+   "source": "https://www.mlb.com/phillies/ballpark/information/facts-figures-fun-features",
+   "note": "Published as 330 ft. Phillies, 'Facts, Figures and Fun Features'; right-field foul pole."
+  },
+  "wall_lf_m": {
+   "value": 3.2,
+   "unit": "m",
+   "source": "https://www.mlb.com/phillies/ballpark/information/facts-figures-fun-features",
+   "note": "Published as 10 ft 6 in. Phillies, 'Facts, Figures and Fun Features'; left-field line and power alley."
+  },
+  "wall_monty_m": {
+   "value": [
+    5.791,
+    3.861
+   ],
+   "unit": "m",
+   "source": "https://www.mlb.com/phillies/ballpark/information/facts-figures-fun-features",
+   "note": "Phillies, 'Facts, Figures and Fun Features': tapering from 19 ft to 12 ft 8 in across Monty's Angle."
+  },
+  "wall_cf_m": {
+   "value": 1.829,
+   "unit": "m",
+   "source": "https://www.mlb.com/phillies/ballpark/information/facts-figures-fun-features",
+   "note": "Published as 6 ft. Phillies, 'Facts, Figures and Fun Features'"
+  },
+  "wall_rf_m": {
+   "value": 4.039,
+   "unit": "m",
+   "source": "https://www.mlb.com/phillies/ballpark/information/facts-figures-fun-features",
+   "note": "Published as 13 ft 3 in. Phillies, 'Facts, Figures and Fun Features'; right-field alley and line."
+  },
+  "foul_pole_height_m": {
+   "value": 25.908,
+   "unit": "m",
+   "source": "https://www.mlb.com/phillies/ballpark/information/facts-figures-fun-features",
+   "note": "Published as 85 ft. Phillies, 'Facts, Figures and Fun Features'"
+  },
+  "suite_level_m": {
+   "value": 10.973,
+   "unit": "m",
+   "source": "https://www.mlb.com/phillies/ballpark/information/facts-figures-fun-features",
+   "note": "Published as 36 ft. Phillies, 'Facts, Figures and Fun Features'; above the field."
+  },
+  "club_concourse_m": {
+   "value": 18.593,
+   "unit": "m",
+   "source": "https://www.mlb.com/phillies/ballpark/information/facts-figures-fun-features",
+   "note": "Published as 61 ft. Phillies, 'Facts, Figures and Fun Features'; above the field."
+  },
+  "terrace_concourse_m": {
+   "value": 24.689,
+   "unit": "m",
+   "source": "https://www.mlb.com/phillies/ballpark/information/facts-figures-fun-features",
+   "note": "Published as 81 ft. Phillies, 'Facts, Figures and Fun Features'; above the field."
+  },
+  "roof_above_field_m": {
+   "value": 40.843,
+   "unit": "m",
+   "source": "https://www.mlb.com/phillies/ballpark/information/facts-figures-fun-features",
+   "note": "Published as 134 ft. Phillies, 'Facts, Figures and Fun Features': 'Roof: 134' above field.'"
+  },
+  "light_tower_height_m": {
+   "value": 50.292,
+   "unit": "m",
+   "source": "https://www.mlb.com/phillies/ballpark/information/facts-figures-fun-features",
+   "note": "Published as 165 ft. Phillies, 'Facts, Figures and Fun Features': light towers 165 ft high; the scoreboard's steel tops out at 143 ft 3 in. The same page calls the scoreboard (143 ft 3 in) the 'Highest piece of steel' while listing 165 ft light towers; check the towers on the LiDAR in Phase 1."
+  },
+  "scoreboard_m": {
+   "value": [
+    26.213,
+    46.33
+   ],
+   "unit": "m (height, width)",
+   "source": "https://www.mlb.com/phillies/ballpark/information/facts-figures-fun-features",
+   "note": "Phillies, 'Facts, Figures and Fun Features': the 2023 board, 152 ft wide by 86 ft tall."
+  },
+  "scoreboard_steel_m": {
+   "value": 43.663,
+   "unit": "m",
+   "source": "https://www.mlb.com/phillies/ballpark/information/facts-figures-fun-features",
+   "note": "Published as 143 ft 3 in. Phillies, 'Facts, Figures and Fun Features'"
+  },
+  "liberty_bell_m": {
+   "value": [
+    15.24,
+    10.668
+   ],
+   "unit": "m (height, width)",
+   "source": "https://www.ballparksofbaseball.com/ballparks/citizens-bank-park/",
+   "note": "Ballparks of Baseball; Wikipedia gives 52 ft tall, 102 ft above the street."
+  },
+  "bowl_rim_height_m": {
+   "value": 34.49,
+   "unit": "m above ground",
+   "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+   "note": "Measured: highest 95th-percentile stand height in the six sectors from south to northwest around the field (behind home plate and the infield) (scripts/50_landmark_measure.py, output/landmarks/measure/citizens_bank_park.json)."
+  },
+  "outfield_rim_height_m": {
+   "value": 8.38,
+   "unit": "m above ground",
+   "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+   "note": "Measured: mean median height of the north to east sectors (outfield seating and concourse, mostly low) (scripts/50_landmark_measure.py, output/landmarks/measure/citizens_bank_park.json)."
+  }
+ },
+ "colors": {
+  "grass": {
+   "rgb": [
+    97,
+    97,
+    65
+   ],
+   "source": "https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2024_3in/MapServer",
+   "method": "aerial",
+   "aerial": {
+    "outline": "bowl:field"
+   },
+   "note": "Median lit color of the 2024 aerial inside the low center of the bowl (bowl.field.sample_ring in the measure output)."
+  },
+  "roof_overall": {
+   "rgb": [
+    160,
+    156,
+    145
+   ],
+   "source": "https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2024_3in/MapServer",
+   "method": "aerial",
+   "aerial": {
+    "outline": "li:17579"
+   },
+   "note": "The ballpark from above: median of the lit pixels (darkest 25% dropped) inside li 17579 in the 2024 aerial (scripts/50_landmark_measure.py, output/landmarks/measure/citizens_bank_park.json)."
+  },
+  "seats": {
+   "rgb": [
+    40,
+    63,
+    109
+   ],
+   "source": "https://commons.wikimedia.org/wiki/File:Fieldatthepark.jpg",
+   "method": "photo",
+   "photo": {
+    "file": "data/landmarks/refs/citizens_bank_park/2_wikimedia_commons.jpg",
+    "box": [
+     1900,
+     150,
+     1915,
+     160
+    ],
+    "drop_dark": 0.0
+   },
+   "note": "Empty seats in the right-field upper deck; the Phillies call the color 'Sapphire blue' (https://www.mlb.com/phillies/ballpark/information/facts-figures-fun-features): median of the box (pixels x0, y0, x1, y1), darkest 0% dropped. Reference photo, a modeling reference only."
+  },
+  "infield_dirt": {
+   "rgb": [
+    235,
+    163,
+    111
+   ],
+   "source": "https://commons.wikimedia.org/wiki/File:Fieldatthepark.jpg",
+   "method": "photo",
+   "photo": {
+    "file": "data/landmarks/refs/citizens_bank_park/2_wikimedia_commons.jpg",
+    "box": [
+     960,
+     700,
+     1050,
+     745
+    ],
+    "drop_dark": 0.25
+   },
+   "note": "Infield dirt: median of the box (pixels x0, y0, x1, y1), darkest 25% dropped. Reference photo, a modeling reference only."
+  },
+  "brick": {
+   "rgb": [
+    140,
+    87,
+    74
+   ],
+   "source": "https://commons.wikimedia.org/wiki/File:Fieldatthepark.jpg",
+   "method": "photo",
+   "photo": {
+    "file": "data/landmarks/refs/citizens_bank_park/2_wikimedia_commons.jpg",
+    "box": [
+     1152,
+     352,
+     1264,
+     400
+    ],
+    "drop_dark": 0.25
+   },
+   "note": "Red brick of the outfield buildings ('multiple shades of red brick', Phillies): median of the box (pixels x0, y0, x1, y1), darkest 25% dropped. Reference photo, a modeling reference only."
+  },
+  "outfield_wall": {
+   "rgb": [
+    122,
+    132,
+    84
+   ],
+   "source": "https://commons.wikimedia.org/wiki/File:Fieldatthepark.jpg",
+   "method": "photo",
+   "photo": {
+    "file": "data/landmarks/refs/citizens_bank_park/2_wikimedia_commons.jpg",
+    "box": [
+     700,
+     470,
+     900,
+     490
+    ],
+    "drop_dark": 0.25
+   },
+   "note": "Outfield wall: median of the box (pixels x0, y0, x1, y1), darkest 25% dropped. Reference photo, a modeling reference only."
+  }
+ },
+ "kit_params": {
+  "field": {
+   "type": "baseball",
+   "level_m": "field_below_street_m",
+   "fences": {
+    "lf_line_m": "lf_line_m",
+    "lf_alley_m": "lf_alley_m",
+    "cf_m": "cf_m",
+    "rf_alley_m": "rf_alley_m",
+    "rf_line_m": "rf_line_m"
+   },
+   "outfield_faces": "north-northeast, toward Center City (the skyline shows straight out past center field in the reference photo, https://commons.wikimedia.org/wiki/File:Fieldatthepark.jpg; the LiDAR's low stand sectors are north to east)",
+   "surface": "from the aerial (no decal)"
+  },
+  "stands": {
+   "rim_m": "bowl_rim_height_m",
+   "outfield_m": "outfield_rim_height_m",
+   "rake": {
+    "value": {
+     "long_pos": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      -5.08,
+      -5.1,
+      -5.06,
+      -5.07,
+      -5.41,
+      -5.05,
+      -4.9,
+      -4.63,
+      -4.45,
+      -4.09,
+      -3.74,
+      -3.47,
+      -3.15,
+      -2.69,
+      -2.55,
+      -1.93,
+      -1.56,
+      -1.1,
+      -0.7,
+      7.96,
+      8.17,
+      15.51,
+      16.04,
+      17.03,
+      18.16,
+      18.69,
+      13.3,
+      19.76,
+      19.81,
+      15.78,
+      18.41,
+      17.43,
+      19.15,
+      18.19,
+      17.73,
+      15.98,
+      23.07,
+      15.53,
+      15.34,
+      12.42,
+      12.46,
+      12.43,
+      12.43,
+      12.44,
+      12.43,
+      20.73,
+      20.85,
+      20.84,
+      20.85,
+      20.81,
+      20.76,
+      20.8,
+      20.79,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ],
+     "long_neg": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      -6.22,
+      -5.16,
+      -5.15,
+      -5.12,
+      -5.15,
+      -4.41,
+      -5.02,
+      -4.58,
+      -4.47,
+      -4.3,
+      -3.98,
+      -3.65,
+      -3.37,
+      -3.09,
+      -2.77,
+      -2.31,
+      -1.95,
+      -1.44,
+      -1.04,
+      -0.71,
+      7.86,
+      149.83,
+      149.26,
+      15.97,
+      16.53,
+      17.61,
+      136.4,
+      135.36,
+      21.63,
+      22.25,
+      23.27,
+      23.97,
+      34.56,
+      34.49,
+      34.33,
+      34.19,
+      34.02,
+      33.88,
+      33.68,
+      23.52,
+      24.15,
+      24.63,
+      24.92,
+      25.1,
+      25.12,
+      24.99,
+      24.8,
+      24.51,
+      23.92,
+      20.06,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ],
+     "short_pos": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ],
+     "short_neg": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      -5.13,
+      -5.11,
+      -4.91,
+      -4.8,
+      -4.43,
+      -4.15,
+      -3.76,
+      -3.39,
+      -3.02,
+      -2.48,
+      -1.14,
+      -1.06,
+      -0.57,
+      7.87,
+      8.26,
+      16.67,
+      17.82,
+      19.56,
+      18.62,
+      21.78,
+      23.43,
+      34.37,
+      34.69,
+      34.35,
+      34.2,
+      34.06,
+      33.93,
+      33.77,
+      27.65,
+      27.71,
+      27.68,
+      27.87,
+      27.91,
+      27.63,
+      27.64,
+      27.63,
+      27.63,
+      20.03,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "unit": "m above ground per 2 m along each half-axis of the bowl's low area",
+    "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+    "note": "Measured (scripts/50_landmark_measure.py, output/landmarks/measure/citizens_bank_park.json, bowl.profiles). The axes are those of the low area's rectangle, not the diamond."
+   }
+  },
+  "light_towers": {
+   "count": {
+    "value": 2,
+    "unit": "count",
+    "source": "https://www.mlb.com/phillies/ballpark/information/facts-figures-fun-features",
+    "note": "Phillies, 'Facts, Figures and Fun Features': 'twin light towers flank the primary entrances'."
+   },
+   "height_m": "light_tower_height_m"
+  },
+  "facade": "red brick, precast concrete and granite with green copper-patina roofs (https://www.mlb.com/phillies/ballpark/information/facts-figures-fun-features)",
+  "windows": "none on the stands"
+ },
+ "credits": [
+  "LiDAR: City of Philadelphia 2022 classified LiDAR via PASDA (https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154)",
+  "Aerial: City of Philadelphia 2024 3-inch imagery (CityImagery_2024_3in)",
+  "Footprints: City of Philadelphia L&I building footprints (OpenDataPhilly)",
+  "Reference photo: Phillyfan0419 on en.wikipedia, public domain, https://commons.wikimedia.org/wiki/File:Fieldatthepark.jpg"
+ ],
+ "review": {
+  "open_questions": [
+   "Home plate's exact position and the home-to-center bearing aren't published; Phase 1 can take them from the aerial (the diamond is visible).",
+   "Liberty Bell sign height: 50 ft (Ballparks of Baseball) vs. 52 ft (Wikipedia)."
+  ]
+ }
+}

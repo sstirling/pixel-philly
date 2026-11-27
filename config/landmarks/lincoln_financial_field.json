@@ -1,0 +1,1175 @@
+{
+ "slug": "lincoln_financial_field",
+ "name": "Lincoln Financial Field",
+ "wikidata": "Q1052370",
+ "kit": "stadium_bowl",
+ "about": "The Eagles' stadium (NBBJ Sport, 2003): a bowl around a football field about 1 m below the surrounding street, with wing-like canopies over the east and west sideline stands and open end zones (SAH Archipedia). The model replaces the L&I footprint, so no window grid is painted on it: stands as stepped seating bands in team green, white canopies, gray steel and dark panel facades; field markings from the NFL rulebook as a ground decal. Field position, axis and stand heights are measured on the 2022 LiDAR.",
+ "footprint": {
+  "polygon": [
+   [
+    -75.1668329,
+    39.9021284
+   ],
+   [
+    -75.1666802,
+    39.9018941
+   ],
+   [
+    -75.1666452,
+    39.9019398
+   ],
+   [
+    -75.1666432,
+    39.9019367
+   ],
+   [
+    -75.1664775,
+    39.9016869
+   ],
+   [
+    -75.1662733,
+    39.9013792
+   ],
+   [
+    -75.1662158,
+    39.9012927
+   ],
+   [
+    -75.1662152,
+    39.9012804
+   ],
+   [
+    -75.1662144,
+    39.9012803
+   ],
+   [
+    -75.1661382,
+    39.9012693
+   ],
+   [
+    -75.1661281,
+    39.9013144
+   ],
+   [
+    -75.1661197,
+    39.9013133
+   ],
+   [
+    -75.1659913,
+    39.9012961
+   ],
+   [
+    -75.1660198,
+    39.9011747
+   ],
+   [
+    -75.1660067,
+    39.901173
+   ],
+   [
+    -75.1660841,
+    39.900845
+   ],
+   [
+    -75.1660914,
+    39.9008139
+   ],
+   [
+    -75.1661247,
+    39.9008175
+   ],
+   [
+    -75.1661253,
+    39.9008176
+   ],
+   [
+    -75.1660803,
+    39.9006074
+   ],
+   [
+    -75.1660757,
+    39.9005863
+   ],
+   [
+    -75.1661377,
+    39.9003112
+   ],
+   [
+    -75.1661794,
+    39.9001261
+   ],
+   [
+    -75.1662114,
+    39.8999842
+   ],
+   [
+    -75.1662329,
+    39.8998888
+   ],
+   [
+    -75.1662366,
+    39.8998723
+   ],
+   [
+    -75.1662456,
+    39.8998791
+   ],
+   [
+    -75.1663091,
+    39.8999271
+   ],
+   [
+    -75.166311,
+    39.8999808
+   ],
+   [
+    -75.16643,
+    39.8998944
+   ],
+   [
+    -75.1666789,
+    39.8997137
+   ],
+   [
+    -75.1666915,
+    39.8997123
+   ],
+   [
+    -75.1667274,
+    39.8997082
+   ],
+   [
+    -75.1667391,
+    39.8996998
+   ],
+   [
+    -75.1667678,
+    39.8996789
+   ],
+   [
+    -75.1667946,
+    39.8996595
+   ],
+   [
+    -75.1668361,
+    39.8996548
+   ],
+   [
+    -75.16688,
+    39.8996497
+   ],
+   [
+    -75.1670698,
+    39.8996279
+   ],
+   [
+    -75.1670711,
+    39.8996352
+   ],
+   [
+    -75.1670772,
+    39.8996691
+   ],
+   [
+    -75.167729,
+    39.8995902
+   ],
+   [
+    -75.16774,
+    39.8995888
+   ],
+   [
+    -75.16774,
+    39.8995944
+   ],
+   [
+    -75.1682187,
+    39.8995406
+   ],
+   [
+    -75.1682385,
+    39.899635
+   ],
+   [
+    -75.1678152,
+    39.8996873
+   ],
+   [
+    -75.1677976,
+    39.8996895
+   ],
+   [
+    -75.1678439,
+    39.8997046
+   ],
+   [
+    -75.1680263,
+    39.899683
+   ],
+   [
+    -75.1680377,
+    39.8997462
+   ],
+   [
+    -75.1680934,
+    39.8997673
+   ],
+   [
+    -75.1680967,
+    39.8997622
+   ],
+   [
+    -75.1681369,
+    39.8997797
+   ],
+   [
+    -75.1681067,
+    39.8998188
+   ],
+   [
+    -75.1682282,
+    39.899835
+   ],
+   [
+    -75.1681699,
+    39.8997471
+   ],
+   [
+    -75.1682269,
+    39.8996648
+   ],
+   [
+    -75.1682725,
+    39.8997334
+   ],
+   [
+    -75.168261,
+    39.8996675
+   ],
+   [
+    -75.1683247,
+    39.8996619
+   ],
+   [
+    -75.1683509,
+    39.8997901
+   ],
+   [
+    -75.1683173,
+    39.8997914
+   ],
+   [
+    -75.1684361,
+    39.899977
+   ],
+   [
+    -75.1684442,
+    39.8999895
+   ],
+   [
+    -75.1685493,
+    39.8999796
+   ],
+   [
+    -75.1685451,
+    39.8999362
+   ],
+   [
+    -75.1686844,
+    39.8999215
+   ],
+   [
+    -75.1687031,
+    39.9000434
+   ],
+   [
+    -75.1687249,
+    39.9000416
+   ],
+   [
+    -75.1687776,
+    39.9003307
+   ],
+   [
+    -75.1687377,
+    39.9003359
+   ],
+   [
+    -75.1687705,
+    39.9005085
+   ],
+   [
+    -75.169026,
+    39.9004779
+   ],
+   [
+    -75.169082,
+    39.9007567
+   ],
+   [
+    -75.1688294,
+    39.9007887
+   ],
+   [
+    -75.168827,
+    39.900789
+   ],
+   [
+    -75.1688611,
+    39.9009705
+   ],
+   [
+    -75.1688617,
+    39.9009704
+   ],
+   [
+    -75.1689033,
+    39.9009642
+   ],
+   [
+    -75.1689211,
+    39.9010715
+   ],
+   [
+    -75.1689644,
+    39.9013326
+   ],
+   [
+    -75.1689851,
+    39.9014573
+   ],
+   [
+    -75.1688574,
+    39.901472
+   ],
+   [
+    -75.1688379,
+    39.9013686
+   ],
+   [
+    -75.1687197,
+    39.9013817
+   ],
+   [
+    -75.1686411,
+    39.9017341
+   ],
+   [
+    -75.1685644,
+    39.9016737
+   ],
+   [
+    -75.1685357,
+    39.9016687
+   ],
+   [
+    -75.1685168,
+    39.9017525
+   ],
+   [
+    -75.1682992,
+    39.9017741
+   ],
+   [
+    -75.1682912,
+    39.9017304
+   ],
+   [
+    -75.1681644,
+    39.9017473
+   ],
+   [
+    -75.1681752,
+    39.901808
+   ],
+   [
+    -75.1681155,
+    39.9018157
+   ],
+   [
+    -75.1681215,
+    39.9018451
+   ],
+   [
+    -75.1680216,
+    39.9018564
+   ],
+   [
+    -75.1680136,
+    39.9018199
+   ],
+   [
+    -75.1679572,
+    39.9018261
+   ],
+   [
+    -75.1679686,
+    39.9018943
+   ],
+   [
+    -75.1673453,
+    39.9019739
+   ],
+   [
+    -75.1672629,
+    39.9019844
+   ],
+   [
+    -75.1672612,
+    39.9019757
+   ],
+   [
+    -75.1671249,
+    39.9019921
+   ],
+   [
+    -75.1670848,
+    39.9019317
+   ],
+   [
+    -75.1669133,
+    39.9019992
+   ],
+   [
+    -75.1669639,
+    39.9020755
+   ],
+   [
+    -75.1669615,
+    39.9020764
+   ],
+   [
+    -75.1668329,
+    39.9021284
+   ]
+  ],
+  "source": "https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/LI_BUILDING_FOOTPRINTS/FeatureServer/0",
+  "note": "L&I footprint objectid 13514 (1020 PATTISON AVE, 'Lincoln Financial Field'). OSM had no Linc outline or parts in the Nov. 26 fetch.",
+  "replaces": {
+   "li_footprint_ids": [
+    13514
+   ],
+   "osm_ways": []
+  }
+ },
+ "dims": {
+  "ground_navd88_m": {
+   "value": 4.36,
+   "unit": "m NAVD88",
+   "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+   "note": "Measured: median classified-ground return in a 3-15 m ring around L&I 13514 (scripts/50_landmark_measure.py, output/landmarks/measure/lincoln_financial_field.json)."
+  },
+  "field_length_m": {
+   "value": 109.728,
+   "unit": "m",
+   "source": "https://static.www.nfl.com/image/upload/fl_attachment/league/tqivdkzt9mu6wdgsh1ku.pdf",
+   "note": "Published as 360 ft. 2026 NFL Rulebook, Rule 1 (linked from https://operations.nfl.com/the-rules/nfl-rulebook/): 'a rectangular field, 360 feet in length and 160 feet in width', end lines to end line, including the end zones."
+  },
+  "field_width_m": {
+   "value": 48.768,
+   "unit": "m",
+   "source": "https://static.www.nfl.com/image/upload/fl_attachment/league/tqivdkzt9mu6wdgsh1ku.pdf",
+   "note": "Published as 160 ft. 2026 NFL Rulebook, Rule 1 (linked from https://operations.nfl.com/the-rules/nfl-rulebook/)."
+  },
+  "end_zone_depth_m": {
+   "value": 9.144,
+   "unit": "m",
+   "source": "https://static.www.nfl.com/image/upload/fl_attachment/league/tqivdkzt9mu6wdgsh1ku.pdf",
+   "note": "Published as 30 ft. 2026 NFL Rulebook, Rule 1 (linked from https://operations.nfl.com/the-rules/nfl-rulebook/): goal lines 10 yards (30 ft) from the end lines; each goal line 8 in wide."
+  },
+  "border_width_m": {
+   "value": 1.829,
+   "unit": "m",
+   "source": "https://static.www.nfl.com/image/upload/fl_attachment/league/tqivdkzt9mu6wdgsh1ku.pdf",
+   "note": "Published as 6 ft. 2026 NFL Rulebook, Rule 1 (linked from https://operations.nfl.com/the-rules/nfl-rulebook/): a solid white border at least 6 ft wide along the end lines and sidelines."
+  },
+  "hash_from_sideline_m": {
+   "value": 21.565,
+   "unit": "m",
+   "source": "https://static.www.nfl.com/image/upload/fl_attachment/league/tqivdkzt9mu6wdgsh1ku.pdf",
+   "note": "Published as 70 ft 9 in. 2026 NFL Rulebook, Rule 1 (linked from https://operations.nfl.com/the-rules/nfl-rulebook/): inbounds hash marks 70 ft 9 in from each sideline."
+  },
+  "yard_line_width_m": {
+   "value": 0.102,
+   "unit": "m",
+   "source": "https://static.www.nfl.com/image/upload/fl_attachment/league/tqivdkzt9mu6wdgsh1ku.pdf",
+   "note": "2026 NFL Rulebook, Rule 1 (linked from https://operations.nfl.com/the-rules/nfl-rulebook/): yard lines every 5 yd, 4 in wide."
+  },
+  "crossbar_height_m": {
+   "value": 3.048,
+   "unit": "m",
+   "source": "https://static.www.nfl.com/image/upload/fl_attachment/league/tqivdkzt9mu6wdgsh1ku.pdf",
+   "note": "Published as 10 ft. 2026 NFL Rulebook, Rule 1 (linked from https://operations.nfl.com/the-rules/nfl-rulebook/): crossbar top face 10 ft above the ground, 18 ft 6 in long, in the plane of the end line."
+  },
+  "crossbar_length_m": {
+   "value": 5.639,
+   "unit": "m",
+   "source": "https://static.www.nfl.com/image/upload/fl_attachment/league/tqivdkzt9mu6wdgsh1ku.pdf",
+   "note": "Published as 18 ft 6 in. 2026 NFL Rulebook, Rule 1 (linked from https://operations.nfl.com/the-rules/nfl-rulebook/)."
+  },
+  "upright_height_m": {
+   "value": 10.668,
+   "unit": "m",
+   "source": "https://static.www.nfl.com/image/upload/fl_attachment/league/tqivdkzt9mu6wdgsh1ku.pdf",
+   "note": "Published as 35 ft. 2026 NFL Rulebook, Rule 1 (linked from https://operations.nfl.com/the-rules/nfl-rulebook/): uprights extend 35 ft above the crossbar; single-standard, offset, bright gold."
+  },
+  "open_area_length_m": {
+   "value": 135.64,
+   "unit": "m",
+   "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+   "note": "Measured: length of the low, flat field-level area at the bowl's center (minimum rotated rectangle; the turf runs past the end lines and sidelines) (scripts/50_landmark_measure.py, output/landmarks/measure/lincoln_financial_field.json)."
+  },
+  "open_area_width_m": {
+   "value": 91.83,
+   "unit": "m",
+   "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+   "note": "Measured: width of the same area (scripts/50_landmark_measure.py, output/landmarks/measure/lincoln_financial_field.json)."
+  },
+  "field_level_m": {
+   "value": -1.0,
+   "unit": "m relative to the street",
+   "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+   "note": "Measured: median height of the field-level area above the ground ring around the stadium (scripts/50_landmark_measure.py, output/landmarks/measure/lincoln_financial_field.json)."
+  },
+  "field_bearing_deg": {
+   "value": 171.21,
+   "unit": "degrees clockwise from north",
+   "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+   "note": "Measured: long axis of the field-level area (the Philadelphia street grid's tilt) (scripts/50_landmark_measure.py, output/landmarks/measure/lincoln_financial_field.json)."
+  },
+  "field_center": {
+   "value": [
+    -75.1674605,
+    39.900797
+   ],
+   "unit": "lon, lat",
+   "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+   "note": "Measured: center of the field-level area; the NFL field is centered in it (scripts/50_landmark_measure.py, output/landmarks/measure/lincoln_financial_field.json)."
+  },
+  "bowl_rim_height_m": {
+   "value": 52.45,
+   "unit": "m above ground",
+   "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+   "note": "Measured: highest 95th-percentile stand height of the 30-degree sectors around the field center: the sideline canopies (scripts/50_landmark_measure.py, output/landmarks/measure/lincoln_financial_field.json)."
+  },
+  "end_rim_height_m": {
+   "value": 42.36,
+   "unit": "m above ground",
+   "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+   "note": "Measured: mean 95th-percentile height of the six end-zone sectors (north and south), lower and open (scripts/50_landmark_measure.py, output/landmarks/measure/lincoln_financial_field.json)."
+  },
+  "front_row_from_sideline_m": {
+   "value": 18.288,
+   "unit": "m",
+   "source": "https://www.lincolnfinancialfield.com/stadium-facts/",
+   "note": "Published as 60 ft. 'Front Row From Sidelines 60 ft.' The page's table compares the Vet and the Linc side by side ('120 ft ... 60 ft'); 60 ft is the Linc's column."
+  },
+  "plan_size_m": {
+   "value": [
+    240.792,
+    251.46
+   ],
+   "unit": "m",
+   "source": "https://www.lincolnfinancialfield.com/stadium-facts/",
+   "note": "'Stadium Footprint 790′ x 825′ – 15 acres'; the L&I outline is the plan the model uses."
+  },
+  "north_board_m": {
+   "value": [
+    8.23,
+    58.522
+   ],
+   "unit": "m (height, width)",
+   "source": "https://www.philadelphiaeagles.com/news/stadium-revitalization-additional-facts-10306468",
+   "note": "North end-zone video board, 27 ft by 192 ft (2014); on the headhouse end."
+  },
+  "south_board_m": {
+   "value": [
+    8.23,
+    48.768
+   ],
+   "unit": "m (height, width)",
+   "source": "https://www.philadelphiaeagles.com/news/stadium-revitalization-additional-facts-10306468",
+   "note": "South end-zone video board, 27 ft by 160 ft (2014)."
+  }
+ },
+ "colors": {
+  "turf": {
+   "rgb": [
+    101,
+    108,
+    67
+   ],
+   "source": "https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2024_3in/MapServer",
+   "method": "aerial",
+   "aerial": {
+    "outline": "bowl:field"
+   },
+   "note": "Median lit color of the 2024 aerial inside the field rectangle shrunk to 80% (scripts/50_landmark_measure.py, bowl.field.sample_ring). Natural Bermuda grass with some artificial fibers (Billy Penn, 2025)."
+  },
+  "roof_overall": {
+   "rgb": [
+    160,
+    157,
+    144
+   ],
+   "source": "https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2024_3in/MapServer",
+   "method": "aerial",
+   "aerial": {
+    "outline": "li:13514"
+   },
+   "note": "The whole stadium from above (canopies, stands, field): median of the lit pixels (darkest 25% dropped) inside li 13514 in the 2024 aerial (scripts/50_landmark_measure.py, output/landmarks/measure/lincoln_financial_field.json)."
+  },
+  "canopy": {
+   "rgb": [
+    253,
+    253,
+    253
+   ],
+   "source": "https://commons.wikimedia.org/wiki/File:Lincoln_Financial_Field_(Aerial_view).jpg",
+   "method": "photo",
+   "photo": {
+    "file": "data/landmarks/refs/lincoln_financial_field/0_wikimedia_commons.jpg",
+    "box": [
+     480,
+     346,
+     560,
+     365
+    ],
+    "drop_dark": 0.25
+   },
+   "note": "White canopy roof over the west stands, sunlit (clipped at white in the photo): median of the box (pixels x0, y0, x1, y1), darkest 25% dropped. Reference photo, a modeling reference only."
+  },
+  "seats": {
+   "rgb": [
+    82,
+    109,
+    123
+   ],
+   "source": "https://commons.wikimedia.org/wiki/File:Lincoln_Financial_Field_(Aerial_view).jpg",
+   "method": "photo",
+   "photo": {
+    "file": "data/landmarks/refs/lincoln_financial_field/0_wikimedia_commons.jpg",
+    "box": [
+     544,
+     416,
+     672,
+     480
+    ],
+    "drop_dark": 0.25
+   },
+   "note": "Upper-deck seats, dark green: median of the box (pixels x0, y0, x1, y1), darkest 25% dropped. Reference photo, a modeling reference only."
+  },
+  "seats_far": {
+   "rgb": [
+    92,
+    124,
+    135
+   ],
+   "source": "https://commons.wikimedia.org/wiki/File:Lincoln_Financial_Field_(Aerial_view).jpg",
+   "method": "photo",
+   "photo": {
+    "file": "data/landmarks/refs/lincoln_financial_field/0_wikimedia_commons.jpg",
+    "box": [
+     1090,
+     400,
+     1400,
+     480
+    ],
+    "drop_dark": 0.25
+   },
+   "note": "Seats in the east stands, lit: median of the box (pixels x0, y0, x1, y1), darkest 25% dropped. Reference photo, a modeling reference only."
+  },
+  "facade_panels": {
+   "rgb": [
+    57,
+    82,
+    95
+   ],
+   "source": "https://commons.wikimedia.org/wiki/File:Lincoln_Financial_Field_(Aerial_view).jpg",
+   "method": "photo",
+   "photo": {
+    "file": "data/landmarks/refs/lincoln_financial_field/0_wikimedia_commons.jpg",
+    "box": [
+     608,
+     720,
+     736,
+     832
+    ],
+    "drop_dark": 0.25
+   },
+   "note": "Dark metal-panel facade on the west side: median of the box (pixels x0, y0, x1, y1), darkest 25% dropped. Reference photo, a modeling reference only."
+  },
+  "field_lines": {
+   "rgb": [
+    255,
+    255,
+    255
+   ],
+   "source": "https://static.www.nfl.com/image/upload/fl_attachment/league/tqivdkzt9mu6wdgsh1ku.pdf",
+   "method": "rule",
+   "note": "2026 NFL Rulebook, Rule 1 (linked from https://operations.nfl.com/the-rules/nfl-rulebook/): borders, yard lines and numerals are white."
+  },
+  "goalposts": {
+   "rgb": [
+    255,
+    204,
+    0
+   ],
+   "estimate": true,
+   "method": "rule",
+   "reason": "The rulebook says 'bright gold'; the exact color is our pick."
+  }
+ },
+ "kit_params": {
+  "field": {
+   "length_m": "field_length_m",
+   "width_m": "field_width_m",
+   "end_zone_m": "end_zone_depth_m",
+   "center": "field_center",
+   "bearing": "field_bearing_deg",
+   "level_m": "field_level_m",
+   "markings": "NFL (rulebook decal); no soccer lines"
+  },
+  "stands": {
+   "rim_side_m": "bowl_rim_height_m",
+   "rim_end_m": "end_rim_height_m",
+   "front_row_m": "front_row_from_sideline_m",
+   "rake": {
+    "value": {
+     "long_pos": [
+      -0.85,
+      -0.84,
+      -0.84,
+      -0.84,
+      -0.84,
+      -0.84,
+      -0.85,
+      -0.84,
+      -0.85,
+      -0.83,
+      -0.84,
+      -0.86,
+      -0.84,
+      -0.86,
+      -0.84,
+      -0.84,
+      -0.84,
+      -0.84,
+      -0.84,
+      -0.85,
+      -0.85,
+      -0.84,
+      -0.85,
+      -0.85,
+      -0.81,
+      -0.83,
+      -0.84,
+      -0.87,
+      -0.9,
+      -0.94,
+      -1.03,
+      -1.03,
+      1.06,
+      1.25,
+      1.68,
+      2.16,
+      2.55,
+      3.13,
+      3.6,
+      4.28,
+      4.7,
+      5.25,
+      5.75,
+      6.47,
+      7.53,
+      8.19,
+      22.67,
+      23.42,
+      26.7,
+      27.59,
+      28.36,
+      29.57,
+      31.21,
+      32.42,
+      33.63,
+      35.25,
+      42.0,
+      41.67,
+      41.82,
+      39.61,
+      28.86,
+      29.11,
+      30.67,
+      5.68,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ],
+     "long_neg": [
+      -0.83,
+      -0.84,
+      -0.81,
+      -0.84,
+      -0.85,
+      -0.85,
+      -0.85,
+      -0.85,
+      -0.85,
+      -0.84,
+      -0.85,
+      -0.85,
+      -0.85,
+      -0.84,
+      -0.85,
+      -0.84,
+      -0.84,
+      -0.84,
+      -0.83,
+      -0.82,
+      -0.84,
+      -0.83,
+      -0.83,
+      -0.85,
+      -0.82,
+      -0.84,
+      -0.87,
+      -0.92,
+      -0.92,
+      -0.99,
+      0.39,
+      0.57,
+      1.05,
+      1.24,
+      1.65,
+      2.08,
+      2.59,
+      3.05,
+      3.71,
+      4.07,
+      4.59,
+      5.31,
+      5.78,
+      6.42,
+      7.49,
+      8.08,
+      8.71,
+      9.41,
+      10.36,
+      20.5,
+      21.31,
+      28.38,
+      31.65,
+      32.34,
+      33.55,
+      35.1,
+      36.35,
+      43.47,
+      43.89,
+      46.16,
+      44.28,
+      33.94,
+      35.29,
+      35.69,
+      33.06,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ],
+     "short_pos": [
+      -0.83,
+      -0.83,
+      -0.85,
+      -0.87,
+      -0.88,
+      -0.89,
+      -0.91,
+      -0.93,
+      -0.94,
+      -0.94,
+      -0.97,
+      -0.96,
+      -1.01,
+      -1.01,
+      -1.04,
+      -1.06,
+      -1.08,
+      -1.08,
+      -1.1,
+      -1.1,
+      -1.1,
+      1.07,
+      1.17,
+      1.71,
+      2.11,
+      2.7,
+      3.33,
+      3.94,
+      4.31,
+      4.63,
+      5.23,
+      5.85,
+      6.42,
+      7.03,
+      16.96,
+      17.9,
+      18.11,
+      19.72,
+      20.87,
+      27.05,
+      28.42,
+      31.34,
+      32.11,
+      52.45,
+      52.52,
+      52.47,
+      52.55,
+      52.56,
+      52.51,
+      52.43,
+      52.04,
+      51.97,
+      49.12,
+      48.61,
+      47.89,
+      54.78,
+      54.92,
+      6.47,
+      6.49,
+      5.56,
+      4.42,
+      3.5,
+      3.44,
+      2.61,
+      1.58,
+      3.85,
+      3.9,
+      4.05,
+      4.27,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ],
+     "short_neg": [
+      -0.85,
+      -0.82,
+      -0.86,
+      -0.88,
+      -0.9,
+      -0.9,
+      -0.92,
+      -0.94,
+      -0.95,
+      -0.96,
+      -0.95,
+      -0.99,
+      -1.01,
+      -1.03,
+      -1.06,
+      -1.07,
+      -1.09,
+      -1.1,
+      -1.12,
+      -1.12,
+      -1.13,
+      1.1,
+      1.28,
+      1.65,
+      2.1,
+      2.64,
+      3.07,
+      3.8,
+      4.14,
+      4.73,
+      5.28,
+      5.8,
+      14.37,
+      14.46,
+      15.53,
+      18.37,
+      18.85,
+      19.2,
+      20.48,
+      21.38,
+      28.36,
+      31.44,
+      32.04,
+      52.31,
+      52.46,
+      52.36,
+      52.51,
+      52.48,
+      52.43,
+      52.29,
+      52.01,
+      51.89,
+      49.11,
+      48.58,
+      47.96,
+      38.51,
+      54.88,
+      38.11,
+      38.08,
+      38.08,
+      38.27,
+      38.08,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "unit": "m above ground per 2 m from the field center along each half-axis",
+    "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+    "note": "Measured: maximum LiDAR height per 2 m bin within 3 m of each half-axis (scripts/50_landmark_measure.py, output/landmarks/measure/lincoln_financial_field.json, bowl.profiles)."
+   }
+  },
+  "canopies": {
+   "sides": "east and west (sideline) stands; end zones open",
+   "source": "https://sah-archipedia.org/buildings/PA-02-PH200"
+  },
+  "video_boards": {
+   "north": "north_board_m",
+   "south": "south_board_m"
+  },
+  "windows": "none on the bowl (the v18 complaint); only the headhouse glass as detail paint"
+ },
+ "credits": [
+  "LiDAR: City of Philadelphia 2022 classified LiDAR via PASDA (https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154)",
+  "Aerial: City of Philadelphia 2024 3-inch imagery (CityImagery_2024_3in)",
+  "Footprints: City of Philadelphia L&I building footprints (OpenDataPhilly)",
+  "Reference photo: Ron Reiring, CC BY 2.0, https://commons.wikimedia.org/wiki/File:Lincoln_Financial_Field_(Aerial_view).jpg"
+ ],
+ "review": {
+  "open_questions": [
+   "No published stadium or canopy height was readable (a Turner Construction snippet says steel 'up to 250 feet above grade', unconfirmed); the LiDAR sets them.",
+   "Video-board mounting heights not found; Phase 1 can read them off the LiDAR at the north and south ends."
+  ]
+ }
+}

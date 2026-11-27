@@ -1,0 +1,363 @@
+{
+  "buildings_downloaded": 1895,
+  "buildings_in_scene": 3721,
+  "buildings_dropped": [],
+  "height_source_counts": {
+    "approx_hgt": 1879,
+    "max_hgt": 15,
+    "default": 1
+  },
+  "height_outliers_max_gt_ratio_x_approx": [
+    {
+      "objectid": 366,
+      "address": "35 S 4TH ST",
+      "approx_hgt_ft": 53,
+      "max_hgt_ft": 164.03998625
+    },
+    {
+      "objectid": 3149,
+      "address": "915-17 WALNUT ST",
+      "approx_hgt_ft": 96,
+      "max_hgt_ft": 373.170051
+    },
+    {
+      "objectid": 9844,
+      "address": "517 DELANCEY ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 40.740012
+    },
+    {
+      "objectid": 20447,
+      "address": "1 S CHRISTOPHER COLUMBUS BLVD",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 59.48010792
+    },
+    {
+      "objectid": 303818,
+      "address": "226-30 N 2ND ST",
+      "approx_hgt_ft": 59,
+      "max_hgt_ft": 203.44991700000003
+    },
+    {
+      "objectid": 303894,
+      "address": "241 RACE ST",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 59.419951919999995
+    },
+    {
+      "objectid": 304380,
+      "address": "205 N 3RD ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 43.3199165
+    },
+    {
+      "objectid": 312429,
+      "address": "730 MARKET ST",
+      "approx_hgt_ft": 37,
+      "max_hgt_ft": 151.18007783000002
+    },
+    {
+      "objectid": 314032,
+      "address": "722-24 MARKET ST",
+      "approx_hgt_ft": 42,
+      "max_hgt_ft": 158.48012925
+    },
+    {
+      "objectid": 319630,
+      "address": "104-06 ARCH ST",
+      "approx_hgt_ft": 41,
+      "max_hgt_ft": 150.76985483
+    },
+    {
+      "objectid": 323233,
+      "address": "256-66 S 6TH ST",
+      "approx_hgt_ft": 21,
+      "max_hgt_ft": 90.15993008
+    },
+    {
+      "objectid": 323267,
+      "address": "419 PINE ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 31.569953
+    },
+    {
+      "objectid": 323522,
+      "address": "512 SPRUCE ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 32.09016233
+    },
+    {
+      "objectid": 323590,
+      "address": "514 SPRUCE ST",
+      "approx_hgt_ft": 11,
+      "max_hgt_ft": 46.45988425
+    },
+    {
+      "objectid": 324048,
+      "address": "320-28 S 4TH ST",
+      "approx_hgt_ft": 13,
+      "max_hgt_ft": 60.43006808
+    },
+    {
+      "objectid": 324985,
+      "address": "818-20 CHESTNUT ST",
+      "approx_hgt_ft": 68,
+      "max_hgt_ft": 232.35984033
+    },
+    {
+      "objectid": 327068,
+      "address": "1 LOXLEY CT",
+      "approx_hgt_ft": 23,
+      "max_hgt_ft": 100.73005450000001
+    },
+    {
+      "objectid": 328432,
+      "address": "226 MARKET ST",
+      "approx_hgt_ft": 14,
+      "max_hgt_ft": 49.08008858
+    },
+    {
+      "objectid": 329164,
+      "address": "425 SPRUCE ST",
+      "approx_hgt_ft": 10,
+      "max_hgt_ft": 31.85014217
+    },
+    {
+      "objectid": 337722,
+      "address": "400-36 S 3RD ST",
+      "approx_hgt_ft": 51,
+      "max_hgt_ft": 201.40006933
+    },
+    {
+      "objectid": 421433,
+      "address": "22-34 N 2ND ST",
+      "approx_hgt_ft": 55,
+      "max_hgt_ft": 182.5700355
+    },
+    {
+      "objectid": 421456,
+      "address": "255 PINE ST",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 39.2199515
+    },
+    {
+      "objectid": 425515,
+      "address": "200 W WASHINGTON SQ",
+      "approx_hgt_ft": 53,
+      "max_hgt_ft": 399.93005683
+    },
+    {
+      "objectid": 493834,
+      "address": "1 DOCK ST",
+      "approx_hgt_ft": 50,
+      "max_hgt_ft": 368.63014825000005
+    },
+    {
+      "objectid": 500856,
+      "address": "338 SPRUCE ST",
+      "approx_hgt_ft": 9,
+      "max_hgt_ft": 48.05004375
+    },
+    {
+      "objectid": 544732,
+      "address": "14 S FRONT ST",
+      "approx_hgt_ft": 27,
+      "max_hgt_ft": 85.41996725
+    }
+  ],
+  "tallest_buildings_m": [
+    {
+      "id": "320501-15",
+      "h": 152.3
+    },
+    {
+      "id": "320501-16",
+      "h": 148.0
+    },
+    {
+      "id": "320501-10",
+      "h": 147.51
+    },
+    {
+      "id": "320501-6",
+      "h": 146.97
+    },
+    {
+      "id": "320501-7",
+      "h": 143.6
+    },
+    {
+      "id": "320501-9",
+      "h": 143.21
+    },
+    {
+      "id": "320501-13",
+      "h": 142.59
+    },
+    {
+      "id": "320501-8",
+      "h": 142.36
+    },
+    {
+      "id": "320501-14",
+      "h": 142.14
+    },
+    {
+      "id": "320501-11",
+      "h": 142.1
+    }
+  ],
+  "trees_in_scene": 2210,
+  "ground_texture_px": [
+    7424,
+    7168
+  ],
+  "ground_texture_source_px": [
+    7424,
+    7168
+  ],
+  "uv_fit_max_residual_m": 1.0151824473139049e-05,
+  "ground_median_filter_px": 5,
+  "frames": 10,
+  "lidar_buildings_shaped": 319,
+  "lidar_fallback_single_height": 5,
+  "lidar_parts": 1867,
+  "lidar_terrace_parts": 0,
+  "lidar_stadiums": [],
+  "lidar_structures": 10,
+  "lidar_structure_parts": 42,
+  "lidar_structure_area_m2": 1700.5,
+  "lidar_structures_dropped_photo": 3,
+  "lidar_highway_mask": true,
+  "lidar_highway_masked_m2": 0.0,
+  "lidar_rail_mask": true,
+  "lidar_margin_m": 100.0,
+  "front_slope_parts_marked": 276,
+  "front_slope_parts_cut": 236,
+  "front_slope_refused": {
+    "short_wall": 21,
+    "not_at_front": 14,
+    "height": 3,
+    "odd_front": 2
+  },
+  "facade_join": {
+    "unmatched": 28,
+    "point": 31,
+    "address": 51,
+    "parcel": 1785
+  },
+  "facade_match_rate": 0.985,
+  "facade_styles": {
+    "row_old": 421,
+    "apartment_low": 337,
+    "mixed_storefront": 332,
+    "row_postwar": 250,
+    "other": 141,
+    "row_typical": 134,
+    "row_modern": 101,
+    "institutional": 93,
+    "office_tower": 31,
+    "warehouse": 14,
+    "detached": 6,
+    "twin_old": 3,
+    "twin": 3,
+    "row_porch": 1
+  },
+  "facade_materials": {
+    "brick": 1859,
+    "stone": 5,
+    "frame": 3
+  },
+  "facade_colour_source": {
+    "palette_era": 1143,
+    "aerial": 178,
+    "palette": 369,
+    "osm_material": 175,
+    "osm": 2
+  },
+  "facade_osm_footprints": 177,
+  "facade_osm_items": 321,
+  "facade_street_fronts": 738,
+  "facade_unmatched": "plain walls (no facade)",
+  "front_slope_candidates": 250,
+  "front_slope_street_wall_found": 248,
+  "facade_eras": {
+    "late_victorian": 507,
+    "postwar": 361,
+    "georgian_federal": 316,
+    "mid19": 245,
+    "new": 164,
+    "streetcar": 161,
+    "late20": 42,
+    "unknown": 40,
+    "interwar": 31
+  },
+  "facade_era_styles": {
+    "postwar/row_postwar": 250,
+    "georgian_federal/row_old": 222,
+    "late_victorian/mixed_storefront": 207,
+    "mid19/row_old": 168,
+    "late_victorian/apartment_low": 143,
+    "new/row_modern": 101,
+    "streetcar/mixed_storefront": 64,
+    "late_victorian/row_typical": 55,
+    "late_victorian/other": 53,
+    "georgian_federal/apartment_low": 52,
+    "streetcar/row_typical": 40,
+    "mid19/apartment_low": 39,
+    "postwar/apartment_low": 36,
+    "late_victorian/row_old": 31,
+    "new/apartment_low": 31,
+    "postwar/row_typical": 26,
+    "mid19/mixed_storefront": 23,
+    "unknown/institutional": 22,
+    "streetcar/apartment_low": 20,
+    "georgian_federal/institutional": 19,
+    "postwar/other": 18,
+    "late20/other": 17,
+    "postwar/mixed_storefront": 12,
+    "streetcar/other": 12,
+    "unknown/other": 11,
+    "georgian_federal/other": 11,
+    "late20/apartment_low": 10,
+    "new/other": 10,
+    "georgian_federal/mixed_storefront": 10,
+    "postwar/office_tower": 9,
+    "interwar/institutional": 9,
+    "streetcar/institutional": 9,
+    "late_victorian/institutional": 9,
+    "postwar/institutional": 8,
+    "new/mixed_storefront": 8,
+    "streetcar/warehouse": 8,
+    "new/office_tower": 8,
+    "late20/institutional": 7,
+    "streetcar/office_tower": 7,
+    "mid19/institutional": 6,
+    "unknown/row_typical": 6,
+    "interwar/apartment_low": 6,
+    "interwar/mixed_storefront": 6,
+    "mid19/other": 5,
+    "late20/row_typical": 4,
+    "interwar/other": 4,
+    "new/institutional": 4,
+    "late20/office_tower": 3,
+    "late_victorian/office_tower": 3,
+    "late_victorian/detached": 3,
+    "interwar/warehouse": 3,
+    "interwar/row_typical": 2,
+    "postwar/detached": 2,
+    "georgian_federal/twin_old": 2,
+    "mid19/twin": 2,
+    "late_victorian/warehouse": 2,
+    "mid19/office_tower": 1,
+    "new/warehouse": 1,
+    "new/row_typical": 1,
+    "interwar/detached": 1,
+    "unknown/mixed_storefront": 1,
+    "late_victorian/row_porch": 1,
+    "late20/mixed_storefront": 1,
+    "streetcar/twin": 1,
+    "mid19/twin_old": 1
+  },
+  "facade_era_year_estimated_share": 0.465
+}

@@ -1,5 +1,93 @@
 # Changelog
 
+## 2026-11-26: landmark dossiers for the pilot eight (v19 landmarks, phase 0 step 4)
+
+Each modeled structure now gets a dossier, `config/landmarks/<slug>.json`, holding everything its 3D model needs: the footprint it replaces, every dimension, colors and the kit's parameters. Every number has an `https://` source or is marked an estimate with a reason, the rule the v18 bridges follow. This first pass covers the eight Phase 2 pilot structures: City Hall, One Liberty Place, Lincoln Financial Field, Citizens Bank Park, Xfinity Mobile Arena, the Art Museum, Boathouse Row and the Tacony-Palmyra Bridge. Format and per-structure sources: new `docs/landmarks.md`.
+
+- **Validator, `src/pixelphilly/landmark_dossier.py` (new):**
+  - `check()` rejects any bare number in `dims` or `kit_params`, a source that isn't a URL, an estimate without a reason, a kit that doesn't match `index.json`, a footprint that is open, invalid or more than 150 m from the landmark (800 m for bridges), a missing required value per kit (`KIT_REQUIRED`) and a `kit_params` name that doesn't match a `dims` key.
+  - `BRIDGE_KITS` replaces the hard-coded `("bridge_tbd", "suspension")` tests in `scripts/04s_fetch_landmark_osm.py` and `scripts/49_landmark_index.py`, so a bridge with a settled kit keeps its wider OSM radius and review crop.
+- **Measuring, `scripts/50_landmark_measure.py` (new):** for every L&I footprint and OSM outline near a structure, it records heights above ground on the 2022 LiDAR grid and the roof color in the 2024 aerial. It also measures the bowl's field rectangle, stand heights by sector and the rake for stadiums (`bowl_stats`), the roof's size, eave, crown and curve for the arena (`dome_stats`), and height profiles along OSM bridge ways for bridges. The output goes to `output/landmarks/measure/<slug>.json`. The Tacony-Palmyra is measured on the `lower_northeast` grid, because `east_riverfront`'s grid stops at -75.045.
+- **Findings that shaped the dossiers:**
+  - None of the pilot eight has HABS/HAER measured drawings.
+  - The OSM fetch has no Linc or ballpark shapes, so their heights are measured.
+  - City Hall's LiDAR tower top is 166.7 m against 548 ft (167.0 m) published, but its pavilion roof peaks are about 10 m above the Turner booklet's pavilion heights; both are recorded.
+  - One Liberty's OSM parts give the setback heights; the LiDAR misses the mast.
+  - The Linc's field is about 1 m below the street, with 52 m sideline canopies and lower open ends.
+  - The arena roof is a barrel vault, 143.7 by 114.4 m, 37.4 m at the crown.
+  - The Tacony-Palmyra arch rises 36.0 m above its deck. Its span is 558 ft or 523 ft depending on the secondary source, and OSM and the LiDAR fit 551-558 ft.
+- **Kit change:** Tacony-Palmyra moved from `bridge_tbd` to a new `arch_bascule` kit in `selection.json`; `index.json` was regenerated, and only that field changed.
+- **Colors:**
+  - Read from license-checked reference photos (file and pixel box recorded) or from the aerial (outline recorded); the tests recompute both.
+  - Colors nobody published, such as the Tacony-Palmyra's paint, are estimates. Both of its manifest photos show other subjects.
+- **Open questions** are listed in each dossier's `review`, including:
+  - #1 Plaisted Hall has no outline near Boathouse Row.
+  - The Art Museum's column size is an estimate.
+  - The Art Museum's L&I outline is 172.6 m across against a 640 ft corridor.
+  - City Hall's clock diameter needs checking against the NHL nomination scan.
+  - The bascule's position is not settled.
+- **Docs:** `docs/landmarks.md` (new), `data/README.md` (dossiers and the measurement output), `docs/landmarks_plan.md` (the review script is now `51_landmark_review.py`).
+- **Tests (written first):** new `tests/test_landmark_dossiers.py`, 36 in all: the validator on synthetic dossiers, `bowl_stats` and `dome_stats` on synthetic grids, the helpers, and every real dossier (schema plus color reproduction).
+
+## 2026-11-26: landmark list cut to 47; bridge sources
+
+Stephen reviewed the bridge list: the Ben Franklin and Walt Whitman bridges need no work (already kit `suspension`, done in v18), and minor Schuylkill crossings can be skipped, especially without reference photos. He approved the cut below.
+
+- **Cut, `config/landmarks/selection.json`:** nine Schuylkill crossings moved to a new `dropped` list, each with the date and reason: South Street (HAER `pa3628` shows the 1923 bridge, since replaced), Girard Avenue and Chestnut Street (HAER records made in 1933 or later, not confirmed to show today's bridges), and Market, Walnut, Spring Garden, Passyunk Avenue, Gray's Ferry and Columbia Railroad (no reference photos). `index.json` is now 51 entries, 47 to model. Kept: Betsy Ross, Tacony-Palmyra, Girard Point and Platt (named by Stephen), plus Falls, Strawberry Mansion, University Avenue and the Connecting Railway bridge, which have HAER photos of the current structures.
+- **Reference photos for the four named bridges:** added to `LANDMARKS` in `scripts/19_landmark_refs.py` and to the `manifest` side of `selection.json`, so the photo pass covers them (`--only`; the other 40 manifest entries are unchanged). Commons photos were found for all four, unreviewed. The automatic picks for Tacony-Palmyra and Betsy Ross show other subjects (a creek aerial, the Delair Bridge) and need a hand pick. `49_landmark_index.py` now runs the bridge-inventory cross-check for manifest entries too; coordinates, regions and inventory matches for the four are unchanged.
+- **`--drawings` reads `config/landmarks/index.json`,** skipping kits that are not modeled (`suspension`, `context`). Each item now lists its PDFs (`data_pages`: the written report, often with dimensions, and photo captions) and its photo count.
+- **Bridge-aware matching:** railroad-led HAER titles ("Connecting Railway, Schuylkill River Bridge, Spanning ...") can carry the bridge's name in the second segment, and "spanning" counts as a location. The bridge runs found three more wrong matches, each now covered by a test: a Walnut Street bridge in Reading, Berks County (titles must now say Philadelphia County), the Walnut Lane Bridge ("street" and "avenue" now count in names), and a railroad "Bridge at West Falls" (name words must appear in order).
+- **Result:** 10 of 47 structures have measured drawings (174 sheets, unchanged). No bridge on the list has measured drawings; Falls (`pa0840`, 19 photos), the Connecting Railway bridge (`pa1646`, 17), University Avenue (`pa3674`, 13) and Strawberry Mansion (`pa3696` and `pa0920`, 9) have HAER photos and written reports. 8 uncertain hits are left for review, including the Delair Bridge (`pa3755`) for Betsy Ross.
+- **List confirmed:** Stephen confirmed the 47 structures to model the same day (recorded under `review` in `selection.json`). Reference-photo picks for the four bridges in the manifest are still to do.
+- **Tests:** 14 more in `tests/test_landmark_drawings.py` (40 in all) and 3 more in `tests/test_landmark_index.py`. 772 pass, excluding `tests/test_inertia.py`.
+
+## 2026-11-26: landmark measured drawings (v19 landmarks, phase 0)
+
+Step 2 of phase 0 in the v19 landmark plan: find the HABS/HAER measured drawings that will supply dimensions for the hand-modeled landmarks.
+
+- **New `--drawings` mode in `scripts/19_landmark_refs.py`:** writes `data/landmarks/drawings.json`. It lists every measured-drawing sheet in each landmark's LoC HABS/HAER items: caption, sheet title (when the caption leads with one), scale (only when the caption states it), largest service JPEG, master TIFF URL (not downloaded), LoC source page and public-domain credit. It downloads no images. The photo pass is unchanged and still skips drawings.
+- **LoC search for landmarks without items:** by name, known older names (`SEARCH_ALIASES`, such as "Thirtieth Street Station" and "Philadelphia Exchange") and "Philadelphia". `match_kind()` accepts a hit only when the name leads the title, the next segment is a location rather than a part of the building, and any street number is on the AIS address's block. Other hits are listed under `search` as uncertain. The first real run found three kinds of false match, now covered by tests: a one-word alias ("exchange" matched the Commercial Exchange), numbered parts read as addresses ("350-Ton Hammerhead Crane" at the Navy Yard) and parentheses in titles ("Gloria Dei (Church)").
+- **Result:** 10 of 40 landmarks have measured drawings, 174 sheets in all. New items found by search: Second Bank (`pa0875`, 20 sheets), Merchants' Exchange (`pa1045`, 16), Elfreth's Alley (`pa1211`, 19), Fairmount Water Works (`pa0837`, 36), Gloria Dei (`pa0760`, 11), Union League (`pa0938`, 1), plus items with no drawings for 8 other landmarks. 39 uncertain hits are listed for review. 99 of the 174 captions carry a sheet title; none states a scale, so read it from each sheet's title block. City Hall's HABS item (`pa4092`) has no measured drawings.
+- **Fix, `mapped_areas()`:** it read `config/*_lidar.json`, so it reported the retired `downtown_lidar` and missed `west_north`, `southwest` and the other regions without the suffix. It now takes the 12 regions from `output/philly/FROZEN_v18.json` (falling back to `tiles/v18/map.json`) and each bbox from `config/<region>.json`. `manifest.json` was not rebuilt, so its `mapped_areas` fields still show the old lookup until the photo pass runs again.
+- **Tests (written first):** new `tests/test_landmark_drawings.py` (26 tests, network mocked): drawings kept in `--drawings` mode and excluded from photo refs, scale and sheet-title parsing, no downloads, title matching including the three false matches, and `mapped_areas` returning the v18 regions.
+- **Not done:** the new item ids are not added to the `LANDMARKS` table, so the photo pass does not use them yet. The uncertain matches (including the old Franklin Institute on Seventh Street, `pa0696`, with 8 sheets, and a Navy Yard item, `pa3416`, with 3) need review.
+
+## 2026-11-26: v19 landmarks, Phase 0 (list and sources)
+
+Stephen approved the plan in `docs/landmarks_plan.md`: hand-model about 50 landmarks and all the bridges named in the session in 3D, the way v18 modeled the Ben Franklin and Walt Whitman bridges, before any other v19 visual work. It answers Crossing Broad's Nov. 13 criticism of the map: City Hall as a "tiny Empire State Building," One Liberty Place's missing spire, windows on the Linc and a soccer field, the Art Museum as a mall, Boathouse Row as schools, and Tacony-Palmyra's lift span. No region, frozen version or `viewer/` file changed.
+
+- **`config/landmarks/selection.json`** (hand-made): the 40 manifest landmarks plus 20 additions. The additions are Barbelin Hall and Hagan Arena (context only) at Saint Joseph's, the Walt Whitman Bridge, and 17 Delaware and Schuylkill bridges: Betsy Ross, Tacony-Palmyra, Girard Point, Platt, Passyunk Ave, Gray's Ferry, University Ave, South, Walnut, Chestnut, Market, Spring Garden, Girard Ave, Strawberry Mansion, Falls, Columbia Railroad and the Connecting Railway bridge. Each entry carries a proposed kit, and bridge types are left `bridge_tbd` until sources say what they are. Navy Yard is marked context, because it's a district and needs scoping.
+- **New `scripts/49_landmark_index.py`:** writes `config/landmarks/index.json` (60 entries, 56 to model; 51 in `south_lidar`, 4 in `north_lidar`, 2 each in `west_north` and `east_riverfront`, 1 in `southwest`) and the review page `output/landmarks/selection/index.html`. Region ownership uses the v18 frame lattice in precedence order. Coordinates come from Wikidata P625 (`raw/landmarks_wikidata_additions.json`), except where a sourced OSM fix is recorded:
+  - Barbelin Hall has no Wikidata coordinates.
+  - The University Ave Bridge's Wikidata point is 171 m off the bridge.
+  - Bridge points match the bridge inventory within 4–97 m (river widths). The Connecting Railway bridge has no Wikidata item; its point is the inventory's rail crossing and needs checking.
+- **New `scripts/04s_fetch_landmark_osm.py`:** fetches OSM building parts, towers and bridge shapes around each entry (`raw/landmarks_osm.json`, 5,858 elements; counts in `output/landmarks/osm_parts_summary.json`). City Hall, Independence Hall, PSFS, the Comcast towers, One Liberty Place and Wanamaker's have detailed parts with heights and roof shapes. The three stadiums, the Art Museum and Boathouse Row have none, so they will rely on the LiDAR and published figures. `04g_fetch_osm.py` is unchanged.
+- **Tests:** `tests/test_landmark_index.py` (6) and `tests/test_landmark_osm.py` (3).
+- The HABS/HAER measured-drawings step (Phase 0, step 2) is proposed as its own session and not done yet.
+
+## 2026-11-25: pixel-scale test (middle scale added Nov. 26)
+
+During the blind review, Stephen found the era pairs hard to tell apart. This test asks whether a finer scale would carry more detail.
+
+- **Configs:** `config/atlas_mayfair_px15.json` and `config/atlas_indhall_px15.json` are the Phase C `_ea` configs at 0.1465 m/px instead of 0.293. Raw data was fetched again under the new names (MANIFEST entries dated Nov. 25). The fetch also downloaded LAS tiles 485, 512 and 513 again (about 4 GB), which earlier pruning had removed. Both spots pass `09_check_alignment.py`, and `18_qa_scan.py` found no new problems.
+- **Drawings:** `qwen_joint_light8_px15`, with the same model, LoRA, prompt and seed as Phase C, followed by the water repair. About $0.26 per spot (estimate).
+- **New `scripts/48_scale_test.py`:** writes same-ground comparison sheets and the 47 quality measures to `output/scale_test/`.
+- **Result:** window grids, roof edges and the front slopes are crisper, and there are no seam, color or registration regressions. Ground breaks into flat patches more often, and one block of roofs got invented color. Results are in section 7 of `docs/building_age_styles.md`.
+- **Middle scale, Nov. 26:** `config/atlas_{mayfair,indhall}_px20.json` at 0.2 m/px, run `qwen_joint_light8_px20` (about $0.15 per spot, estimate). This needed no LiDAR download. It keeps most of the building detail with fewer ground problems. `48_scale_test.py` now compares all three scales on the same ground.
+
+## 2026-11-23: building eras pilot, phases 0 to D
+
+Stephen approved the plan in `docs/building_age_plan.md` (from the investigation in `docs/building_age_styles.md`). Everything is behind config flags that are off by default; no region, frozen version or `viewer/` file changed. Results so far are in section 7 of `docs/building_age_styles.md`.
+
+- **Test spots:** eight configs, `config/atlas_{indhall,northeast,passyunk,mayfair}_{eb,ea}.json`. `_eb` is the baseline and `_ea` turns the new options on. Raw data fetched for all eight (MANIFEST entries dated Nov. 23); the LiDAR grids were copied from the matching `_fac` areas (same boxes) and, for Mayfair, from `_eb` to `_ea`.
+- **Phase A, `"facade_eras": true`:** `facades.era_of` (OPA code first, year second), four new styles appended to `STYLES`, era palettes, pent-eave (bit 16) and heavy-cornice (bit 32) bands in the render.js facade shader, era QA in the scene's QA file.
+- **Phase B, `"front_slopes": [OPA codes]`:** new `src/pixelphilly/roofs.py`; `add_front_slopes` and `facets_in_reach` in `05_build_scene.py`; a `roof_facets` scene key drawn by `render/render.js` and projected by `09_check_alignment.py` (`silhouettes(..., facets)`); `colored()` reads an optional private `_color_polys` so the cut pieces keep the whole footprint's wall color. Refusals are counted by reason in the QA file.
+- **Tests (written first):** `tests/test_facades.py` (era cases, a 181-case golden fixture of `facade_spec` output), `tests/test_render_facades.py` (stored render checksums replace the git-HEAD-only comparison as the permanent byte-identical check; era bands paint walls only), new `tests/test_roofs.py` (26 tests: slope geometry, LiDAR staircases, refusals, scene keys, render-vs-projection masks for fronts facing south and north, changes confined to the front roof edge). 691 pass, excluding `tests/test_inertia.py` (another session's viewer work).
+- **Drawings:** `qwen_joint_light8_eb`, `qwen_joint_light8_eraA`, `qwen_joint_light8_eraB` and `qwen_joint_light8_eraC` for all four spots, about $2.22 in all (estimate). 57–77% of the slopes' darkening survives the redraw, against near-zero change elsewhere on buildings (section 7 of `docs/building_age_styles.md`).
+- **Phase C, `"roof_fit": "lidar"`:** `roofs.roof_pitch` (moved from `scripts/45_roof_forms.py`, outputs byte-identical), `roofs.roof_model` (11 eave-side models, footprint-to-LiDAR registration, robust refits), `roofs.roof_mesh` and `roof3d_building`; a `roof3d` scene record built by `render/render.js` and projected by `09_check_alignment.py`. The Northeast spot fits 80 of 324 pitched roofs; all spots pass alignment. Drawn as `qwen_joint_light8_eraC` (about $0.56, estimate): the drawings follow 65–81% of the render's roof changes, against 1–2% change elsewhere on buildings. Tests: 18 more in `tests/test_roofs.py` (synthetic gables, hips, twin halves, shifted roofs, chimneys and trees, refusals, mesh closure, render-vs-projection masks). 712 pass.
+- **Phase D:** new `scripts/47_era_compare.py` (quality checks from `24_style_compare.py`, cue retention per step and by era, a blind review page with 80 buildings, `--score` to unblind) and `tests/test_era_compare.py` (8 tests). The drawings keep 52–92% of each step's render change; no option worsened seams, invented color, registration or invented water. The measures corrected an earlier by-eye call: era walls mostly survive the redraw, except the earliest eras (Georgian and Federal 0.66, 1840–1879 0.46).
+- **Fixes along the way:** the plan's slope sat under the roof's top edge, where it would be hidden, so buildings are cut instead. The first Mayfair build cut only 30% of marked parts; finding the street wall on the City outline (simplified at 0.6 m) and taking the strip from the outline raised that to 71%.
+
 ## 2026-11-22: map inertia
 
 Stephen relayed a regular feature request: map inertia.

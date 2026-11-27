@@ -35,9 +35,12 @@ import re
 from collections import Counter
 
 STYLES = ["row_porch", "row_typical", "row_postwar", "row_modern", "river_row", "twin", "detached", "apartment_low",
-          "mixed_storefront", "warehouse", "office_tower", "institutional", "other"]
+          "mixed_storefront", "warehouse", "office_tower", "institutional", "other",
+          # Era option only ("facade_eras": true); appended so the ids above don't change
+          "row_old", "twin_old", "twin_postwar", "detached_postwar"]
 STYLE_IDS = {s: i + 1 for i, s in enumerate(STYLES)}  # 0 = no facade (render.js)
 BAND_STOREFRONT, BAND_PORCH, BAND_CORNICE, BAND_GLASS = 1, 2, 4, 8
+BAND_PENT, BAND_HEAVY_CORNICE = 16, 32  # era option only (render.js facadeColor)
 
 DEFAULT_FLOOR_M = 3.2
 GLASS_HEIGHT_M = 45.0  # glass needs a tower this tall (and see modern_glass_record)
@@ -60,11 +63,13 @@ WINDOW_RGB = {"glass": (44, 58, 72), "default": (52, 60, 70)}
 # Bay spacing (m along the wall) per style
 SPACING_M = {"row_porch": 1.8, "row_typical": 1.8, "row_postwar": 2.0, "row_modern": 2.0, "river_row": 1.8,
              "twin": 2.0, "detached": 2.4, "apartment_low": 2.6, "mixed_storefront": 1.8, "warehouse": 4.5,
-             "office_tower": 1.6, "institutional": 3.0, "other": 2.6}
+             "office_tower": 1.6, "institutional": 3.0, "other": 2.6,
+             "row_old": 1.8, "twin_old": 2.0, "twin_postwar": 2.0, "detached_postwar": 2.4}
 GC_MATERIAL = {"A": "brick", "B": "brick", "C": "frame", "D": "frame", "E": "stone", "J": "stone"}
 # Styles that really are brick housefronts; others above TALL_M or TALL_STORIES
 # with "MASONRY" and no OSM colour take their own aerial colour instead
-ROW_STYLES = {"row_porch", "row_typical", "row_postwar", "row_modern", "river_row", "twin", "detached"}
+ROW_STYLES = {"row_porch", "row_typical", "row_postwar", "row_modern", "river_row", "twin", "detached",
+              "row_old", "twin_old", "twin_postwar", "detached_postwar"}
 # The wall_tint cutoff: above it walls kept the aerial colour before façades.
 # Height only, not stories: a 5-6 story Center City building under 20 m was
 # brick-tinted before façades and is usually brick
@@ -73,6 +78,42 @@ TALL_M = 20.0
 OSM_MATERIALS = {"brick": "brick", "stone": "stone", "limestone": "stone", "sandstone": "stone", "marble": "stone",
                  "granite": "stone", "concrete": "stone", "plaster": "stone", "glass": "glass", "metal": "metal",
                  "steel": "metal", "aluminium": "metal", "wood": "frame", "timber_framing": "frame"}
+# --- Era option ("facade_eras": true) -------------------------------------
+# Why and with what evidence: docs/building_age_styles.md (sections 1 and 3)
+# and docs/building_age_plan.md, Phase A. OPA's year_built covers 98% of
+# footprints, but 75% of years are assessor estimates heaped on round numbers
+# (1925, 1920, 1950), so the style code decides the era where it names one
+# and the year decides only otherwise. An estimated year still sets the era:
+# a heaped year marks the block's era even when it is wrong for the house.
+ERAS = ["unknown", "georgian_federal", "mid19", "late_victorian", "streetcar", "interwar", "postwar", "late20", "new"]
+ERA_YEARS = [(1840, "georgian_federal"), (1880, "mid19"), (1905, "late_victorian"), (1930, "streetcar"),
+             (1945, "interwar"), (1975, "postwar"), (2000, "late20"), (2027, "new")]
+POSTWAR_WORDS = ("POST WAR", "RANCH", "CAPE", "SPLIT LEVEL", "BI LEVEL")
+# Wall colors per era: only colors the sources name (brick; OSM color and
+# the tall-building aerial rule still win). Postwar, late-20th-century and
+# unknown keep PALETTES["brick"]: no source found names postwar Northeast
+# brick colors (docs/building_age_styles.md, "Gaps").
+ERA_PALETTES = {
+    # Handmade brick, Flemish bond with dark glazed headers: a darker, mottled
+    # red (PHC Old City inventory; SAH, Elfreth's Alley)
+    "georgian_federal": [(124, 54, 44), (134, 60, 48), (114, 50, 42), (142, 66, 52), (128, 64, 54)],
+    # Pressed red brick fronts (Encyclopedia of Greater Philadelphia,
+    # "Brickmaking"); brownstone is not in OPA, so no brownstone here
+    "mid19": [(150, 70, 56), (140, 64, 52), (158, 78, 60), (132, 62, 50)],
+    # Adds yellow-tan and purplish-brown brick (PHC Southeast Spruce Hill)
+    "late_victorian": [(152, 74, 58), (140, 66, 52), (186, 160, 112), (174, 150, 106), (112, 74, 68),
+                       (102, 66, 62)],
+    # Adds orange, "Pompeiian" and buff brick (PHC Girard Estate; PHC Old City,
+    # "Tapestry Brick")
+    "streetcar": [(152, 74, 58), (146, 80, 62), (180, 98, 60), (170, 90, 56), (160, 86, 58), (198, 172, 126)],
+    "interwar": [(152, 74, 58), (146, 80, 62), (180, 98, 60), (170, 90, 56), (198, 172, 126), (188, 162, 118)],
+    # New construction: metal, vinyl, stucco or composite panel, charcoal and
+    # black brick (WHYY 2019; Hidden City field guides, 2012, 2015)
+    "new": [(150, 150, 148), (136, 138, 140), (210, 208, 202), (196, 194, 188), (72, 72, 74), (60, 60, 64)],
+}
+HEAVY_CORNICE_ERAS = ("mid19", "late_victorian")  # bracketed wood or pressed-metal cornices
+NO_CORNICE_STYLES = ("row_postwar", "row_modern", "twin_postwar", "detached_postwar")
+
 FRONT_RAY_M = 25.0  # a wall faces a street if its outward ray meets a centerline this close
 FRONT_MIN_EDGE_M = 2.0
 
@@ -118,8 +159,48 @@ def parse_building_code(desc):
     return kind, stories, material
 
 
-def style_of(rec, height_m: float) -> str:
-    """Facade style from a record's new and old building codes."""
+def era_of(rec) -> str:
+    """Era key (ERAS) for an OPA record: the style code where it names an era
+    (POST WAR, RANCH, CAPE, SPLIT LEVEL, BI LEVEL -> postwar; ROW MODERN ->
+    new), else the year; "OLD STYLE" keeps an early year but is never later
+    than late_victorian. No plausible year -> unknown."""
+    if not rec:
+        return "unknown"
+    new = (rec.get("building_code_description_new") or "").upper()
+    if any(w in new for w in POSTWAR_WORDS):
+        return "postwar"
+    if "ROW MODERN" in new:
+        return "new"
+    year = _year(rec)
+    era = next((name for limit, name in ERA_YEARS if year is not None and year < limit), "unknown")
+    if "OLD STYLE" in new and (era == "unknown" or ERAS.index(era) > ERAS.index("late_victorian")):
+        return "late_victorian"
+    return era
+
+
+def style_of(rec, height_m: float, eras: bool = False) -> str:
+    """Facade style from a record's new and old building codes. eras=True
+    (the "facade_eras" option) also returns row_old, twin_old, twin_postwar
+    and detached_postwar, which today's styles fold into row_typical, twin
+    and detached."""
+    style = _style_of(rec, height_m)
+    if not eras or not rec:
+        return style
+    new = (rec.get("building_code_description_new") or "").upper()
+    era = era_of(rec)
+    if style == "row_typical" and ("OLD STYLE" in new or era in ("georgian_federal", "mid19")):
+        return "row_old"
+    if style == "twin":
+        if "OLD STYLE" in new:
+            return "twin_old"
+        if any(w in new for w in POSTWAR_WORDS):
+            return "twin_postwar"
+    if style == "detached" and any(w in new for w in POSTWAR_WORDS):
+        return "detached_postwar"
+    return style
+
+
+def _style_of(rec, height_m: float) -> str:
     if not rec:
         return "other"
     new = (rec.get("building_code_description_new") or "").upper()
@@ -233,12 +314,14 @@ def _typology(height_m: float, footprint) -> tuple[str, str]:
     return "other", "brick"
 
 
-def facade_spec(rec, height_m: float, footprint, bid, osm=None, front=None) -> dict:
+def facade_spec(rec, height_m: float, footprint, bid, osm=None, front=None, eras: bool = False) -> dict:
     """Facade of one building. rec: its OPA record (or None: a typology
     default by height and footprint shape); height_m: the building's height;
     footprint: shapely polygon (local m); bid: building id, which seeds the
     small per-building color variation. osm: osm_match() for this footprint
     or LiDAR part. front: front_dirs() (street-facing wall directions).
+    eras: the "facade_eras" option (era styles, palettes and bands; see
+    ERA_PALETTES); False gives exactly the output from before the option.
 
     Wall colour precedence: OSM colour, then OSM material, then the OPA
     material's palette. Except: a non-rowhouse building above TALL_M whose
@@ -248,7 +331,7 @@ def facade_spec(rec, height_m: float, footprint, bid, osm=None, front=None) -> d
     and at City Hall pale stone towers had turned brick red."""
     key = str(bid)
     if rec:
-        style = style_of(rec, height_m)
+        style = style_of(rec, height_m, eras=eras)
         _, _, material = parse_building_code(rec.get("building_code_description"))
         material = material or GC_MATERIAL.get((rec.get("general_construction") or "").strip().upper(), "brick")
         try:
@@ -272,12 +355,22 @@ def facade_spec(rec, height_m: float, footprint, bid, osm=None, front=None) -> d
         material = "glass"
     elif not osm and style == "office_tower" and modern_glass_record(rec, height_m):
         material = "glass"
+    era = era_of(rec) if eras else None
     wall = _jitter(_pick(PALETTES[material], key), key)
+    if (eras and source == "palette" and material == "brick" and era in ERA_PALETTES
+            and (era != "new" or style == "row_modern")):
+        wall, source = _jitter(_pick(ERA_PALETTES[era], key), key), "palette_era"
     if osm.get("colour"):
         wall, source = list(osm["colour"]), "osm"
-    elif source == "palette" and material == "brick" and style not in ROW_STYLES and height_m > TALL_M:
+    elif source in ("palette", "palette_era") and material == "brick" and style not in ROW_STYLES and height_m > TALL_M:
         roof_color, source = True, "aerial"
     window = list(WINDOW_RGB["glass" if material == "glass" else "default"])
+    cornice = style.startswith("row_") or style in ("river_row", "mixed_storefront")
+    extra = {}
+    if eras:
+        cornice = cornice and style not in NO_CORNICE_STYLES
+        extra = {"era": era, "pent": style == "row_old" and era == "georgian_federal",
+                 "heavy_cornice": cornice and era in HEAVY_CORNICE_ERAS}
     return {
         "color_source": source,
         "roof_color": roof_color,
@@ -291,8 +384,9 @@ def facade_spec(rec, height_m: float, footprint, bid, osm=None, front=None) -> d
         "spacing_m": SPACING_M[style],
         "storefront": style == "mixed_storefront",
         "porch": style == "row_porch",
-        "cornice": style.startswith("row_") or style in ("river_row", "mixed_storefront"),
+        "cornice": cornice,
         "glass": material == "glass",
+        **extra,
     }
 
 
@@ -302,9 +396,12 @@ def compact(spec: dict) -> dict:
     two street-facing directions (east, north unit vectors, zero-padded;
     absent: every wall counts as street-facing); u use the aerial colour."""
     bands = ((BAND_STOREFRONT if spec["storefront"] else 0) | (BAND_PORCH if spec["porch"] else 0)
-             | (BAND_CORNICE if spec["cornice"] else 0) | (BAND_GLASS if spec["glass"] else 0))
+             | (BAND_CORNICE if spec["cornice"] else 0) | (BAND_GLASS if spec["glass"] else 0)
+             | (BAND_PENT if spec.get("pent") else 0) | (BAND_HEAVY_CORNICE if spec.get("heavy_cornice") else 0))
     out = {"s": STYLE_IDS[spec["style"]], "w": spec["wall_rgb"], "g": spec["window_rgb"], "f": spec["floor_h"],
            "p": spec["spacing_m"], "b": bands}
+    if "era" in spec:
+        out["e"] = ERAS.index(spec["era"])  # era option: for QA and review; render.js ignores it
     if spec.get("roof_color"):
         out["u"] = 1  # 05_build_scene.py replaces w with the aerial colour and drops this
     if spec.get("front"):

@@ -110,3 +110,68 @@ def test_porch_band_only_on_street_facing_walls(scenes):
         changed.append(int((np.abs(_render("output/_test_render/porch.json") - base).max(axis=2) > 6).sum()))
     assert sorted(c > 50 for c in changed) == [False, False, True, True], changed
     assert sorted(changed)[:2] == [0, 0], changed
+
+
+# --- Era option (docs/building_age_plan.md, Phase A) ---------------------------
+
+GOLDEN = REPO_ROOT / "tests" / "fixtures" / "render_golden.json"
+
+
+def _sha(a):
+    import hashlib
+
+    return hashlib.sha256(np.ascontiguousarray(a.astype(np.uint8)).tobytes()).hexdigest()
+
+
+def test_plain_scene_matches_the_stored_golden_render(scenes):
+    """A permanent byte-identical check: the git-HEAD comparison above only
+    proves something while a change is uncommitted. The checksums were
+    recorded with render.js as of Nov. 23, 2026, before the era option, on
+    this machine's headless Chromium; a different GPU or Chromium build can
+    change pixels, in which case re-record them from a known-good commit:
+    PP_RECORD_GOLDEN=1 uv run pytest tests/test_render_facades.py -k golden
+    renders with git-HEAD render.js and rewrites the file."""
+    import os
+
+    if os.environ.get("PP_RECORD_GOLDEN"):
+        old = "output/_test_render/old/index.html"
+        GOLDEN.write_text(json.dumps({
+            "note": "sha256 of the plain test scene's color and mask renders (fixture in this file), "
+                    "recorded from git-HEAD render.js",
+            "plain_color": _sha(_render("output/_test_render/plain.json", page=old)),
+            "plain_mask": _sha(_render("output/_test_render/plain.json", "mask", page=old))}, indent=1) + "\n")
+    gold = json.loads(GOLDEN.read_text())
+    assert _sha(_render("output/_test_render/plain.json")) == gold["plain_color"]
+    assert _sha(_render("output/_test_render/plain.json", "mask")) == gold["plain_mask"]
+
+
+def test_facades_without_era_bits_render_as_before(scenes):
+    now = _render("output/_test_render/facade.json")
+    before = _render("output/_test_render/facade.json", page="output/_test_render/old/index.html")
+    assert np.array_equal(now, before)
+
+
+@pytest.mark.parametrize("bit", [16, 32])
+def test_era_bands_paint_walls_only(scenes, bit):
+    from shapely.geometry import box
+
+    from pixelphilly.facades import BAND_HEAVY_CORNICE, BAND_PENT
+
+    assert {16: BAND_PENT, 32: BAND_HEAVY_CORNICE}[bit] == bit
+    root = scenes
+    scene = json.loads((root / "plain.json").read_text())
+    rec = {"building_code_description": "ROW 3 STY MASONRY", "building_code_description_new": "ROW TYPICAL",
+           "number_stories": 3}
+    f = compact(facade_spec(rec, 10.0, box(-10, -10, 10, 10), 1))
+    b0 = {**scene["buildings"][0], "h": 10.0}
+    (root / "era_off.json").write_text(json.dumps({**scene, "buildings": [{**b0, "facade": f}]}))
+    (root / "era_on.json").write_text(json.dumps({**scene, "buildings": [{**b0, "facade": {**f, "b": f["b"] | bit}}]}))
+    off = _render("output/_test_render/era_off.json")
+    on = _render("output/_test_render/era_on.json")
+    walls = np.abs(_render("output/_test_render/plain.json") - np.array(GRAY)).max(axis=2) > 6
+    near = np.asarray(Image.fromarray(walls.astype(np.uint8) * 255).filter(ImageFilter.MaxFilter(5))) > 0
+    diff = np.abs(on - off).max(axis=2) > 6
+    assert diff.sum() > 30, diff.sum()
+    assert not (diff & ~near).any(), "roofs and ground are untouched"
+    assert np.array_equal(_render("output/_test_render/era_off.json", "mask"),
+                          _render("output/_test_render/era_on.json", "mask"))

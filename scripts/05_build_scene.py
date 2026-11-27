@@ -843,7 +843,9 @@ def attach_facades(cfg, frame, buildings):
     scripts/04f_fetch_opa.py). Footprints with no record keep today's plain
     walls, unless "facades_unmatched": "default" gives them a typology
     default. Without the option nothing changes (scenes byte-identical).
-    Returns QA counts (join method, styles, materials)."""
+    "facade_eras": true adds era styles, palettes and bands (facades.era_of;
+    docs/building_age_plan.md, Phase A). Returns QA counts (join method,
+    styles, materials; eras when on)."""
     if cfg.get("facades") != "opa":
         return {}
     from shapely.geometry import Point, Polygon
@@ -876,7 +878,11 @@ def attach_facades(cfg, frame, buildings):
     from shapely.strtree import STRtree
 
     street_tree = STRtree(streets) if streets else None
+    eras = bool(cfg.get("facade_eras"))
+    slope_codes = set(cfg.get("front_slopes") or ())
+    slope_qa = Counter()
     how, styles, materials, colors = Counter(), Counter(), Counter(), Counter()
+    era_counts, era_styles, era_est = Counter(), Counter(), Counter()
     n_osm = n_front = 0
     for b, fp in zip(buildings, fps):
         rec, method = matches[fp["id"]]
@@ -884,16 +890,34 @@ def attach_facades(cfg, frame, buildings):
         if rec is None and not default:
             continue
         osm_tags = facades.osm_match(fp["geom"], osm) if osm else {}
-        style = facades.style_of(rec, b["h"]) if rec else None
+        style = facades.style_of(rec, b["h"], eras=eras) if rec else None
         front = []
-        if street_tree is not None and style in ("row_porch", "mixed_storefront"):
-            # Porch and storefront bands go on street-facing walls only
+        # Porch and storefront bands, and the era option's pent eave, go on
+        # street-facing walls only
+        front_styles = ("row_porch", "mixed_storefront") + (("row_old",) if eras else ())
+        if street_tree is not None and style in front_styles:
             near = [streets[i] for i in street_tree.query(fp["geom"].buffer(facades.FRONT_RAY_M + 5))]
             front = facades.front_dirs(fp["geom"], near)
-        spec = facades.facade_spec(rec, b["h"], fp["geom"], b["id"], osm=osm_tags, front=front)
+        spec = facades.facade_spec(rec, b["h"], fp["geom"], b["id"], osm=osm_tags, front=front, eras=eras)
         b["facade"] = facades.compact(spec)
+        # Front slopes (Phase B): the OPA codes in "front_slopes" whose
+        # street wall can be found. The cut itself waits until after the
+        # LiDAR shapes the building (add_front_slopes); the key is private
+        # (colored() doesn't write it)
+        if slope_codes and rec and rec.get("building_code_description_new") in slope_codes:
+            slope_qa["candidates"] += 1
+            if street_tree is not None:
+                sf = front or facades.front_dirs(
+                    fp["geom"], [streets[i] for i in street_tree.query(fp["geom"].buffer(facades.FRONT_RAY_M + 5))])
+                if sf:
+                    b["_front_slope"] = (sf[0], fp["geom"])
+                    slope_qa["street_wall_found"] += 1
         if osm_items:
-            b["_facade_args"] = (rec, fp["geom"], front, osm_tags, osm)  # LiDAR parts check OSM parts
+            b["_facade_args"] = (rec, fp["geom"], front, osm_tags, osm, eras)  # LiDAR parts check OSM parts
+        if eras:
+            era_counts[spec["era"]] += 1
+            era_styles[f"{spec['era']}/{spec['style']}"] += 1
+            era_est[str((rec or {}).get("year_built_estimate") or "").strip().upper() == "Y"] += 1
         styles[spec["style"]] += 1
         materials[spec["material"]] += 1
         colors[spec["color_source"]] += 1
@@ -907,7 +931,12 @@ def attach_facades(cfg, frame, buildings):
             "facade_styles": dict(styles.most_common()), "facade_materials": dict(materials.most_common()),
             "facade_colour_source": dict(colors), "facade_osm_footprints": n_osm,
             "facade_osm_items": len(osm_items), "facade_street_fronts": n_front,
-            "facade_unmatched": "typology default" if default else "plain walls (no facade)"}
+            "facade_unmatched": "typology default" if default else "plain walls (no facade)",
+            **({"front_slope_candidates": slope_qa["candidates"],
+                "front_slope_street_wall_found": slope_qa["street_wall_found"]} if slope_codes else {}),
+            **({"facade_eras": dict(era_counts.most_common()), "facade_era_styles": dict(era_styles.most_common()),
+                "facade_era_year_estimated_share": round(era_est[True] / max(sum(era_est.values()), 1), 3)}
+               if eras else {})}
 
 
 def load_osm(cfg, frame):
@@ -978,12 +1007,12 @@ def part_facade(b, part):
 
     if "_facade_args" not in b:
         return b.get("facade")
-    rec, geom, front, osm, items = b["_facade_args"]
+    rec, geom, front, osm, items, eras = b["_facade_args"]
     pg = unary_union([Polygon(p[0], p[1:]) for p in part["polys"]]).buffer(0)
     m = facades.osm_match(pg, items)
     if not m or m == osm:
         return b["facade"]
-    return facades.compact(facades.facade_spec(rec, b["h"], geom, b["id"], osm=m, front=front))
+    return facades.compact(facades.facade_spec(rec, b["h"], geom, b["id"], osm=m, front=front, eras=eras))
 
 
 def load_lidar_grid(cfg, frame):
@@ -1194,6 +1223,10 @@ def lidar_shaped(cfg, frame, buildings):
     from pixelphilly import reviewed
 
     excluded, stadiums_excluded = reviewed.load(reviewed.STADIUM_EXCLUSIONS), []
+    from pixelphilly import roofs
+
+    roof_fit = cfg.get("roof_fit") == "lidar"
+    fit_qa, fit_kinds, fit_refused = Counter(), Counter(), Counter()
     t0 = time.monotonic()
     for i, b in enumerate(buildings):
         if i and i % 5000 == 0:  # downtown has ~70,000 footprints
@@ -1204,6 +1237,22 @@ def lidar_shaped(cfg, frame, buildings):
             out.append(b)
             continue
         base = lidar.footprint_base(fp, ground, origin, lidar.RES_M)
+        # Fitted gables and hips ("roof_fit": "lidar"; docs/building_age_plan.md,
+        # Phase C): pitched roofs on simple footprints get one part with a
+        # sloped roof instead of flat tiers. Refusals keep the tiers
+        if roof_fit and base is not None:
+            pitch = roofs.roof_pitch(fp, dsm, ground, origin, lidar.RES_M)
+            if pitch and pitch["cls"] == "pitched":
+                fit_qa["pitched"] += 1
+                model = roofs.roof_model(fp, dsm, ground, origin, lidar.RES_M, base=base, reasons=fit_refused)
+                if model is not None:
+                    fit_qa["fitted"] += 1
+                    fit_kinds[model["kind"]] += 1
+                    keep = {k: v for k, v in b.items() if k in ("facade",)}
+                    out.append(roofs.roof3d_building({"id": b["id"], "h": b["h"], **keep}, fp, model))
+                    shaped += 1
+                    n_parts += 1
+                    continue
         parts = None if base is None else lidar.building_parts(fp, dsm, origin, lidar.RES_M, base=base,
                                                                 ceiling=b.get("ceiling_m"),
                                                                 typical=b.get("typical_m"))
@@ -1223,6 +1272,7 @@ def lidar_shaped(cfg, frame, buildings):
             terraces = lidar.stand_terraces(fp, parts)
         for k, part in enumerate(parts):
             out.append({"id": f"{b['id']}-{k}", "h": part["h"], "polys": part["polys"], "terrace": k in terraces,
+                        **({"_front_slope": b["_front_slope"]} if "_front_slope" in b else {}),
                         # LiDAR parts keep their building's façade (floors line up across
                         # parts), unless OSM tags this part differently
                         **({"facade": part_facade(b, part)} if "facade" in b else {})})
@@ -1307,7 +1357,13 @@ def lidar_shaped(cfg, frame, buildings):
         out.append({"id": part["id"], "h": part["h"], "polys": part["polys"], "structure": True})
     print(f"  lidar structures: {found:,} found, {dropped_photo:,} dropped (2024 photo shows nothing), "
           f"{n_regions:,} kept as {len(s_parts):,} parts in {time.monotonic() - t0:.0f} s", flush=True)
-    return out, {"lidar_buildings_shaped": shaped, "lidar_fallback_single_height": fallback,
+    if roof_fit:
+        print(f"  fitted roofs: {fit_qa['fitted']:,} of {fit_qa['pitched']:,} pitched footprints "
+              f"{dict(fit_kinds.most_common())}; refused {dict(fit_refused.most_common())}", flush=True)
+    return out, {**({"roof_fit_pitched": fit_qa["pitched"], "roof_fit_fitted": fit_qa["fitted"],
+                     "roof_fit_kinds": dict(fit_kinds.most_common()),
+                     "roof_fit_refused": dict(fit_refused.most_common())} if roof_fit else {}),
+                 "lidar_buildings_shaped": shaped, "lidar_fallback_single_height": fallback,
                  "lidar_parts": n_parts, "lidar_terrace_parts": n_terrace, "lidar_stadiums": stadiums,
                  **({"lidar_stadiums_excluded": stadiums_excluded} if stadiums_excluded else {}),
                  "lidar_structures": n_regions, "lidar_structure_parts": len(s_parts),
@@ -1377,7 +1433,9 @@ def colored(buildings, ground, cfg, cache=None):
             if cache is not None:
                 cache[b["id"]] = (color, roof)
         else:
-            roof = mean_color(ground["mosaic_arr"], b["polys"], ground["to_px"]) or [150, 140, 130]
+            # The two pieces of a front-slope cut take the whole footprint's
+            # color (_color_polys), so the cut doesn't change the walls
+            roof = mean_color(ground["mosaic_arr"], b.get("_color_polys", b["polys"]), ground["to_px"]) or [150, 140, 130]
             color = wall_color(roof, b["h"], cfg.get("wall_tint"), terrace=b.get("terrace", False),
                                structure=b.get("structure", False))
             if cache is not None:
@@ -1393,8 +1451,62 @@ def colored(buildings, ground, cfg, cache=None):
         out.append({"id": b["id"], "h": b["h"], "color": color, "polys": b["polys"],
                     **({"facade": facade} if facade else {}),
                     **({"z0": b["z0"]} if b.get("z0") else {}),
-                    **({"roof_rgb": list(b["roof_rgb"])} if b.get("roof_rgb") else {})})
+                    **({"roof_rgb": list(b["roof_rgb"])} if b.get("roof_rgb") else {}),
+                    # Fitted gables and hips ("roof_fit": "lidar"; pixelphilly.roofs.roof3d_building)
+                    **({"roof3d": b["roof3d"]} if b.get("roof3d") else {})})
     return out
+
+
+def add_front_slopes(cfg, buildings):
+    """Cut the marked buildings (attach_facades, "front_slopes" in the
+    config) into a full-height main block and a lower street-side strip,
+    with a shingled slope over the strip (pixelphilly.roofs; docs/
+    building_age_plan.md, Phase B). Runs after the LiDAR shapes, so a
+    stepped building's parts are cut one by one, and only along walls on
+    the building's outline. Returns (buildings, facets, QA). Without the
+    option, nothing changes."""
+    if not cfg.get("front_slopes"):
+        return buildings, [], {}
+    from shapely.geometry import Polygon
+    from shapely.ops import unary_union
+
+    from pixelphilly import roofs
+
+    out, facets, qa, refused = [], [], Counter(), Counter()
+    for b in buildings:
+        mark = b.pop("_front_slope", None)
+        if mark is None:
+            out.append(b)
+            continue
+        qa["parts_marked"] += 1
+        direction, outline = mark
+        poly = unary_union([Polygon(p[0], p[1:]) for p in b["polys"]]).buffer(0)
+        fs = None if b.get("z0") else roofs.front_slope(poly, b["h"], direction, b["id"], outer=outline,
+                                                        reasons=refused)
+        if fs is None:
+            out.append(b)
+            continue
+        qa["parts_cut"] += 1
+        # The strip's id keeps the footprint's objectid first, as
+        # pixelphilly.qa_scan.footprint_id expects: 5608 -> 5608-f,
+        # LiDAR part 5902-0 -> 5902-f0
+        sid = str(b["id"]).replace("-", "-f", 1) if "-" in str(b["id"]) else f"{b['id']}-f"
+        rest = {k: v for k, v in b.items() if k not in ("id", "h", "polys")}
+        out.append({**rest, "id": b["id"], "h": b["h"], "polys": roofs.to_polys(fs["main"]),
+                    "_color_polys": b["polys"]})
+        out.append({**rest, "id": sid, "h": round(fs["strip_h"], 2), "polys": roofs.to_polys(fs["strip"]),
+                    "_color_polys": b["polys"]})
+        facets.append(roofs.facet_record(fs))
+    print(f"  front slopes: {qa['parts_cut']:,} of {qa['parts_marked']:,} marked parts cut", flush=True)
+    return out, facets, {"front_slope_parts_marked": qa["parts_marked"], "front_slope_parts_cut": qa["parts_cut"],
+                         "front_slope_refused": dict(refused.most_common())}
+
+
+def facets_in_reach(facets, reach):
+    """The front slopes whose triangles meet one render tile's reach."""
+    from shapely.geometry import MultiPoint
+
+    return [f for f in facets if MultiPoint([p[:2] for t in f["t"] for p in t]).intersects(reach)]
 
 
 def tubes_in_reach(tubes, reach):
@@ -1435,10 +1547,12 @@ def camera_params(cfg, cam):
     return cam.three_js_params(cfg.get("camera_distance_m", 3000.0))
 
 
-def scene_dict(cfg, frame, cam, frames, ground, ground_rel, buildings, trees, tubes=None):
+def scene_dict(cfg, frame, cam, frames, ground, ground_rel, buildings, trees, tubes=None, facets=None):
     """tubes: [{"id", "pts": [[east, north, z], ...], "r", "color"}] for
     render/render.js; the key is left out when there are none, so scenes
-    without bridges are unchanged."""
+    without bridges are unchanged. facets: front slopes ({"t": triangles
+    [[e, n, z] x 3], "c": [r, g, b]}, pixelphilly.roofs), likewise only when
+    there are some."""
     mpp = cam.meters_per_pixel
     cu, cv = ground["uv"]
     scene = {
@@ -1458,6 +1572,8 @@ def scene_dict(cfg, frame, cam, frames, ground, ground_rel, buildings, trees, tu
     }
     if tubes:
         scene["tubes"] = tubes
+    if facets:
+        scene["roof_facets"] = facets
     return scene
 
 
@@ -1496,10 +1612,12 @@ def main_single(cfg, frame, cam, frames):
     # Cables, hangers, truss and bracing of the modeled bridges
     tubes = []
     lidar_qa.update(add_bridge_structures(cfg, frame, buildings, tubes))
+    buildings, facets, slope_qa = add_front_slopes(cfg, buildings)
+    lidar_qa.update(slope_qa)
     buildings = colored(buildings, ground, cfg)
     trees = woods_trees(cfg, frame, buildings, load_trees(cfg, frame))
     scene = scene_dict(cfg, frame, cam, frames, ground, f"data/processed/{ground_path.name}", buildings, trees,
-                       tubes)
+                       tubes, facets)
     (PROCESSED / f"{name}_scene.json").write_text(json.dumps(scene, separators=(",", ":")))
     tallest = sorted(({"id": b["id"], "h": b["h"]} for b in buildings), key=lambda b: -b["h"])[:10]
     write_qa(cfg, info, len(buildings), tallest, len(trees), {
@@ -1549,6 +1667,8 @@ def main_tiled(cfg, frame, cam, frames):
     # prisms go into the footprint index below with every other building
     tubes = []
     lidar_qa.update(add_bridge_structures(cfg, frame, buildings, tubes))
+    buildings, facets, slope_qa = add_front_slopes(cfg, buildings)
+    lidar_qa.update(slope_qa)
     trees = woods_trees(cfg, frame, buildings, load_trees(cfg, frame))
     # Spatial indexes over footprints (by exterior bbox) and trees
     b_boxes = [box(*Polygon(b["polys"][0][0]).bounds) for b in buildings]
@@ -1591,7 +1711,7 @@ def main_tiled(cfg, frame, cam, frames):
 
         scene = scene_dict(cfg, frame, cam, tile_frames, ground,
                            f"data/processed/{name}/tiles/{stem}_ground.jpg", tile_b, tile_t,
-                           tubes_in_reach(tubes, reach))
+                           tubes_in_reach(tubes, reach), facets_in_reach(facets, reach))
         (out_dir / f"{stem}.json").write_text(json.dumps(scene, separators=(",", ":")))
         index.append({"tile": stem, "scene": f"data/processed/{name}/tiles/{stem}.json",
                       "frames": [f.name for f in tile_frames], "buildings": len(tile_b), "trees": len(tile_t),

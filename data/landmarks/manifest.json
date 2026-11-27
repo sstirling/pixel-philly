@@ -1,5 +1,5 @@
 {
-  "built_at": "2026-10-26T00:38:18+00:00",
+  "built_at": "2026-11-26T22:11:23+00:00",
   "built_by": "scripts/19_landmark_refs.py",
   "license_policy": "LoC HABS/HAER (public domain) or Wikimedia Commons CC0 / public domain / CC BY only. CC BY-SA and all other licenses rejected. CC BY requires the credit line.",
   "selection_note": "References are ranked by a caption/file-name keyword heuristic; review before use.",
@@ -3352,6 +3352,286 @@
         }
       ],
       "status": "ok"
+    },
+    {
+      "slug": "betsy_ross_bridge",
+      "name": "Betsy Ross Bridge",
+      "wikidata": "Q3396470",
+      "wikidata_label": "Betsy Ross Bridge",
+      "lon": -75.06676,
+      "lat": 39.98595,
+      "coord_source": "Wikidata P625",
+      "ais": null,
+      "mapped_areas": [
+        "east_riverfront"
+      ],
+      "loc_items": {},
+      "commons_category": "Betsy Ross Bridge",
+      "candidates_considered": 8,
+      "commons_rejected_licenses": {
+        "CC BY-SA 4.0": 3,
+        "CC BY-SA 2.0": 3,
+        "CC BY-SA 3.0": 2
+      },
+      "references": [
+        {
+          "source": "wikimedia_commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Pennsauken_Creek_New_Jersey_2020.jpg",
+          "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/ce/Pennsauken_Creek_New_Jersey_2020.jpg/1920px-Pennsauken_Creek_New_Jersey_2020.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "original_url": "https://upload.wikimedia.org/wikipedia/commons/c/ce/Pennsauken_Creek_New_Jersey_2020.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "width": 4288,
+          "height": 2848,
+          "caption": "Oblique view of Pennsauken Creek (center) in New Jersey, flowing into the Delaware River, looking northwest.  The large bridge in upper left is the Betsy Ross Bridge.  The vegetated area  to the right of the mouth of the creek is Palmyra Cove Nature Park.  To the left (southwest) of the creek is the",
+          "license": "CC0",
+          "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+          "author": "Jstuby",
+          "credit": "Jstuby / Wikimedia Commons, CC0 (https://commons.wikimedia.org/wiki/File:Pennsauken_Creek_New_Jersey_2020.jpg)",
+          "wikidata_p18": false,
+          "heuristic_score": 7,
+          "reviewed": false,
+          "local_path": "data/landmarks/refs/betsy_ross_bridge/0_wikimedia_commons.jpg"
+        },
+        {
+          "source": "wikimedia_commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Betsy_Ross_Bridge,_from_Delair_Bridge,_July_2024.jpg",
+          "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/79/Betsy_Ross_Bridge%2C_from_Delair_Bridge%2C_July_2024.jpg/1920px-Betsy_Ross_Bridge%2C_from_Delair_Bridge%2C_July_2024.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "original_url": "https://upload.wikimedia.org/wikipedia/commons/7/79/Betsy_Ross_Bridge%2C_from_Delair_Bridge%2C_July_2024.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "width": 4032,
+          "height": 3024,
+          "caption": "Betsy Ross Bridge, from Delair Bridge, July 2024",
+          "license": "CC BY 4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0",
+          "author": "SnowFire",
+          "credit": "SnowFire / Wikimedia Commons, CC BY 4.0 (https://commons.wikimedia.org/wiki/File:Betsy_Ross_Bridge,_from_Delair_Bridge,_July_2024.jpg)",
+          "wikidata_p18": false,
+          "heuristic_score": 3,
+          "reviewed": false,
+          "local_path": "data/landmarks/refs/betsy_ross_bridge/1_wikimedia_commons.jpg"
+        },
+        {
+          "source": "wikimedia_commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Betsy_Ross_Bridge,_from_Delair_Bridge,_July_2024_2.jpg",
+          "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c4/Betsy_Ross_Bridge%2C_from_Delair_Bridge%2C_July_2024_2.jpg/1920px-Betsy_Ross_Bridge%2C_from_Delair_Bridge%2C_July_2024_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "original_url": "https://upload.wikimedia.org/wikipedia/commons/c/c4/Betsy_Ross_Bridge%2C_from_Delair_Bridge%2C_July_2024_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "width": 4032,
+          "height": 3024,
+          "caption": "Betsy Ross Bridge, from Delair Bridge, July 2024",
+          "license": "CC BY 4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0",
+          "author": "SnowFire",
+          "credit": "SnowFire / Wikimedia Commons, CC BY 4.0 (https://commons.wikimedia.org/wiki/File:Betsy_Ross_Bridge,_from_Delair_Bridge,_July_2024_2.jpg)",
+          "wikidata_p18": false,
+          "heuristic_score": 3,
+          "reviewed": false,
+          "local_path": "data/landmarks/refs/betsy_ross_bridge/2_wikimedia_commons.jpg"
+        }
+      ]
+    },
+    {
+      "slug": "tacony_palmyra_bridge",
+      "name": "Tacony-Palmyra Bridge",
+      "wikidata": "Q7674055",
+      "wikidata_label": "Tacony–Palmyra Bridge",
+      "lon": -75.0434,
+      "lat": 40.013,
+      "coord_source": "Wikidata P625",
+      "ais": null,
+      "mapped_areas": [
+        "lower_northeast"
+      ],
+      "loc_items": {},
+      "commons_category": "Tacony–Palmyra Bridge",
+      "candidates_considered": 3,
+      "commons_rejected_licenses": {
+        "CC BY-SA 4.0": 7,
+        "CC BY-SA 2.0": 2,
+        "No restrictions": 1,
+        "CC BY-SA 3.0": 1
+      },
+      "references": [
+        {
+          "source": "wikimedia_commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Pennsauken_Creek_New_Jersey_2020.jpg",
+          "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/ce/Pennsauken_Creek_New_Jersey_2020.jpg/1920px-Pennsauken_Creek_New_Jersey_2020.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "original_url": "https://upload.wikimedia.org/wikipedia/commons/c/ce/Pennsauken_Creek_New_Jersey_2020.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "width": 4288,
+          "height": 2848,
+          "caption": "Oblique view of Pennsauken Creek (center) in New Jersey, flowing into the Delaware River, looking northwest.  The large bridge in upper left is the Betsy Ross Bridge.  The vegetated area  to the right of the mouth of the creek is Palmyra Cove Nature Park.  To the left (southwest) of the creek is the",
+          "license": "CC0",
+          "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+          "author": "Jstuby",
+          "credit": "Jstuby / Wikimedia Commons, CC0 (https://commons.wikimedia.org/wiki/File:Pennsauken_Creek_New_Jersey_2020.jpg)",
+          "wikidata_p18": false,
+          "heuristic_score": 7,
+          "reviewed": false,
+          "local_path": "data/landmarks/refs/tacony_palmyra_bridge/0_wikimedia_commons.jpg"
+        },
+        {
+          "source": "wikimedia_commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Betsy_Ross_and_Delair_Bridge.jpg",
+          "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/73/Betsy_Ross_and_Delair_Bridge.jpg/1920px-Betsy_Ross_and_Delair_Bridge.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "original_url": "https://upload.wikimedia.org/wikipedia/commons/7/73/Betsy_Ross_and_Delair_Bridge.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "width": 3498,
+          "height": 2403,
+          "caption": "The Betsy Ross and Delair Bridge, connecting Philadelphia and Pennsauken Township acros the Delaware River, are on the left, with the Tacony-Palmyra Bridge, connecting Philadelphia with Palmyra, New Jersey is on the right.",
+          "license": "CC BY 2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0",
+          "author": "Doc Searls from Santa Barbara, USA",
+          "credit": "Doc Searls from Santa Barbara, USA / Wikimedia Commons, CC BY 2.0 (https://commons.wikimedia.org/wiki/File:Betsy_Ross_and_Delair_Bridge.jpg)",
+          "wikidata_p18": false,
+          "heuristic_score": 1,
+          "reviewed": false,
+          "local_path": "data/landmarks/refs/tacony_palmyra_bridge/1_wikimedia_commons.jpg"
+        }
+      ]
+    },
+    {
+      "slug": "girard_point_bridge",
+      "name": "Girard Point Bridge",
+      "wikidata": "Q14629033",
+      "wikidata_label": "Girard Point Bridge",
+      "lon": -75.1975,
+      "lat": 39.8923,
+      "coord_source": "Wikidata P625",
+      "ais": null,
+      "mapped_areas": [
+        "south_lidar",
+        "southwest"
+      ],
+      "loc_items": {},
+      "commons_category": "Girard Point Bridge",
+      "candidates_considered": 12,
+      "commons_rejected_licenses": {
+        "CC BY-SA 4.0": 1,
+        "CC BY-SA 2.0": 10
+      },
+      "references": [
+        {
+          "source": "wikimedia_commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Basin_Bridge_of_Philadelphia_Naval_Shipyard_1995.jpg",
+          "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9b/Basin_Bridge_of_Philadelphia_Naval_Shipyard_1995.jpg/1920px-Basin_Bridge_of_Philadelphia_Naval_Shipyard_1995.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "original_url": "https://upload.wikimedia.org/wikipedia/commons/9/9b/Basin_Bridge_of_Philadelphia_Naval_Shipyard_1995.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "width": 4678,
+          "height": 3261,
+          "caption": "View from floating barracks west of Basin Bridge to the reserve basin of the Philadelphia Naval Shipyard, Pennsylvania (USA). The I-95 Girard Point Bridge is visible in the background.",
+          "license": "Public domain",
+          "license_url": null,
+          "author": "Jet Lowe",
+          "credit": "Jet Lowe / Wikimedia Commons, Public domain (https://commons.wikimedia.org/wiki/File:Basin_Bridge_of_Philadelphia_Naval_Shipyard_1995.jpg)",
+          "wikidata_p18": true,
+          "heuristic_score": 6,
+          "reviewed": false,
+          "local_path": "data/landmarks/refs/girard_point_bridge/0_wikimedia_commons.jpg"
+        },
+        {
+          "source": "wikimedia_commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Girard_Point_Bridge_from_Platt_Bridge_-_panoramio.jpg",
+          "image_url": "https://upload.wikimedia.org/wikipedia/commons/3/32/Girard_Point_Bridge_from_Platt_Bridge_-_panoramio.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+          "original_url": "https://upload.wikimedia.org/wikipedia/commons/3/32/Girard_Point_Bridge_from_Platt_Bridge_-_panoramio.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "width": 648,
+          "height": 486,
+          "caption": "Girard Point Bridge from Platt Bridge",
+          "license": "CC BY 3.0",
+          "license_url": "https://creativecommons.org/licenses/by/3.0",
+          "author": "michaelwm25",
+          "credit": "michaelwm25 / Wikimedia Commons, CC BY 3.0 (https://commons.wikimedia.org/wiki/File:Girard_Point_Bridge_from_Platt_Bridge_-_panoramio.jpg)",
+          "wikidata_p18": false,
+          "heuristic_score": 2,
+          "reviewed": false,
+          "local_path": "data/landmarks/refs/girard_point_bridge/1_wikimedia_commons.jpg"
+        },
+        {
+          "source": "wikimedia_commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Phila_Girard_Point_Bridge01.png",
+          "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7a/Phila_Girard_Point_Bridge01.png/1920px-Phila_Girard_Point_Bridge01.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "original_url": "https://upload.wikimedia.org/wikipedia/commons/7/7a/Phila_Girard_Point_Bridge01.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "width": 2239,
+          "height": 1127,
+          "caption": "The Girard Point Bridge is a double-decked cantilever bridge carrying Interstate 95 across the Schuylkill River in Philadelphia, Pennsylvania,  The Pennsylvania Department of Transportation undertook the erection of the bridge in Southwest Philadelphia and selected American Bridge Company as the pri",
+          "license": "Public domain",
+          "license_url": null,
+          "author": "Davidt8",
+          "credit": "Davidt8 / Wikimedia Commons, Public domain (https://commons.wikimedia.org/wiki/File:Phila_Girard_Point_Bridge01.png)",
+          "wikidata_p18": false,
+          "heuristic_score": 1,
+          "reviewed": false,
+          "local_path": "data/landmarks/refs/girard_point_bridge/2_wikimedia_commons.jpg"
+        }
+      ]
+    },
+    {
+      "slug": "platt_bridge",
+      "name": "George C. Platt Bridge",
+      "wikidata": "Q5537572",
+      "wikidata_label": "George C. Platt Bridge",
+      "lon": -75.2117,
+      "lat": 39.8981,
+      "coord_source": "Wikidata P625",
+      "ais": null,
+      "mapped_areas": [
+        "southwest"
+      ],
+      "loc_items": {},
+      "commons_category": "George C. Platt Bridge",
+      "candidates_considered": 10,
+      "commons_rejected_licenses": {
+        "CC BY-SA 3.0": 1,
+        "CC BY-SA 2.0": 1,
+        "CC BY-SA 4.0": 1
+      },
+      "references": [
+        {
+          "source": "wikimedia_commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Phila_Platt_Bridge02.png",
+          "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/db/Phila_Platt_Bridge02.png/1920px-Phila_Platt_Bridge02.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "original_url": "https://upload.wikimedia.org/wikipedia/commons/d/db/Phila_Platt_Bridge02.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "width": 2204,
+          "height": 1000,
+          "caption": "The George C. Platt Memorial Bridge is a through truss bridge that carries PA 291 (Penrose Avenue) over the Schuylkill River in Philadelphia, Pennsylvania.",
+          "license": "Public domain",
+          "license_url": null,
+          "author": "Davidt8",
+          "credit": "Davidt8 / Wikimedia Commons, Public domain (https://commons.wikimedia.org/wiki/File:Phila_Platt_Bridge02.png)",
+          "wikidata_p18": true,
+          "heuristic_score": 4,
+          "reviewed": false,
+          "local_path": "data/landmarks/refs/platt_bridge/0_wikimedia_commons.jpg"
+        },
+        {
+          "source": "wikimedia_commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:George_C_Platt_Bridge_sunset_-_US-PA.jpg",
+          "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8d/George_C_Platt_Bridge_sunset_-_US-PA.jpg/1920px-George_C_Platt_Bridge_sunset_-_US-PA.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "original_url": "https://upload.wikimedia.org/wikipedia/commons/8/8d/George_C_Platt_Bridge_sunset_-_US-PA.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "width": 2048,
+          "height": 1463,
+          "caption": "Sunset at George C. Platt Bridge in Philadelphia, USA.",
+          "license": "CC BY 2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0",
+          "author": "Michael Murphy",
+          "credit": "Michael Murphy / Wikimedia Commons, CC BY 2.0 (https://commons.wikimedia.org/wiki/File:George_C_Platt_Bridge_sunset_-_US-PA.jpg)",
+          "wikidata_p18": false,
+          "heuristic_score": 1,
+          "reviewed": false,
+          "local_path": "data/landmarks/refs/platt_bridge/1_wikimedia_commons.jpg"
+        },
+        {
+          "source": "wikimedia_commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Phila_Platt_Bridge01.png",
+          "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2a/Phila_Platt_Bridge01.png/1920px-Phila_Platt_Bridge01.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "original_url": "https://upload.wikimedia.org/wikipedia/commons/2/2a/Phila_Platt_Bridge01.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "width": 1996,
+          "height": 920,
+          "caption": "The George C. Platt Memorial Bridge is a through truss bridge that carries PA 291 (Penrose Avenue) over the Schuylkill River in Philadelphia, Pennsylvania.",
+          "license": "Public domain",
+          "license_url": null,
+          "author": "Davidt8",
+          "credit": "Davidt8 / Wikimedia Commons, Public domain (https://commons.wikimedia.org/wiki/File:Phila_Platt_Bridge01.png)",
+          "wikidata_p18": false,
+          "heuristic_score": 1,
+          "reviewed": false,
+          "local_path": "data/landmarks/refs/platt_bridge/2_wikimedia_commons.jpg"
+        }
+      ]
     }
   ]
 }

@@ -1,0 +1,172 @@
+{
+  "buildings_downloaded": 2473,
+  "buildings_in_scene": 4468,
+  "buildings_dropped": [],
+  "height_source_counts": {
+    "approx_hgt": 2466,
+    "max_hgt": 5,
+    "default": 2
+  },
+  "height_outliers_max_gt_ratio_x_approx": [
+    {
+      "objectid": 114908,
+      "address": "5746 FRANKFORD AVE",
+      "approx_hgt_ft": 12,
+      "max_hgt_ft": 38.71992633
+    }
+  ],
+  "tallest_buildings_m": [
+    {
+      "id": 31060,
+      "h": 17.98
+    },
+    {
+      "id": "13263-1",
+      "h": 11.81
+    },
+    {
+      "id": "28318-5",
+      "h": 11.56
+    },
+    {
+      "id": "120696-1",
+      "h": 11.36
+    },
+    {
+      "id": "103419-2",
+      "h": 11.34
+    },
+    {
+      "id": "108116-1",
+      "h": 11.25
+    },
+    {
+      "id": "102602-1",
+      "h": 11.21
+    },
+    {
+      "id": "92357-1",
+      "h": 11.03
+    },
+    {
+      "id": "98065-1",
+      "h": 10.96
+    },
+    {
+      "id": "11925-1",
+      "h": 10.89
+    }
+  ],
+  "trees_in_scene": 99,
+  "ground_texture_px": [
+    5888,
+    5120
+  ],
+  "ground_texture_source_px": [
+    5888,
+    5120
+  ],
+  "uv_fit_max_residual_m": 4.372796455203043e-06,
+  "ground_median_filter_px": 5,
+  "frames": 12,
+  "roof_fit_pitched": 3,
+  "roof_fit_fitted": 1,
+  "roof_fit_kinds": {
+    "gable": 1
+  },
+  "roof_fit_refused": {
+    "no_fit": 1,
+    "not_simple": 1
+  },
+  "lidar_buildings_shaped": 1775,
+  "lidar_fallback_single_height": 5,
+  "lidar_parts": 2205,
+  "lidar_terrace_parts": 0,
+  "lidar_stadiums": [],
+  "lidar_structures": 3,
+  "lidar_structure_parts": 4,
+  "lidar_structure_area_m2": 117.8,
+  "lidar_structures_dropped_photo": 1,
+  "lidar_highway_mask": true,
+  "lidar_highway_masked_m2": 0.0,
+  "lidar_rail_mask": true,
+  "lidar_margin_m": 100.0,
+  "front_slope_parts_marked": 2228,
+  "front_slope_parts_cut": 1561,
+  "front_slope_refused": {
+    "short_wall": 229,
+    "height": 180,
+    "odd_front": 172,
+    "not_at_front": 86
+  },
+  "facade_join": {
+    "parcel": 2471,
+    "unmatched": 2
+  },
+  "facade_match_rate": 0.999,
+  "facade_styles": {
+    "row_postwar": 2078,
+    "row_porch": 294,
+    "row_typical": 31,
+    "other": 29,
+    "mixed_storefront": 15,
+    "institutional": 6,
+    "detached": 6,
+    "apartment_low": 5,
+    "warehouse": 4,
+    "detached_postwar": 1,
+    "twin_postwar": 1,
+    "twin_old": 1
+  },
+  "facade_materials": {
+    "brick": 2466,
+    "stone": 3,
+    "frame": 2
+  },
+  "facade_colour_source": {
+    "palette": 2199,
+    "palette_era": 272
+  },
+  "facade_osm_footprints": 0,
+  "facade_osm_items": 0,
+  "facade_street_fronts": 309,
+  "facade_unmatched": "plain walls (no facade)",
+  "front_slope_candidates": 2079,
+  "front_slope_street_wall_found": 1923,
+  "facade_eras": {
+    "postwar": 2183,
+    "interwar": 254,
+    "streetcar": 17,
+    "late20": 8,
+    "unknown": 5,
+    "late_victorian": 4
+  },
+  "facade_era_styles": {
+    "postwar/row_postwar": 2078,
+    "interwar/row_porch": 220,
+    "postwar/row_porch": 61,
+    "interwar/row_typical": 29,
+    "postwar/other": 19,
+    "streetcar/row_porch": 12,
+    "postwar/mixed_storefront": 11,
+    "late20/other": 7,
+    "postwar/apartment_low": 5,
+    "streetcar/institutional": 4,
+    "unknown/warehouse": 4,
+    "interwar/mixed_storefront": 4,
+    "late_victorian/detached": 3,
+    "postwar/detached": 3,
+    "postwar/institutional": 2,
+    "postwar/row_typical": 2,
+    "postwar/detached_postwar": 1,
+    "postwar/twin_postwar": 1,
+    "late20/row_porch": 1,
+    "interwar/other": 1,
+    "late_victorian/twin_old": 1,
+    "streetcar/other": 1,
+    "unknown/other": 1
+  },
+  "facade_era_year_estimated_share": 0.935,
+  "lawn_corrected_px": 494979,
+  "lawn_park_px": 579305
+}

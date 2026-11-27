@@ -1,0 +1,7778 @@
+{
+"note": "facade_spec output before the era option (Nov. 23, 2026); OPA records from data/raw/atlas_*_fac_opa.geojson, without parcel number or address. Guards that eras=False changes nothing.",
+"cases": [
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "RES CONDO 5+ STY MASONRY",
+"building_code_new": "47",
+"building_code_description_new": null,
+"general_construction": null,
+"number_stories": 1,
+"year_built": "1900",
+"year_built_estimate": "Y",
+"quality_grade": "B"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g0",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "apartment_low",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+147,
+68,
+66
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "RES CONDO 5+ STY MASONRY",
+"building_code_new": "47",
+"building_code_description_new": null,
+"general_construction": null,
+"number_stories": 1,
+"year_built": "1900",
+"year_built_estimate": "Y",
+"quality_grade": "B"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g0",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "apartment_low",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+147,
+68,
+66
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "RES CONDO 5+ STY MASONRY",
+"building_code_new": "47",
+"building_code_description_new": null,
+"general_construction": null,
+"number_stories": 1,
+"year_built": "1900",
+"year_built_estimate": "Y",
+"quality_grade": "B"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g0",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "office_tower",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+147,
+68,
+66
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "RES CONDO 4 STY MASONRY",
+"building_code_new": "41",
+"building_code_description_new": null,
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "2009",
+"year_built_estimate": null,
+"quality_grade": "B"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g1",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "apartment_low",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+141,
+69,
+60
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "RES CONDO 4 STY MASONRY",
+"building_code_new": "41",
+"building_code_description_new": null,
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "2009",
+"year_built_estimate": null,
+"quality_grade": "B"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g1",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "apartment_low",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+141,
+69,
+60
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "RES CONDO 4 STY MASONRY",
+"building_code_new": "41",
+"building_code_description_new": null,
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "2009",
+"year_built_estimate": null,
+"quality_grade": "B"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g1",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "office_tower",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+141,
+69,
+60
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "RES CONDO 5+ STY MAS+OTH",
+"building_code_new": "41",
+"building_code_description_new": null,
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "1963",
+"year_built_estimate": "Y",
+"quality_grade": "B+"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g2",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "apartment_low",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+153,
+74,
+58
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "RES CONDO 5+ STY MAS+OTH",
+"building_code_new": "41",
+"building_code_description_new": null,
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "1963",
+"year_built_estimate": "Y",
+"quality_grade": "B+"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g2",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "apartment_low",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+153,
+74,
+58
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "RES CONDO 5+ STY MAS+OTH",
+"building_code_new": "41",
+"building_code_description_new": null,
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "1963",
+"year_built_estimate": "Y",
+"quality_grade": "B+"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g2",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "office_tower",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+153,
+74,
+58
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW 3 STY MASONRY",
+"building_code_new": "21",
+"building_code_description_new": "ROW OLD STYLE",
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "1875",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g3",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_typical",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+141,
+63,
+55
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW 3 STY MASONRY",
+"building_code_new": "21",
+"building_code_description_new": "ROW OLD STYLE",
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "1875",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g3",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_typical",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+141,
+63,
+55
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW 3 STY MASONRY",
+"building_code_new": "21",
+"building_code_description_new": "ROW OLD STYLE",
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "1875",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g3",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_typical",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+141,
+63,
+55
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MIXED USE",
+"building_code_description": "STR/OFF+APT 3.5 STY MASON",
+"building_code_new": "821",
+"building_code_description_new": "ROW MIXED-COM/RES-BLT AS COM",
+"general_construction": "A",
+"number_stories": null,
+"year_built": "1920",
+"year_built_estimate": null,
+"quality_grade": "C"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g4",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "mixed_storefront",
+"material": "brick",
+"stories": 3,
+"floor_h": 3.0,
+"wall_rgb": [
+117,
+56,
+38
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": true,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MIXED USE",
+"building_code_description": "STR/OFF+APT 3.5 STY MASON",
+"building_code_new": "821",
+"building_code_description_new": "ROW MIXED-COM/RES-BLT AS COM",
+"general_construction": "A",
+"number_stories": null,
+"year_built": "1920",
+"year_built_estimate": null,
+"quality_grade": "C"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g4",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "mixed_storefront",
+"material": "brick",
+"stories": 9,
+"floor_h": 3.33,
+"wall_rgb": [
+117,
+56,
+38
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": true,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MIXED USE",
+"building_code_description": "STR/OFF+APT 3.5 STY MASON",
+"building_code_new": "821",
+"building_code_description_new": "ROW MIXED-COM/RES-BLT AS COM",
+"general_construction": "A",
+"number_stories": null,
+"year_built": "1920",
+"year_built_estimate": null,
+"quality_grade": "C"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g4",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "mixed_storefront",
+"material": "brick",
+"stories": 19,
+"floor_h": 3.16,
+"wall_rgb": [
+117,
+56,
+38
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": true,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW 3 STY MASONRY",
+"building_code_new": "23",
+"building_code_description_new": "ROW POST WAR",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1970",
+"year_built_estimate": "Y",
+"quality_grade": "C+"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g5",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_postwar",
+"material": "brick",
+"stories": 2,
+"floor_h": 4.5,
+"wall_rgb": [
+151,
+85,
+63
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.0,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW 3 STY MASONRY",
+"building_code_new": "23",
+"building_code_description_new": "ROW POST WAR",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1970",
+"year_built_estimate": "Y",
+"quality_grade": "C+"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g5",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_postwar",
+"material": "brick",
+"stories": 2,
+"floor_h": 5.0,
+"wall_rgb": [
+151,
+85,
+63
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.0,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW 3 STY MASONRY",
+"building_code_new": "23",
+"building_code_description_new": "ROW POST WAR",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1970",
+"year_built_estimate": "Y",
+"quality_grade": "C+"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g5",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_postwar",
+"material": "brick",
+"stories": 2,
+"floor_h": 5.0,
+"wall_rgb": [
+151,
+85,
+63
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.0,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "RES CONDO 3 STY MASONRY",
+"building_code_new": "45",
+"building_code_description_new": null,
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "1982",
+"year_built_estimate": "Y",
+"quality_grade": "B-"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g6",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "apartment_low",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+164,
+79,
+66
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "RES CONDO 3 STY MASONRY",
+"building_code_new": "45",
+"building_code_description_new": null,
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "1982",
+"year_built_estimate": "Y",
+"quality_grade": "B-"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g6",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "apartment_low",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+164,
+79,
+66
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "RES CONDO 3 STY MASONRY",
+"building_code_new": "45",
+"building_code_description_new": null,
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "1982",
+"year_built_estimate": "Y",
+"quality_grade": "B-"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g6",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "office_tower",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+164,
+79,
+66
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "VACANT LAND - RESIDENTIAL",
+"building_code_description": "CONDO PARKING SPACE",
+"building_code_new": null,
+"building_code_description_new": null,
+"general_construction": null,
+"number_stories": null,
+"year_built": null,
+"year_built_estimate": null,
+"quality_grade": null
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g7",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "other",
+"material": "brick",
+"stories": 3,
+"floor_h": 3.0,
+"wall_rgb": [
+142,
+77,
+50
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "VACANT LAND - RESIDENTIAL",
+"building_code_description": "CONDO PARKING SPACE",
+"building_code_new": null,
+"building_code_description_new": null,
+"general_construction": null,
+"number_stories": null,
+"year_built": null,
+"year_built_estimate": null,
+"quality_grade": null
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g7",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "other",
+"material": "brick",
+"stories": 9,
+"floor_h": 3.33,
+"wall_rgb": [
+142,
+77,
+50
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "VACANT LAND - RESIDENTIAL",
+"building_code_description": "CONDO PARKING SPACE",
+"building_code_new": null,
+"building_code_description_new": null,
+"general_construction": null,
+"number_stories": null,
+"year_built": null,
+"year_built_estimate": null,
+"quality_grade": null
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g7",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "other",
+"material": "brick",
+"stories": 19,
+"floor_h": 3.16,
+"wall_rgb": [
+142,
+77,
+50
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "VACANT LAND - RESIDENTIAL",
+"building_code_description": "CONDO PARKING SPACE",
+"building_code_new": "40",
+"building_code_description_new": "CONDO NON CONFORMING",
+"general_construction": null,
+"number_stories": 1,
+"year_built": "1900",
+"year_built_estimate": "Y",
+"quality_grade": "B+"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g8",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "other",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+117,
+64,
+43
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "VACANT LAND - RESIDENTIAL",
+"building_code_description": "CONDO PARKING SPACE",
+"building_code_new": "40",
+"building_code_description_new": "CONDO NON CONFORMING",
+"general_construction": null,
+"number_stories": 1,
+"year_built": "1900",
+"year_built_estimate": "Y",
+"quality_grade": "B+"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g8",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "other",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+117,
+64,
+43
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "VACANT LAND - RESIDENTIAL",
+"building_code_description": "CONDO PARKING SPACE",
+"building_code_new": "40",
+"building_code_description_new": "CONDO NON CONFORMING",
+"general_construction": null,
+"number_stories": 1,
+"year_built": "1900",
+"year_built_estimate": "Y",
+"quality_grade": "B+"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g8",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "other",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+117,
+64,
+43
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW 3.5 STY MASONRY",
+"building_code_new": "22",
+"building_code_description_new": "ROW TYPICAL",
+"general_construction": "A",
+"number_stories": 4,
+"year_built": "1860",
+"year_built_estimate": "Y",
+"quality_grade": "C+"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g9",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_typical",
+"material": "brick",
+"stories": 4,
+"floor_h": 2.6,
+"wall_rgb": [
+170,
+97,
+68
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW 3.5 STY MASONRY",
+"building_code_new": "22",
+"building_code_description_new": "ROW TYPICAL",
+"general_construction": "A",
+"number_stories": 4,
+"year_built": "1860",
+"year_built_estimate": "Y",
+"quality_grade": "C+"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g9",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_typical",
+"material": "brick",
+"stories": 4,
+"floor_h": 5.0,
+"wall_rgb": [
+170,
+97,
+68
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW 3.5 STY MASONRY",
+"building_code_new": "22",
+"building_code_description_new": "ROW TYPICAL",
+"general_construction": "A",
+"number_stories": 4,
+"year_built": "1860",
+"year_built_estimate": "Y",
+"quality_grade": "C+"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g9",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_typical",
+"material": "brick",
+"stories": 4,
+"floor_h": 5.0,
+"wall_rgb": [
+170,
+97,
+68
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW 3 STY MASONRY",
+"building_code_new": "22",
+"building_code_description_new": "ROW TYPICAL",
+"general_construction": "G",
+"number_stories": 3,
+"year_built": "1915",
+"year_built_estimate": null,
+"quality_grade": "B-"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g10",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_typical",
+"material": "brick",
+"stories": 3,
+"floor_h": 3.0,
+"wall_rgb": [
+135,
+62,
+49
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW 3 STY MASONRY",
+"building_code_new": "22",
+"building_code_description_new": "ROW TYPICAL",
+"general_construction": "G",
+"number_stories": 3,
+"year_built": "1915",
+"year_built_estimate": null,
+"quality_grade": "B-"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g10",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_typical",
+"material": "brick",
+"stories": 3,
+"floor_h": 5.0,
+"wall_rgb": [
+135,
+62,
+49
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW 3 STY MASONRY",
+"building_code_new": "22",
+"building_code_description_new": "ROW TYPICAL",
+"general_construction": "G",
+"number_stories": 3,
+"year_built": "1915",
+"year_built_estimate": null,
+"quality_grade": "B-"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g10",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_typical",
+"material": "brick",
+"stories": 3,
+"floor_h": 5.0,
+"wall_rgb": [
+135,
+62,
+49
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW 2 STY MASONRY",
+"building_code_new": "25",
+"building_code_description_new": "ROW MODERN",
+"general_construction": "B",
+"number_stories": 1,
+"year_built": "2014",
+"year_built_estimate": null,
+"quality_grade": "C"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g11",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_modern",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+151,
+86,
+84
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.0,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW 2 STY MASONRY",
+"building_code_new": "25",
+"building_code_description_new": "ROW MODERN",
+"general_construction": "B",
+"number_stories": 1,
+"year_built": "2014",
+"year_built_estimate": null,
+"quality_grade": "C"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g11",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_modern",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+151,
+86,
+84
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.0,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW 2 STY MASONRY",
+"building_code_new": "25",
+"building_code_description_new": "ROW MODERN",
+"general_construction": "B",
+"number_stories": 1,
+"year_built": "2014",
+"year_built_estimate": null,
+"quality_grade": "C"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g11",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_modern",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+151,
+86,
+84
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.0,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MIXED USE",
+"building_code_description": "STR/OFF+APT 3 STY MASONRY",
+"building_code_new": "821",
+"building_code_description_new": "ROW MIXED-COM/RES-BLT AS COM",
+"general_construction": "A",
+"number_stories": 3,
+"year_built": "1915",
+"year_built_estimate": null,
+"quality_grade": "C"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g12",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "mixed_storefront",
+"material": "brick",
+"stories": 3,
+"floor_h": 3.0,
+"wall_rgb": [
+134,
+73,
+57
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": true,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MIXED USE",
+"building_code_description": "STR/OFF+APT 3 STY MASONRY",
+"building_code_new": "821",
+"building_code_description_new": "ROW MIXED-COM/RES-BLT AS COM",
+"general_construction": "A",
+"number_stories": 3,
+"year_built": "1915",
+"year_built_estimate": null,
+"quality_grade": "C"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g12",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "mixed_storefront",
+"material": "brick",
+"stories": 3,
+"floor_h": 5.0,
+"wall_rgb": [
+134,
+73,
+57
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": true,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MIXED USE",
+"building_code_description": "STR/OFF+APT 3 STY MASONRY",
+"building_code_new": "821",
+"building_code_description_new": "ROW MIXED-COM/RES-BLT AS COM",
+"general_construction": "A",
+"number_stories": 3,
+"year_built": "1915",
+"year_built_estimate": null,
+"quality_grade": "C"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g12",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "mixed_storefront",
+"material": "brick",
+"stories": 3,
+"floor_h": 5.0,
+"wall_rgb": [
+134,
+73,
+57
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": true,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MIXED USE",
+"building_code_description": "STR/OFF+APT 3 STY MASONRY",
+"building_code_new": "820",
+"building_code_description_new": "ROW MIXED-COM/RES-BLT AS RES",
+"general_construction": "A",
+"number_stories": null,
+"year_built": "1900",
+"year_built_estimate": null,
+"quality_grade": "C"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g13",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "mixed_storefront",
+"material": "brick",
+"stories": 3,
+"floor_h": 3.0,
+"wall_rgb": [
+153,
+88,
+59
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": true,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MIXED USE",
+"building_code_description": "STR/OFF+APT 3 STY MASONRY",
+"building_code_new": "820",
+"building_code_description_new": "ROW MIXED-COM/RES-BLT AS RES",
+"general_construction": "A",
+"number_stories": null,
+"year_built": "1900",
+"year_built_estimate": null,
+"quality_grade": "C"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g13",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "mixed_storefront",
+"material": "brick",
+"stories": 9,
+"floor_h": 3.33,
+"wall_rgb": [
+153,
+88,
+59
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": true,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MIXED USE",
+"building_code_description": "STR/OFF+APT 3 STY MASONRY",
+"building_code_new": "820",
+"building_code_description_new": "ROW MIXED-COM/RES-BLT AS RES",
+"general_construction": "A",
+"number_stories": null,
+"year_built": "1900",
+"year_built_estimate": null,
+"quality_grade": "C"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g13",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "mixed_storefront",
+"material": "brick",
+"stories": 19,
+"floor_h": 3.16,
+"wall_rgb": [
+153,
+88,
+59
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": true,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW 2 STY MASONRY",
+"building_code_new": "26",
+"building_code_description_new": "ROW RIVER ROW",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1920",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g14",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "river_row",
+"material": "brick",
+"stories": 2,
+"floor_h": 4.5,
+"wall_rgb": [
+174,
+79,
+67
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW 2 STY MASONRY",
+"building_code_new": "26",
+"building_code_description_new": "ROW RIVER ROW",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1920",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g14",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "river_row",
+"material": "brick",
+"stories": 2,
+"floor_h": 5.0,
+"wall_rgb": [
+174,
+79,
+67
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW 2 STY MASONRY",
+"building_code_new": "26",
+"building_code_description_new": "ROW RIVER ROW",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1920",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g14",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "river_row",
+"material": "brick",
+"stories": 2,
+"floor_h": 5.0,
+"wall_rgb": [
+174,
+79,
+67
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "VACANT LAND",
+"building_code_description": "VACANT LAND RESIDE < ACRE",
+"building_code_new": null,
+"building_code_description_new": null,
+"general_construction": null,
+"number_stories": null,
+"year_built": null,
+"year_built_estimate": null,
+"quality_grade": null
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g15",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "other",
+"material": "brick",
+"stories": 3,
+"floor_h": 3.0,
+"wall_rgb": [
+139,
+70,
+59
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "VACANT LAND",
+"building_code_description": "VACANT LAND RESIDE < ACRE",
+"building_code_new": null,
+"building_code_description_new": null,
+"general_construction": null,
+"number_stories": null,
+"year_built": null,
+"year_built_estimate": null,
+"quality_grade": null
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g15",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "other",
+"material": "brick",
+"stories": 9,
+"floor_h": 3.33,
+"wall_rgb": [
+139,
+70,
+59
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "VACANT LAND",
+"building_code_description": "VACANT LAND RESIDE < ACRE",
+"building_code_new": null,
+"building_code_description_new": null,
+"general_construction": null,
+"number_stories": null,
+"year_built": null,
+"year_built_estimate": null,
+"quality_grade": null
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g15",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "other",
+"material": "brick",
+"stories": 19,
+"floor_h": 3.16,
+"wall_rgb": [
+139,
+70,
+59
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "COMMERCIAL",
+"building_code_description": "STORE 1 STY MASONRY",
+"building_code_new": "254",
+"building_code_description_new": "DOWNTOWN ROW TYPE-* SNGL OCCP",
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "1960",
+"year_built_estimate": null,
+"quality_grade": "B-"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g16",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_typical",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+166,
+88,
+74
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "COMMERCIAL",
+"building_code_description": "STORE 1 STY MASONRY",
+"building_code_new": "254",
+"building_code_description_new": "DOWNTOWN ROW TYPE-* SNGL OCCP",
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "1960",
+"year_built_estimate": null,
+"quality_grade": "B-"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g16",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_typical",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+166,
+88,
+74
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "COMMERCIAL",
+"building_code_description": "STORE 1 STY MASONRY",
+"building_code_new": "254",
+"building_code_description_new": "DOWNTOWN ROW TYPE-* SNGL OCCP",
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "1960",
+"year_built_estimate": null,
+"quality_grade": "B-"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g16",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_typical",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+166,
+88,
+74
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "APARTMENTS  > 4 UNITS",
+"building_code_description": "APTS 5-50 UNITS MASONRY",
+"building_code_new": "806",
+"building_code_description_new": "APARTMENTS - BLT AS RESID",
+"general_construction": "A",
+"number_stories": 3,
+"year_built": "1925",
+"year_built_estimate": null,
+"quality_grade": "C+"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g17",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "apartment_low",
+"material": "brick",
+"stories": 3,
+"floor_h": 3.0,
+"wall_rgb": [
+127,
+68,
+58
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "APARTMENTS  > 4 UNITS",
+"building_code_description": "APTS 5-50 UNITS MASONRY",
+"building_code_new": "806",
+"building_code_description_new": "APARTMENTS - BLT AS RESID",
+"general_construction": "A",
+"number_stories": 3,
+"year_built": "1925",
+"year_built_estimate": null,
+"quality_grade": "C+"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g17",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "apartment_low",
+"material": "brick",
+"stories": 3,
+"floor_h": 5.0,
+"wall_rgb": [
+127,
+68,
+58
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "APARTMENTS  > 4 UNITS",
+"building_code_description": "APTS 5-50 UNITS MASONRY",
+"building_code_new": "806",
+"building_code_description_new": "APARTMENTS - BLT AS RESID",
+"general_construction": "A",
+"number_stories": 3,
+"year_built": "1925",
+"year_built_estimate": null,
+"quality_grade": "C+"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g17",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "apartment_low",
+"material": "brick",
+"stories": 3,
+"floor_h": 5.0,
+"wall_rgb": [
+127,
+68,
+58
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": null,
+"building_code_description": "PRIV GAR 1 STY MASONRY",
+"building_code_new": "273",
+"building_code_description_new": "WAREHOUSE",
+"general_construction": "H",
+"number_stories": 1,
+"year_built": "1950",
+"year_built_estimate": null,
+"quality_grade": "C"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g18",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "warehouse",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+151,
+91,
+62
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 4.5,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": null,
+"building_code_description": "PRIV GAR 1 STY MASONRY",
+"building_code_new": "273",
+"building_code_description_new": "WAREHOUSE",
+"general_construction": "H",
+"number_stories": 1,
+"year_built": "1950",
+"year_built_estimate": null,
+"quality_grade": "C"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g18",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "warehouse",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+151,
+91,
+62
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 4.5,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": null,
+"building_code_description": "PRIV GAR 1 STY MASONRY",
+"building_code_new": "273",
+"building_code_description_new": "WAREHOUSE",
+"general_construction": "H",
+"number_stories": 1,
+"year_built": "1950",
+"year_built_estimate": null,
+"quality_grade": "C"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g18",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "warehouse",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+151,
+91,
+62
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 4.5,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW 2 STY MASONRY",
+"building_code_new": "24",
+"building_code_description_new": "ROW PORCH FRONT",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1929",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g19",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_porch",
+"material": "brick",
+"stories": 2,
+"floor_h": 4.5,
+"wall_rgb": [
+137,
+87,
+60
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": true,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW 2 STY MASONRY",
+"building_code_new": "24",
+"building_code_description_new": "ROW PORCH FRONT",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1929",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g19",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_porch",
+"material": "brick",
+"stories": 2,
+"floor_h": 5.0,
+"wall_rgb": [
+137,
+87,
+60
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": true,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW 2 STY MASONRY",
+"building_code_new": "24",
+"building_code_description_new": "ROW PORCH FRONT",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1929",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g19",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_porch",
+"material": "brick",
+"stories": 2,
+"floor_h": 5.0,
+"wall_rgb": [
+137,
+87,
+60
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": true,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW 2 STY MASONRY",
+"building_code_new": "24",
+"building_code_description_new": "ROW PORCH FRONT",
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "1925",
+"year_built_estimate": "Y",
+"quality_grade": "C-"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g20",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_porch",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+163,
+89,
+78
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": true,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW 2 STY MASONRY",
+"building_code_new": "24",
+"building_code_description_new": "ROW PORCH FRONT",
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "1925",
+"year_built_estimate": "Y",
+"quality_grade": "C-"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g20",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_porch",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+163,
+89,
+78
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": true,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW 2 STY MASONRY",
+"building_code_new": "24",
+"building_code_description_new": "ROW PORCH FRONT",
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "1925",
+"year_built_estimate": "Y",
+"quality_grade": "C-"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g20",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_porch",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+163,
+89,
+78
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": true,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MULTI FAMILY",
+"building_code_description": "ROW CONV/APT 2 STY MASON",
+"building_code_new": "22",
+"building_code_description_new": "ROW TYPICAL",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1915",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g21",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_typical",
+"material": "brick",
+"stories": 2,
+"floor_h": 4.5,
+"wall_rgb": [
+171,
+84,
+78
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MULTI FAMILY",
+"building_code_description": "ROW CONV/APT 2 STY MASON",
+"building_code_new": "22",
+"building_code_description_new": "ROW TYPICAL",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1915",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g21",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_typical",
+"material": "brick",
+"stories": 2,
+"floor_h": 5.0,
+"wall_rgb": [
+171,
+84,
+78
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MULTI FAMILY",
+"building_code_description": "ROW CONV/APT 2 STY MASON",
+"building_code_new": "22",
+"building_code_description_new": "ROW TYPICAL",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1915",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g21",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_typical",
+"material": "brick",
+"stories": 2,
+"floor_h": 5.0,
+"wall_rgb": [
+171,
+84,
+78
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "VACANT LAND",
+"building_code_description": "VACANT LAND RESIDE < ACRE",
+"building_code_new": null,
+"building_code_description_new": null,
+"general_construction": null,
+"number_stories": null,
+"year_built": null,
+"year_built_estimate": null,
+"quality_grade": null
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g22",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "other",
+"material": "brick",
+"stories": 3,
+"floor_h": 3.0,
+"wall_rgb": [
+167,
+91,
+59
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "VACANT LAND",
+"building_code_description": "VACANT LAND RESIDE < ACRE",
+"building_code_new": null,
+"building_code_description_new": null,
+"general_construction": null,
+"number_stories": null,
+"year_built": null,
+"year_built_estimate": null,
+"quality_grade": null
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g22",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "other",
+"material": "brick",
+"stories": 9,
+"floor_h": 3.33,
+"wall_rgb": [
+167,
+91,
+59
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "VACANT LAND",
+"building_code_description": "VACANT LAND RESIDE < ACRE",
+"building_code_new": null,
+"building_code_description_new": null,
+"general_construction": null,
+"number_stories": null,
+"year_built": null,
+"year_built_estimate": null,
+"quality_grade": null
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g22",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "other",
+"material": "brick",
+"stories": 19,
+"floor_h": 3.16,
+"wall_rgb": [
+167,
+91,
+59
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MIXED USE",
+"building_code_description": "ROW W/OFF STR 2 STY MASON",
+"building_code_new": "820",
+"building_code_description_new": "ROW MIXED-COM/RES-BLT AS RES",
+"general_construction": "A",
+"number_stories": null,
+"year_built": "1925",
+"year_built_estimate": null,
+"quality_grade": "C"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g23",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "mixed_storefront",
+"material": "brick",
+"stories": 3,
+"floor_h": 3.0,
+"wall_rgb": [
+142,
+74,
+50
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": true,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MIXED USE",
+"building_code_description": "ROW W/OFF STR 2 STY MASON",
+"building_code_new": "820",
+"building_code_description_new": "ROW MIXED-COM/RES-BLT AS RES",
+"general_construction": "A",
+"number_stories": null,
+"year_built": "1925",
+"year_built_estimate": null,
+"quality_grade": "C"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g23",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "mixed_storefront",
+"material": "brick",
+"stories": 9,
+"floor_h": 3.33,
+"wall_rgb": [
+142,
+74,
+50
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": true,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MIXED USE",
+"building_code_description": "ROW W/OFF STR 2 STY MASON",
+"building_code_new": "820",
+"building_code_description_new": "ROW MIXED-COM/RES-BLT AS RES",
+"general_construction": "A",
+"number_stories": null,
+"year_built": "1925",
+"year_built_estimate": null,
+"quality_grade": "C"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g23",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "mixed_storefront",
+"material": "brick",
+"stories": 19,
+"floor_h": 3.16,
+"wall_rgb": [
+142,
+74,
+50
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": true,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "VACANT LAND - RESIDENTIAL",
+"building_code_description": "ROW 2 STY MASONRY",
+"building_code_new": null,
+"building_code_description_new": null,
+"general_construction": null,
+"number_stories": null,
+"year_built": null,
+"year_built_estimate": null,
+"quality_grade": null
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g24",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_typical",
+"material": "brick",
+"stories": 3,
+"floor_h": 3.0,
+"wall_rgb": [
+141,
+82,
+73
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "VACANT LAND - RESIDENTIAL",
+"building_code_description": "ROW 2 STY MASONRY",
+"building_code_new": null,
+"building_code_description_new": null,
+"general_construction": null,
+"number_stories": null,
+"year_built": null,
+"year_built_estimate": null,
+"quality_grade": null
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g24",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_typical",
+"material": "brick",
+"stories": 9,
+"floor_h": 3.33,
+"wall_rgb": [
+141,
+82,
+73
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "VACANT LAND - RESIDENTIAL",
+"building_code_description": "ROW 2 STY MASONRY",
+"building_code_new": null,
+"building_code_description_new": null,
+"general_construction": null,
+"number_stories": null,
+"year_built": null,
+"year_built_estimate": null,
+"quality_grade": null
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g24",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_typical",
+"material": "brick",
+"stories": 19,
+"floor_h": 3.16,
+"wall_rgb": [
+141,
+82,
+73
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MIXED USE",
+"building_code_description": "ROW W/OFF STR 2 STY MASON",
+"building_code_new": "821",
+"building_code_description_new": "ROW MIXED-COM/RES-BLT AS COM",
+"general_construction": "A",
+"number_stories": null,
+"year_built": "1940",
+"year_built_estimate": null,
+"quality_grade": "C"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g25",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "mixed_storefront",
+"material": "brick",
+"stories": 3,
+"floor_h": 3.0,
+"wall_rgb": [
+146,
+99,
+64
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": true,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MIXED USE",
+"building_code_description": "ROW W/OFF STR 2 STY MASON",
+"building_code_new": "821",
+"building_code_description_new": "ROW MIXED-COM/RES-BLT AS COM",
+"general_construction": "A",
+"number_stories": null,
+"year_built": "1940",
+"year_built_estimate": null,
+"quality_grade": "C"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g25",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "mixed_storefront",
+"material": "brick",
+"stories": 9,
+"floor_h": 3.33,
+"wall_rgb": [
+146,
+99,
+64
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": true,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MIXED USE",
+"building_code_description": "ROW W/OFF STR 2 STY MASON",
+"building_code_new": "821",
+"building_code_description_new": "ROW MIXED-COM/RES-BLT AS COM",
+"general_construction": "A",
+"number_stories": null,
+"year_built": "1940",
+"year_built_estimate": null,
+"quality_grade": "C"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g25",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "mixed_storefront",
+"material": "brick",
+"stories": 19,
+"floor_h": 3.16,
+"wall_rgb": [
+146,
+99,
+64
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": true,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW B/GAR 2 STY MASONRY",
+"building_code_new": "23",
+"building_code_description_new": "ROW POST WAR",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1925",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g26",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_postwar",
+"material": "brick",
+"stories": 2,
+"floor_h": 4.5,
+"wall_rgb": [
+164,
+92,
+75
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.0,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW B/GAR 2 STY MASONRY",
+"building_code_new": "23",
+"building_code_description_new": "ROW POST WAR",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1925",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g26",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_postwar",
+"material": "brick",
+"stories": 2,
+"floor_h": 5.0,
+"wall_rgb": [
+164,
+92,
+75
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.0,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW B/GAR 2 STY MASONRY",
+"building_code_new": "23",
+"building_code_description_new": "ROW POST WAR",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1925",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g26",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_postwar",
+"material": "brick",
+"stories": 2,
+"floor_h": 5.0,
+"wall_rgb": [
+164,
+92,
+75
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.0,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MULTI FAMILY",
+"building_code_description": "APT 2-4 UNITS 2 STY STONE",
+"building_code_new": "32",
+"building_code_description_new": "TWIN CONVENTIONAL",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1925",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g27",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "twin",
+"material": "stone",
+"stories": 2,
+"floor_h": 4.5,
+"wall_rgb": [
+182,
+179,
+148
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.0,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MULTI FAMILY",
+"building_code_description": "APT 2-4 UNITS 2 STY STONE",
+"building_code_new": "32",
+"building_code_description_new": "TWIN CONVENTIONAL",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1925",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g27",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "twin",
+"material": "stone",
+"stories": 2,
+"floor_h": 5.0,
+"wall_rgb": [
+182,
+179,
+148
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.0,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MULTI FAMILY",
+"building_code_description": "APT 2-4 UNITS 2 STY STONE",
+"building_code_new": "32",
+"building_code_description_new": "TWIN CONVENTIONAL",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1925",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g27",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "twin",
+"material": "stone",
+"stories": 2,
+"floor_h": 5.0,
+"wall_rgb": [
+182,
+179,
+148
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.0,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "COMMERCIAL",
+"building_code_description": "HSE WORSHIP ALL 2 STY MAS",
+"building_code_new": "620",
+"building_code_description_new": "RELIGIOUS",
+"general_construction": "A",
+"number_stories": null,
+"year_built": "1940",
+"year_built_estimate": null,
+"quality_grade": "C"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g28",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "institutional",
+"material": "brick",
+"stories": 3,
+"floor_h": 3.0,
+"wall_rgb": [
+154,
+68,
+53
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 3.0,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "COMMERCIAL",
+"building_code_description": "HSE WORSHIP ALL 2 STY MAS",
+"building_code_new": "620",
+"building_code_description_new": "RELIGIOUS",
+"general_construction": "A",
+"number_stories": null,
+"year_built": "1940",
+"year_built_estimate": null,
+"quality_grade": "C"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g28",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "institutional",
+"material": "brick",
+"stories": 9,
+"floor_h": 3.33,
+"wall_rgb": [
+154,
+68,
+53
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 3.0,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "COMMERCIAL",
+"building_code_description": "HSE WORSHIP ALL 2 STY MAS",
+"building_code_new": "620",
+"building_code_description_new": "RELIGIOUS",
+"general_construction": "A",
+"number_stories": null,
+"year_built": "1940",
+"year_built_estimate": null,
+"quality_grade": "C"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g28",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "institutional",
+"material": "brick",
+"stories": 19,
+"floor_h": 3.16,
+"wall_rgb": [
+154,
+68,
+53
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 3.0,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "INDUSTRIAL",
+"building_code_description": "IND WAREHOUSE MASONRY",
+"building_code_new": "273",
+"building_code_description_new": "WAREHOUSE",
+"general_construction": "A",
+"number_stories": null,
+"year_built": "1928",
+"year_built_estimate": null,
+"quality_grade": "D"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g29",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "warehouse",
+"material": "brick",
+"stories": 3,
+"floor_h": 3.0,
+"wall_rgb": [
+155,
+106,
+74
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 4.5,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "INDUSTRIAL",
+"building_code_description": "IND WAREHOUSE MASONRY",
+"building_code_new": "273",
+"building_code_description_new": "WAREHOUSE",
+"general_construction": "A",
+"number_stories": null,
+"year_built": "1928",
+"year_built_estimate": null,
+"quality_grade": "D"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g29",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "warehouse",
+"material": "brick",
+"stories": 9,
+"floor_h": 3.33,
+"wall_rgb": [
+155,
+106,
+74
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 4.5,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "INDUSTRIAL",
+"building_code_description": "IND WAREHOUSE MASONRY",
+"building_code_new": "273",
+"building_code_description_new": "WAREHOUSE",
+"general_construction": "A",
+"number_stories": null,
+"year_built": "1928",
+"year_built_estimate": null,
+"quality_grade": "D"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g29",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "warehouse",
+"material": "brick",
+"stories": 19,
+"floor_h": 3.16,
+"wall_rgb": [
+155,
+106,
+74
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 4.5,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MULTI FAMILY",
+"building_code_description": "ROW CONV/APT 2 STY MASON",
+"building_code_new": "24",
+"building_code_description_new": "ROW PORCH FRONT",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1925",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g30",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_porch",
+"material": "brick",
+"stories": 2,
+"floor_h": 4.5,
+"wall_rgb": [
+136,
+61,
+55
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": true,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MULTI FAMILY",
+"building_code_description": "ROW CONV/APT 2 STY MASON",
+"building_code_new": "24",
+"building_code_description_new": "ROW PORCH FRONT",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1925",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g30",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_porch",
+"material": "brick",
+"stories": 2,
+"floor_h": 5.0,
+"wall_rgb": [
+136,
+61,
+55
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": true,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MULTI FAMILY",
+"building_code_description": "ROW CONV/APT 2 STY MASON",
+"building_code_new": "24",
+"building_code_description_new": "ROW PORCH FRONT",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1925",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g30",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_porch",
+"material": "brick",
+"stories": 2,
+"floor_h": 5.0,
+"wall_rgb": [
+136,
+61,
+55
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": true,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MULTI FAMILY",
+"building_code_description": "S/D CONV APT 3 STY MASON",
+"building_code_new": "36",
+"building_code_description_new": "TWIN OLD STYLE",
+"general_construction": "A",
+"number_stories": 3,
+"year_built": "1900",
+"year_built_estimate": "Y",
+"quality_grade": "C+"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g31",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "twin",
+"material": "brick",
+"stories": 3,
+"floor_h": 3.0,
+"wall_rgb": [
+137,
+66,
+48
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.0,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MULTI FAMILY",
+"building_code_description": "S/D CONV APT 3 STY MASON",
+"building_code_new": "36",
+"building_code_description_new": "TWIN OLD STYLE",
+"general_construction": "A",
+"number_stories": 3,
+"year_built": "1900",
+"year_built_estimate": "Y",
+"quality_grade": "C+"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g31",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "twin",
+"material": "brick",
+"stories": 3,
+"floor_h": 5.0,
+"wall_rgb": [
+137,
+66,
+48
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.0,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MULTI FAMILY",
+"building_code_description": "S/D CONV APT 3 STY MASON",
+"building_code_new": "36",
+"building_code_description_new": "TWIN OLD STYLE",
+"general_construction": "A",
+"number_stories": 3,
+"year_built": "1900",
+"year_built_estimate": "Y",
+"quality_grade": "C+"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g31",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "twin",
+"material": "brick",
+"stories": 3,
+"floor_h": 5.0,
+"wall_rgb": [
+137,
+66,
+48
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.0,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "SEMI/DET 2 STY MASONRY",
+"building_code_new": "32",
+"building_code_description_new": "TWIN CONVENTIONAL",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1925",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g32",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "twin",
+"material": "brick",
+"stories": 2,
+"floor_h": 4.5,
+"wall_rgb": [
+132,
+67,
+41
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.0,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "SEMI/DET 2 STY MASONRY",
+"building_code_new": "32",
+"building_code_description_new": "TWIN CONVENTIONAL",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1925",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g32",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "twin",
+"material": "brick",
+"stories": 2,
+"floor_h": 5.0,
+"wall_rgb": [
+132,
+67,
+41
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.0,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "SEMI/DET 2 STY MASONRY",
+"building_code_new": "32",
+"building_code_description_new": "TWIN CONVENTIONAL",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1925",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g32",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "twin",
+"material": "brick",
+"stories": 2,
+"floor_h": 5.0,
+"wall_rgb": [
+132,
+67,
+41
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.0,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "APARTMENTS  > 4 UNITS",
+"building_code_description": "APTS 5-50 UNITS MASONRY",
+"building_code_new": "804",
+"building_code_description_new": "APARTMENTS - LOW RISE",
+"general_construction": "A",
+"number_stories": 4,
+"year_built": "1922",
+"year_built_estimate": null,
+"quality_grade": "B-"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g33",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "apartment_low",
+"material": "brick",
+"stories": 4,
+"floor_h": 2.6,
+"wall_rgb": [
+133,
+57,
+42
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "APARTMENTS  > 4 UNITS",
+"building_code_description": "APTS 5-50 UNITS MASONRY",
+"building_code_new": "804",
+"building_code_description_new": "APARTMENTS - LOW RISE",
+"general_construction": "A",
+"number_stories": 4,
+"year_built": "1922",
+"year_built_estimate": null,
+"quality_grade": "B-"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g33",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "apartment_low",
+"material": "brick",
+"stories": 4,
+"floor_h": 5.0,
+"wall_rgb": [
+133,
+57,
+42
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "APARTMENTS  > 4 UNITS",
+"building_code_description": "APTS 5-50 UNITS MASONRY",
+"building_code_new": "804",
+"building_code_description_new": "APARTMENTS - LOW RISE",
+"general_construction": "A",
+"number_stories": 4,
+"year_built": "1922",
+"year_built_estimate": null,
+"quality_grade": "B-"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g33",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "apartment_low",
+"material": "brick",
+"stories": 4,
+"floor_h": 5.0,
+"wall_rgb": [
+133,
+57,
+42
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "VACANT LAND",
+"building_code_description": "VACANT LAND RESIDE < ACRE",
+"building_code_new": null,
+"building_code_description_new": null,
+"general_construction": null,
+"number_stories": null,
+"year_built": null,
+"year_built_estimate": null,
+"quality_grade": null
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g34",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "other",
+"material": "brick",
+"stories": 3,
+"floor_h": 3.0,
+"wall_rgb": [
+160,
+83,
+64
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "VACANT LAND",
+"building_code_description": "VACANT LAND RESIDE < ACRE",
+"building_code_new": null,
+"building_code_description_new": null,
+"general_construction": null,
+"number_stories": null,
+"year_built": null,
+"year_built_estimate": null,
+"quality_grade": null
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g34",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "other",
+"material": "brick",
+"stories": 9,
+"floor_h": 3.33,
+"wall_rgb": [
+160,
+83,
+64
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "VACANT LAND",
+"building_code_description": "VACANT LAND RESIDE < ACRE",
+"building_code_new": null,
+"building_code_description_new": null,
+"general_construction": null,
+"number_stories": null,
+"year_built": null,
+"year_built_estimate": null,
+"quality_grade": null
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g34",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "other",
+"material": "brick",
+"stories": 19,
+"floor_h": 3.16,
+"wall_rgb": [
+160,
+83,
+64
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW 3 STY MASONRY",
+"building_code_new": "21",
+"building_code_description_new": "ROW OLD STYLE",
+"general_construction": "A",
+"number_stories": 3,
+"year_built": "1925",
+"year_built_estimate": "Y",
+"quality_grade": "B-"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g35",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_typical",
+"material": "brick",
+"stories": 3,
+"floor_h": 3.0,
+"wall_rgb": [
+116,
+66,
+48
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW 3 STY MASONRY",
+"building_code_new": "21",
+"building_code_description_new": "ROW OLD STYLE",
+"general_construction": "A",
+"number_stories": 3,
+"year_built": "1925",
+"year_built_estimate": "Y",
+"quality_grade": "B-"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g35",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_typical",
+"material": "brick",
+"stories": 3,
+"floor_h": 5.0,
+"wall_rgb": [
+116,
+66,
+48
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW 3 STY MASONRY",
+"building_code_new": "21",
+"building_code_description_new": "ROW OLD STYLE",
+"general_construction": "A",
+"number_stories": 3,
+"year_built": "1925",
+"year_built_estimate": "Y",
+"quality_grade": "B-"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g35",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_typical",
+"material": "brick",
+"stories": 3,
+"floor_h": 5.0,
+"wall_rgb": [
+116,
+66,
+48
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MIXED USE",
+"building_code_description": "STR/OFF+APT 3 STY MASONRY",
+"building_code_new": "821",
+"building_code_description_new": "ROW MIXED-COM/RES-BLT AS COM",
+"general_construction": "I",
+"number_stories": 3,
+"year_built": "1925",
+"year_built_estimate": null,
+"quality_grade": "C"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g36",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "mixed_storefront",
+"material": "brick",
+"stories": 3,
+"floor_h": 3.0,
+"wall_rgb": [
+146,
+83,
+65
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": true,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MIXED USE",
+"building_code_description": "STR/OFF+APT 3 STY MASONRY",
+"building_code_new": "821",
+"building_code_description_new": "ROW MIXED-COM/RES-BLT AS COM",
+"general_construction": "I",
+"number_stories": 3,
+"year_built": "1925",
+"year_built_estimate": null,
+"quality_grade": "C"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g36",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "mixed_storefront",
+"material": "brick",
+"stories": 3,
+"floor_h": 5.0,
+"wall_rgb": [
+146,
+83,
+65
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": true,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MIXED USE",
+"building_code_description": "STR/OFF+APT 3 STY MASONRY",
+"building_code_new": "821",
+"building_code_description_new": "ROW MIXED-COM/RES-BLT AS COM",
+"general_construction": "I",
+"number_stories": 3,
+"year_built": "1925",
+"year_built_estimate": null,
+"quality_grade": "C"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g36",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "mixed_storefront",
+"material": "brick",
+"stories": 3,
+"floor_h": 5.0,
+"wall_rgb": [
+146,
+83,
+65
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": true,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW 2 STY MASONRY",
+"building_code_new": "23",
+"building_code_description_new": "ROW POST WAR",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1965",
+"year_built_estimate": "Y",
+"quality_grade": "C-"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g37",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_postwar",
+"material": "brick",
+"stories": 2,
+"floor_h": 4.5,
+"wall_rgb": [
+147,
+89,
+77
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.0,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW 2 STY MASONRY",
+"building_code_new": "23",
+"building_code_description_new": "ROW POST WAR",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1965",
+"year_built_estimate": "Y",
+"quality_grade": "C-"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g37",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_postwar",
+"material": "brick",
+"stories": 2,
+"floor_h": 5.0,
+"wall_rgb": [
+147,
+89,
+77
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.0,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW 2 STY MASONRY",
+"building_code_new": "23",
+"building_code_description_new": "ROW POST WAR",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1965",
+"year_built_estimate": "Y",
+"quality_grade": "C-"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g37",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_postwar",
+"material": "brick",
+"stories": 2,
+"floor_h": 5.0,
+"wall_rgb": [
+147,
+89,
+77
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.0,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "RES CONDO 5+ STY MASONRY",
+"building_code_new": "41",
+"building_code_description_new": null,
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "2009",
+"year_built_estimate": null,
+"quality_grade": "B"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g38",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "apartment_low",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+124,
+63,
+61
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "RES CONDO 5+ STY MASONRY",
+"building_code_new": "41",
+"building_code_description_new": null,
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "2009",
+"year_built_estimate": null,
+"quality_grade": "B"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g38",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "apartment_low",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+124,
+63,
+61
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "RES CONDO 5+ STY MASONRY",
+"building_code_new": "41",
+"building_code_description_new": null,
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "2009",
+"year_built_estimate": null,
+"quality_grade": "B"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g38",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "office_tower",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+124,
+63,
+61
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MULTI FAMILY",
+"building_code_description": "APTS 5-50 UNITS MASONRY",
+"building_code_new": "806",
+"building_code_description_new": "APARTMENTS - BLT AS RESID",
+"general_construction": "A",
+"number_stories": 3,
+"year_built": "1900",
+"year_built_estimate": null,
+"quality_grade": "B"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g39",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "apartment_low",
+"material": "brick",
+"stories": 3,
+"floor_h": 3.0,
+"wall_rgb": [
+135,
+70,
+43
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MULTI FAMILY",
+"building_code_description": "APTS 5-50 UNITS MASONRY",
+"building_code_new": "806",
+"building_code_description_new": "APARTMENTS - BLT AS RESID",
+"general_construction": "A",
+"number_stories": 3,
+"year_built": "1900",
+"year_built_estimate": null,
+"quality_grade": "B"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g39",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "apartment_low",
+"material": "brick",
+"stories": 3,
+"floor_h": 5.0,
+"wall_rgb": [
+135,
+70,
+43
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MULTI FAMILY",
+"building_code_description": "APTS 5-50 UNITS MASONRY",
+"building_code_new": "806",
+"building_code_description_new": "APARTMENTS - BLT AS RESID",
+"general_construction": "A",
+"number_stories": 3,
+"year_built": "1900",
+"year_built_estimate": null,
+"quality_grade": "B"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g39",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "apartment_low",
+"material": "brick",
+"stories": 3,
+"floor_h": 5.0,
+"wall_rgb": [
+135,
+70,
+43
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MULTI FAMILY",
+"building_code_description": "APT 2-4 UNITS 2 STY MASON",
+"building_code_new": "27",
+"building_code_description_new": "TWIN POST WAR",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1965",
+"year_built_estimate": "Y",
+"quality_grade": "C+"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g40",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "twin",
+"material": "brick",
+"stories": 2,
+"floor_h": 4.5,
+"wall_rgb": [
+155,
+92,
+65
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.0,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MULTI FAMILY",
+"building_code_description": "APT 2-4 UNITS 2 STY MASON",
+"building_code_new": "27",
+"building_code_description_new": "TWIN POST WAR",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1965",
+"year_built_estimate": "Y",
+"quality_grade": "C+"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g40",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "twin",
+"material": "brick",
+"stories": 2,
+"floor_h": 5.0,
+"wall_rgb": [
+155,
+92,
+65
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.0,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MULTI FAMILY",
+"building_code_description": "APT 2-4 UNITS 2 STY MASON",
+"building_code_new": "27",
+"building_code_description_new": "TWIN POST WAR",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1965",
+"year_built_estimate": "Y",
+"quality_grade": "C+"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g40",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "twin",
+"material": "brick",
+"stories": 2,
+"floor_h": 5.0,
+"wall_rgb": [
+155,
+92,
+65
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.0,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "S/D W/B GAR 1 STY MASONRY",
+"building_code_new": "28",
+"building_code_description_new": "TWIN RANCH",
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "1960",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g41",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "twin",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+175,
+78,
+69
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.0,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "S/D W/B GAR 1 STY MASONRY",
+"building_code_new": "28",
+"building_code_description_new": "TWIN RANCH",
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "1960",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g41",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "twin",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+175,
+78,
+69
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.0,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "S/D W/B GAR 1 STY MASONRY",
+"building_code_new": "28",
+"building_code_description_new": "TWIN RANCH",
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "1960",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g41",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "twin",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+175,
+78,
+69
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.0,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MULTI FAMILY",
+"building_code_description": "APT 2-4 UNITS 2 STY MASON",
+"building_code_new": "32",
+"building_code_description_new": "TWIN CONVENTIONAL",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1950",
+"year_built_estimate": "Y",
+"quality_grade": "C+"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g42",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "twin",
+"material": "brick",
+"stories": 2,
+"floor_h": 4.5,
+"wall_rgb": [
+163,
+86,
+79
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.0,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MULTI FAMILY",
+"building_code_description": "APT 2-4 UNITS 2 STY MASON",
+"building_code_new": "32",
+"building_code_description_new": "TWIN CONVENTIONAL",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1950",
+"year_built_estimate": "Y",
+"quality_grade": "C+"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g42",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "twin",
+"material": "brick",
+"stories": 2,
+"floor_h": 5.0,
+"wall_rgb": [
+163,
+86,
+79
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.0,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MULTI FAMILY",
+"building_code_description": "APT 2-4 UNITS 2 STY MASON",
+"building_code_new": "32",
+"building_code_description_new": "TWIN CONVENTIONAL",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1950",
+"year_built_estimate": "Y",
+"quality_grade": "C+"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g42",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "twin",
+"material": "brick",
+"stories": 2,
+"floor_h": 5.0,
+"wall_rgb": [
+163,
+86,
+79
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.0,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "DET W/B GAR 1.5 STY MASON",
+"building_code_new": "09",
+"building_code_description_new": "CAPE",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1960",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g43",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "detached",
+"material": "brick",
+"stories": 2,
+"floor_h": 4.5,
+"wall_rgb": [
+164,
+96,
+63
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.4,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "DET W/B GAR 1.5 STY MASON",
+"building_code_new": "09",
+"building_code_description_new": "CAPE",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1960",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g43",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "detached",
+"material": "brick",
+"stories": 2,
+"floor_h": 5.0,
+"wall_rgb": [
+164,
+96,
+63
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.4,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "DET W/B GAR 1.5 STY MASON",
+"building_code_new": "09",
+"building_code_description_new": "CAPE",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1960",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g43",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "detached",
+"material": "brick",
+"stories": 2,
+"floor_h": 5.0,
+"wall_rgb": [
+164,
+96,
+63
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.4,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "DET W/D GAR 2 STY MAS+OTH",
+"building_code_new": "07",
+"building_code_description_new": "CONVENTIONAL",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1940",
+"year_built_estimate": null,
+"quality_grade": "C"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g44",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "detached",
+"material": "brick",
+"stories": 2,
+"floor_h": 4.5,
+"wall_rgb": [
+146,
+91,
+72
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.4,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "DET W/D GAR 2 STY MAS+OTH",
+"building_code_new": "07",
+"building_code_description_new": "CONVENTIONAL",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1940",
+"year_built_estimate": null,
+"quality_grade": "C"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g44",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "detached",
+"material": "brick",
+"stories": 2,
+"floor_h": 5.0,
+"wall_rgb": [
+146,
+91,
+72
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.4,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "DET W/D GAR 2 STY MAS+OTH",
+"building_code_new": "07",
+"building_code_description_new": "CONVENTIONAL",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1940",
+"year_built_estimate": null,
+"quality_grade": "C"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g44",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "detached",
+"material": "brick",
+"stories": 2,
+"floor_h": 5.0,
+"wall_rgb": [
+146,
+91,
+72
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.4,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MULTI FAMILY",
+"building_code_description": "APT 2-4 UNITS 2 STY MASON",
+"building_code_new": "29",
+"building_code_description_new": "TWIN BI LEVEL",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1960",
+"year_built_estimate": "Y",
+"quality_grade": "C+"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g45",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "twin",
+"material": "brick",
+"stories": 2,
+"floor_h": 4.5,
+"wall_rgb": [
+144,
+81,
+50
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.0,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MULTI FAMILY",
+"building_code_description": "APT 2-4 UNITS 2 STY MASON",
+"building_code_new": "29",
+"building_code_description_new": "TWIN BI LEVEL",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1960",
+"year_built_estimate": "Y",
+"quality_grade": "C+"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g45",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "twin",
+"material": "brick",
+"stories": 2,
+"floor_h": 5.0,
+"wall_rgb": [
+144,
+81,
+50
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.0,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MULTI FAMILY",
+"building_code_description": "APT 2-4 UNITS 2 STY MASON",
+"building_code_new": "29",
+"building_code_description_new": "TWIN BI LEVEL",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1960",
+"year_built_estimate": "Y",
+"quality_grade": "C+"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g45",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "twin",
+"material": "brick",
+"stories": 2,
+"floor_h": 5.0,
+"wall_rgb": [
+144,
+81,
+50
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.0,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "DET W/D GAR 1 STY MAS+OTH",
+"building_code_new": "03",
+"building_code_description_new": "RANCH",
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "1961",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g46",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "detached",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+135,
+75,
+65
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.4,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "DET W/D GAR 1 STY MAS+OTH",
+"building_code_new": "03",
+"building_code_description_new": "RANCH",
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "1961",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g46",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "detached",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+135,
+75,
+65
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.4,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "DET W/D GAR 1 STY MAS+OTH",
+"building_code_new": "03",
+"building_code_description_new": "RANCH",
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "1961",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g46",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "detached",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+135,
+75,
+65
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.4,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "RES CONDO 3 STY MAS+OTH",
+"building_code_new": "41",
+"building_code_description_new": null,
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "1970",
+"year_built_estimate": "Y",
+"quality_grade": "C+"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g47",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "apartment_low",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+139,
+68,
+55
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "RES CONDO 3 STY MAS+OTH",
+"building_code_new": "41",
+"building_code_description_new": null,
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "1970",
+"year_built_estimate": "Y",
+"quality_grade": "C+"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g47",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "apartment_low",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+139,
+68,
+55
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "RES CONDO 3 STY MAS+OTH",
+"building_code_new": "41",
+"building_code_description_new": null,
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "1970",
+"year_built_estimate": "Y",
+"quality_grade": "C+"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g47",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "office_tower",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+139,
+68,
+55
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "DET W/GAR 2 STY FRAME",
+"building_code_new": "10",
+"building_code_description_new": "COLONIAL",
+"general_construction": null,
+"number_stories": 2,
+"year_built": "2004",
+"year_built_estimate": null,
+"quality_grade": "B-"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g48",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "detached",
+"material": "frame",
+"stories": 2,
+"floor_h": 4.5,
+"wall_rgb": [
+199,
+190,
+185
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.4,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "DET W/GAR 2 STY FRAME",
+"building_code_new": "10",
+"building_code_description_new": "COLONIAL",
+"general_construction": null,
+"number_stories": 2,
+"year_built": "2004",
+"year_built_estimate": null,
+"quality_grade": "B-"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g48",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "detached",
+"material": "frame",
+"stories": 2,
+"floor_h": 5.0,
+"wall_rgb": [
+199,
+190,
+185
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.4,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "DET W/GAR 2 STY FRAME",
+"building_code_new": "10",
+"building_code_description_new": "COLONIAL",
+"general_construction": null,
+"number_stories": 2,
+"year_built": "2004",
+"year_built_estimate": null,
+"quality_grade": "B-"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g48",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "detached",
+"material": "frame",
+"stories": 2,
+"floor_h": 5.0,
+"wall_rgb": [
+199,
+190,
+185
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.4,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "VACANT LAND - RESIDENTIAL",
+"building_code_description": "VACANT LAND RESIDE < ACRE",
+"building_code_new": null,
+"building_code_description_new": null,
+"general_construction": null,
+"number_stories": null,
+"year_built": null,
+"year_built_estimate": null,
+"quality_grade": null
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g49",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "other",
+"material": "brick",
+"stories": 3,
+"floor_h": 3.0,
+"wall_rgb": [
+154,
+79,
+57
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "VACANT LAND - RESIDENTIAL",
+"building_code_description": "VACANT LAND RESIDE < ACRE",
+"building_code_new": null,
+"building_code_description_new": null,
+"general_construction": null,
+"number_stories": null,
+"year_built": null,
+"year_built_estimate": null,
+"quality_grade": null
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g49",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "other",
+"material": "brick",
+"stories": 9,
+"floor_h": 3.33,
+"wall_rgb": [
+154,
+79,
+57
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "VACANT LAND - RESIDENTIAL",
+"building_code_description": "VACANT LAND RESIDE < ACRE",
+"building_code_new": null,
+"building_code_description_new": null,
+"general_construction": null,
+"number_stories": null,
+"year_built": null,
+"year_built_estimate": null,
+"quality_grade": null
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g49",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "other",
+"material": "brick",
+"stories": 19,
+"floor_h": 3.16,
+"wall_rgb": [
+154,
+79,
+57
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "RES CONDO 5+ STY MASONRY",
+"building_code_new": "41",
+"building_code_description_new": null,
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "1972",
+"year_built_estimate": "Y",
+"quality_grade": "B"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g50",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "apartment_low",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+148,
+70,
+60
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "RES CONDO 5+ STY MASONRY",
+"building_code_new": "41",
+"building_code_description_new": null,
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "1972",
+"year_built_estimate": "Y",
+"quality_grade": "B"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g50",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "apartment_low",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+148,
+70,
+60
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "RES CONDO 5+ STY MASONRY",
+"building_code_new": "41",
+"building_code_description_new": null,
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "1972",
+"year_built_estimate": "Y",
+"quality_grade": "B"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g50",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "office_tower",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+148,
+70,
+60
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "RES CONDO 4 STY MASONRY",
+"building_code_new": "43",
+"building_code_description_new": null,
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "1900",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g51",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "apartment_low",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+158,
+106,
+86
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "RES CONDO 4 STY MASONRY",
+"building_code_new": "43",
+"building_code_description_new": null,
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "1900",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g51",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "apartment_low",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+158,
+106,
+86
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "RES CONDO 4 STY MASONRY",
+"building_code_new": "43",
+"building_code_description_new": null,
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "1900",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g51",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "office_tower",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+158,
+106,
+86
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "COMMERCIAL",
+"building_code_description": "IND LOFT MASONRY",
+"building_code_new": "821",
+"building_code_description_new": "ROW MIXED-COM/RES-BLT AS COM",
+"general_construction": "F",
+"number_stories": 7,
+"year_built": "1930",
+"year_built_estimate": null,
+"quality_grade": "C"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g52",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "mixed_storefront",
+"material": "brick",
+"stories": 7,
+"floor_h": 2.6,
+"wall_rgb": [
+158,
+74,
+63
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": true,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "COMMERCIAL",
+"building_code_description": "IND LOFT MASONRY",
+"building_code_new": "821",
+"building_code_description_new": "ROW MIXED-COM/RES-BLT AS COM",
+"general_construction": "F",
+"number_stories": 7,
+"year_built": "1930",
+"year_built_estimate": null,
+"quality_grade": "C"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g52",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "mixed_storefront",
+"material": "brick",
+"stories": 7,
+"floor_h": 4.29,
+"wall_rgb": [
+158,
+74,
+63
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": true,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "COMMERCIAL",
+"building_code_description": "IND LOFT MASONRY",
+"building_code_new": "821",
+"building_code_description_new": "ROW MIXED-COM/RES-BLT AS COM",
+"general_construction": "F",
+"number_stories": 7,
+"year_built": "1930",
+"year_built_estimate": null,
+"quality_grade": "C"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g52",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "mixed_storefront",
+"material": "brick",
+"stories": 7,
+"floor_h": 5.0,
+"wall_rgb": [
+158,
+74,
+63
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": true,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW 3 STY MASONRY",
+"building_code_new": "22",
+"building_code_description_new": "ROW TYPICAL",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1800",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g53",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_typical",
+"material": "brick",
+"stories": 2,
+"floor_h": 4.5,
+"wall_rgb": [
+144,
+63,
+54
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW 3 STY MASONRY",
+"building_code_new": "22",
+"building_code_description_new": "ROW TYPICAL",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1800",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g53",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_typical",
+"material": "brick",
+"stories": 2,
+"floor_h": 5.0,
+"wall_rgb": [
+144,
+63,
+54
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW 3 STY MASONRY",
+"building_code_new": "22",
+"building_code_description_new": "ROW TYPICAL",
+"general_construction": "A",
+"number_stories": 2,
+"year_built": "1800",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g53",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_typical",
+"material": "brick",
+"stories": 2,
+"floor_h": 5.0,
+"wall_rgb": [
+144,
+63,
+54
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW 3 STY MASONRY",
+"building_code_new": "21",
+"building_code_description_new": "ROW OLD STYLE",
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "1875",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g54",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_typical",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+156,
+79,
+63
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW 3 STY MASONRY",
+"building_code_new": "21",
+"building_code_description_new": "ROW OLD STYLE",
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "1875",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g54",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_typical",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+156,
+79,
+63
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "ROW 3 STY MASONRY",
+"building_code_new": "21",
+"building_code_description_new": "ROW OLD STYLE",
+"general_construction": "A",
+"number_stories": 1,
+"year_built": "1875",
+"year_built_estimate": "Y",
+"quality_grade": "C"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g54",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_typical",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+156,
+79,
+63
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "RES CONDO 5+ STY MAS+OTH",
+"building_code_new": "41",
+"building_code_description_new": null,
+"general_construction": "G",
+"number_stories": 1,
+"year_built": "2009",
+"year_built_estimate": null,
+"quality_grade": "B+"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g55",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "apartment_low",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+144,
+77,
+54
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "RES CONDO 5+ STY MAS+OTH",
+"building_code_new": "41",
+"building_code_description_new": null,
+"general_construction": "G",
+"number_stories": 1,
+"year_built": "2009",
+"year_built_estimate": null,
+"quality_grade": "B+"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g55",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "apartment_low",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+144,
+77,
+54
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "RES CONDO 5+ STY MAS+OTH",
+"building_code_new": "41",
+"building_code_description_new": null,
+"general_construction": "G",
+"number_stories": 1,
+"year_built": "2009",
+"year_built_estimate": null,
+"quality_grade": "B+"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g55",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "office_tower",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+144,
+77,
+54
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MULTI FAMILY",
+"building_code_description": "APTS 5-50 UNITS MASONRY",
+"building_code_new": "806",
+"building_code_description_new": "APARTMENTS - BLT AS RESID",
+"general_construction": "A",
+"number_stories": 4,
+"year_built": "1890",
+"year_built_estimate": null,
+"quality_grade": "B-"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g56",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "apartment_low",
+"material": "brick",
+"stories": 4,
+"floor_h": 2.6,
+"wall_rgb": [
+147,
+88,
+67
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MULTI FAMILY",
+"building_code_description": "APTS 5-50 UNITS MASONRY",
+"building_code_new": "806",
+"building_code_description_new": "APARTMENTS - BLT AS RESID",
+"general_construction": "A",
+"number_stories": 4,
+"year_built": "1890",
+"year_built_estimate": null,
+"quality_grade": "B-"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g56",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "apartment_low",
+"material": "brick",
+"stories": 4,
+"floor_h": 5.0,
+"wall_rgb": [
+147,
+88,
+67
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MULTI FAMILY",
+"building_code_description": "APTS 5-50 UNITS MASONRY",
+"building_code_new": "806",
+"building_code_description_new": "APARTMENTS - BLT AS RESID",
+"general_construction": "A",
+"number_stories": 4,
+"year_built": "1890",
+"year_built_estimate": null,
+"quality_grade": "B-"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g56",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "apartment_low",
+"material": "brick",
+"stories": 4,
+"floor_h": 5.0,
+"wall_rgb": [
+147,
+88,
+67
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MULTI FAMILY",
+"building_code_description": "APTS 5-50 UNITS MASONRY",
+"building_code_new": "804",
+"building_code_description_new": "APARTMENTS - LOW RISE",
+"general_construction": "A",
+"number_stories": 4,
+"year_built": "1900",
+"year_built_estimate": null,
+"quality_grade": "C"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g57",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "apartment_low",
+"material": "brick",
+"stories": 4,
+"floor_h": 2.6,
+"wall_rgb": [
+176,
+75,
+78
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MULTI FAMILY",
+"building_code_description": "APTS 5-50 UNITS MASONRY",
+"building_code_new": "804",
+"building_code_description_new": "APARTMENTS - LOW RISE",
+"general_construction": "A",
+"number_stories": 4,
+"year_built": "1900",
+"year_built_estimate": null,
+"quality_grade": "C"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g57",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "apartment_low",
+"material": "brick",
+"stories": 4,
+"floor_h": 5.0,
+"wall_rgb": [
+176,
+75,
+78
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "MULTI FAMILY",
+"building_code_description": "APTS 5-50 UNITS MASONRY",
+"building_code_new": "804",
+"building_code_description_new": "APARTMENTS - LOW RISE",
+"general_construction": "A",
+"number_stories": 4,
+"year_built": "1900",
+"year_built_estimate": null,
+"quality_grade": "C"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g57",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "apartment_low",
+"material": "brick",
+"stories": 4,
+"floor_h": 5.0,
+"wall_rgb": [
+176,
+75,
+78
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "VACANT LAND COMMER < ACRE",
+"building_code_new": "41",
+"building_code_description_new": null,
+"general_construction": "G",
+"number_stories": 1,
+"year_built": "2022",
+"year_built_estimate": null,
+"quality_grade": null
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g58",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "other",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+149,
+101,
+67
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "VACANT LAND COMMER < ACRE",
+"building_code_new": "41",
+"building_code_description_new": null,
+"general_construction": "G",
+"number_stories": 1,
+"year_built": "2022",
+"year_built_estimate": null,
+"quality_grade": null
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g58",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "other",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+149,
+101,
+67
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "SINGLE FAMILY",
+"building_code_description": "VACANT LAND COMMER < ACRE",
+"building_code_new": "41",
+"building_code_description_new": null,
+"general_construction": "G",
+"number_stories": 1,
+"year_built": "2022",
+"year_built_estimate": null,
+"quality_grade": null
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g58",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "other",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+149,
+101,
+67
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "GARAGE - RESIDENTIAL",
+"building_code_description": "CONDO PARKING SPACE",
+"building_code_new": "40",
+"building_code_description_new": "CONDO NON CONFORMING",
+"general_construction": null,
+"number_stories": 1,
+"year_built": "1900",
+"year_built_estimate": "Y",
+"quality_grade": "B"
+},
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "g59",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "other",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+137,
+63,
+52
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "GARAGE - RESIDENTIAL",
+"building_code_description": "CONDO PARKING SPACE",
+"building_code_new": "40",
+"building_code_description_new": "CONDO NON CONFORMING",
+"general_construction": null,
+"number_stories": 1,
+"year_built": "1900",
+"year_built_estimate": "Y",
+"quality_grade": "B"
+},
+"height_m": 30.0,
+"footprint_wh": [
+25,
+40
+],
+"bid": "g59",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "other",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+137,
+63,
+52
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": {
+"category_code_description": "GARAGE - RESIDENTIAL",
+"building_code_description": "CONDO PARKING SPACE",
+"building_code_new": "40",
+"building_code_description_new": "CONDO NON CONFORMING",
+"general_construction": null,
+"number_stories": 1,
+"year_built": "1900",
+"year_built_estimate": "Y",
+"quality_grade": "B"
+},
+"height_m": 60.0,
+"footprint_wh": [
+30,
+30
+],
+"bid": "g59",
+"spec": {
+"color_source": "aerial",
+"roof_color": true,
+"front": [],
+"style": "other",
+"material": "brick",
+"stories": 1,
+"floor_h": 5.0,
+"wall_rgb": [
+137,
+63,
+52
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 2.6,
+"storefront": false,
+"porch": false,
+"cornice": false,
+"glass": false
+}
+},
+{
+"rec": null,
+"height_m": 9.0,
+"footprint_wh": [
+5,
+14
+],
+"bid": "none",
+"spec": {
+"color_source": "palette",
+"roof_color": false,
+"front": [],
+"style": "row_typical",
+"material": "brick",
+"stories": 3,
+"floor_h": 3.0,
+"wall_rgb": [
+141,
+63,
+70
+],
+"window_rgb": [
+52,
+60,
+70
+],
+"spacing_m": 1.8,
+"storefront": false,
+"porch": false,
+"cornice": true,
+"glass": false
+}
+}
+]
+}

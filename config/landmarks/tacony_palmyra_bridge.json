@@ -1,0 +1,757 @@
+{
+ "slug": "tacony_palmyra_bridge",
+ "name": "Tacony-Palmyra Bridge",
+ "wikidata": "Q7674055",
+ "kit": "arch_bascule",
+ "about": "Route 73 across the Delaware between Tacony and Palmyra, N.J. (Ralph Modjeski, with Paul Cret; opened Aug. 14, 1929): eight spans, 3,659 ft in all, on stone piers. A through-tied steel arch at mid-river, a double-leaf Scherzer rolling-lift bascule over the 240 ft navigation channel, three continuous half-through truss spans and deck-girder approaches. Owned by the Burlington County Bridge Commission. The v18 render showed the lift span as if broken; this dossier fixes the arch from OSM and the 2022 LiDAR and the spans from the commission and NJDOT. The LiDAR (lower_northeast grid) caught the bascule closed. The New Jersey end lies outside the City's LiDAR.",
+ "footprint": {
+  "polygon": [
+   [
+    -75.0451635,
+    40.0151011
+   ],
+   [
+    -75.0451824,
+    40.0150928
+   ],
+   [
+    -75.0452472,
+    40.0150637
+   ],
+   [
+    -75.0453343,
+    40.015026
+   ],
+   [
+    -75.0411881,
+    40.0094977
+   ],
+   [
+    -75.0410995,
+    40.0095367
+   ],
+   [
+    -75.0410301,
+    40.0095673
+   ],
+   [
+    -75.0410173,
+    40.0095729
+   ],
+   [
+    -75.0451635,
+    40.0151011
+   ]
+  ],
+  "source": "https://www.openstreetmap.org/way/575990019",
+  "note": "OSM way 575990019 (man_made=bridge outline, ODbL): the bridge over the river and the Pennsylvania shore; the New Jersey approach continues past it.",
+  "replaces": {
+   "li_footprint_ids": [],
+   "osm_ways": [
+    575990019,
+    43032037,
+    265732671,
+    265732672
+   ]
+  }
+ },
+ "dims": {
+  "total_length_m": {
+   "value": 1115.263,
+   "unit": "m",
+   "source": "https://www.bcbridges.org/tacony-palmyra-bridge/",
+   "note": "Published as 3659 ft. 'Total length from abutment to abutment is 3,659 feet'; NJDOT agrees."
+  },
+  "deck_width_m": {
+   "value": 11.582,
+   "unit": "m",
+   "source": "https://www.bcbridges.org/tacony-palmyra-bridge/",
+   "note": "Published as 38 ft. Three lanes (four until 1977 per BCBC; Wikipedia says 1997)."
+  },
+  "span_count": {
+   "value": 8,
+   "unit": "spans",
+   "source": "https://www.nj.gov/transportation/works/environment/pdf/Historic_BR_Burlington.pdf",
+   "note": "NJDOT Historic Bridge Data, Burlington County (2002), PDF p. 78, structure 3000001: 'The eight-span bridge, built in 1928-1929'."
+  },
+  "arch_span_m": {
+   "value": 170.078,
+   "unit": "m",
+   "source": "https://en.wikipedia.org/wiki/Tacony%E2%80%93Palmyra_Bridge",
+   "note": "Published as 558 ft. Wikipedia infobox, uncited. PhillyRoads (quoted on https://industrialscenery.blogspot.com/2022/11/19291997-tacony-palmyra-bridge-over.html) gives 523 ft. The OSM arch way 43032037 is 167.9 m (551 ft) long and the LiDAR shows rib returns along all of it, closer to 558 ft. Check against a primary source."
+  },
+  "arch_rise_m": {
+   "value": 35.99,
+   "unit": "m above the deck",
+   "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+   "note": "Measured: arch crown (58.74 m NAVD88, highest LiDAR cell within 6 m of OSM arch way 43032037, at 85.0 m of its 167.9 m) minus the median deck level along it (22.75 m NAVD88) (scripts/50_landmark_measure.py, output/landmarks/measure/tacony_palmyra_bridge.json)."
+  },
+  "arch_crown_navd88_m": {
+   "value": 58.74,
+   "unit": "m NAVD88",
+   "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+   "note": "Measured: highest cell within 6 m of the OSM arch way (scripts/50_landmark_measure.py, output/landmarks/measure/tacony_palmyra_bridge.json)."
+  },
+  "deck_at_arch_navd88_m": {
+   "value": 22.75,
+   "unit": "m NAVD88",
+   "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+   "note": "Measured: median of the 10 m bins' median surface along the OSM arch way, bins above 25 m (arch members) excluded (scripts/50_landmark_measure.py, output/landmarks/measure/tacony_palmyra_bridge.json)."
+  },
+  "water_navd88_m": {
+   "value": 0.41,
+   "unit": "m NAVD88",
+   "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+   "note": "Measured: median water surface beside the bridge on March 29, 2022 (tide at flight time, not a datum) (scripts/50_landmark_measure.py, output/landmarks/measure/tacony_palmyra_bridge.json)."
+  },
+  "clearance_m": {
+   "value": 18.593,
+   "unit": "m",
+   "source": "https://www.bcbridges.org/tacony-palmyra-bridge/",
+   "note": "Published as 61 ft. Under the arch at the center, at high tide. The Inquirer gives 64 ft (https://www.inquirer.com/philly/blogs/TODAY-IN-PHILADELPHIA-HISTORY/Tacony-Palmyra-Bridge-opens.html). LiDAR check: deck surface minus water is about 22.3 m (73 ft) at flight-time tide; the 61 ft is to the steel underside at high tide."
+  },
+  "bascule_clearance_m": {
+   "value": 16.459,
+   "unit": "m",
+   "source": "https://www.bcbridges.org/tacony-palmyra-bridge/",
+   "note": "Published as 54 ft. Approximate minimum under the closed bascule at high tide."
+  },
+  "bascule_span_m": {
+   "value": 75.438,
+   "unit": "m",
+   "source": "https://industrialscenery.blogspot.com/2022/11/19291997-tacony-palmyra-bridge-over.html",
+   "note": "Published as 247 ft 6 in. PhillyRoads via the Industrial Scenery blog; Gribblenation gives 260 ft (https://gribblenation.org/2020/02/tacony-palmyra-bridge.html). NJDOT: a double-leaf Scherzer rolling lift giving 'a 240-foot clear channel for navigation' (https://www.nj.gov/transportation/works/environment/pdf/Historic_BR_Burlington.pdf)."
+  },
+  "channel_clear_m": {
+   "value": 73.152,
+   "unit": "m",
+   "source": "https://www.nj.gov/transportation/works/environment/pdf/Historic_BR_Burlington.pdf",
+   "note": "Published as 240 ft. NJDOT Historic Bridge Data, Burlington County (2002), PDF p. 78, structure 3000001."
+  },
+  "truss_span_m": {
+   "value": 70.714,
+   "unit": "m",
+   "source": "https://industrialscenery.blogspot.com/2022/11/19291997-tacony-palmyra-bridge-over.html",
+   "note": "Published as 232 ft. Each of the three continuous half-through truss spans, PhillyRoads via the blog."
+  },
+  "truss_count": {
+   "value": 3,
+   "unit": "spans",
+   "source": "https://www.bcbridges.org/tacony-palmyra-bridge/",
+   "note": "'Three-span continuous half through-truss spans'."
+  }
+ },
+ "colors": {
+  "steel": {
+   "rgb": [
+    112,
+    120,
+    118
+   ],
+   "estimate": true,
+   "method": "none",
+   "reason": "No source read gives the paint color (repainted Dec. 2018-Dec. 2019, E.C. Limited) and neither manifest photo shows this bridge (they show Pennsauken Creek and the Betsy Ross/Delair bridges). A neutral steel gray until a correct reference photo is picked."
+  },
+  "stone_piers": {
+   "rgb": [
+    150,
+    145,
+    135
+   ],
+   "estimate": true,
+   "method": "none",
+   "reason": "NJDOT says stone piers and abutments; tone is our pick pending a photo."
+  }
+ },
+ "kit_params": {
+  "arch": {
+   "osm_way": "way/43032037",
+   "ends": {
+    "value": [
+     [
+      -75.0429651,
+      40.0120116
+     ],
+     [
+      -75.0439344,
+      40.0133271
+     ]
+    ],
+    "unit": "lon, lat",
+    "source": "https://www.openstreetmap.org/way/43032037",
+    "note": "Ends of the OSM arch way (bridge:structure=arch)."
+   },
+   "span_m": "arch_span_m",
+   "rise_m": "arch_rise_m",
+   "deck_navd88_m": "deck_at_arch_navd88_m",
+   "type": "through-tied steel arch, ribs on both sides of the deck",
+   "profile": {
+    "value": [
+     {
+      "s_m": 5.0,
+      "median_m": 23.1,
+      "max_m": 32.92,
+      "cells": 491
+     },
+     {
+      "s_m": 15.0,
+      "median_m": 32.65,
+      "max_m": 39.12,
+      "cells": 495
+     },
+     {
+      "s_m": 25.0,
+      "median_m": 28.75,
+      "max_m": 44.73,
+      "cells": 496
+     },
+     {
+      "s_m": 35.0,
+      "median_m": 22.91,
+      "max_m": 49.21,
+      "cells": 500
+     },
+     {
+      "s_m": 45.0,
+      "median_m": 26.55,
+      "max_m": 52.67,
+      "cells": 500
+     },
+     {
+      "s_m": 55.0,
+      "median_m": 22.94,
+      "max_m": 55.23,
+      "cells": 500
+     },
+     {
+      "s_m": 65.0,
+      "median_m": 22.75,
+      "max_m": 58.1,
+      "cells": 500
+     },
+     {
+      "s_m": 75.0,
+      "median_m": 22.77,
+      "max_m": 58.44,
+      "cells": 499
+     },
+     {
+      "s_m": 85.0,
+      "median_m": 54.02,
+      "max_m": 58.74,
+      "cells": 500
+     },
+     {
+      "s_m": 95.0,
+      "median_m": 24.37,
+      "max_m": 56.73,
+      "cells": 500
+     },
+     {
+      "s_m": 105.0,
+      "median_m": 22.7,
+      "max_m": 55.32,
+      "cells": 500
+     },
+     {
+      "s_m": 115.0,
+      "median_m": 22.65,
+      "max_m": 52.76,
+      "cells": 500
+     },
+     {
+      "s_m": 125.0,
+      "median_m": 22.6,
+      "max_m": 49.34,
+      "cells": 500
+     },
+     {
+      "s_m": 135.0,
+      "median_m": 39.31,
+      "max_m": 44.86,
+      "cells": 500
+     },
+     {
+      "s_m": 145.0,
+      "median_m": 33.18,
+      "max_m": 39.55,
+      "cells": 499
+     },
+     {
+      "s_m": 155.0,
+      "median_m": 22.36,
+      "max_m": 33.24,
+      "cells": 500
+     },
+     {
+      "s_m": 165.0,
+      "median_m": 22.19,
+      "max_m": 31.53,
+      "cells": 500
+     }
+    ],
+    "unit": "m NAVD88 per 10 m bin (median and max within 6 m)",
+    "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+    "note": "Measured (scripts/50_landmark_measure.py, output/landmarks/measure/tacony_palmyra_bridge.json, profiles, way 43032037)."
+   }
+  },
+  "deck_profile": {
+   "value": [
+    {
+     "s_m": 5.0,
+     "median_m": 15.98,
+     "max_m": 25.53,
+     "cells": 499
+    },
+    {
+     "s_m": 15.0,
+     "median_m": 16.26,
+     "max_m": 22.61,
+     "cells": 500
+    },
+    {
+     "s_m": 25.0,
+     "median_m": 16.6,
+     "max_m": 20.1,
+     "cells": 500
+    },
+    {
+     "s_m": 35.0,
+     "median_m": 16.96,
+     "max_m": 20.47,
+     "cells": 499
+    },
+    {
+     "s_m": 45.0,
+     "median_m": 17.31,
+     "max_m": 20.8,
+     "cells": 500
+    },
+    {
+     "s_m": 55.0,
+     "median_m": 17.68,
+     "max_m": 21.13,
+     "cells": 497
+    },
+    {
+     "s_m": 65.0,
+     "median_m": 18.05,
+     "max_m": 21.48,
+     "cells": 491
+    },
+    {
+     "s_m": 75.0,
+     "median_m": 18.38,
+     "max_m": 27.96,
+     "cells": 493
+    },
+    {
+     "s_m": 85.0,
+     "median_m": 18.73,
+     "max_m": 22.13,
+     "cells": 500
+    },
+    {
+     "s_m": 95.0,
+     "median_m": 19.11,
+     "max_m": 22.44,
+     "cells": 498
+    },
+    {
+     "s_m": 105.0,
+     "median_m": 19.39,
+     "max_m": 22.73,
+     "cells": 500
+    },
+    {
+     "s_m": 115.0,
+     "median_m": 19.71,
+     "max_m": 22.99,
+     "cells": 500
+    },
+    {
+     "s_m": 125.0,
+     "median_m": 20.03,
+     "max_m": 23.31,
+     "cells": 500
+    },
+    {
+     "s_m": 135.0,
+     "median_m": 20.33,
+     "max_m": 23.66,
+     "cells": 498
+    },
+    {
+     "s_m": 145.0,
+     "median_m": 20.62,
+     "max_m": 23.94,
+     "cells": 499
+    },
+    {
+     "s_m": 155.0,
+     "median_m": 20.86,
+     "max_m": 30.26,
+     "cells": 497
+    },
+    {
+     "s_m": 165.0,
+     "median_m": 21.11,
+     "max_m": 24.38,
+     "cells": 498
+    },
+    {
+     "s_m": 175.0,
+     "median_m": 21.3,
+     "max_m": 24.54,
+     "cells": 500
+    },
+    {
+     "s_m": 185.0,
+     "median_m": 21.54,
+     "max_m": 24.72,
+     "cells": 500
+    },
+    {
+     "s_m": 195.0,
+     "median_m": 21.71,
+     "max_m": 24.96,
+     "cells": 496
+    },
+    {
+     "s_m": 205.0,
+     "median_m": 21.89,
+     "max_m": 25.11,
+     "cells": 499
+    },
+    {
+     "s_m": 215.0,
+     "median_m": 22.08,
+     "max_m": 29.65,
+     "cells": 499
+    },
+    {
+     "s_m": 225.0,
+     "median_m": 22.18,
+     "max_m": 31.53,
+     "cells": 500
+    },
+    {
+     "s_m": 235.0,
+     "median_m": 22.36,
+     "max_m": 32.71,
+     "cells": 500
+    },
+    {
+     "s_m": 245.0,
+     "median_m": 23.68,
+     "max_m": 38.86,
+     "cells": 499
+    },
+    {
+     "s_m": 255.0,
+     "median_m": 22.66,
+     "max_m": 44.21,
+     "cells": 500
+    },
+    {
+     "s_m": 265.0,
+     "median_m": 23.75,
+     "max_m": 49.14,
+     "cells": 500
+    },
+    {
+     "s_m": 275.0,
+     "median_m": 22.68,
+     "max_m": 52.47,
+     "cells": 500
+    },
+    {
+     "s_m": 285.0,
+     "median_m": 22.71,
+     "max_m": 54.91,
+     "cells": 500
+    },
+    {
+     "s_m": 295.0,
+     "median_m": 24.53,
+     "max_m": 56.89,
+     "cells": 500
+    },
+    {
+     "s_m": 305.0,
+     "median_m": 24.41,
+     "max_m": 58.76,
+     "cells": 500
+    },
+    {
+     "s_m": 315.0,
+     "median_m": 54.18,
+     "max_m": 57.78,
+     "cells": 499
+    },
+    {
+     "s_m": 325.0,
+     "median_m": 22.73,
+     "max_m": 58.1,
+     "cells": 500
+    },
+    {
+     "s_m": 335.0,
+     "median_m": 26.64,
+     "max_m": 55.57,
+     "cells": 500
+    },
+    {
+     "s_m": 345.0,
+     "median_m": 26.61,
+     "max_m": 53.2,
+     "cells": 500
+    },
+    {
+     "s_m": 355.0,
+     "median_m": 23.57,
+     "max_m": 49.82,
+     "cells": 500
+    },
+    {
+     "s_m": 365.0,
+     "median_m": 22.53,
+     "max_m": 45.49,
+     "cells": 498
+    },
+    {
+     "s_m": 375.0,
+     "median_m": 32.68,
+     "max_m": 40.31,
+     "cells": 498
+    },
+    {
+     "s_m": 385.0,
+     "median_m": 26.05,
+     "max_m": 34.16,
+     "cells": 491
+    },
+    {
+     "s_m": 395.0,
+     "median_m": 22.08,
+     "max_m": 24.87,
+     "cells": 500
+    },
+    {
+     "s_m": 405.0,
+     "median_m": 21.99,
+     "max_m": 25.28,
+     "cells": 500
+    },
+    {
+     "s_m": 415.0,
+     "median_m": 21.83,
+     "max_m": 31.45,
+     "cells": 500
+    },
+    {
+     "s_m": 425.0,
+     "median_m": 21.66,
+     "max_m": 25.01,
+     "cells": 500
+    },
+    {
+     "s_m": 435.0,
+     "median_m": 21.46,
+     "max_m": 24.79,
+     "cells": 500
+    },
+    {
+     "s_m": 445.0,
+     "median_m": 21.26,
+     "max_m": 24.67,
+     "cells": 500
+    },
+    {
+     "s_m": 455.0,
+     "median_m": 21.08,
+     "max_m": 24.42,
+     "cells": 498
+    },
+    {
+     "s_m": 465.0,
+     "median_m": 20.83,
+     "max_m": 30.6,
+     "cells": 499
+    },
+    {
+     "s_m": 475.0,
+     "median_m": 20.62,
+     "max_m": 23.97,
+     "cells": 494
+    },
+    {
+     "s_m": 485.0,
+     "median_m": 20.36,
+     "max_m": 26.35,
+     "cells": 498
+    },
+    {
+     "s_m": 495.0,
+     "median_m": 20.06,
+     "max_m": 23.53,
+     "cells": 468
+    },
+    {
+     "s_m": 505.0,
+     "median_m": 19.85,
+     "max_m": 25.94,
+     "cells": 458
+    },
+    {
+     "s_m": 515.0,
+     "median_m": 19.68,
+     "max_m": 26.04,
+     "cells": 450
+    },
+    {
+     "s_m": 525.0,
+     "median_m": 19.25,
+     "max_m": 28.71,
+     "cells": 443
+    },
+    {
+     "s_m": 535.0,
+     "median_m": 18.92,
+     "max_m": 23.13,
+     "cells": 439
+    },
+    {
+     "s_m": 545.0,
+     "median_m": 18.59,
+     "max_m": 21.86,
+     "cells": 435
+    },
+    {
+     "s_m": 555.0,
+     "median_m": 18.3,
+     "max_m": 21.55,
+     "cells": 430
+    },
+    {
+     "s_m": 565.0,
+     "median_m": 17.92,
+     "max_m": 21.48,
+     "cells": 426
+    },
+    {
+     "s_m": 575.0,
+     "median_m": 17.6,
+     "max_m": 21.0,
+     "cells": 396
+    },
+    {
+     "s_m": 585.0,
+     "median_m": 17.24,
+     "max_m": 20.6,
+     "cells": 405
+    },
+    {
+     "s_m": 595.0,
+     "median_m": 16.91,
+     "max_m": 26.26,
+     "cells": 408
+    },
+    {
+     "s_m": 605.0,
+     "median_m": 16.56,
+     "max_m": 19.93,
+     "cells": 407
+    },
+    {
+     "s_m": 615.0,
+     "median_m": 16.22,
+     "max_m": 19.56,
+     "cells": 400
+    },
+    {
+     "s_m": 625.0,
+     "median_m": 15.89,
+     "max_m": 19.27,
+     "cells": 375
+    },
+    {
+     "s_m": 635.0,
+     "median_m": 15.55,
+     "max_m": 18.89,
+     "cells": 405
+    },
+    {
+     "s_m": 645.0,
+     "median_m": 15.21,
+     "max_m": 22.7,
+     "cells": 429
+    },
+    {
+     "s_m": 655.0,
+     "median_m": 14.8,
+     "max_m": 18.21,
+     "cells": 430
+    },
+    {
+     "s_m": 665.0,
+     "median_m": 14.51,
+     "max_m": 18.31,
+     "cells": 431
+    },
+    {
+     "s_m": 675.0,
+     "median_m": 14.1,
+     "max_m": 23.71,
+     "cells": 468
+    },
+    {
+     "s_m": 685.0,
+     "median_m": 13.7,
+     "max_m": 17.16,
+     "cells": 499
+    },
+    {
+     "s_m": 695.0,
+     "median_m": 13.36,
+     "max_m": 16.85,
+     "cells": 497
+    },
+    {
+     "s_m": 705.0,
+     "median_m": 13.79,
+     "max_m": 22.87,
+     "cells": 499
+    }
+   ],
+   "unit": "m NAVD88 per 10 m bin along the OSM bridge outline's long axis",
+   "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+   "note": "Measured (same output, way 575990019): the deck rises from about 16 m at the Pennsylvania end of the outline to about 23 m at the arch and falls to about 13 m."
+  },
+  "bascule": {
+   "type": "double-leaf Scherzer rolling lift",
+   "span_m": "bascule_span_m",
+   "state": "closed (down) in the model, as in the LiDAR",
+   "position": "not settled: read the leaves and their counterweights off the 2024 aerial in Phase 1"
+  },
+  "trusses": {
+   "count": "truss_count",
+   "span_m": "truss_span_m",
+   "type": "continuous half-through (pony) truss"
+  },
+  "approaches": "deck-girder viaducts on piers (reuse src/pixelphilly/bridges.py deck and pier code)"
+ },
+ "credits": [
+  "OpenStreetMap data (c) OpenStreetMap contributors, ODbL 1.0 (https://www.openstreetmap.org/copyright)",
+  "LiDAR: City of Philadelphia 2022 classified LiDAR via PASDA (https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154), lower_northeast grid",
+  "Designer: Ralph Modjeski (Modjeski & Masters), consulting architect Paul P. Cret (https://www.poles.org/DB/M_names/Modjeski_R/Tac_Palmyra_plaque.html)"
+ ],
+ "review": {
+  "open_questions": [
+   "Arch span: 558 ft (Wikipedia, uncited) vs. 523 ft (PhillyRoads); OSM and the LiDAR favor about 551-558 ft.",
+   "Bascule length (247.5 vs. 260 ft) and position along the bridge.",
+   "No reference photo of this bridge in the manifest; pick one (CC0/PD/CC BY) for colors.",
+   "HAER: no record found, but the LoC search blocked automated queries; check by hand."
+  ]
+ }
+}

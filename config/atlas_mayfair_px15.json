@@ -1,0 +1,42 @@
+{
+  "name": "atlas_mayfair_px15",
+  "label": "Pixel-scale test: era pilot Phase C settings at half the meters per pixel: Mayfair postwar rows (front slopes) \u2014 LiDAR shapes, OPA facades. See docs/building_age_plan.md; scale test 2026-11-25",
+  "bbox_wgs84": [
+    -75.07097,
+    40.02876,
+    -75.06511,
+    40.03326
+  ],
+  "camera": {
+    "view_bearing_deg": 54,
+    "elevation_deg": 45,
+    "meters_per_pixel": 0.1465,
+    "frame_px": 1024
+  },
+  "max_height_m": 120,
+  "imagery_zoom": 19,
+  "default_building_height_m": 10.0,
+  "ground_filter": {
+    "median_px": 5
+  },
+  "wall_tint": {
+    "max_height_m": 20,
+    "color": [
+      150,
+      82,
+      62
+    ],
+    "mix": 0.55
+  },
+  "height_outlier_ratio": 3.0,
+  "clip_frames_to_area": true,
+  "building_shapes": "lidar",
+  "facades": "opa",
+  "lawn_correct": true,
+  "facade_eras": true,
+  "front_slopes": [
+    "ROW POST WAR",
+    "TWIN POST WAR"
+  ],
+  "roof_fit": "lidar"
+}

@@ -107,17 +107,9 @@ const flatParts = [];
 const flatColors = [];
 
 for (const b of sceneData.buildings) {
-  const shapes = b.polys.map(shapeFromRings);
   // "z0" lifts the prism's base off the ground (a bridge deck, a tower
   // crossbeam); h stays the absolute top height, so the prism spans z0..h.
   const z0 = b.z0 || 0;
-  const geom = new THREE.ExtrudeGeometry(shapes, { depth: b.h - z0, bevelEnabled: false });
-  // Shapes are drawn in (east, north); extrusion runs along +z. Rotating -90°
-  // about x maps north to -z and the extrusion to +y (up).
-  geom.rotateX(-Math.PI / 2);
-  if (z0) geom.translate(0, z0, 0);
-  const pos = geom.attributes.position.array;
-  const nrm = geom.attributes.normal.array;
   const f = b.facade;
   const rgb = f ? f.w : b.color;
   const color = new THREE.Color().setRGB(rgb[0] / 255, rgb[1] / 255, rgb[2] / 255, THREE.SRGBColorSpace);
@@ -144,6 +136,58 @@ for (const b of sceneData.buildings) {
       }
     }
   };
+  if (b.roof3d) {
+    // A fitted gable or hip (scene "roof3d", from 05_build_scene.py with
+    // "roof_fit": "lidar"; src/pixelphilly/roofs.py): walls from the ground
+    // up to the roof's height at each ring vertex, so gable ends and party
+    // walls rise to the ridge, and the roof triangles, which take the aerial
+    // like any roof. scripts/09_check_alignment.py projects the same numbers.
+    const ring = b.polys[0][0];
+    const rz = b.roof3d.ring_z;
+    const wp = [];
+    const wn = [];
+    for (let i = 0; i < ring.length; i++) {
+      const j = (i + 1) % ring.length;
+      const [ei, ni] = ring[i];
+      const [ej, nj] = ring[j];
+      const len = Math.hypot(ej - ei, nj - ni);
+      if (len < 1e-6) continue;
+      // The ring is counter-clockwise in (east, north): outward is (dn, -de),
+      // which is (dn, 0, de) in three.js (z = -north)
+      const nx = (nj - ni) / len;
+      const nz = (ej - ei) / len;
+      const a0 = [ei, 0, -ni], b0 = [ej, 0, -nj], b1 = [ej, rz[j], -nj], a1 = [ei, rz[i], -ni];
+      // Counter-clockwise seen from outside
+      for (const v of [a0, b0, b1, a0, b1, a1]) {
+        wp.push(...v);
+        wn.push(nx, 0, nz);
+      }
+    }
+    pushWall(Float32Array.from(wp), Float32Array.from(wn), wp.length / 3);
+    const rp = [];
+    const rn = [];
+    const vv = b.roof3d.v;
+    const p = new THREE.Vector3(), q = new THREE.Vector3(), r = new THREE.Vector3(), nn = new THREE.Vector3();
+    for (const t of b.roof3d.t) {
+      // (east, north, z) -> (x, y up, -north); counter-clockwise from above stays front-facing
+      [p, q, r].forEach((w, k) => w.set(vv[t[k]][0], vv[t[k]][2], -vv[t[k]][1]));
+      nn.subVectors(q, p).cross(new THREE.Vector3().subVectors(r, p)).normalize();
+      for (const w of [p, q, r]) {
+        rp.push(w.x, w.y, w.z);
+        rn.push(nn.x, nn.y, nn.z);
+      }
+    }
+    roofParts.push([Float32Array.from(rp), Float32Array.from(rn)]);
+    continue;
+  }
+  const shapes = b.polys.map(shapeFromRings);
+  const geom = new THREE.ExtrudeGeometry(shapes, { depth: b.h - z0, bevelEnabled: false });
+  // Shapes are drawn in (east, north); extrusion runs along +z. Rotating -90°
+  // about x maps north to -z and the extrusion to +y (up).
+  geom.rotateX(-Math.PI / 2);
+  if (z0) geom.translate(0, z0, 0);
+  const pos = geom.attributes.position.array;
+  const nrm = geom.attributes.normal.array;
   for (const g of geom.groups) {
     const slicePos = pos.slice(g.start * 3, (g.start + g.count) * 3);
     const sliceNrm = nrm.slice(g.start * 3, (g.start + g.count) * 3);
@@ -219,7 +263,8 @@ if (facadeOn) {
   // flags (facades.BAND_*): 1 storefront (bulkhead, glass with mullions,
   // dark sign band), 2 porch (light porch-roof trim at about one floor, a
   // shadowed recess with thin posts per bay), 4 cornice (dark strip at the
-  // roofline), 8 glass curtain wall (wide panes, thin mullions). Storefront
+  // roofline), 8 glass curtain wall (wide panes, thin mullions); 16 pent eave
+  // and 32 heavy cornice (era option, below). Storefront
   // and porch go on street-facing walls only (facade "d", from the City's
   // street centerlines; without it, every wall). Paint only: geometry,
   // masks and alignment are unchanged, and a detail appears only where the
@@ -302,6 +347,19 @@ vec3 facadeColor(vec3 wall) {
     }
   }
   if ((bands & 4) != 0 && y > vFacadeTop - 0.5) c = wall * 0.62;
+  // Era option only ("facade_eras"; src/pixelphilly/facades.py): 16 pent eave,
+  // the small shed roof between the first and second floors of Georgian rows
+  // (a dark shelf over a light trim line, street-facing walls only); 32 heavy
+  // cornice, the deep bracketed or pressed-metal cornice of 1840-1904 rows
+  // (about twice the plain cornice, darker, with a shadow line under it)
+  if ((bands & 16) != 0 && front && fl > 0.5 && fl < 1.5) {
+    if (yf < 0.3) c = wall * 0.42;
+    else if (yf < 0.42) c = trim;
+  }
+  if ((bands & 32) != 0) {
+    if (y > vFacadeTop - 0.9) c = wall * 0.45;
+    else if (y > vFacadeTop - 1.05) c = wall * 0.3;
+  }
   return c;
 }`,
       )
@@ -348,6 +406,44 @@ if (tubeParts.length) {
   tubeGeom.setAttribute("color", new THREE.BufferAttribute(new Float32Array(tubeColors), 3));
   // Same Lambert material and lights as the walls, without the façade paint
   scene.add(new THREE.Mesh(tubeGeom, new THREE.MeshLambertMaterial({ vertexColors: true })));
+}
+
+// --- front slopes ------------------------------------------------------
+// Shingled slopes along the street wall of postwar rows (scene
+// "roof_facets", from 05_build_scene.py with "front_slopes"; geometry in
+// src/pixelphilly/roofs.py): triangles in local (east, north, z) meters with
+// a shingle color. Lit like the walls, so the slope reads darker or lighter
+// than the flat roof by its angle to the sun; mask mode draws them white,
+// and scripts/09_check_alignment.py projects the same triangles. Only added
+// when a scene has them.
+if ((sceneData.roof_facets || []).length) {
+  const fPos = [];
+  const fNrm = [];
+  const fCol = [];
+  const a = new THREE.Vector3();
+  const b = new THREE.Vector3();
+  const c = new THREE.Vector3();
+  const n = new THREE.Vector3();
+  for (const f of sceneData.roof_facets) {
+    const col = new THREE.Color().setRGB(f.c[0] / 255, f.c[1] / 255, f.c[2] / 255, THREE.SRGBColorSpace);
+    for (const t of f.t) {
+      // (east, north, z) -> three.js (x, y up, z = -north); the Python side
+      // winds each triangle counter-clockwise seen from above, which stays
+      // front-facing after the axis swap
+      [a, b, c].forEach((v, i) => v.set(t[i][0], t[i][2], -t[i][1]));
+      n.subVectors(c, b).cross(new THREE.Vector3().subVectors(a, b)).normalize();
+      for (const v of [a, b, c]) {
+        fPos.push(v.x, v.y, v.z);
+        fNrm.push(n.x, n.y, n.z);
+        fCol.push(col.r, col.g, col.b);
+      }
+    }
+  }
+  const fGeom = new THREE.BufferGeometry();
+  fGeom.setAttribute("position", new THREE.BufferAttribute(new Float32Array(fPos), 3));
+  fGeom.setAttribute("normal", new THREE.BufferAttribute(new Float32Array(fNrm), 3));
+  fGeom.setAttribute("color", new THREE.BufferAttribute(new Float32Array(fCol), 3));
+  scene.add(new THREE.Mesh(fGeom, new THREE.MeshLambertMaterial({ vertexColors: true, side: THREE.DoubleSide })));
 }
 
 // --- trees --------------------------------------------------------------

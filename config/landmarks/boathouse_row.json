@@ -1,0 +1,2170 @@
+{
+ "slug": "boathouse_row",
+ "name": "Boathouse Row",
+ "wikidata": "Q2907541",
+ "kit": "gabled_row",
+ "about": "The rowing clubs' boathouses on the east bank of the Schuylkill below the Fairmount dam (1860-1904; a National Historic Landmark): stone or brick ground floors at the water, half-timber, stucco or shingle upper stories, and steep hipped, gabled and turreted dark roofs, outlined in lights at night. Each house is modeled on its own outline, with its club, date, style, materials, stories and roof form from the NHL nomination and its heights and roof color measured. #1 (Plaisted Hall) has no outline near the Row in the L&I or OSM data and is left out for now.",
+ "footprint": {
+  "polygons": [
+   [
+    [
+     -75.1858091,
+     39.9692389
+    ],
+    [
+     -75.1858562,
+     39.969123
+    ],
+    [
+     -75.1858586,
+     39.9691236
+    ],
+    [
+     -75.1858688,
+     39.9691261
+    ],
+    [
+     -75.1858786,
+     39.9691019
+    ],
+    [
+     -75.1861239,
+     39.9691609
+    ],
+    [
+     -75.1861041,
+     39.9692097
+    ],
+    [
+     -75.1861087,
+     39.9692107
+    ],
+    [
+     -75.1860746,
+     39.9692946
+    ],
+    [
+     -75.1860422,
+     39.9692868
+    ],
+    [
+     -75.1860209,
+     39.9692817
+    ],
+    [
+     -75.1859966,
+     39.9692759
+    ],
+    [
+     -75.1859787,
+     39.9693199
+    ],
+    [
+     -75.1858021,
+     39.9692775
+    ],
+    [
+     -75.1858129,
+     39.9692509
+    ],
+    [
+     -75.185805,
+     39.969249
+    ],
+    [
+     -75.1858091,
+     39.9692389
+    ]
+   ],
+   [
+    [
+     -75.186468,
+     39.9692005
+    ],
+    [
+     -75.1863316,
+     39.9691784
+    ],
+    [
+     -75.1863245,
+     39.9692043
+    ],
+    [
+     -75.1863118,
+     39.9692022
+    ],
+    [
+     -75.1862748,
+     39.9693362
+    ],
+    [
+     -75.186288,
+     39.9693383
+    ],
+    [
+     -75.1862788,
+     39.9693715
+    ],
+    [
+     -75.1864148,
+     39.9693935
+    ],
+    [
+     -75.1864293,
+     39.969348
+    ],
+    [
+     -75.186468,
+     39.9692005
+    ]
+   ],
+   [
+    [
+     -75.1866539,
+     39.9692963
+    ],
+    [
+     -75.1866395,
+     39.9692941
+    ],
+    [
+     -75.1866565,
+     39.9692296
+    ],
+    [
+     -75.1865399,
+     39.9692116
+    ],
+    [
+     -75.186468,
+     39.9692005
+    ],
+    [
+     -75.1864293,
+     39.969348
+    ],
+    [
+     -75.1864867,
+     39.9693569
+    ],
+    [
+     -75.1864837,
+     39.9693683
+    ],
+    [
+     -75.1865433,
+     39.9693775
+    ],
+    [
+     -75.1865349,
+     39.9694098
+    ],
+    [
+     -75.1866059,
+     39.9694207
+    ],
+    [
+     -75.1866286,
+     39.9693342
+    ],
+    [
+     -75.1866434,
+     39.9693365
+    ],
+    [
+     -75.1866539,
+     39.9692963
+    ]
+   ],
+   [
+    [
+     -75.1868623,
+     39.9692544
+    ],
+    [
+     -75.1868487,
+     39.9693122
+    ],
+    [
+     -75.1868058,
+     39.9693338
+    ],
+    [
+     -75.1867937,
+     39.9693739
+    ],
+    [
+     -75.1868085,
+     39.9694068
+    ],
+    [
+     -75.186789,
+     39.9694894
+    ],
+    [
+     -75.18687,
+     39.9695006
+    ],
+    [
+     -75.1869626,
+     39.9695134
+    ],
+    [
+     -75.1870112,
+     39.969307
+    ],
+    [
+     -75.186986,
+     39.9693035
+    ],
+    [
+     -75.1869933,
+     39.9692725
+    ],
+    [
+     -75.1868623,
+     39.9692544
+    ]
+   ],
+   [
+    [
+     -75.1874879,
+     39.9695486
+    ],
+    [
+     -75.1874676,
+     39.969546
+    ],
+    [
+     -75.1874389,
+     39.9695422
+    ],
+    [
+     -75.1874423,
+     39.969527
+    ],
+    [
+     -75.1874097,
+     39.9695228
+    ],
+    [
+     -75.1874026,
+     39.969515
+    ],
+    [
+     -75.1873979,
+     39.9695099
+    ],
+    [
+     -75.1874,
+     39.9695002
+    ],
+    [
+     -75.1873608,
+     39.9694951
+    ],
+    [
+     -75.1873587,
+     39.9695046
+    ],
+    [
+     -75.1873459,
+     39.9695128
+    ],
+    [
+     -75.1873425,
+     39.9695149
+    ],
+    [
+     -75.1873102,
+     39.9695107
+    ],
+    [
+     -75.1873068,
+     39.9695263
+    ],
+    [
+     -75.1872741,
+     39.9695221
+    ],
+    [
+     -75.1872533,
+     39.9695194
+    ],
+    [
+     -75.1872242,
+     39.9695156
+    ],
+    [
+     -75.1872318,
+     39.969481
+    ],
+    [
+     -75.1872245,
+     39.9694801
+    ],
+    [
+     -75.1872599,
+     39.9693188
+    ],
+    [
+     -75.1872705,
+     39.9693202
+    ],
+    [
+     -75.1873421,
+     39.9693295
+    ],
+    [
+     -75.1873489,
+     39.9692983
+    ],
+    [
+     -75.1873866,
+     39.9692967
+    ],
+    [
+     -75.1874692,
+     39.9693074
+    ],
+    [
+     -75.1874919,
+     39.9693132
+    ],
+    [
+     -75.187485,
+     39.9693449
+    ],
+    [
+     -75.1875458,
+     39.9693528
+    ],
+    [
+     -75.1875664,
+     39.9693554
+    ],
+    [
+     -75.187523,
+     39.9695532
+    ],
+    [
+     -75.1874879,
+     39.9695486
+    ]
+   ],
+   [
+    [
+     -75.1879422,
+     39.9693811
+    ],
+    [
+     -75.1878095,
+     39.9693653
+    ],
+    [
+     -75.1877874,
+     39.969474
+    ],
+    [
+     -75.1877495,
+     39.9694695
+    ],
+    [
+     -75.1877381,
+     39.9695257
+    ],
+    [
+     -75.1877804,
+     39.9695307
+    ],
+    [
+     -75.1877681,
+     39.9695917
+    ],
+    [
+     -75.1878963,
+     39.969607
+    ],
+    [
+     -75.1879422,
+     39.9693811
+    ]
+   ],
+   [
+    [
+     -75.1881135,
+     39.9694015
+    ],
+    [
+     -75.1879422,
+     39.9693811
+    ],
+    [
+     -75.1878963,
+     39.969607
+    ],
+    [
+     -75.1878907,
+     39.9696346
+    ],
+    [
+     -75.1879991,
+     39.9696476
+    ],
+    [
+     -75.1880026,
+     39.9696302
+    ],
+    [
+     -75.1880146,
+     39.9696233
+    ],
+    [
+     -75.1880221,
+     39.969616
+    ],
+    [
+     -75.1880246,
+     39.9696077
+    ],
+    [
+     -75.188023,
+     39.9695994
+    ],
+    [
+     -75.1880161,
+     39.9695912
+    ],
+    [
+     -75.1880195,
+     39.9695743
+    ],
+    [
+     -75.1880651,
+     39.9695796
+    ],
+    [
+     -75.1880735,
+     39.9695376
+    ],
+    [
+     -75.1880886,
+     39.9695241
+    ],
+    [
+     -75.1881135,
+     39.9694015
+    ]
+   ],
+   [
+    [
+     -75.1881371,
+     39.9696473
+    ],
+    [
+     -75.1881807,
+     39.9694216
+    ],
+    [
+     -75.1885231,
+     39.9694604
+    ],
+    [
+     -75.1884838,
+     39.969664
+    ],
+    [
+     -75.1883549,
+     39.9696494
+    ],
+    [
+     -75.1883473,
+     39.9696883
+    ],
+    [
+     -75.1883018,
+     39.9696832
+    ],
+    [
+     -75.1883051,
+     39.9696663
+    ],
+    [
+     -75.1881371,
+     39.9696473
+    ]
+   ],
+   [
+    [
+     -75.1885272,
+     39.9697119
+    ],
+    [
+     -75.1885607,
+     39.9695506
+    ],
+    [
+     -75.1885347,
+     39.9695474
+    ],
+    [
+     -75.1885463,
+     39.9694916
+    ],
+    [
+     -75.188782,
+     39.9695204
+    ],
+    [
+     -75.188737,
+     39.9697374
+    ],
+    [
+     -75.1885272,
+     39.9697119
+    ]
+   ],
+   [
+    [
+     -75.1888678,
+     39.9695384
+    ],
+    [
+     -75.1888583,
+     39.9695835
+    ],
+    [
+     -75.1888446,
+     39.9695845
+    ],
+    [
+     -75.1888351,
+     39.9695888
+    ],
+    [
+     -75.1888275,
+     39.969595
+    ],
+    [
+     -75.1888141,
+     39.9696552
+    ],
+    [
+     -75.1888306,
+     39.9696572
+    ],
+    [
+     -75.1888112,
+     39.969749
+    ],
+    [
+     -75.1889775,
+     39.9697696
+    ],
+    [
+     -75.1890223,
+     39.9695575
+    ],
+    [
+     -75.1888678,
+     39.9695384
+    ]
+   ],
+   [
+    [
+     -75.1891736,
+     39.9696925
+    ],
+    [
+     -75.1891578,
+     39.9696893
+    ],
+    [
+     -75.1891852,
+     39.9696117
+    ],
+    [
+     -75.189338,
+     39.9696433
+    ],
+    [
+     -75.1893109,
+     39.9697202
+    ],
+    [
+     -75.1892989,
+     39.9697178
+    ],
+    [
+     -75.1892738,
+     39.9697891
+    ],
+    [
+     -75.1892359,
+     39.969805
+    ],
+    [
+     -75.1892051,
+     39.9697993
+    ],
+    [
+     -75.1891666,
+     39.969792
+    ],
+    [
+     -75.1891482,
+     39.9697646
+    ],
+    [
+     -75.1891736,
+     39.9696925
+    ]
+   ],
+   [
+    [
+     -75.1898607,
+     39.9699165
+    ],
+    [
+     -75.1898538,
+     39.9699366
+    ],
+    [
+     -75.1898846,
+     39.9699693
+    ],
+    [
+     -75.1898886,
+     39.9699817
+    ],
+    [
+     -75.1898836,
+     39.9699947
+    ],
+    [
+     -75.189874,
+     39.970004
+    ],
+    [
+     -75.1898581,
+     39.9700109
+    ],
+    [
+     -75.1898436,
+     39.9700111
+    ],
+    [
+     -75.1898272,
+     39.9700078
+    ],
+    [
+     -75.1897943,
+     39.9699814
+    ],
+    [
+     -75.1897803,
+     39.9699865
+    ],
+    [
+     -75.189768,
+     39.9699866
+    ],
+    [
+     -75.1897555,
+     39.9699818
+    ],
+    [
+     -75.1897344,
+     39.9699618
+    ],
+    [
+     -75.1897207,
+     39.9699486
+    ],
+    [
+     -75.1896939,
+     39.9699223
+    ],
+    [
+     -75.1896846,
+     39.9699278
+    ],
+    [
+     -75.1896781,
+     39.9699316
+    ],
+    [
+     -75.1896609,
+     39.9699296
+    ],
+    [
+     -75.1896392,
+     39.9699093
+    ],
+    [
+     -75.1896418,
+     39.9698974
+    ],
+    [
+     -75.1897901,
+     39.9698104
+    ],
+    [
+     -75.189883,
+     39.9699034
+    ],
+    [
+     -75.1898607,
+     39.9699165
+    ]
+   ]
+  ],
+  "source": "https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/LI_BUILDING_FOOTPRINTS/FeatureServer/0",
+  "note": "Per-house outlines: OSM ways where OSM splits the houses (#4-#6, #9-#15; ODbL), L&I footprints for #2-3 and #7-8. Every L&I footprint they overlap is replaced.",
+  "replaces": {
+   "li_footprint_ids": [
+    242452,
+    486529,
+    485972,
+    74343,
+    485381,
+    245484,
+    243739,
+    484536,
+    486600,
+    485308
+   ],
+   "osm_ways": [
+    664678412,
+    60945611,
+    60945635,
+    664678411,
+    60945645,
+    60945640,
+    60945641,
+    60945642,
+    60945643,
+    60945644
+   ]
+  }
+ },
+ "dims": {
+  "ground_navd88_m": {
+   "value": 6.16,
+   "unit": "m NAVD88",
+   "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+   "note": "Measured: median classified-ground return in a 3-15 m ring around #9 (OSM 664678411) (scripts/50_landmark_measure.py, output/landmarks/measure/boathouse_row.json)."
+  },
+  "house_count": {
+   "value": 15,
+   "unit": "boathouses",
+   "source": "https://npgallery.nps.gov/GetAsset/9506b040-fe2b-4eb2-b28b-292c298648e7",
+   "note": "NHL nomination, 'Boat House Row' (National Park Service, June 1985), PDF p. 3: 'The fifteen boathouses of Boat House Row stand along the east bank of the Schuylkill River north of the Fairmount Water Works.' Numbers 2-3 and 7-8 are each one building."
+  },
+  "tallest": {
+   "value": "9",
+   "unit": "house number",
+   "source": "https://npgallery.nps.gov/GetAsset/9506b040-fe2b-4eb2-b28b-292c298648e7",
+   "note": "NHL nomination, 'Boat House Row' (National Park Service, June 1985), PDF p. 15: Malta's additions created 'the tallest house on the Row'. The LiDAR agrees on the body (median) height."
+  }
+ },
+ "colors": {
+  "roof_slate": {
+   "rgb": [
+    125,
+    126,
+    127
+   ],
+   "source": "https://commons.wikimedia.org/wiki/File:Boathouse_Row-wide.JPG",
+   "method": "photo",
+   "photo": {
+    "file": "data/landmarks/refs/boathouse_row/1_wikimedia_commons.jpg",
+    "box": [
+     1227,
+     761,
+     1318,
+     795
+    ],
+    "drop_dark": 0.25
+   },
+   "note": "Dark roof across the river, lightened by haze; render darker: median of the box (pixels x0, y0, x1, y1), darkest 25% dropped. Reference photo, a modeling reference only."
+  },
+  "stone": {
+   "rgb": [
+    151,
+    134,
+    120
+   ],
+   "source": "https://commons.wikimedia.org/wiki/File:Boathouse_Row-wide.JPG",
+   "method": "photo",
+   "photo": {
+    "file": "data/landmarks/refs/boathouse_row/1_wikimedia_commons.jpg",
+    "box": [
+     1034,
+     875,
+     1068,
+     909
+    ],
+    "drop_dark": 0.25
+   },
+   "note": "Stone ground story: median of the box (pixels x0, y0, x1, y1), darkest 25% dropped. Reference photo, a modeling reference only."
+  },
+  "stucco": {
+   "rgb": [
+    197,
+    195,
+    193
+   ],
+   "source": "https://commons.wikimedia.org/wiki/File:Boathouse_Row-wide.JPG",
+   "method": "photo",
+   "photo": {
+    "file": "data/landmarks/refs/boathouse_row/1_wikimedia_commons.jpg",
+    "box": [
+     1432,
+     784,
+     1466,
+     818
+    ],
+    "drop_dark": 0.25
+   },
+   "note": "White stucco between half-timbering: median of the box (pixels x0, y0, x1, y1), darkest 25% dropped. Reference photo, a modeling reference only."
+  },
+  "red_gable": {
+   "rgb": [
+    134,
+    39,
+    48
+   ],
+   "source": "https://commons.wikimedia.org/wiki/File:Boathouse_Row-wide.JPG",
+   "method": "photo",
+   "photo": {
+    "file": "data/landmarks/refs/boathouse_row/1_wikimedia_commons.jpg",
+    "box": [
+     1102,
+     784,
+     1125,
+     818
+    ],
+    "drop_dark": 0.25
+   },
+   "note": "Red-painted gable trim: median of the box (pixels x0, y0, x1, y1), darkest 25% dropped. Reference photo, a modeling reference only."
+  },
+  "roof_2-3": {
+   "rgb": [
+    168,
+    163,
+    140
+   ],
+   "source": "https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2024_3in/MapServer",
+   "method": "aerial",
+   "aerial": {
+    "outline": "li:242452"
+   },
+   "note": "Roof of #2-3 from above; tree crowns over the roofs can tint it: median of the lit pixels (darkest 25% dropped) inside li 242452 in the 2024 aerial (scripts/50_landmark_measure.py, output/landmarks/measure/boathouse_row.json)."
+  },
+  "roof_4": {
+   "rgb": [
+    149,
+    143,
+    125
+   ],
+   "source": "https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2024_3in/MapServer",
+   "method": "aerial",
+   "aerial": {
+    "outline": "osm:664678412"
+   },
+   "note": "Roof of #4 from above; tree crowns over the roofs can tint it: median of the lit pixels (darkest 25% dropped) inside osm 664678412 in the 2024 aerial (scripts/50_landmark_measure.py, output/landmarks/measure/boathouse_row.json)."
+  },
+  "roof_5": {
+   "rgb": [
+    172,
+    166,
+    139
+   ],
+   "source": "https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2024_3in/MapServer",
+   "method": "aerial",
+   "aerial": {
+    "outline": "osm:60945611"
+   },
+   "note": "Roof of #5 from above; tree crowns over the roofs can tint it: median of the lit pixels (darkest 25% dropped) inside osm 60945611 in the 2024 aerial (scripts/50_landmark_measure.py, output/landmarks/measure/boathouse_row.json)."
+  },
+  "roof_6": {
+   "rgb": [
+    178,
+    173,
+    143
+   ],
+   "source": "https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2024_3in/MapServer",
+   "method": "aerial",
+   "aerial": {
+    "outline": "osm:60945635"
+   },
+   "note": "Roof of #6 from above; tree crowns over the roofs can tint it: median of the lit pixels (darkest 25% dropped) inside osm 60945635 in the 2024 aerial (scripts/50_landmark_measure.py, output/landmarks/measure/boathouse_row.json)."
+  },
+  "roof_7-8": {
+   "rgb": [
+    176,
+    169,
+    140
+   ],
+   "source": "https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2024_3in/MapServer",
+   "method": "aerial",
+   "aerial": {
+    "outline": "li:74343"
+   },
+   "note": "Roof of #7-8 from above; tree crowns over the roofs can tint it: median of the lit pixels (darkest 25% dropped) inside li 74343 in the 2024 aerial (scripts/50_landmark_measure.py, output/landmarks/measure/boathouse_row.json)."
+  },
+  "roof_9": {
+   "rgb": [
+    181,
+    177,
+    148
+   ],
+   "source": "https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2024_3in/MapServer",
+   "method": "aerial",
+   "aerial": {
+    "outline": "osm:664678411"
+   },
+   "note": "Roof of #9 from above; tree crowns over the roofs can tint it: median of the lit pixels (darkest 25% dropped) inside osm 664678411 in the 2024 aerial (scripts/50_landmark_measure.py, output/landmarks/measure/boathouse_row.json)."
+  },
+  "roof_10": {
+   "rgb": [
+    98,
+    95,
+    79
+   ],
+   "source": "https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2024_3in/MapServer",
+   "method": "aerial",
+   "aerial": {
+    "outline": "osm:60945645"
+   },
+   "note": "Roof of #10 from above; tree crowns over the roofs can tint it: median of the lit pixels (darkest 25% dropped) inside osm 60945645 in the 2024 aerial (scripts/50_landmark_measure.py, output/landmarks/measure/boathouse_row.json)."
+  },
+  "roof_11": {
+   "rgb": [
+    200,
+    195,
+    182
+   ],
+   "source": "https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2024_3in/MapServer",
+   "method": "aerial",
+   "aerial": {
+    "outline": "osm:60945640"
+   },
+   "note": "Roof of #11 from above; tree crowns over the roofs can tint it: median of the lit pixels (darkest 25% dropped) inside osm 60945640 in the 2024 aerial (scripts/50_landmark_measure.py, output/landmarks/measure/boathouse_row.json)."
+  },
+  "roof_12": {
+   "rgb": [
+    191,
+    188,
+    161
+   ],
+   "source": "https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2024_3in/MapServer",
+   "method": "aerial",
+   "aerial": {
+    "outline": "osm:60945641"
+   },
+   "note": "Roof of #12 from above; tree crowns over the roofs can tint it: median of the lit pixels (darkest 25% dropped) inside osm 60945641 in the 2024 aerial (scripts/50_landmark_measure.py, output/landmarks/measure/boathouse_row.json)."
+  },
+  "roof_13": {
+   "rgb": [
+    193,
+    187,
+    160
+   ],
+   "source": "https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2024_3in/MapServer",
+   "method": "aerial",
+   "aerial": {
+    "outline": "osm:60945642"
+   },
+   "note": "Roof of #13 from above; tree crowns over the roofs can tint it: median of the lit pixels (darkest 25% dropped) inside osm 60945642 in the 2024 aerial (scripts/50_landmark_measure.py, output/landmarks/measure/boathouse_row.json)."
+  },
+  "roof_14": {
+   "rgb": [
+    187,
+    149,
+    127
+   ],
+   "source": "https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2024_3in/MapServer",
+   "method": "aerial",
+   "aerial": {
+    "outline": "osm:60945643"
+   },
+   "note": "Roof of #14 from above; tree crowns over the roofs can tint it: median of the lit pixels (darkest 25% dropped) inside osm 60945643 in the 2024 aerial (scripts/50_landmark_measure.py, output/landmarks/measure/boathouse_row.json)."
+  },
+  "roof_15": {
+   "rgb": [
+    158,
+    150,
+    124
+   ],
+   "source": "https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2024_3in/MapServer",
+   "method": "aerial",
+   "aerial": {
+    "outline": "osm:60945644"
+   },
+   "note": "Roof of #15 from above; tree crowns over the roofs can tint it: median of the lit pixels (darkest 25% dropped) inside osm 60945644 in the 2024 aerial (scripts/50_landmark_measure.py, output/landmarks/measure/boathouse_row.json)."
+  },
+  "outline_lights": {
+   "rgb": [
+    255,
+    250,
+    235
+   ],
+   "estimate": true,
+   "method": "report",
+   "reason": "Night only: 6,400 LEDs that can show 16 million colors (NBC10, 2024); warm white is our pick for the default. Which edges they outline is not documented; follow the photos."
+  }
+ },
+ "kit_params": {
+  "houses": [
+   {
+    "number": "2-3",
+    "club": "Fairmount Rowing Association (with the former Quaker City Barge Club)",
+    "built": "1904; #3 1860",
+    "architect": "Walter Smedley (#2)",
+    "style": "Georgian Revival; #3 Gothic Revival",
+    "materials": "Flemish-bond brick; #3 stone",
+    "roof_form": "hipped with three gabled dormers; #3 steep roof with a cross gable",
+    "source": "https://npgallery.nps.gov/GetAsset/9506b040-fe2b-4eb2-b28b-292c298648e7",
+    "source_note": "NHL nomination, 'Boat House Row' (National Park Service, June 1985), PDF p. 11-12",
+    "outline": {
+     "value": [
+      [
+       -75.1858091,
+       39.9692389
+      ],
+      [
+       -75.1858562,
+       39.969123
+      ],
+      [
+       -75.1858586,
+       39.9691236
+      ],
+      [
+       -75.1858688,
+       39.9691261
+      ],
+      [
+       -75.1858786,
+       39.9691019
+      ],
+      [
+       -75.1861239,
+       39.9691609
+      ],
+      [
+       -75.1861041,
+       39.9692097
+      ],
+      [
+       -75.1861087,
+       39.9692107
+      ],
+      [
+       -75.1860746,
+       39.9692946
+      ],
+      [
+       -75.1860422,
+       39.9692868
+      ],
+      [
+       -75.1860209,
+       39.9692817
+      ],
+      [
+       -75.1859966,
+       39.9692759
+      ],
+      [
+       -75.1859787,
+       39.9693199
+      ],
+      [
+       -75.1858021,
+       39.9692775
+      ],
+      [
+       -75.1858129,
+       39.9692509
+      ],
+      [
+       -75.185805,
+       39.969249
+      ],
+      [
+       -75.1858091,
+       39.9692389
+      ]
+     ],
+     "unit": "lon, lat",
+     "source": "https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/LI_BUILDING_FOOTPRINTS/FeatureServer/0",
+     "note": "L&I footprint 242452."
+    },
+    "stories": {
+     "value": 2.5,
+     "unit": "stories",
+     "source": "https://npgallery.nps.gov/GetAsset/9506b040-fe2b-4eb2-b28b-292c298648e7",
+     "note": "NHL nomination, 'Boat House Row' (National Park Service, June 1985), PDF p. 11-12."
+    },
+    "body_m": {
+     "value": 6.2,
+     "unit": "m above ground",
+     "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+     "note": "Measured: median surface height inside li 242452 (scripts/50_landmark_measure.py, output/landmarks/measure/boathouse_row.json)."
+    },
+    "ridge_m": {
+     "value": 15.97,
+     "unit": "m above ground",
+     "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+     "note": "Measured: 99th-percentile surface height inside li 242452 (ridges, towers, cupolas) (scripts/50_landmark_measure.py, output/landmarks/measure/boathouse_row.json)."
+    },
+    "roof_color": "roof_2-3"
+   },
+   {
+    "number": "4",
+    "club": "Schuylkill Navy headquarters, Hollenback House (former Pennsylvania Barge Club)",
+    "built": "ca. 1892; second floor 1912",
+    "architect": "Louis Hickman; 1912 addition C. E. Schermerhorn",
+    "style": "Eastlake base, half-timber upper",
+    "materials": "stone ground floor; half-timber and stucco upper, later aluminum siding",
+    "roof_form": "gabled",
+    "source": "https://npgallery.nps.gov/GetAsset/9506b040-fe2b-4eb2-b28b-292c298648e7",
+    "source_note": "NHL nomination, 'Boat House Row' (National Park Service, June 1985), PDF p. 12-13",
+    "outline": {
+     "value": [
+      [
+       -75.186468,
+       39.9692005
+      ],
+      [
+       -75.1863316,
+       39.9691784
+      ],
+      [
+       -75.1863245,
+       39.9692043
+      ],
+      [
+       -75.1863118,
+       39.9692022
+      ],
+      [
+       -75.1862748,
+       39.9693362
+      ],
+      [
+       -75.186288,
+       39.9693383
+      ],
+      [
+       -75.1862788,
+       39.9693715
+      ],
+      [
+       -75.1864148,
+       39.9693935
+      ],
+      [
+       -75.1864293,
+       39.969348
+      ],
+      [
+       -75.186468,
+       39.9692005
+      ]
+     ],
+     "unit": "lon, lat",
+     "source": "https://www.openstreetmap.org/way/664678412",
+     "note": "OSM way 664678412; L&I 486529 covers it."
+    },
+    "stories": {
+     "value": 2.5,
+     "unit": "stories",
+     "source": "https://npgallery.nps.gov/GetAsset/9506b040-fe2b-4eb2-b28b-292c298648e7",
+     "note": "NHL nomination, 'Boat House Row' (National Park Service, June 1985), PDF p. 12-13."
+    },
+    "body_m": {
+     "value": 9.86,
+     "unit": "m above ground",
+     "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+     "note": "Measured: median surface height inside osm 664678412 (scripts/50_landmark_measure.py, output/landmarks/measure/boathouse_row.json)."
+    },
+    "ridge_m": {
+     "value": 12.75,
+     "unit": "m above ground",
+     "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+     "note": "Measured: 99th-percentile surface height inside osm 664678412 (ridges, towers, cupolas) (scripts/50_landmark_measure.py, output/landmarks/measure/boathouse_row.json)."
+    },
+    "roof_color": "roof_4"
+   },
+   {
+    "number": "5",
+    "club": "Crescent Boat Club",
+    "built": "1869-71; two stories added 1890-91",
+    "architect": "Charles Balderston (enlargement)",
+    "style": "eclectic",
+    "materials": "stone ground floor; brick, timber and stucco above",
+    "roof_form": "hipped with an eyebrow dormer",
+    "source": "https://npgallery.nps.gov/GetAsset/9506b040-fe2b-4eb2-b28b-292c298648e7",
+    "source_note": "NHL nomination, 'Boat House Row' (National Park Service, June 1985), PDF p. 13",
+    "outline": {
+     "value": [
+      [
+       -75.1866539,
+       39.9692963
+      ],
+      [
+       -75.1866395,
+       39.9692941
+      ],
+      [
+       -75.1866565,
+       39.9692296
+      ],
+      [
+       -75.1865399,
+       39.9692116
+      ],
+      [
+       -75.186468,
+       39.9692005
+      ],
+      [
+       -75.1864293,
+       39.969348
+      ],
+      [
+       -75.1864867,
+       39.9693569
+      ],
+      [
+       -75.1864837,
+       39.9693683
+      ],
+      [
+       -75.1865433,
+       39.9693775
+      ],
+      [
+       -75.1865349,
+       39.9694098
+      ],
+      [
+       -75.1866059,
+       39.9694207
+      ],
+      [
+       -75.1866286,
+       39.9693342
+      ],
+      [
+       -75.1866434,
+       39.9693365
+      ],
+      [
+       -75.1866539,
+       39.9692963
+      ]
+     ],
+     "unit": "lon, lat",
+     "source": "https://www.openstreetmap.org/way/60945611",
+     "note": "OSM way 60945611; L&I 486529 covers it."
+    },
+    "stories": {
+     "value": 3,
+     "unit": "stories",
+     "source": "https://npgallery.nps.gov/GetAsset/9506b040-fe2b-4eb2-b28b-292c298648e7",
+     "note": "NHL nomination, 'Boat House Row' (National Park Service, June 1985), PDF p. 13."
+    },
+    "body_m": {
+     "value": 9.45,
+     "unit": "m above ground",
+     "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+     "note": "Measured: median surface height inside osm 60945611 (scripts/50_landmark_measure.py, output/landmarks/measure/boathouse_row.json)."
+    },
+    "ridge_m": {
+     "value": 11.11,
+     "unit": "m above ground",
+     "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+     "note": "Measured: 99th-percentile surface height inside osm 60945611 (ridges, towers, cupolas) (scripts/50_landmark_measure.py, output/landmarks/measure/boathouse_row.json)."
+    },
+    "roof_color": "roof_5"
+   },
+   {
+    "number": "6",
+    "club": "Bachelors Barge Club",
+    "built": "1893-94",
+    "architect": "Hazlehurst & Huckel",
+    "style": "Mediterranean",
+    "materials": "Pompeiian brick ground floor; pebble-dash stucco second story",
+    "roof_form": "hipped with flared pedimented dormers; six-arch second-floor arcade facing north",
+    "source": "https://npgallery.nps.gov/GetAsset/9506b040-fe2b-4eb2-b28b-292c298648e7",
+    "source_note": "NHL nomination, 'Boat House Row' (National Park Service, June 1985), PDF p. 13-14",
+    "outline": {
+     "value": [
+      [
+       -75.1868623,
+       39.9692544
+      ],
+      [
+       -75.1868487,
+       39.9693122
+      ],
+      [
+       -75.1868058,
+       39.9693338
+      ],
+      [
+       -75.1867937,
+       39.9693739
+      ],
+      [
+       -75.1868085,
+       39.9694068
+      ],
+      [
+       -75.186789,
+       39.9694894
+      ],
+      [
+       -75.18687,
+       39.9695006
+      ],
+      [
+       -75.1869626,
+       39.9695134
+      ],
+      [
+       -75.1870112,
+       39.969307
+      ],
+      [
+       -75.186986,
+       39.9693035
+      ],
+      [
+       -75.1869933,
+       39.9692725
+      ],
+      [
+       -75.1868623,
+       39.9692544
+      ]
+     ],
+     "unit": "lon, lat",
+     "source": "https://www.openstreetmap.org/way/60945635",
+     "note": "OSM way 60945635; L&I 485972 covers it."
+    },
+    "stories": {
+     "value": 2.5,
+     "unit": "stories",
+     "source": "https://npgallery.nps.gov/GetAsset/9506b040-fe2b-4eb2-b28b-292c298648e7",
+     "note": "NHL nomination, 'Boat House Row' (National Park Service, June 1985), PDF p. 13-14."
+    },
+    "body_m": {
+     "value": 9.52,
+     "unit": "m above ground",
+     "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+     "note": "Measured: median surface height inside osm 60945635 (scripts/50_landmark_measure.py, output/landmarks/measure/boathouse_row.json)."
+    },
+    "ridge_m": {
+     "value": 17.8,
+     "unit": "m above ground",
+     "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+     "note": "Measured: 99th-percentile surface height inside osm 60945635 (ridges, towers, cupolas) (scripts/50_landmark_measure.py, output/landmarks/measure/boathouse_row.json)."
+    },
+    "roof_color": "roof_6"
+   },
+   {
+    "number": "7-8",
+    "club": "University Barge Club (#8 formerly Philadelphia Barge Club)",
+    "built": "1870-71; altered 1893, 1901",
+    "architect": "unknown",
+    "style": "Shingle (originally Second Empire)",
+    "materials": "green serpentine ground story (HABS); shingled upper",
+    "roof_form": "steep hipped roof down to the ground-floor top; bays with pyramidal roofs",
+    "source": "https://npgallery.nps.gov/GetAsset/9506b040-fe2b-4eb2-b28b-292c298648e7",
+    "source_note": "NHL nomination, 'Boat House Row' (National Park Service, June 1985), PDF p. 14-15; materials marked HABS from HABS PA-1650 (1974), https://tile.loc.gov/storage-services/master/pnp/habshaer/pa/pa1100/pa1118/data/pa1118data.pdf",
+    "outline": {
+     "value": [
+      [
+       -75.1874879,
+       39.9695486
+      ],
+      [
+       -75.1874676,
+       39.969546
+      ],
+      [
+       -75.1874389,
+       39.9695422
+      ],
+      [
+       -75.1874423,
+       39.969527
+      ],
+      [
+       -75.1874097,
+       39.9695228
+      ],
+      [
+       -75.1874026,
+       39.969515
+      ],
+      [
+       -75.1873979,
+       39.9695099
+      ],
+      [
+       -75.1874,
+       39.9695002
+      ],
+      [
+       -75.1873608,
+       39.9694951
+      ],
+      [
+       -75.1873587,
+       39.9695046
+      ],
+      [
+       -75.1873459,
+       39.9695128
+      ],
+      [
+       -75.1873425,
+       39.9695149
+      ],
+      [
+       -75.1873102,
+       39.9695107
+      ],
+      [
+       -75.1873068,
+       39.9695263
+      ],
+      [
+       -75.1872741,
+       39.9695221
+      ],
+      [
+       -75.1872533,
+       39.9695194
+      ],
+      [
+       -75.1872242,
+       39.9695156
+      ],
+      [
+       -75.1872318,
+       39.969481
+      ],
+      [
+       -75.1872245,
+       39.9694801
+      ],
+      [
+       -75.1872599,
+       39.9693188
+      ],
+      [
+       -75.1872705,
+       39.9693202
+      ],
+      [
+       -75.1873421,
+       39.9693295
+      ],
+      [
+       -75.1873489,
+       39.9692983
+      ],
+      [
+       -75.1873866,
+       39.9692967
+      ],
+      [
+       -75.1874692,
+       39.9693074
+      ],
+      [
+       -75.1874919,
+       39.9693132
+      ],
+      [
+       -75.187485,
+       39.9693449
+      ],
+      [
+       -75.1875458,
+       39.9693528
+      ],
+      [
+       -75.1875664,
+       39.9693554
+      ],
+      [
+       -75.187523,
+       39.9695532
+      ],
+      [
+       -75.1874879,
+       39.9695486
+      ]
+     ],
+     "unit": "lon, lat",
+     "source": "https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/LI_BUILDING_FOOTPRINTS/FeatureServer/0",
+     "note": "L&I footprint 74343."
+    },
+    "stories": {
+     "value": 2,
+     "unit": "stories",
+     "source": "https://npgallery.nps.gov/GetAsset/9506b040-fe2b-4eb2-b28b-292c298648e7",
+     "note": "NHL nomination, 'Boat House Row' (National Park Service, June 1985), PDF p. 14-15."
+    },
+    "body_m": {
+     "value": 6.62,
+     "unit": "m above ground",
+     "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+     "note": "Measured: median surface height inside li 74343 (scripts/50_landmark_measure.py, output/landmarks/measure/boathouse_row.json)."
+    },
+    "ridge_m": {
+     "value": 10.32,
+     "unit": "m above ground",
+     "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+     "note": "Measured: 99th-percentile surface height inside li 74343 (ridges, towers, cupolas) (scripts/50_landmark_measure.py, output/landmarks/measure/boathouse_row.json)."
+    },
+    "roof_color": "roof_7-8"
+   },
+   {
+    "number": "9",
+    "club": "Malta Boat Club",
+    "built": "1873; additions 1901",
+    "architect": "George W. and William D. Hewitt (1901)",
+    "style": "Victorian Gothic core, Tudor additions",
+    "materials": "granite ground story; shingle, stucco and half-timber upper",
+    "roof_form": "the tallest house on the Row, with a fourth level",
+    "source": "https://npgallery.nps.gov/GetAsset/9506b040-fe2b-4eb2-b28b-292c298648e7",
+    "source_note": "NHL nomination, 'Boat House Row' (National Park Service, June 1985), PDF p. 15",
+    "outline": {
+     "value": [
+      [
+       -75.1879422,
+       39.9693811
+      ],
+      [
+       -75.1878095,
+       39.9693653
+      ],
+      [
+       -75.1877874,
+       39.969474
+      ],
+      [
+       -75.1877495,
+       39.9694695
+      ],
+      [
+       -75.1877381,
+       39.9695257
+      ],
+      [
+       -75.1877804,
+       39.9695307
+      ],
+      [
+       -75.1877681,
+       39.9695917
+      ],
+      [
+       -75.1878963,
+       39.969607
+      ],
+      [
+       -75.1879422,
+       39.9693811
+      ]
+     ],
+     "unit": "lon, lat",
+     "source": "https://www.openstreetmap.org/way/664678411",
+     "note": "OSM way 664678411; L&I 485381 covers it."
+    },
+    "stories": {
+     "value": 3.5,
+     "unit": "stories",
+     "source": "https://npgallery.nps.gov/GetAsset/9506b040-fe2b-4eb2-b28b-292c298648e7",
+     "note": "NHL nomination, 'Boat House Row' (National Park Service, June 1985), PDF p. 15."
+    },
+    "body_m": {
+     "value": 11.53,
+     "unit": "m above ground",
+     "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+     "note": "Measured: median surface height inside osm 664678411 (scripts/50_landmark_measure.py, output/landmarks/measure/boathouse_row.json)."
+    },
+    "ridge_m": {
+     "value": 14.82,
+     "unit": "m above ground",
+     "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+     "note": "Measured: 99th-percentile surface height inside osm 664678411 (ridges, towers, cupolas) (scripts/50_landmark_measure.py, output/landmarks/measure/boathouse_row.json)."
+    },
+    "roof_color": "roof_9"
+   },
+   {
+    "number": "10",
+    "club": "Vesper Boat Club",
+    "built": "1873; additions 1898",
+    "architect": "Howard Hagar (1898)",
+    "style": "Victorian Gothic core",
+    "materials": "stone; brick and shingle addition",
+    "roof_form": "second-floor turret with conical roof; rear bay pyramidal",
+    "source": "https://npgallery.nps.gov/GetAsset/9506b040-fe2b-4eb2-b28b-292c298648e7",
+    "source_note": "NHL nomination, 'Boat House Row' (National Park Service, June 1985), PDF p. 15",
+    "outline": {
+     "value": [
+      [
+       -75.1881135,
+       39.9694015
+      ],
+      [
+       -75.1879422,
+       39.9693811
+      ],
+      [
+       -75.1878963,
+       39.969607
+      ],
+      [
+       -75.1878907,
+       39.9696346
+      ],
+      [
+       -75.1879991,
+       39.9696476
+      ],
+      [
+       -75.1880026,
+       39.9696302
+      ],
+      [
+       -75.1880146,
+       39.9696233
+      ],
+      [
+       -75.1880221,
+       39.969616
+      ],
+      [
+       -75.1880246,
+       39.9696077
+      ],
+      [
+       -75.188023,
+       39.9695994
+      ],
+      [
+       -75.1880161,
+       39.9695912
+      ],
+      [
+       -75.1880195,
+       39.9695743
+      ],
+      [
+       -75.1880651,
+       39.9695796
+      ],
+      [
+       -75.1880735,
+       39.9695376
+      ],
+      [
+       -75.1880886,
+       39.9695241
+      ],
+      [
+       -75.1881135,
+       39.9694015
+      ]
+     ],
+     "unit": "lon, lat",
+     "source": "https://www.openstreetmap.org/way/60945645",
+     "note": "OSM way 60945645; L&I 485381 covers it."
+    },
+    "stories": {
+     "value": 2,
+     "unit": "stories",
+     "source": "https://npgallery.nps.gov/GetAsset/9506b040-fe2b-4eb2-b28b-292c298648e7",
+     "note": "NHL nomination, 'Boat House Row' (National Park Service, June 1985), PDF p. 15."
+    },
+    "body_m": {
+     "value": 7.76,
+     "unit": "m above ground",
+     "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+     "note": "Measured: median surface height inside osm 60945645 (scripts/50_landmark_measure.py, output/landmarks/measure/boathouse_row.json)."
+    },
+    "ridge_m": {
+     "value": 12.54,
+     "unit": "m above ground",
+     "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+     "note": "Measured: 99th-percentile surface height inside osm 60945645 (ridges, towers, cupolas) (scripts/50_landmark_measure.py, output/landmarks/measure/boathouse_row.json)."
+    },
+    "roof_color": "roof_10"
+   },
+   {
+    "number": "11",
+    "club": "College Boat Club (Penn)",
+    "built": "1874-75; additions ca. 1920, 1938, 1969, 1980-81",
+    "architect": "unknown; 1980-81 Francis Cauffman Wilkinson & Pepper",
+    "style": "Victorian Gothic",
+    "materials": "stone (brownstone, HABS); frame gables; stucco additions",
+    "roof_form": "hipped (original); steep with cross gables (HABS)",
+    "source": "https://npgallery.nps.gov/GetAsset/9506b040-fe2b-4eb2-b28b-292c298648e7",
+    "source_note": "NHL nomination, 'Boat House Row' (National Park Service, June 1985), PDF p. 16; materials marked HABS from HABS PA-1650 (1974), https://tile.loc.gov/storage-services/master/pnp/habshaer/pa/pa1100/pa1118/data/pa1118data.pdf",
+    "outline": {
+     "value": [
+      [
+       -75.1881371,
+       39.9696473
+      ],
+      [
+       -75.1881807,
+       39.9694216
+      ],
+      [
+       -75.1885231,
+       39.9694604
+      ],
+      [
+       -75.1884838,
+       39.969664
+      ],
+      [
+       -75.1883549,
+       39.9696494
+      ],
+      [
+       -75.1883473,
+       39.9696883
+      ],
+      [
+       -75.1883018,
+       39.9696832
+      ],
+      [
+       -75.1883051,
+       39.9696663
+      ],
+      [
+       -75.1881371,
+       39.9696473
+      ]
+     ],
+     "unit": "lon, lat",
+     "source": "https://www.openstreetmap.org/way/60945640",
+     "note": "OSM way 60945640; L&I 245484 covers it."
+    },
+    "stories": {
+     "value": 2,
+     "unit": "stories",
+     "source": "https://npgallery.nps.gov/GetAsset/9506b040-fe2b-4eb2-b28b-292c298648e7",
+     "note": "NHL nomination, 'Boat House Row' (National Park Service, June 1985), PDF p. 16."
+    },
+    "body_m": {
+     "value": 7.61,
+     "unit": "m above ground",
+     "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+     "note": "Measured: median surface height inside osm 60945640 (scripts/50_landmark_measure.py, output/landmarks/measure/boathouse_row.json)."
+    },
+    "ridge_m": {
+     "value": 10.19,
+     "unit": "m above ground",
+     "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+     "note": "Measured: 99th-percentile surface height inside osm 60945640 (ridges, towers, cupolas) (scripts/50_landmark_measure.py, output/landmarks/measure/boathouse_row.json)."
+    },
+    "roof_color": "roof_11"
+   },
+   {
+    "number": "12",
+    "club": "West Philadelphia Rowing Club (Penn A.C.)",
+    "built": "1878; additions 1968, 1981",
+    "architect": "unknown",
+    "style": "Victorian",
+    "materials": "stone; stucco additions",
+    "roof_form": "gable with cross gables (HABS)",
+    "source": "https://npgallery.nps.gov/GetAsset/9506b040-fe2b-4eb2-b28b-292c298648e7",
+    "source_note": "NHL nomination, 'Boat House Row' (National Park Service, June 1985), PDF p. 16-17; materials marked HABS from HABS PA-1650 (1974), https://tile.loc.gov/storage-services/master/pnp/habshaer/pa/pa1100/pa1118/data/pa1118data.pdf",
+    "outline": {
+     "value": [
+      [
+       -75.1885272,
+       39.9697119
+      ],
+      [
+       -75.1885607,
+       39.9695506
+      ],
+      [
+       -75.1885347,
+       39.9695474
+      ],
+      [
+       -75.1885463,
+       39.9694916
+      ],
+      [
+       -75.188782,
+       39.9695204
+      ],
+      [
+       -75.188737,
+       39.9697374
+      ],
+      [
+       -75.1885272,
+       39.9697119
+      ]
+     ],
+     "unit": "lon, lat",
+     "source": "https://www.openstreetmap.org/way/60945641",
+     "note": "OSM way 60945641; L&I 243739 covers it."
+    },
+    "stories": {
+     "value": 1.5,
+     "unit": "stories",
+     "source": "https://npgallery.nps.gov/GetAsset/9506b040-fe2b-4eb2-b28b-292c298648e7",
+     "note": "NHL nomination, 'Boat House Row' (National Park Service, June 1985), PDF p. 16-17."
+    },
+    "body_m": {
+     "value": 6.5,
+     "unit": "m above ground",
+     "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+     "note": "Measured: median surface height inside osm 60945641 (scripts/50_landmark_measure.py, output/landmarks/measure/boathouse_row.json)."
+    },
+    "ridge_m": {
+     "value": 17.11,
+     "unit": "m above ground",
+     "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+     "note": "Measured: 99th-percentile surface height inside osm 60945641 (ridges, towers, cupolas) (scripts/50_landmark_measure.py, output/landmarks/measure/boathouse_row.json)."
+    },
+    "roof_color": "roof_12"
+   },
+   {
+    "number": "13",
+    "club": "Undine Barge Club",
+    "built": "1882-83",
+    "architect": "Furness and Evans",
+    "style": "eclectic",
+    "materials": "rough-hewn Trenton sandstone (HABS)",
+    "roof_form": "rear pavilion with curved walls and a hipped roof",
+    "source": "https://npgallery.nps.gov/GetAsset/9506b040-fe2b-4eb2-b28b-292c298648e7",
+    "source_note": "NHL nomination, 'Boat House Row' (National Park Service, June 1985), PDF p. 17; materials marked HABS from HABS PA-1650 (1974), https://tile.loc.gov/storage-services/master/pnp/habshaer/pa/pa1100/pa1118/data/pa1118data.pdf",
+    "outline": {
+     "value": [
+      [
+       -75.1888678,
+       39.9695384
+      ],
+      [
+       -75.1888583,
+       39.9695835
+      ],
+      [
+       -75.1888446,
+       39.9695845
+      ],
+      [
+       -75.1888351,
+       39.9695888
+      ],
+      [
+       -75.1888275,
+       39.969595
+      ],
+      [
+       -75.1888141,
+       39.9696552
+      ],
+      [
+       -75.1888306,
+       39.9696572
+      ],
+      [
+       -75.1888112,
+       39.969749
+      ],
+      [
+       -75.1889775,
+       39.9697696
+      ],
+      [
+       -75.1890223,
+       39.9695575
+      ],
+      [
+       -75.1888678,
+       39.9695384
+      ]
+     ],
+     "unit": "lon, lat",
+     "source": "https://www.openstreetmap.org/way/60945642",
+     "note": "OSM way 60945642; L&I 484536 covers it."
+    },
+    "stories": {
+     "value": 2.5,
+     "unit": "stories",
+     "source": "https://npgallery.nps.gov/GetAsset/9506b040-fe2b-4eb2-b28b-292c298648e7",
+     "note": "NHL nomination, 'Boat House Row' (National Park Service, June 1985), PDF p. 17."
+    },
+    "body_m": {
+     "value": 9.03,
+     "unit": "m above ground",
+     "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+     "note": "Measured: median surface height inside osm 60945642 (scripts/50_landmark_measure.py, output/landmarks/measure/boathouse_row.json)."
+    },
+    "ridge_m": {
+     "value": 17.86,
+     "unit": "m above ground",
+     "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+     "note": "Measured: 99th-percentile surface height inside osm 60945642 (ridges, towers, cupolas) (scripts/50_landmark_measure.py, output/landmarks/measure/boathouse_row.json)."
+    },
+    "roof_color": "roof_13"
+   },
+   {
+    "number": "14",
+    "club": "Philadelphia Girls Rowing Club",
+    "built": "1860",
+    "architect": "James C. Sidney",
+    "style": "Italianate",
+    "materials": "rough-hewn granite (HABS)",
+    "roof_form": "square cupola with three arched openings on each side; bracketed eaves",
+    "source": "https://npgallery.nps.gov/GetAsset/9506b040-fe2b-4eb2-b28b-292c298648e7",
+    "source_note": "NHL nomination, 'Boat House Row' (National Park Service, June 1985), PDF p. 18; materials marked HABS from HABS PA-1650 (1974), https://tile.loc.gov/storage-services/master/pnp/habshaer/pa/pa1100/pa1118/data/pa1118data.pdf",
+    "outline": {
+     "value": [
+      [
+       -75.1891736,
+       39.9696925
+      ],
+      [
+       -75.1891578,
+       39.9696893
+      ],
+      [
+       -75.1891852,
+       39.9696117
+      ],
+      [
+       -75.189338,
+       39.9696433
+      ],
+      [
+       -75.1893109,
+       39.9697202
+      ],
+      [
+       -75.1892989,
+       39.9697178
+      ],
+      [
+       -75.1892738,
+       39.9697891
+      ],
+      [
+       -75.1892359,
+       39.969805
+      ],
+      [
+       -75.1892051,
+       39.9697993
+      ],
+      [
+       -75.1891666,
+       39.969792
+      ],
+      [
+       -75.1891482,
+       39.9697646
+      ],
+      [
+       -75.1891736,
+       39.9696925
+      ]
+     ],
+     "unit": "lon, lat",
+     "source": "https://www.openstreetmap.org/way/60945643",
+     "note": "OSM way 60945643; L&I 486600 covers it."
+    },
+    "stories": {
+     "value": 1.5,
+     "unit": "stories",
+     "source": "https://npgallery.nps.gov/GetAsset/9506b040-fe2b-4eb2-b28b-292c298648e7",
+     "note": "NHL nomination, 'Boat House Row' (National Park Service, June 1985), PDF p. 18."
+    },
+    "body_m": {
+     "value": 6.63,
+     "unit": "m above ground",
+     "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+     "note": "Measured: median surface height inside osm 60945643 (scripts/50_landmark_measure.py, output/landmarks/measure/boathouse_row.json)."
+    },
+    "ridge_m": {
+     "value": 12.81,
+     "unit": "m above ground",
+     "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+     "note": "Measured: 99th-percentile surface height inside osm 60945643 (ridges, towers, cupolas) (scripts/50_landmark_measure.py, output/landmarks/measure/boathouse_row.json)."
+    },
+    "roof_color": "roof_14"
+   },
+   {
+    "number": "15",
+    "club": "Sedgeley Club",
+    "built": "1902-03",
+    "architect": "Arthur H. Brockie",
+    "style": "Shingle and Colonial Revival",
+    "materials": "shingled frame",
+    "roof_form": "moderately pitched with three hipped dormers; early-19th-century lighthouse at the north end",
+    "source": "https://npgallery.nps.gov/GetAsset/9506b040-fe2b-4eb2-b28b-292c298648e7",
+    "source_note": "NHL nomination, 'Boat House Row' (National Park Service, June 1985), PDF p. 18",
+    "outline": {
+     "value": [
+      [
+       -75.1898607,
+       39.9699165
+      ],
+      [
+       -75.1898538,
+       39.9699366
+      ],
+      [
+       -75.1898846,
+       39.9699693
+      ],
+      [
+       -75.1898886,
+       39.9699817
+      ],
+      [
+       -75.1898836,
+       39.9699947
+      ],
+      [
+       -75.189874,
+       39.970004
+      ],
+      [
+       -75.1898581,
+       39.9700109
+      ],
+      [
+       -75.1898436,
+       39.9700111
+      ],
+      [
+       -75.1898272,
+       39.9700078
+      ],
+      [
+       -75.1897943,
+       39.9699814
+      ],
+      [
+       -75.1897803,
+       39.9699865
+      ],
+      [
+       -75.189768,
+       39.9699866
+      ],
+      [
+       -75.1897555,
+       39.9699818
+      ],
+      [
+       -75.1897344,
+       39.9699618
+      ],
+      [
+       -75.1897207,
+       39.9699486
+      ],
+      [
+       -75.1896939,
+       39.9699223
+      ],
+      [
+       -75.1896846,
+       39.9699278
+      ],
+      [
+       -75.1896781,
+       39.9699316
+      ],
+      [
+       -75.1896609,
+       39.9699296
+      ],
+      [
+       -75.1896392,
+       39.9699093
+      ],
+      [
+       -75.1896418,
+       39.9698974
+      ],
+      [
+       -75.1897901,
+       39.9698104
+      ],
+      [
+       -75.189883,
+       39.9699034
+      ],
+      [
+       -75.1898607,
+       39.9699165
+      ]
+     ],
+     "unit": "lon, lat",
+     "source": "https://www.openstreetmap.org/way/60945644",
+     "note": "OSM way 60945644; L&I 485308 covers it."
+    },
+    "stories": {
+     "value": 1.5,
+     "unit": "stories",
+     "source": "https://npgallery.nps.gov/GetAsset/9506b040-fe2b-4eb2-b28b-292c298648e7",
+     "note": "NHL nomination, 'Boat House Row' (National Park Service, June 1985), PDF p. 18."
+    },
+    "body_m": {
+     "value": 5.89,
+     "unit": "m above ground",
+     "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+     "note": "Measured: median surface height inside osm 60945644 (scripts/50_landmark_measure.py, output/landmarks/measure/boathouse_row.json)."
+    },
+    "ridge_m": {
+     "value": 12.28,
+     "unit": "m above ground",
+     "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+     "note": "Measured: 99th-percentile surface height inside osm 60945644 (ridges, towers, cupolas) (scripts/50_landmark_measure.py, output/landmarks/measure/boathouse_row.json)."
+    },
+    "roof_color": "roof_15"
+   }
+  ],
+  "lights": "outline lights along eaves and gables at night only (Fairmount Park Conservancy: first lit 1979, LEDs 2005, relit March 7, 2024)"
+ },
+ "credits": [
+  "OpenStreetMap data (c) OpenStreetMap contributors, ODbL 1.0 (https://www.openstreetmap.org/copyright)",
+  "LiDAR: City of Philadelphia 2022 classified LiDAR via PASDA (https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154)",
+  "Aerial: City of Philadelphia 2024 3-inch imagery (CityImagery_2024_3in)",
+  "Footprints: City of Philadelphia L&I building footprints (OpenDataPhilly)",
+  "Reference photo: Jeffrey M. Vinocur, CC BY 2.5, https://commons.wikimedia.org/wiki/File:Boathouse_Row-wide.JPG"
+ ],
+ "review": {
+  "open_questions": [
+   "#1 Plaisted Hall: no outline found within 380 m (L&I or OSM); find it on the aerial.",
+   "Roof colors from the aerial can include overhanging trees (leaf-on imagery); check against the photos in Phase 1.",
+   "Story counts differ between the NHL nomination and HABS for some houses (e.g. #12)."
+  ]
+ }
+}

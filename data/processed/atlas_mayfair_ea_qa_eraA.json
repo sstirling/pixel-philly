@@ -1,0 +1,152 @@
+{
+  "buildings_downloaded": 3914,
+  "buildings_in_scene": 4350,
+  "buildings_dropped": [],
+  "height_source_counts": {
+    "approx_hgt": 3899,
+    "max_hgt": 10,
+    "default": 5
+  },
+  "height_outliers_max_gt_ratio_x_approx": [],
+  "tallest_buildings_m": [
+    {
+      "id": 30049,
+      "h": 21.95
+    },
+    {
+      "id": 31059,
+      "h": 17.98
+    },
+    {
+      "id": 40304,
+      "h": 14.94
+    },
+    {
+      "id": 111467,
+      "h": 12.8
+    },
+    {
+      "id": "13261-1",
+      "h": 11.81
+    },
+    {
+      "id": "28317-5",
+      "h": 11.56
+    },
+    {
+      "id": "120695-1",
+      "h": 11.36
+    },
+    {
+      "id": "103418-2",
+      "h": 11.34
+    },
+    {
+      "id": "108115-1",
+      "h": 11.25
+    },
+    {
+      "id": "102601-1",
+      "h": 11.21
+    }
+  ],
+  "trees_in_scene": 585,
+  "ground_texture_px": [
+    7424,
+    7168
+  ],
+  "ground_texture_source_px": [
+    7424,
+    7168
+  ],
+  "uv_fit_max_residual_m": 1.0260121596780635e-05,
+  "ground_median_filter_px": 5,
+  "frames": 10,
+  "lidar_buildings_shaped": 1775,
+  "lidar_fallback_single_height": 5,
+  "lidar_parts": 2207,
+  "lidar_terrace_parts": 0,
+  "lidar_stadiums": [],
+  "lidar_structures": 3,
+  "lidar_structure_parts": 4,
+  "lidar_structure_area_m2": 117.8,
+  "lidar_structures_dropped_photo": 1,
+  "lidar_highway_mask": true,
+  "lidar_highway_masked_m2": 0.0,
+  "lidar_rail_mask": true,
+  "lidar_margin_m": 100.0,
+  "facade_join": {
+    "parcel": 3910,
+    "unmatched": 4
+  },
+  "facade_match_rate": 0.999,
+  "facade_styles": {
+    "row_postwar": 3158,
+    "row_porch": 498,
+    "twin_postwar": 64,
+    "other": 61,
+    "apartment_low": 37,
+    "row_typical": 35,
+    "mixed_storefront": 26,
+    "institutional": 13,
+    "detached": 12,
+    "warehouse": 4,
+    "detached_postwar": 1,
+    "twin": 1
+  },
+  "facade_materials": {
+    "brick": 3900,
+    "stone": 7,
+    "frame": 3
+  },
+  "facade_colour_source": {
+    "palette": 3443,
+    "palette_era": 466,
+    "aerial": 1
+  },
+  "facade_osm_footprints": 0,
+  "facade_osm_items": 0,
+  "facade_street_fronts": 524,
+  "facade_unmatched": "plain walls (no facade)",
+  "facade_eras": {
+    "postwar": 3410,
+    "interwar": 421,
+    "streetcar": 49,
+    "late20": 14,
+    "unknown": 9,
+    "new": 4,
+    "late_victorian": 3
+  },
+  "facade_era_styles": {
+    "postwar/row_postwar": 3158,
+    "interwar/row_porch": 377,
+    "postwar/row_porch": 78,
+    "postwar/twin_postwar": 64,
+    "streetcar/row_porch": 42,
+    "postwar/other": 37,
+    "postwar/apartment_low": 37,
+    "interwar/row_typical": 30,
+    "postwar/mixed_storefront": 20,
+    "late20/other": 13,
+    "postwar/institutional": 8,
+    "interwar/detached": 6,
+    "unknown/other": 5,
+    "streetcar/institutional": 5,
+    "interwar/mixed_storefront": 5,
+    "postwar/row_typical": 5,
+    "unknown/warehouse": 4,
+    "late_victorian/detached": 3,
+    "new/other": 3,
+    "postwar/detached": 2,
+    "interwar/other": 2,
+    "postwar/detached_postwar": 1,
+    "streetcar/mixed_storefront": 1,
+    "late20/row_porch": 1,
+    "streetcar/other": 1,
+    "interwar/twin": 1,
+    "new/detached": 1
+  },
+  "facade_era_year_estimated_share": 0.921,
+  "lawn_corrected_px": 2391090,
+  "lawn_park_px": 3119842
+}

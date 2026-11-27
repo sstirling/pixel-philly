@@ -1,0 +1,866 @@
+{
+ "slug": "liberty_place",
+ "name": "One Liberty Place",
+ "wikidata": "Q1449747",
+ "kit": "tower_stages",
+ "about": "One Liberty Place only (1650 Market St.); Two Liberty Place stays as LiDAR. A 61-story glass and granite shaft with a crown of four gabled setbacks, after the Chrysler Building, and a steel mast; 945 ft to the tip. Stage heights and outlines come from OpenStreetMap's tagged building:parts (ODbL), checked against the 2022 LiDAR. The LiDAR stops near 255 m: the mast and the top of the spire are too thin for its 0.5 m grid, so the published height sets the tip.",
+ "footprint": {
+  "polygon": [
+   [
+    -75.1679394,
+    39.9527818
+   ],
+   [
+    -75.1677869,
+    39.9527628
+   ],
+   [
+    -75.1677874,
+    39.9527605
+   ],
+   [
+    -75.1678106,
+    39.9526503
+   ],
+   [
+    -75.1678015,
+    39.9526508
+   ],
+   [
+    -75.1678493,
+    39.9524238
+   ],
+   [
+    -75.1677606,
+    39.9524128
+   ],
+   [
+    -75.1677692,
+    39.9523716
+   ],
+   [
+    -75.1677659,
+    39.9523712
+   ],
+   [
+    -75.1677827,
+    39.9522917
+   ],
+   [
+    -75.1677994,
+    39.9522121
+   ],
+   [
+    -75.1684945,
+    39.9522978
+   ],
+   [
+    -75.1684042,
+    39.9527271
+   ],
+   [
+    -75.1683967,
+    39.9527262
+   ],
+   [
+    -75.1683728,
+    39.9528395
+   ],
+   [
+    -75.1679416,
+    39.9527857
+   ],
+   [
+    -75.1679423,
+    39.9527821
+   ],
+   [
+    -75.1679394,
+    39.9527818
+   ]
+  ],
+  "source": "https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/LI_BUILDING_FOOTPRINTS/FeatureServer/0",
+  "note": "L&I footprint objectid 302944 (1650 MARKET ST, 'One Liberty Place'), including its low podium.",
+  "replaces": {
+   "li_footprint_ids": [
+    302944
+   ],
+   "osm_ways": [
+    42784982,
+    333013556,
+    333012829,
+    333012828,
+    345594709,
+    345594710,
+    332974959,
+    345594711,
+    345594720,
+    345594721,
+    345594723,
+    333012830
+   ]
+  }
+ },
+ "dims": {
+  "ground_navd88_m": {
+   "value": 12.85,
+   "unit": "m NAVD88",
+   "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+   "note": "Measured: median classified-ground return in a 3-15 m ring around L&I 302944 (scripts/50_landmark_measure.py, output/landmarks/measure/liberty_place.json)."
+  },
+  "height_total_m": {
+   "value": 288.036,
+   "unit": "m",
+   "source": "https://phillyvoice.com/30-years-ago-one-liberty-place-reshaped-the-philadelphia-skyline-for-all-time/",
+   "note": "Published as 945 ft. To the tip of the mast. SkyscraperPage (unconfirmed) and Wikipedia (citing CTBUH) agree; one university page says 960 ft. OSM way 333012830 is tagged height=288."
+  },
+  "roof_height_m": {
+   "value": 269.138,
+   "unit": "m",
+   "source": "https://skyscraperpage.com/b133",
+   "note": "Published as 883 ft. SkyscraperPage 'roof', marked unconfirmed; inside the gabled crown."
+  },
+  "top_floor_m": {
+   "value": 238.963,
+   "unit": "m",
+   "source": "https://skyscraperpage.com/b133",
+   "note": "Published as 784 ft. Unconfirmed there; Wikipedia gives 784 ft citing CTBUH."
+  },
+  "crown_height_m": {
+   "value": 44.501,
+   "unit": "m",
+   "source": "https://en.wikipedia.org/wiki/Liberty_Place",
+   "note": "Published as 146 ft. Gabled crown and mast together, from Wikipedia citing a 1987 Inquirer article and Terranova, Skyscrapers (2003), not read directly. 945 - 146 = 799 ft for the crown base, just above the 784 ft top floor."
+  },
+  "mast_height_m": {
+   "value": 14.326,
+   "unit": "m",
+   "source": "https://en.wikipedia.org/wiki/Liberty_Place",
+   "note": "Published as 47 ft. A 2-ton steel mast; same citation as crown_height_m."
+  },
+  "crown_setbacks": {
+   "value": 4,
+   "unit": "count",
+   "source": "https://en.wikipedia.org/wiki/Liberty_Place",
+   "note": "Four gabled setbacks; same citation."
+  },
+  "floors": {
+   "value": 61,
+   "unit": "stories",
+   "source": "https://skyscraperpage.com/b133",
+   "note": "Plus four below ground."
+  },
+  "lidar_top_m": {
+   "value": 254.52,
+   "unit": "m above ground",
+   "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+   "note": "Measured: highest LiDAR cell over the spire part (OSM 333012830); the mast above it isn't resolved (scripts/50_landmark_measure.py, output/landmarks/measure/liberty_place.json)."
+  }
+ },
+ "colors": {
+  "glass": {
+   "rgb": [
+    79,
+    101,
+    133
+   ],
+   "source": "https://commons.wikimedia.org/wiki/File:OneLiberyPlacePhiladelphia.jpg",
+   "method": "photo",
+   "photo": {
+    "file": "data/landmarks/refs/liberty_place/0_wikimedia_commons.jpg",
+    "box": [
+     802,
+     1604,
+     885,
+     1810
+    ],
+    "drop_dark": 0.25
+   },
+   "note": "Blue glass curtain wall on the shaft, sky reflection included: median of the box (pixels x0, y0, x1, y1), darkest 25% dropped. Reference photo, a modeling reference only."
+  },
+  "glass_crown": {
+   "rgb": [
+    66,
+    93,
+    132
+   ],
+   "source": "https://commons.wikimedia.org/wiki/File:OneLiberyPlacePhiladelphia.jpg",
+   "method": "photo",
+   "photo": {
+    "file": "data/landmarks/refs/liberty_place/0_wikimedia_commons.jpg",
+    "box": [
+     1000,
+     1150,
+     1080,
+     1300
+    ],
+    "drop_dark": 0.25
+   },
+   "note": "Glass on the gabled crown: median of the box (pixels x0, y0, x1, y1), darkest 25% dropped. Reference photo, a modeling reference only."
+  },
+  "mast": {
+   "rgb": [
+    87,
+    94,
+    114
+   ],
+   "source": "https://commons.wikimedia.org/wiki/File:OneLiberyPlacePhiladelphia.jpg",
+   "method": "photo",
+   "photo": {
+    "file": "data/landmarks/refs/liberty_place/0_wikimedia_commons.jpg",
+    "box": [
+     1086,
+     494,
+     1111,
+     700
+    ],
+    "drop_dark": 0.25
+   },
+   "note": "Steel mast against cloud: median of the box (pixels x0, y0, x1, y1), darkest 25% dropped. Reference photo, a modeling reference only."
+  },
+  "osm_building_colour": {
+   "rgb": [
+    68,
+    96,
+    109
+   ],
+   "source": "https://www.openstreetmap.org/way/333012829",
+   "method": "tag",
+   "note": "building:colour=#44606D on every glass part (ODbL); darker than the photo, which includes reflected sky."
+  },
+  "roof_top_view": {
+   "rgb": [
+    116,
+    115,
+    105
+   ],
+   "source": "https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2024_3in/MapServer",
+   "method": "aerial",
+   "aerial": {
+    "outline": "li:302944"
+   },
+   "note": "The tower seen from above (crown glass and setback roofs): median of the lit pixels (darkest 25% dropped) inside li 302944 in the 2024 aerial (scripts/50_landmark_measure.py, output/landmarks/measure/liberty_place.json)."
+  }
+ },
+ "kit_params": {
+  "stages": [
+   {
+    "osm_way": "way/333013556",
+    "top_m": {
+     "value": 9.65,
+     "unit": "m above ground",
+     "source": "https://www.openstreetmap.org/way/333013556",
+     "note": "OSM height=9.65. LiDAR 99th percentile inside the outline: 249.27 m. Podium."
+    },
+    "ring": {
+     "value": [
+      [
+       -75.1683679,
+       39.9528232
+      ],
+      [
+       -75.1683783,
+       39.9527736
+      ],
+      [
+       -75.1683903,
+       39.9527167
+      ],
+      [
+       -75.1684459,
+       39.9524518
+      ],
+      [
+       -75.16846,
+       39.952385
+      ],
+      [
+       -75.1683764,
+       39.9523747
+      ],
+      [
+       -75.1683059,
+       39.952366
+      ],
+      [
+       -75.1680388,
+       39.952333
+      ],
+      [
+       -75.1679651,
+       39.9523239
+      ],
+      [
+       -75.1679032,
+       39.9523163
+      ],
+      [
+       -75.1678798,
+       39.9524275
+      ],
+      [
+       -75.1678111,
+       39.9527544
+      ],
+      [
+       -75.1683679,
+       39.9528232
+      ]
+     ],
+     "unit": "lon, lat",
+     "source": "https://www.openstreetmap.org/way/333013556",
+     "note": "Outline of the part."
+    }
+   },
+   {
+    "osm_way": "way/333012829",
+    "top_m": {
+     "value": 185.0,
+     "unit": "m above ground",
+     "source": "https://www.openstreetmap.org/way/333012829",
+     "note": "OSM height=185. LiDAR 99th percentile inside the outline: 249.72 m. Main shaft, one of two halves."
+    },
+    "ring": {
+     "value": [
+      [
+       -75.1682868,
+       39.9528135
+      ],
+      [
+       -75.1682974,
+       39.9527635
+      ],
+      [
+       -75.1683653,
+       39.9524413
+      ],
+      [
+       -75.1683764,
+       39.9523747
+      ],
+      [
+       -75.1683059,
+       39.952366
+      ],
+      [
+       -75.1680388,
+       39.952333
+      ],
+      [
+       -75.1679651,
+       39.9523239
+      ],
+      [
+       -75.1679512,
+       39.9523896
+      ],
+      [
+       -75.1678827,
+       39.9527117
+      ],
+      [
+       -75.1678721,
+       39.952762
+      ],
+      [
+       -75.1679451,
+       39.9527711
+      ],
+      [
+       -75.1682123,
+       39.9528043
+      ],
+      [
+       -75.1682868,
+       39.9528135
+      ]
+     ],
+     "unit": "lon, lat",
+     "source": "https://www.openstreetmap.org/way/333012829",
+     "note": "Outline of the part."
+    }
+   },
+   {
+    "osm_way": "way/333012828",
+    "top_m": {
+     "value": 185.0,
+     "unit": "m above ground",
+     "source": "https://www.openstreetmap.org/way/333012828",
+     "note": "OSM height=185. LiDAR 99th percentile inside the outline: 249.7 m. Main shaft, other half."
+    },
+    "ring": {
+     "value": [
+      [
+       -75.1683783,
+       39.9527736
+      ],
+      [
+       -75.1683903,
+       39.9527167
+      ],
+      [
+       -75.1684345,
+       39.952511
+      ],
+      [
+       -75.1684459,
+       39.9524518
+      ],
+      [
+       -75.1683653,
+       39.9524413
+      ],
+      [
+       -75.1679512,
+       39.9523896
+      ],
+      [
+       -75.1678899,
+       39.9523818
+      ],
+      [
+       -75.1678798,
+       39.9524275
+      ],
+      [
+       -75.1678339,
+       39.9526467
+      ],
+      [
+       -75.1678218,
+       39.9527036
+      ],
+      [
+       -75.1678827,
+       39.9527117
+      ],
+      [
+       -75.1682974,
+       39.9527635
+      ],
+      [
+       -75.1683783,
+       39.9527736
+      ]
+     ],
+     "unit": "lon, lat",
+     "source": "https://www.openstreetmap.org/way/333012828",
+     "note": "Outline of the part."
+    }
+   },
+   {
+    "osm_way": "way/345594709",
+    "top_m": {
+     "value": 220.0,
+     "unit": "m above ground",
+     "source": "https://www.openstreetmap.org/way/345594709",
+     "note": "OSM height=220, roof:height=10, roof:shape=gabled. LiDAR 99th percentile inside the outline: 250.4 m."
+    },
+    "ring": {
+     "value": [
+      [
+       -75.1683059,
+       39.952366
+      ],
+      [
+       -75.1682123,
+       39.9528043
+      ],
+      [
+       -75.1679451,
+       39.9527711
+      ],
+      [
+       -75.1680388,
+       39.952333
+      ],
+      [
+       -75.1683059,
+       39.952366
+      ]
+     ],
+     "unit": "lon, lat",
+     "source": "https://www.openstreetmap.org/way/345594709",
+     "note": "Outline of the part."
+    },
+    "roof_height_m": {
+     "value": 10.0,
+     "unit": "m",
+     "source": "https://www.openstreetmap.org/way/345594709",
+     "note": "OSM roof:height; roof:shape=gabled"
+    },
+    "roof": "gabled"
+   },
+   {
+    "osm_way": "way/345594710",
+    "top_m": {
+     "value": 220.0,
+     "unit": "m above ground",
+     "source": "https://www.openstreetmap.org/way/345594710",
+     "note": "OSM height=220, roof:height=10, roof:shape=gabled. LiDAR 99th percentile inside the outline: 250.21 m."
+    },
+    "ring": {
+     "value": [
+      [
+       -75.1678774,
+       39.9524408
+      ],
+      [
+       -75.1684345,
+       39.952511
+      ],
+      [
+       -75.1683903,
+       39.9527167
+      ],
+      [
+       -75.1678339,
+       39.9526467
+      ],
+      [
+       -75.1678774,
+       39.9524408
+      ]
+     ],
+     "unit": "lon, lat",
+     "source": "https://www.openstreetmap.org/way/345594710",
+     "note": "Outline of the part."
+    },
+    "roof_height_m": {
+     "value": 10.0,
+     "unit": "m",
+     "source": "https://www.openstreetmap.org/way/345594710",
+     "note": "OSM roof:height; roof:shape=gabled"
+    },
+    "roof": "gabled"
+   },
+   {
+    "osm_way": "way/332974959",
+    "top_m": {
+     "value": 228.0,
+     "unit": "m above ground",
+     "source": "https://www.openstreetmap.org/way/332974959",
+     "note": "OSM height=228, roof:height=23, roof:shape=gabled. LiDAR 99th percentile inside the outline: 250.21 m. Gable along the tower."
+    },
+    "ring": {
+     "value": [
+      [
+       -75.1683653,
+       39.9524413
+      ],
+      [
+       -75.1682974,
+       39.9527635
+      ],
+      [
+       -75.1678827,
+       39.9527117
+      ],
+      [
+       -75.1679512,
+       39.9523896
+      ],
+      [
+       -75.1683653,
+       39.9524413
+      ]
+     ],
+     "unit": "lon, lat",
+     "source": "https://www.openstreetmap.org/way/332974959",
+     "note": "Outline of the part."
+    },
+    "roof_height_m": {
+     "value": 23.0,
+     "unit": "m",
+     "source": "https://www.openstreetmap.org/way/332974959",
+     "note": "OSM roof:height; roof:shape=gabled, roof:orientation=along"
+    },
+    "roof": "gabled"
+   },
+   {
+    "osm_way": "way/345594711",
+    "top_m": {
+     "value": 228.0,
+     "unit": "m above ground",
+     "source": "https://www.openstreetmap.org/way/345594711",
+     "note": "OSM height=228, roof:height=23, roof:shape=gabled. LiDAR 99th percentile inside the outline: 250.21 m. Gable across the tower; with 332974959 it forms a cross gable."
+    },
+    "ring": {
+     "value": [
+      [
+       -75.1683653,
+       39.9524413
+      ],
+      [
+       -75.1682974,
+       39.9527635
+      ],
+      [
+       -75.1678827,
+       39.9527117
+      ],
+      [
+       -75.1679512,
+       39.9523896
+      ],
+      [
+       -75.1683653,
+       39.9524413
+      ]
+     ],
+     "unit": "lon, lat",
+     "source": "https://www.openstreetmap.org/way/345594711",
+     "note": "Outline of the part."
+    },
+    "roof_height_m": {
+     "value": 23.0,
+     "unit": "m",
+     "source": "https://www.openstreetmap.org/way/345594711",
+     "note": "OSM roof:height; roof:shape=gabled, roof:orientation=across"
+    },
+    "roof": "gabled"
+   },
+   {
+    "osm_way": "way/345594720",
+    "top_m": {
+     "value": 240.0,
+     "unit": "m above ground",
+     "source": "https://www.openstreetmap.org/way/345594720",
+     "note": "OSM height=240, roof:height=15, roof:shape=gabled. LiDAR 99th percentile inside the outline: 250.81 m."
+    },
+    "ring": {
+     "value": [
+      [
+       -75.1683109,
+       39.9524723
+      ],
+      [
+       -75.1682578,
+       39.9527182
+      ],
+      [
+       -75.1679432,
+       39.9526794
+      ],
+      [
+       -75.1679956,
+       39.9524323
+      ],
+      [
+       -75.1683109,
+       39.9524723
+      ]
+     ],
+     "unit": "lon, lat",
+     "source": "https://www.openstreetmap.org/way/345594720",
+     "note": "Outline of the part."
+    },
+    "roof_height_m": {
+     "value": 15.0,
+     "unit": "m",
+     "source": "https://www.openstreetmap.org/way/345594720",
+     "note": "OSM roof:height; roof:shape=gabled, roof:orientation=along"
+    },
+    "roof": "gabled"
+   },
+   {
+    "osm_way": "way/345594721",
+    "top_m": {
+     "value": 240.0,
+     "unit": "m above ground",
+     "source": "https://www.openstreetmap.org/way/345594721",
+     "note": "OSM height=240, roof:height=15, roof:shape=gabled. LiDAR 99th percentile inside the outline: 253.3 m."
+    },
+    "ring": {
+     "value": [
+      [
+       -75.1682503,
+       39.9525044
+      ],
+      [
+       -75.1682149,
+       39.9526685
+      ],
+      [
+       -75.1680049,
+       39.9526426
+      ],
+      [
+       -75.1680399,
+       39.9524777
+      ],
+      [
+       -75.1682503,
+       39.9525044
+      ]
+     ],
+     "unit": "lon, lat",
+     "source": "https://www.openstreetmap.org/way/345594721",
+     "note": "Outline of the part."
+    },
+    "roof_height_m": {
+     "value": 15.0,
+     "unit": "m",
+     "source": "https://www.openstreetmap.org/way/345594721",
+     "note": "OSM roof:height; roof:shape=gabled, roof:orientation=along"
+    },
+    "roof": "gabled"
+   },
+   {
+    "osm_way": "way/345594723",
+    "top_m": {
+     "value": 250.0,
+     "unit": "m above ground",
+     "source": "https://www.openstreetmap.org/way/345594723",
+     "note": "OSM height=250, roof:height=7, roof:shape=gabled. LiDAR 99th percentile inside the outline: 253.45 m."
+    },
+    "ring": {
+     "value": [
+      [
+       -75.1680824,
+       39.9525291
+      ],
+      [
+       -75.1681895,
+       39.9525403
+      ],
+      [
+       -75.1681742,
+       39.9526224
+      ],
+      [
+       -75.1680687,
+       39.9526116
+      ],
+      [
+       -75.1680824,
+       39.9525291
+      ]
+     ],
+     "unit": "lon, lat",
+     "source": "https://www.openstreetmap.org/way/345594723",
+     "note": "Outline of the part."
+    },
+    "roof_height_m": {
+     "value": 7.0,
+     "unit": "m",
+     "source": "https://www.openstreetmap.org/way/345594723",
+     "note": "OSM roof:height; roof:shape=gabled, roof:orientation=along"
+    },
+    "roof": "gabled"
+   },
+   {
+    "osm_way": "way/333012830",
+    "top_m": "height_total_m",
+    "ring": {
+     "value": [
+      [
+       -75.1681274,
+       39.9525604
+      ],
+      [
+       -75.1681344,
+       39.9525613
+      ],
+      [
+       -75.1681406,
+       39.9525638
+      ],
+      [
+       -75.1681455,
+       39.9525677
+      ],
+      [
+       -75.1681486,
+       39.9525726
+      ],
+      [
+       -75.1681495,
+       39.952578
+      ],
+      [
+       -75.1681481,
+       39.9525833
+      ],
+      [
+       -75.1681447,
+       39.9525881
+      ],
+      [
+       -75.168139,
+       39.9525919
+      ],
+      [
+       -75.1681319,
+       39.9525941
+      ],
+      [
+       -75.1681243,
+       39.9525944
+      ],
+      [
+       -75.168117,
+       39.9525926
+      ],
+      [
+       -75.168111,
+       39.9525891
+      ],
+      [
+       -75.1681068,
+       39.9525842
+      ],
+      [
+       -75.168105,
+       39.9525786
+      ],
+      [
+       -75.1681058,
+       39.9525727
+      ],
+      [
+       -75.1681091,
+       39.9525675
+      ],
+      [
+       -75.1681141,
+       39.9525636
+      ],
+      [
+       -75.1681204,
+       39.9525612
+      ],
+      [
+       -75.1681274,
+       39.9525604
+      ]
+     ],
+     "unit": "lon, lat",
+     "source": "https://www.openstreetmap.org/way/333012830",
+     "note": "Outline of the part."
+    },
+    "roof_height_m": {
+     "value": 45.0,
+     "unit": "m",
+     "source": "https://www.openstreetmap.org/way/333012830",
+     "note": "OSM roof:height; roof:shape=pyramidal"
+    },
+    "roof": "pyramidal"
+   }
+  ],
+  "mast_m": "mast_height_m",
+  "facade": "blue glass curtain wall with horizontal granite bands (buildingsdb, https://buildingsdb.com/PA/philadelphia/one-liberty-place/); window grid as detail paint, granite bands as stripes"
+ },
+ "credits": [
+  "OpenStreetMap data (c) OpenStreetMap contributors, ODbL 1.0 (https://www.openstreetmap.org/copyright)",
+  "LiDAR: City of Philadelphia 2022 classified LiDAR via PASDA (https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154)",
+  "Aerial: City of Philadelphia 2024 3-inch imagery (CityImagery_2024_3in)",
+  "Footprints: City of Philadelphia L&I building footprints (OpenDataPhilly)",
+  "Reference photo: Massimo Catarinella, CC BY 3.0, https://commons.wikimedia.org/wiki/File:OneLiberyPlacePhiladelphia.jpg"
+ ],
+ "review": {
+  "open_questions": [
+   "CTBUH pages returned 403; its figures are cited through Wikipedia. Setback heights rest on OSM tags, consistent with the LiDAR but not published."
+  ]
+ }
+}

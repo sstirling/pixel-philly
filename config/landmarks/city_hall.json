@@ -1,0 +1,995 @@
+{
+ "slug": "city_hall",
+ "name": "Philadelphia City Hall",
+ "wikidata": "Q1138183",
+ "kit": "mansard_tower",
+ "about": "Second Empire main block (486 ft 6 in by 470 ft around a 200 ft courtyard) with mansard wings, four center pavilions and four corner pavilions, and the tower on the north side of the courtyard: masonry to 337 ft, a metal clock story and dome, and the 37 ft William Penn statue, 548 ft in all. Published heights come from ASCE and the 1901-09 Turner booklet; the LiDAR confirms the total and supplies the roof peaks, which the booklet's pavilion figures stop below (see center_pavilion_top_m). The model replaces the L&I footprint and every LiDAR part inside it.",
+ "footprint": {
+  "polygon": [
+   [
+    -75.1644861,
+    39.9519083
+   ],
+   [
+    -75.1644757,
+    39.9519524
+   ],
+   [
+    -75.1644845,
+    39.9519537
+   ],
+   [
+    -75.1644721,
+    39.9520063
+   ],
+   [
+    -75.1644666,
+    39.9520056
+   ],
+   [
+    -75.1644561,
+    39.9520503
+   ],
+   [
+    -75.1644319,
+    39.952047
+   ],
+   [
+    -75.1643893,
+    39.9522283
+   ],
+   [
+    -75.1644216,
+    39.9522328
+   ],
+   [
+    -75.1643876,
+    39.9523774
+   ],
+   [
+    -75.1644433,
+    39.9523851
+   ],
+   [
+    -75.1644278,
+    39.9524509
+   ],
+   [
+    -75.164447,
+    39.9524535
+   ],
+   [
+    -75.1644194,
+    39.952571
+   ],
+   [
+    -75.1644022,
+    39.9525686
+   ],
+   [
+    -75.1643988,
+    39.9525832
+   ],
+   [
+    -75.164383,
+    39.952581
+   ],
+   [
+    -75.1643707,
+    39.9526331
+   ],
+   [
+    -75.1643379,
+    39.9526285
+   ],
+   [
+    -75.1643046,
+    39.9527702
+   ],
+   [
+    -75.1642792,
+    39.9527667
+   ],
+   [
+    -75.164237,
+    39.952946
+   ],
+   [
+    -75.1642697,
+    39.9529505
+   ],
+   [
+    -75.1642648,
+    39.9529715
+   ],
+   [
+    -75.1642889,
+    39.9529749
+   ],
+   [
+    -75.1642653,
+    39.953075
+   ],
+   [
+    -75.1642442,
+    39.953072
+   ],
+   [
+    -75.1642389,
+    39.9530948
+   ],
+   [
+    -75.1642091,
+    39.9530906
+   ],
+   [
+    -75.1642046,
+    39.9531098
+   ],
+   [
+    -75.1640762,
+    39.9530919
+   ],
+   [
+    -75.1640799,
+    39.953076
+   ],
+   [
+    -75.1640495,
+    39.9530718
+   ],
+   [
+    -75.1640547,
+    39.9530496
+   ],
+   [
+    -75.1640519,
+    39.9530493
+   ],
+   [
+    -75.1638247,
+    39.9530176
+   ],
+   [
+    -75.1638107,
+    39.953077
+   ],
+   [
+    -75.1636344,
+    39.9530525
+   ],
+   [
+    -75.1636206,
+    39.9530505
+   ],
+   [
+    -75.1636126,
+    39.9530844
+   ],
+   [
+    -75.1636096,
+    39.9530971
+   ],
+   [
+    -75.1636075,
+    39.9531062
+   ],
+   [
+    -75.1635265,
+    39.953095
+   ],
+   [
+    -75.1635242,
+    39.9531047
+   ],
+   [
+    -75.1635053,
+    39.9531021
+   ],
+   [
+    -75.163504,
+    39.9531076
+   ],
+   [
+    -75.1634645,
+    39.9531021
+   ],
+   [
+    -75.1634633,
+    39.9531072
+   ],
+   [
+    -75.163459,
+    39.9531066
+   ],
+   [
+    -75.1634565,
+    39.9531173
+   ],
+   [
+    -75.1633807,
+    39.9531068
+   ],
+   [
+    -75.1633829,
+    39.9530973
+   ],
+   [
+    -75.1633796,
+    39.9530968
+   ],
+   [
+    -75.1633805,
+    39.9530929
+   ],
+   [
+    -75.1633584,
+    39.9530898
+   ],
+   [
+    -75.1633598,
+    39.9530839
+   ],
+   [
+    -75.1633417,
+    39.9530814
+   ],
+   [
+    -75.1633449,
+    39.9530679
+   ],
+   [
+    -75.1632775,
+    39.9530585
+   ],
+   [
+    -75.1632781,
+    39.9530559
+   ],
+   [
+    -75.1632888,
+    39.9530105
+   ],
+   [
+    -75.1631083,
+    39.9529854
+   ],
+   [
+    -75.1631209,
+    39.952932
+   ],
+   [
+    -75.1629101,
+    39.9529027
+   ],
+   [
+    -75.1628883,
+    39.9528996
+   ],
+   [
+    -75.1628828,
+    39.9529231
+   ],
+   [
+    -75.1628075,
+    39.9529126
+   ],
+   [
+    -75.1628038,
+    39.9529285
+   ],
+   [
+    -75.1627378,
+    39.9529193
+   ],
+   [
+    -75.162741,
+    39.9529059
+   ],
+   [
+    -75.1626935,
+    39.9528992
+   ],
+   [
+    -75.1627026,
+    39.9528607
+   ],
+   [
+    -75.1626798,
+    39.9528575
+   ],
+   [
+    -75.1626916,
+    39.9528076
+   ],
+   [
+    -75.1627135,
+    39.9528107
+   ],
+   [
+    -75.1627253,
+    39.9527604
+   ],
+   [
+    -75.162754,
+    39.9527644
+   ],
+   [
+    -75.1627976,
+    39.9525792
+   ],
+   [
+    -75.1627681,
+    39.9525751
+   ],
+   [
+    -75.1627737,
+    39.9525514
+   ],
+   [
+    -75.1627682,
+    39.9525506
+   ],
+   [
+    -75.1627956,
+    39.952434
+   ],
+   [
+    -75.1627409,
+    39.9524264
+   ],
+   [
+    -75.1627529,
+    39.9523752
+   ],
+   [
+    -75.1627341,
+    39.9523725
+   ],
+   [
+    -75.1627373,
+    39.9523588
+   ],
+   [
+    -75.1627299,
+    39.9523578
+   ],
+   [
+    -75.1627385,
+    39.952321
+   ],
+   [
+    -75.162716,
+    39.9523179
+   ],
+   [
+    -75.1627265,
+    39.9522729
+   ],
+   [
+    -75.1627456,
+    39.9522756
+   ],
+   [
+    -75.1627528,
+    39.952245
+   ],
+   [
+    -75.1627605,
+    39.952246
+   ],
+   [
+    -75.1627638,
+    39.9522319
+   ],
+   [
+    -75.1627811,
+    39.9522343
+   ],
+   [
+    -75.1627949,
+    39.9521759
+   ],
+   [
+    -75.162848,
+    39.9521833
+   ],
+   [
+    -75.1628822,
+    39.9520379
+   ],
+   [
+    -75.1629152,
+    39.9520425
+   ],
+   [
+    -75.1629583,
+    39.9518594
+   ],
+   [
+    -75.1629176,
+    39.9518538
+   ],
+   [
+    -75.1629278,
+    39.9518105
+   ],
+   [
+    -75.1629044,
+    39.9518072
+   ],
+   [
+    -75.162916,
+    39.9517579
+   ],
+   [
+    -75.1629388,
+    39.951761
+   ],
+   [
+    -75.1629501,
+    39.9517128
+   ],
+   [
+    -75.162995,
+    39.9517191
+   ],
+   [
+    -75.1629964,
+    39.951713
+   ],
+   [
+    -75.1630622,
+    39.9517222
+   ],
+   [
+    -75.1630608,
+    39.951728
+   ],
+   [
+    -75.1631345,
+    39.9517383
+   ],
+   [
+    -75.1631298,
+    39.9517584
+   ],
+   [
+    -75.1633675,
+    39.9517916
+   ],
+   [
+    -75.1633733,
+    39.9517668
+   ],
+   [
+    -75.163549,
+    39.9517913
+   ],
+   [
+    -75.1635558,
+    39.9517624
+   ],
+   [
+    -75.1636221,
+    39.9517716
+   ],
+   [
+    -75.1636256,
+    39.9517569
+   ],
+   [
+    -75.1636436,
+    39.9517594
+   ],
+   [
+    -75.163645,
+    39.9517537
+   ],
+   [
+    -75.1636712,
+    39.9517574
+   ],
+   [
+    -75.1636727,
+    39.9517511
+   ],
+   [
+    -75.1637488,
+    39.9517617
+   ],
+   [
+    -75.1637477,
+    39.9517664
+   ],
+   [
+    -75.1637891,
+    39.9517722
+   ],
+   [
+    -75.1637891,
+    39.951775
+   ],
+   [
+    -75.1638897,
+    39.951789
+   ],
+   [
+    -75.1638798,
+    39.951831
+   ],
+   [
+    -75.1640694,
+    39.9518574
+   ],
+   [
+    -75.1640648,
+    39.9518769
+   ],
+   [
+    -75.1643006,
+    39.9519098
+   ],
+   [
+    -75.1643064,
+    39.951885
+   ],
+   [
+    -75.1643587,
+    39.9518922
+   ],
+   [
+    -75.1643604,
+    39.9518848
+   ],
+   [
+    -75.1644272,
+    39.9518941
+   ],
+   [
+    -75.1644258,
+    39.9518999
+   ],
+   [
+    -75.1644861,
+    39.9519083
+   ]
+  ],
+  "source": "https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/LI_BUILDING_FOOTPRINTS/FeatureServer/0",
+  "note": "L&I footprint objectid 489522 (1400 JOHN F KENNEDY BLVD), the whole building including the courtyard ring.",
+  "replaces": {
+   "li_footprint_ids": [
+    489522
+   ],
+   "osm_ways": [],
+   "osm_relations": [
+    4720912
+   ]
+  }
+ },
+ "dims": {
+  "ground_navd88_m": {
+   "value": 13.51,
+   "unit": "m NAVD88",
+   "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+   "note": "Measured: median classified-ground return in a 3-15 m ring around L&I 489522 (scripts/50_landmark_measure.py, output/landmarks/measure/city_hall.json)."
+  },
+  "height_total_m": {
+   "value": 167.03,
+   "unit": "m",
+   "source": "https://www.asce.org/about-civil-engineering/history-and-heritage/historic-landmarks/philadelphia-city-hall",
+   "note": "Published as 548 ft. To the top of the statue. The Turner booklet gives 547 ft 3 1/2 in. LiDAR check: the tower top (OSM way 333316163-333316166) reaches 166.66 m above ground."
+  },
+  "tower_masonry_top_m": {
+   "value": 102.832,
+   "unit": "m",
+   "source": "https://archive.org/details/illustrateddescr00phil",
+   "note": "Published as 337 ft 4.5 in. Illustrated Description of Philadelphia's New City Hall (Frederick Turner, 1901-09), Library of Congress copy; read in the OCR text, https://archive.org/download/illustrateddescr00phil/illustrateddescr00phil_djvu.txt. OCR garbles the first digit ('2^7 feet 4 1/2 inches'); ASCE gives 337 ft, and the stage sum below closes on the published total."
+  },
+  "clock_story_height_m": {
+   "value": 20.625,
+   "unit": "m",
+   "source": "https://archive.org/details/illustrateddescr00phil",
+   "note": "Published as 67 ft 8 in. Illustrated Description of Philadelphia's New City Hall (Frederick Turner, 1901-09), Library of Congress copy; read in the OCR text, https://archive.org/download/illustrateddescr00phil/illustrateddescr00phil_djvu.txt"
+  },
+  "dome_height_m": {
+   "value": 32.182,
+   "unit": "m",
+   "source": "https://archive.org/details/illustrateddescr00phil",
+   "note": "Published as 105 ft 7 in. Illustrated Description of Philadelphia's New City Hall (Frederick Turner, 1901-09), Library of Congress copy; read in the OCR text, https://archive.org/download/illustrateddescr00phil/illustrateddescr00phil_djvu.txt. The external covering of the dome, from the top of the clock story to the statue base."
+  },
+  "statue_base_m": {
+   "value": 155.639,
+   "unit": "m",
+   "source": "https://archive.org/details/illustrateddescr00phil",
+   "note": "Sum of the three stages above (510 ft 7 1/2 in); SkyscraperPage gives 511 ft to the base of the statue (unconfirmed)."
+  },
+  "statue_height_m": {
+   "value": 11.278,
+   "unit": "m",
+   "source": "https://www.asce.org/about-civil-engineering/history-and-heritage/historic-landmarks/philadelphia-city-hall",
+   "note": "Published as 37 ft. The booklet's table also says 37 ft; its text says 36 ft 8 in. Bronze, by Alexander Milne Calder; faces northeast (Encyclopedia of Greater Philadelphia)."
+  },
+  "tower_base_width_m": {
+   "value": 27.432,
+   "unit": "m",
+   "source": "https://archive.org/details/illustrateddescr00phil",
+   "note": "Published as 90 ft. Illustrated Description of Philadelphia's New City Hall (Frederick Turner, 1901-09), Library of Congress copy; read in the OCR text, https://archive.org/download/illustrateddescr00phil/illustrateddescr00phil_djvu.txt. '90 feet square at the base, gracefully falling off at each story.'"
+  },
+  "dome_base_octagon_m": {
+   "value": 17.069,
+   "unit": "m",
+   "source": "https://archive.org/details/illustrateddescr00phil",
+   "note": "Published as 56 ft. Illustrated Description of Philadelphia's New City Hall (Frederick Turner, 1901-09), Library of Congress copy; read in the OCR text, https://archive.org/download/illustrateddescr00phil/illustrateddescr00phil_djvu.txt. Octagon diameter where the dome springs."
+  },
+  "clock_center_height_m": {
+   "value": 110.033,
+   "unit": "m",
+   "source": "https://archive.org/details/illustrateddescr00phil",
+   "note": "Published as 361 ft. Illustrated Description of Philadelphia's New City Hall (Frederick Turner, 1901-09), Library of Congress copy; read in the OCR text, https://archive.org/download/illustrateddescr00phil/illustrateddescr00phil_djvu.txt. Table: 'Centre of Clock Face 361 ft. above Pavement' (OCR '3f)l', read as 361); SkyscraperPage also gives 361 ft (unconfirmed). It falls inside the clock story, as it should."
+  },
+  "clock_diameter_m": {
+   "value": 7.925,
+   "unit": "m",
+   "source": "https://en.wikipedia.org/wiki/Philadelphia_City_Hall",
+   "note": "Published as 26 ft. Wikipedia cites the City's virtual tour (now offline). The Turner booklet's OCR shows '2^ feet' (second digit garbled); not checked against the scan."
+  },
+  "clock_count": {
+   "value": 4,
+   "unit": "count",
+   "source": "https://archive.org/details/illustrateddescr00phil",
+   "note": "One dial per side of the clock story."
+  },
+  "main_block_ns_m": {
+   "value": 148.285,
+   "unit": "m",
+   "source": "https://archive.org/details/illustrateddescr00phil",
+   "note": "Published as 486 ft 6 in. ASCE rounds to 486 ft."
+  },
+  "main_block_ew_m": {
+   "value": 143.256,
+   "unit": "m",
+   "source": "https://www.asce.org/about-civil-engineering/history-and-heritage/historic-landmarks/philadelphia-city-hall",
+   "note": "Published as 470 ft."
+  },
+  "courtyard_side_m": {
+   "value": 60.96,
+   "unit": "m",
+   "source": "https://archive.org/details/illustrateddescr00phil",
+   "note": "Published as 200 ft. Illustrated Description of Philadelphia's New City Hall (Frederick Turner, 1901-09), Library of Congress copy; read in the OCR text, https://archive.org/download/illustrateddescr00phil/illustrateddescr00phil_djvu.txt. Square."
+  },
+  "cornice_height_m": {
+   "value": 26.632,
+   "unit": "m",
+   "source": "https://archive.org/details/illustrateddescr00phil",
+   "note": "Sum of the basement (18 ft 3 1/2 in), principal (33 ft 6 in) and second (35 ft 7 in) story heights in the booklet's table: 87 ft 4 1/2 in, the cornice below the mansard story."
+  },
+  "main_block_height_m": {
+   "value": 39.014,
+   "unit": "m",
+   "source": "https://archive.org/details/illustrateddescr00phil",
+   "note": "Published as 128 ft. Illustrated Description of Philadelphia's New City Hall (Frederick Turner, 1901-09), Library of Congress copy; read in the OCR text, https://archive.org/download/illustrateddescr00phil/illustrateddescr00phil_djvu.txt. The 'receding wings' between the pavilions. LiDAR check: wing parts (OSM 336681406, 333316164) have median surface heights of 40.19 and 39.47 m above ground."
+  },
+  "center_pavilion_width_m": {
+   "value": 27.432,
+   "unit": "m",
+   "source": "https://archive.org/details/illustrateddescr00phil",
+   "note": "Published as 90 ft. Illustrated Description of Philadelphia's New City Hall (Frederick Turner, 1901-09), Library of Congress copy; read in the OCR text, https://archive.org/download/illustrateddescr00phil/illustrateddescr00phil_djvu.txt"
+  },
+  "center_pavilion_height_m": {
+   "value": 61.836,
+   "unit": "m",
+   "source": "https://archive.org/details/illustrateddescr00phil",
+   "note": "Published as 202 ft 10.5 in. Illustrated Description of Philadelphia's New City Hall (Frederick Turner, 1901-09), Library of Congress copy; read in the OCR text, https://archive.org/download/illustrateddescr00phil/illustrateddescr00phil_djvu.txt. About 11 m below the LiDAR roof peaks (center_pavilion_top_m); the figure probably stops at the base of the pavilion roofs or their crestings. Not used for the roof peak."
+  },
+  "center_pavilion_top_m": {
+   "value": 73.7,
+   "unit": "m above ground",
+   "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+   "note": "Measured: mean of the 99th-percentile surface heights of the four center-pavilion roof caps (OSM 335828092, 335828087, 335828090, 333316171) (scripts/50_landmark_measure.py, output/landmarks/measure/city_hall.json)."
+  },
+  "corner_pavilion_side_m": {
+   "value": 15.545,
+   "unit": "m",
+   "source": "https://archive.org/details/illustrateddescr00phil",
+   "note": "Published as 51 ft. Illustrated Description of Philadelphia's New City Hall (Frederick Turner, 1901-09), Library of Congress copy; read in the OCR text, https://archive.org/download/illustrateddescr00phil/illustrateddescr00phil_djvu.txt. Square."
+  },
+  "corner_pavilion_height_m": {
+   "value": 49.073,
+   "unit": "m",
+   "source": "https://archive.org/details/illustrateddescr00phil",
+   "note": "Published as 161 ft. Illustrated Description of Philadelphia's New City Hall (Frederick Turner, 1901-09), Library of Congress copy; read in the OCR text, https://archive.org/download/illustrateddescr00phil/illustrateddescr00phil_djvu.txt. About 9 m below the LiDAR roof peaks (corner_pavilion_top_m); see center_pavilion_height_m."
+  },
+  "corner_pavilion_top_m": {
+   "value": 58.46,
+   "unit": "m above ground",
+   "source": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154",
+   "note": "Measured: mean of the 99th-percentile surface heights of three corner-pavilion pyramidal roofs (OSM 335828082, 335828088, 335828084; the fourth, 335828085, has a LiDAR spike) (scripts/50_landmark_measure.py, output/landmarks/measure/city_hall.json)."
+  },
+  "floors": {
+   "value": 7,
+   "unit": "stories",
+   "source": "https://www.asce.org/about-civil-engineering/history-and-heritage/historic-landmarks/philadelphia-city-hall",
+   "note": "Wikipedia gives 9 (counting mezzanines); the booklet: basement plus three principal stories, the top one a mansard."
+  }
+ },
+ "colors": {
+  "marble_lit": {
+   "rgb": [
+    144,
+    148,
+    156
+   ],
+   "source": "https://www.loc.gov/resource/hhh.pa4092.color.361726c",
+   "method": "photo",
+   "photo": {
+    "file": "data/landmarks/refs/city_hall/2_loc_habs.jpg",
+    "box": [
+     340,
+     430,
+     390,
+     500
+    ],
+    "drop_dark": 0.25
+   },
+   "note": "Sunlit marble on the masonry tower: median of the box (pixels x0, y0, x1, y1), darkest 25% dropped. Reference photo, a modeling reference only."
+  },
+  "marble_facade": {
+   "rgb": [
+    120,
+    115,
+    114
+   ],
+   "source": "https://www.loc.gov/resource/hhh.pa4092.color.361726c",
+   "method": "photo",
+   "photo": {
+    "file": "data/landmarks/refs/city_hall/2_loc_habs.jpg",
+    "box": [
+     285,
+     600,
+     330,
+     640
+    ],
+    "drop_dark": 0.25
+   },
+   "note": "South facade, marble with windows, in partial shade: median of the box (pixels x0, y0, x1, y1), darkest 25% dropped. Reference photo, a modeling reference only."
+  },
+  "granite_base": {
+   "rgb": [
+    145,
+    137,
+    126
+   ],
+   "source": "https://www.loc.gov/resource/hhh.pa4092.color.361726c",
+   "method": "photo",
+   "photo": {
+    "file": "data/landmarks/refs/city_hall/2_loc_habs.jpg",
+    "box": [
+     290,
+     670,
+     330,
+     685
+    ],
+    "drop_dark": 0.25
+   },
+   "note": "Granite basement story: median of the box (pixels x0, y0, x1, y1), darkest 25% dropped. Reference photo, a modeling reference only."
+  },
+  "mansard_photo": {
+   "rgb": [
+    64,
+    74,
+    88
+   ],
+   "source": "https://www.loc.gov/resource/hhh.pa4092.color.361726c",
+   "method": "photo",
+   "photo": {
+    "file": "data/landmarks/refs/city_hall/2_loc_habs.jpg",
+    "box": [
+     395,
+     572,
+     440,
+     586
+    ],
+    "drop_dark": 0.25
+   },
+   "note": "Mansard roof, side view: median of the box (pixels x0, y0, x1, y1), darkest 25% dropped. Reference photo, a modeling reference only."
+  },
+  "mansard_roof": {
+   "rgb": [
+    55,
+    61,
+    63
+   ],
+   "source": "https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2024_3in/MapServer",
+   "method": "aerial",
+   "aerial": {
+    "outline": "osm:336681405"
+   },
+   "note": "Mansard roof seen from above (south wing): median of the lit pixels (darkest 25% dropped) inside osm 336681405 in the 2024 aerial (scripts/50_landmark_measure.py, output/landmarks/measure/city_hall.json)."
+  },
+  "roof_terrace": {
+   "rgb": [
+    171,
+    165,
+    138
+   ],
+   "source": "https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2024_3in/MapServer",
+   "method": "aerial",
+   "aerial": {
+    "outline": "osm:333316164"
+   },
+   "note": "Light flat roof areas and parapets (north wing): median of the lit pixels (darkest 25% dropped) inside osm 333316164 in the 2024 aerial (scripts/50_landmark_measure.py, output/landmarks/measure/city_hall.json)."
+  },
+  "dome": {
+   "rgb": [
+    140,
+    161,
+    177
+   ],
+   "source": "https://www.loc.gov/resource/hhh.pa4092.color.361726c",
+   "method": "photo",
+   "photo": {
+    "file": "data/landmarks/refs/city_hall/2_loc_habs.jpg",
+    "box": [
+     350,
+     300,
+     385,
+     335
+    ],
+    "drop_dark": 0.25
+   },
+   "note": "Metal dome, daylight: median of the box (pixels x0, y0, x1, y1), darkest 25% dropped. Reference photo, a modeling reference only."
+  },
+  "clock_face_day": {
+   "rgb": [
+    50,
+    92,
+    122
+   ],
+   "source": "https://www.loc.gov/resource/hhh.pa4092.color.361726c",
+   "method": "photo",
+   "photo": {
+    "file": "data/landmarks/refs/city_hall/2_loc_habs.jpg",
+    "box": [
+     357,
+     368,
+     370,
+     382
+    ],
+    "drop_dark": 0.25
+   },
+   "note": "Clock dial in daylight: dark teal glass with light numerals and hands. Lit at night, the dials were yellow until the LED conversion and are now 'creamy white' (Inquirer, 2018, https://inquirer.com/philly/opinion/commentary/philadelphia-lighting-public-spaces-20180706.html): median of the box (pixels x0, y0, x1, y1), darkest 25% dropped. Reference photo, a modeling reference only."
+  },
+  "statue": {
+   "rgb": [
+    69,
+    90,
+    103
+   ],
+   "source": "https://www.loc.gov/resource/hhh.pa4092.color.361726c",
+   "method": "photo",
+   "photo": {
+    "file": "data/landmarks/refs/city_hall/2_loc_habs.jpg",
+    "box": [
+     363,
+     242,
+     372,
+     262
+    ],
+    "drop_dark": 0.25
+   },
+   "note": "Bronze statue of William Penn against the sky: median of the box (pixels x0, y0, x1, y1), darkest 25% dropped. Reference photo, a modeling reference only."
+  }
+ },
+ "kit_params": {
+  "tower_center": {
+   "value": [
+    -75.1635296,
+    39.9527262
+   ],
+   "unit": "lon, lat",
+   "source": "https://www.openstreetmap.org/way/333316163",
+   "note": "Centroid of the OSM tower part (tagged height 137.77 m). The booklet: the tower 'rises from the north side of the court-yard.'"
+  },
+  "tower_stages": [
+   {
+    "name": "masonry tower",
+    "z0_m": {
+     "value": 0,
+     "unit": "m above ground",
+     "source": "https://www.asce.org/about-civil-engineering/history-and-heritage/historic-landmarks/philadelphia-city-hall",
+     "note": "From the street."
+    },
+    "z1_m": "tower_masonry_top_m",
+    "plan": "square",
+    "width_bottom_m": "tower_base_width_m",
+    "width_top_m": {
+     "value": 24.58,
+     "unit": "m",
+     "estimate": true,
+     "reason": "Side of a square with the area of OSM way 333316163 (the tower part tagged 137.77 m, 604 m2). The booklet gives only the 90 ft base and says the tower 'falls off at each story'; no published width at the clock stage."
+    }
+   },
+   {
+    "name": "clock story",
+    "z0_m": "tower_masonry_top_m",
+    "height_m": "clock_story_height_m",
+    "plan": "square",
+    "width_m": {
+     "value": 24.58,
+     "unit": "m",
+     "estimate": true,
+     "reason": "As the masonry tower's top width: the clock story sits on it (OSM way 333316163 area)."
+    },
+    "clock_faces": "clock_count",
+    "clock_center_m": "clock_center_height_m",
+    "clock_diameter_m": "clock_diameter_m"
+   },
+   {
+    "name": "dome",
+    "height_m": "dome_height_m",
+    "plan": "octagon",
+    "width_bottom_m": "dome_base_octagon_m",
+    "width_top_m": {
+     "value": 3.0,
+     "unit": "m",
+     "estimate": true,
+     "reason": "The dome narrows to the statue's pedestal; no published figure. About the statue's 9 ft shoulder width (booklet) plus a pedestal margin."
+    }
+   },
+   {
+    "name": "William Penn statue",
+    "z0_m": "statue_base_m",
+    "height_m": "statue_height_m",
+    "plan": "figure",
+    "width_m": {
+     "value": 2.743,
+     "unit": "m",
+     "source": "https://archive.org/details/illustrateddescr00phil",
+     "note": "Published as 9 ft. Illustrated Description of Philadelphia's New City Hall (Frederick Turner, 1901-09), Library of Congress copy; read in the OCR text, https://archive.org/download/illustrateddescr00phil/illustrateddescr00phil_djvu.txt. 'The width across the shoulders is 9 feet' (OCR '<)', read as 9)."
+    }
+   }
+  ],
+  "pavilions": {
+   "center": {
+    "count": {
+     "value": 4,
+     "unit": "count",
+     "source": "https://archive.org/details/illustrateddescr00phil",
+     "note": "One entrance pavilion per front."
+    },
+    "width_m": "center_pavilion_width_m",
+    "top_m": "center_pavilion_top_m",
+    "roof": "pyramidal"
+   },
+   "corner": {
+    "count": {
+     "value": 4,
+     "unit": "count",
+     "source": "https://archive.org/details/illustrateddescr00phil",
+     "note": "One per corner."
+    },
+    "side_m": "corner_pavilion_side_m",
+    "top_m": "corner_pavilion_top_m",
+    "roof": "pyramidal"
+   }
+  },
+  "mansard": {
+   "eave_m": "cornice_height_m",
+   "ridge_m": "main_block_height_m"
+  },
+  "windows": "detail paint on the main block's stories only; none on the tower's masonry above the clock story"
+ },
+ "credits": [
+  "OpenStreetMap data (c) OpenStreetMap contributors, ODbL 1.0 (https://www.openstreetmap.org/copyright)",
+  "LiDAR: City of Philadelphia 2022 classified LiDAR via PASDA (https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=7154)",
+  "Aerial: City of Philadelphia 2024 3-inch imagery (CityImagery_2024_3in)",
+  "Footprints: City of Philadelphia L&I building footprints (OpenDataPhilly)",
+  "Reference photo: Historic American Buildings Survey, HABS PA-1529 (Library of Congress, public domain), https://www.loc.gov/item/pa4092/"
+ ],
+ "review": {
+  "open_questions": [
+   "Check the clock diameter (26 ft) and the masonry-top figure against the booklet scan or the NPS NHL nomination (scanned, not yet read)."
+  ]
+ }
+}

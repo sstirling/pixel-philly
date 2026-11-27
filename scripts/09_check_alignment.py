@@ -32,8 +32,10 @@ from pixelphilly.scenes import scene_paths
 MAX_SHIFT = 4
 
 
-def silhouettes(buildings, cam):
-    """Screen-space polygons (global pixels) for every building prism.
+def silhouettes(buildings, cam, facets=None):
+    """Screen-space polygons (global pixels) for every building prism, plus
+    each front-slope triangle (scene "roof_facets", pixelphilly.roofs),
+    which the renderer draws white in the mask like the prisms.
 
     A prism's outline is its footprint at its base (ground level, or z0 for
     a raised prism), its roof at full height, and every wall quad between
@@ -41,6 +43,9 @@ def silhouettes(buildings, cam):
     not filled in (except where its own inner walls hide it)."""
     out = []
     for b in buildings:
+        if b.get("roof3d"):
+            out.append(_roof3d_silhouette(b, cam))
+            continue
         for rings in b["polys"]:
             screen = []
             for ring in rings:
@@ -60,7 +65,43 @@ def silhouettes(buildings, cam):
                     if quad.area > 0:
                         parts.append(quad.buffer(0))
             out.append(unary_union(parts))
+    for f in facets or ():
+        tris = []
+        for tri in f["t"]:
+            t = np.asarray(tri, float)
+            sx, sy = cam.world_to_screen(t[:, 0], t[:, 1], t[:, 2])
+            g = Polygon(list(zip(sx, sy)))
+            if g.area > 0:
+                tris.append(g.buffer(0))
+        if tris:
+            out.append(unary_union(tris))
     return out
+
+
+def _roof3d_silhouette(b, cam):
+    """A building with a fitted roof (pixelphilly.roofs.roof3d_building):
+    its footprint on the ground, every roof triangle, and every wall quad
+    up to the roof's height at each ring vertex (gable ends rise to the
+    ridge). The same numbers render/render.js draws."""
+    r3 = b["roof3d"]
+    ring = np.asarray(b["polys"][0][0], float)
+    rz = np.asarray(r3["ring_z"], float)
+    gx, gy = cam.world_to_screen(ring[:, 0], ring[:, 1], 0.0)
+    tx, ty = cam.world_to_screen(ring[:, 0], ring[:, 1], rz)
+    parts = [Polygon(list(zip(gx, gy))).buffer(0)]
+    k = len(ring)
+    for i in range(k):
+        j = (i + 1) % k
+        quad = Polygon([(gx[i], gy[i]), (gx[j], gy[j]), (tx[j], ty[j]), (tx[i], ty[i])])
+        if quad.area > 0:
+            parts.append(quad.buffer(0))
+    v = np.asarray(r3["v"], float)
+    vx, vy = cam.world_to_screen(v[:, 0], v[:, 1], v[:, 2])
+    for t in r3["t"]:
+        tri = Polygon([(vx[i], vy[i]) for i in t])
+        if tri.area > 0:
+            parts.append(tri.buffer(0))
+    return unary_union(parts)
 
 
 def rasterize(polys, frame, size):
@@ -137,7 +178,7 @@ def main():
     pairs = []
     for scene_rel in scene_paths(cfg):
         scene = json.loads((REPO_ROOT / scene_rel).read_text())
-        polys = silhouettes(scene["buildings"], cam)
+        polys = silhouettes(scene["buildings"], cam, scene.get("roof_facets"))
         pairs += [(scene, polys, f) for f in scene["frames"]]
     for scene, polys, f in pairs:
         size = scene["frame_px"]
